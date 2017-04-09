@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-04-09T05:20:18.000Z</updated>
+  <updated>2017-04-09T05:22:28.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://wodekouwei.com/2017/04/09/m-f-mp4/"/>
     <id>http://wodekouwei.com/2017/04/09/m-f-mp4/</id>
     <published>2017-04-09T03:31:46.000Z</published>
-    <updated>2017-04-09T05:20:18.000Z</updated>
+    <updated>2017-04-09T05:22:28.000Z</updated>
     
     <content type="html"><![CDATA[<p>目前MP4的概念被炒得很火，也很乱。最开始MP4指的是音频（MP3的升级版），即MPEG-2 AAC标准。随后MP4概念被转移到视频上，对应的是MPEG-4标准。而现在我们流行的叫法，多半是指能播放MPEG-4标准编码格式视频的播放器。但是这篇文章介绍的内容跟上面这些都无关，我们要讨论的是MP4文件封装格式，对应的标准为ISO/IEC 14496-12，即信息技术 视听对象编码的第12部分：ISO 基本媒体文件格式（Information technology Coding of audio-visual objects Part 12: ISO base media file format）。ISO/IEC组织指定的标准一般用数字表示，ISO/IEC 14496即MPEG-4标准。</p>
 <p>MP4视频文件封装格式是基于QuickTime容器格式定义的，因此参考QuickTime的格式定义对理解MP4文件格式很有帮助。MP4文件格式是一个十分开放的容器，几乎可以用来描述所有的媒体结构，MP4文件中的媒体描述与媒体数据是分开的，并且媒体数据的组织也很自由，不一定要按照时间顺序排列，甚至媒体数据可以直接引用其他文件。同时，MP4也支持流媒体。MP4目前被广泛用于封装h.264视频和AAC音频，是高清视频的代表。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V,  3GP, F4V等。</p>
@@ -39,7 +39,87 @@
 <h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。<br>“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
 <h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
 <p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
-<h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:<br>|字段|字节数|意义|<br>|—|—|—|<br>|box size|4|box大小|<br>|box type|4|box类型|<br>|version|1|box版本，0或1，一般为0。（以下字节数均按version=0）|<br>|flags|3||<br>|creation time|4|创建时间（相对于UTC时间1904-01-01零点的秒数）|<br>|modification time|4|修改时间|<br>|time scale|4|文件媒体在1秒时间内的刻度值，可以理解为1秒长度的时间单元数|<br>|duration|4|该track的时间长度，用duration和time scale值可以计算track时长，比如audio track的time scale = 8000, duration = 560128，时长为70.016，video track的time scale = 600, duration = 42000，时长为70|<br>|rate|4|推荐播放速率，高16位和低16位分别为小数点整数部分和小数部分，即[16.16] 格式，该值为1.0（0x00010000）表示正常前向播放|<br>|volume|2|与rate类似，[8.8] 格式，1.0（0x0100）表示最大音量|<br>|reserved|10|保留位|<br>|matrix|36|视频变换矩阵|<br>|pre-defined|24|<br>|next track id|4|下一个track使用的id号|</p>
+<h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字节数</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>box size</td>
+<td>4</td>
+<td>box大小</td>
+</tr>
+<tr>
+<td>box type</td>
+<td>4</td>
+<td>box类型</td>
+</tr>
+<tr>
+<td>version</td>
+<td>1</td>
+<td>box版本，0或1，一般为0。（以下字节数均按version=0）</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>creation time</td>
+<td>4</td>
+<td>创建时间（相对于UTC时间1904-01-01零点的秒数）</td>
+</tr>
+<tr>
+<td>modification time</td>
+<td>4</td>
+<td>修改时间</td>
+</tr>
+<tr>
+<td>time scale</td>
+<td>4</td>
+<td>文件媒体在1秒时间内的刻度值，可以理解为1秒长度的时间单元数</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>4</td>
+<td>该track的时间长度，用duration和time scale值可以计算track时长，比如audio track的time scale = 8000, duration = 560128，时长为70.016，video track的time scale = 600, duration = 42000，时长为70</td>
+</tr>
+<tr>
+<td>rate</td>
+<td>4</td>
+<td>推荐播放速率，高16位和低16位分别为小数点整数部分和小数部分，即[16.16] 格式，该值为1.0（0x00010000）表示正常前向播放</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>2</td>
+<td>与rate类似，[8.8] 格式，1.0（0x0100）表示最大音量</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>10</td>
+<td>保留位</td>
+</tr>
+<tr>
+<td>matrix</td>
+<td>36</td>
+<td>视频变换矩阵</td>
+</tr>
+<tr>
+<td>pre-defined</td>
+<td>24</td>
+</tr>
+<tr>
+<td>next track id</td>
+<td>4</td>
+<td>下一个track使用的id号</td>
+</tr>
+</tbody>
+</table>
 <h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。<br>“trak”的部分字节实例如下图，其中黄色为“trak”box的头，绿色为“tkhd”，蓝色为“edts”（一个可选box），红色为一部分“mdia”。</p>
 ]]></content>
     
