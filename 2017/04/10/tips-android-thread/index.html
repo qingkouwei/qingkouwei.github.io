@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android,多线程,tips," />
 
 
 
@@ -89,12 +89,16 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="老司机种菜">
-<meta property="og:url" content="http://wodekouwei.com/index.html">
+<meta name="description" content="1. Threading Performance在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android线程使用总结">
+<meta property="og:url" content="http://wodekouwei.com/2017/04/10/tips-android-thread/index.html">
 <meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="1. Threading Performance在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点">
+<meta property="og:updated_time" content="2017-04-10T10:59:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="老司机种菜">
+<meta name="twitter:title" content="Android线程使用总结">
+<meta name="twitter:description" content="1. Threading Performance在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点">
 
 
 
@@ -122,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/04/10/tips-android-thread/"/>
 
 
 
 
 
-  <title> 老司机种菜 </title>
+  <title> Android线程使用总结 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -163,9 +167,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -312,9 +314,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -344,10 +346,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/04/10/tips-android-thread/" itemprop="url">
-                  Android线程使用总结
-                </a>
+                Android线程使用总结
               
             
           </h1>
@@ -398,11 +397,26 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/04/10/tips-android-thread/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
           
 
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
           
 
           
@@ -420,9 +434,7 @@
       
 
       
-        
-          
-            <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。<br>众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
+        <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。<br>众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
 <p>一旦我们在主线程里面添加了操作复杂的代码，这些代码就很可能阻碍主线程去响应点击/滑动事件，阻碍主线程的 UI 绘制等等。我们知道，为了让屏幕的刷新帧率达到 60fps，我们需要确保 16ms 内完成单次刷新的操作。一旦我们在主线程里面执行的任务过于繁重就可能导致接收到刷新信号的时候因为资源被占用而无法完成这次刷新操作，这样就会产生掉帧的现象，刷新帧率自然也就跟着下降了(一旦刷新帧率降到 20fps 左右，用户就可以明显感知到卡顿不流畅了)。</p>
 <p>为了避免上面提到的掉帧问题，我们需要使用多线程的技术方案，把那些操作复杂的任务移动到其他线程当中执行，这样就不容易阻塞主线程的操作，也就减小了出现掉帧的可能性。</p>
 <p>为主线程减轻负的多线程方案有哪些呢？这些方案分别适合在什么场景下使用？Android 系统为我们提供了若干组工具类来帮助解决这个问题。</p>
@@ -500,430 +512,103 @@
 <p><a href="http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022" target="_blank" rel="external">http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022</a></p>
 </blockquote>
 
-          
-        
       
     </div>
 
     <div>
       
+        
+
+      
     </div>
 
     <div>
       
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/09/m-f-mp4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/C9B8A983F49C0F5EA4C5AB65CC6AA4E4.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
         
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/09/m-f-mp4/" itemprop="url">
-                  MP4格式解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T11:31:46+08:00">
-                2017-04-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
-                    <span itemprop="name">音视频封装</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
       
       
-
-      
-        
-          
-            <p>目前MP4的概念被炒得很火，也很乱。最开始MP4指的是音频（MP3的升级版），即MPEG-2 AAC标准。随后MP4概念被转移到视频上，对应的是MPEG-4标准。而现在我们流行的叫法，多半是指能播放MPEG-4标准编码格式视频的播放器。但是这篇文章介绍的内容跟上面这些都无关，我们要讨论的是MP4文件封装格式，对应的标准为ISO/IEC 14496-12，即信息技术 视听对象编码的第12部分：ISO 基本媒体文件格式（Information technology Coding of audio-visual objects Part 12: ISO base media file format）。ISO/IEC组织指定的标准一般用数字表示，ISO/IEC 14496即MPEG-4标准。</p>
-<p>MP4视频文件封装格式是基于QuickTime容器格式定义的，因此参考QuickTime的格式定义对理解MP4文件格式很有帮助。MP4文件格式是一个十分开放的容器，几乎可以用来描述所有的媒体结构，MP4文件中的媒体描述与媒体数据是分开的，并且媒体数据的组织也很自由，不一定要按照时间顺序排列，甚至媒体数据可以直接引用其他文件。同时，MP4也支持流媒体。MP4目前被广泛用于封装h.264视频和AAC音频，是高清视频的代表。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V,  3GP, F4V等。</p>
-<h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h3><p>MP4文件中的所有数据都装在box（QuickTime中为atom）中，也就是说MP4文件由若干个box组成，每个box有类型和长度，可以将box理解为一个数据对象块。box中可以包含另一个box，这种box称为container box。一个MP4文件首先会有且只有一个“ftyp”类型的box，作为MP4格式的标志并包含关于文件的一些信息；之后会有且只有一个“moov”类型的box（Movie Box），它是一种container box，子box包含了媒体的metadata信息；MP4文件的媒体数据包含在“mdat”类型的box（Midia Data Box）中，该类型的box也是container box，可以有多个，也可以没有（当媒体数据全部引用其他文件时），媒体数据的结构由metadata进行描述。</p>
-<p>下面是一些概念：</p>
-<ul>
-<li>track  表示一些sample的集合，对于媒体数据来说，track表示一个视频或音频序列。</li>
-<li>hint track  这个特殊的track并不包含媒体数据，而是包含了一些将其他数据track打包成流媒体的指示信息。</li>
-<li>sample  对于非hint track来说，video sample即为一帧视频，或一组连续视频帧，audio sample即为一段连续的压缩音频，它们统称sample。对于hint track，sample定义一个或多个流媒体包的格式。</li>
-<li>sample table  指明sampe时序和物理布局的表。</li>
-<li>chunk 一个track的几个sample组成的单元。</li>
-</ul>
-<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
-<h3 id="2-Box"><a href="#2-Box" class="headerlink" title="2.Box"></a>2.Box</h3><p>box中的字节序为网络字节序，也就是大端字节序（Big-Endian），简单的说，就是一个32位的4字节整数存储方式为高位字节在内存的低端。Box由header和body组成，其中header统一指明box的大小和类型，body根据类型有不同的意义和格式。</p>
-<p>标准的box开头的4个字节（32位）为box size，该大小包括box header和box body整个box的大小，这样我们就可以在文件中定位各个box。如果size为1，则表示这个box的大小为large size，真正的size值要在largesize域上得到。（实际上只有“mdat”类型的box才有可能用到large size。）如果size为0，表示该box为文件的最后一个box，文件结尾即为该box结尾。（同样只存在于“mdat”类型的box中。）size后面紧跟的32位为box type，一般是4个字符，如“ftyp”、“moov”等，这些box type都是已经预定义好的，分别表示固定的意义。如果是“uuid”，表示该box为用户扩展类型。如果box type是未定义的，应该将其忽略。</p>
-<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。<br>“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
-<h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
-<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
-<h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>字节数</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>box size</td>
-<td>4</td>
-<td>box大小</td>
-</tr>
-<tr>
-<td>box type</td>
-<td>4</td>
-<td>box类型</td>
-</tr>
-<tr>
-<td>version</td>
-<td>1</td>
-<td>box版本，0或1，一般为0。（以下字节数均按version=0）</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>3</td>
-<td></td>
-</tr>
-<tr>
-<td>creation time</td>
-<td>4</td>
-<td>创建时间（相对于UTC时间1904-01-01零点的秒数）</td>
-</tr>
-<tr>
-<td>modification time</td>
-<td>4</td>
-<td>修改时间</td>
-</tr>
-<tr>
-<td>time scale</td>
-<td>4</td>
-<td>文件媒体在1秒时间内的刻度值，可以理解为1秒长度的时间单元数</td>
-</tr>
-<tr>
-<td>duration</td>
-<td>4</td>
-<td>该track的时间长度，用duration和time scale值可以计算track时长，比如audio track的time scale = 8000, duration = 560128，时长为70.016，video track的time scale = 600, duration = 42000，时长为70</td>
-</tr>
-<tr>
-<td>rate</td>
-<td>4</td>
-<td>推荐播放速率，高16位和低16位分别为小数点整数部分和小数部分，即[16.16] 格式，该值为1.0（0x00010000）表示正常前向播放</td>
-</tr>
-<tr>
-<td>volume</td>
-<td>2</td>
-<td>与rate类似，[8.8] 格式，1.0（0x0100）表示最大音量</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>10</td>
-<td>保留位</td>
-</tr>
-<tr>
-<td>matrix</td>
-<td>36</td>
-<td>视频变换矩阵</td>
-</tr>
-<tr>
-<td>pre-defined</td>
-<td>24</td>
-</tr>
-<tr>
-<td>next track id</td>
-<td>4</td>
-<td>下一个track使用的id号</td>
-</tr>
-</tbody>
-</table>
-<h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。<br>“trak”的部分字节实例如下图，其中黄色为“trak”box的头，绿色为“tkhd”，蓝色为“edts”（一个可选box），红色为一部分“mdia”。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/03/13/welcome/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/C9B8A983F49C0F5EA4C5AB65CC6AA4E4.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/13/welcome/" itemprop="url">
-                  欢迎
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-13T11:10:58+08:00">
-                2017-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/小说/" itemprop="url" rel="index">
-                    <span itemprop="name">小说</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
         </div>
-      </header>
-    
+      
+    </div>
+  </div>
 
-
-    <div class="post-body" itemprop="articleBody">
 
       
-      
+    </div>
 
+    <div>
       
         
-          
-            <h1 id="欢迎写小说"><a href="#欢迎写小说" class="headerlink" title="欢迎写小说"></a>欢迎写小说</h1><h1 id="开始写小说了啊"><a href="#开始写小说了啊" class="headerlink" title="开始写小说了啊"></a>开始写小说了啊</h1><ul>
-<li>@阿杰</li>
-<li>@吕超</li>
-</ul>
-<p><img src="http://images.wodekouwei.com/C9B8A983F49C0F5EA4C5AB65CC6AA4E4.jpg" alt="image"></p>
 
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+        </div>
       
 
       
+        
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/09/m-f-mp4/" rel="next" title="MP4格式解析">
+                <i class="fa fa-chevron-left"></i> MP4格式解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -931,6 +616,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
 
         </div>
         
@@ -950,8 +641,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/C9B8A983F49C0F5EA4C5AB65CC6AA4E4.jpg"
@@ -1072,6 +772,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Threading-Performance"><span class="nav-number">1.</span> <span class="nav-text">1. Threading Performance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Understanding-Android-Threading"><span class="nav-number">2.</span> <span class="nav-text">2. Understanding Android Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Memory-amp-Threading"><span class="nav-number">3.</span> <span class="nav-text">3. Memory & Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Good-AsyncTask-Hunting"><span class="nav-number">4.</span> <span class="nav-text">4. Good AsyncTask Hunting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Getting-a-HandlerThread"><span class="nav-number">5.</span> <span class="nav-text">5. Getting a HandlerThread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Swimming-in-Threadpools"><span class="nav-number">6.</span> <span class="nav-text">6. Swimming in Threadpools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-The-Zen-of-IntentService"><span class="nav-number">7.</span> <span class="nav-text">7. The Zen of IntentService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Threading-and-Loaders"><span class="nav-number">8.</span> <span class="nav-text">8. Threading and Loaders</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-The-Importance-of-Thread-Priority"><span class="nav-number">9.</span> <span class="nav-text">9. The Importance of Thread Priority</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-Profile-GPU-Rendering-M-Update"><span class="nav-number">10.</span> <span class="nav-text">10. Profile GPU Rendering : M Update</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1196,6 +912,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
