@@ -449,12 +449,16 @@
 <li>sample table  指明sampe时序和物理布局的表。</li>
 <li>chunk 一个track的几个sample组成的单元。</li>
 </ul>
-<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
+<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
 <h3 id="2-Box"><a href="#2-Box" class="headerlink" title="2.Box"></a>2.Box</h3><p>box中的字节序为网络字节序，也就是大端字节序（Big-Endian），简单的说，就是一个32位的4字节整数存储方式为高位字节在内存的低端。Box由header和body组成，其中header统一指明box的大小和类型，body根据类型有不同的意义和格式。</p>
 <p>标准的box开头的4个字节（32位）为box size，该大小包括box header和box body整个box的大小，这样我们就可以在文件中定位各个box。如果size为1，则表示这个box的大小为large size，真正的size值要在largesize域上得到。（实际上只有“mdat”类型的box才有可能用到large size。）如果size为0，表示该box为文件的最后一个box，文件结尾即为该box结尾。（同样只存在于“mdat”类型的box中。）size后面紧跟的32位为box type，一般是4个字符，如“ftyp”、“moov”等，这些box type都是已经预定义好的，分别表示固定的意义。如果是“uuid”，表示该box为用户扩展类型。如果box type是未定义的，应该将其忽略。</p>
-<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。<br>“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
+<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。
+“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
 <h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
-<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
+<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
 <h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
 <table>
 <thead>
@@ -538,7 +542,70 @@
 </table>
 <p><img src="http://images.wodekouwei.com/M/F/mp4_box_mvhd.png" alt="mvhd"></p>
 <h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。</p>
-<table><br><tr><br><th colspan="6">box类型</th><th colspan="6">说明</th><br></tr><br><tr><br><td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td><br></tr><br><tr><br><td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td><br></tr><br><tr><br><td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td><br></tr><br><tr><br><td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td><br></tr><br><tr><br><td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td><br></tr><br><tr><br><td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td><br></tr><br><td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td><br><br><tr><br><td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td><br></tr><br><tr><br><td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td><br></tr><br><tr><br><td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td><br></tr><br><tr><br><td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td><br></tr><br></table>  
+<table>
+<tr>
+<th colspan="6">box类型</th><th colspan="6">说明</th>
+</tr>
+<tr>
+<td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td>
+</tr>
+<tr>
+<td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td>
+</tr>
+<tr>
+<td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td>
+</tr>
+<td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td>
+
+<tr>
+<td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td>
+</tr>
+<tr>
+<td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td>
+</tr>
+</table>  
 
 
 <h3 id="Mdat-Box"><a href="#Mdat-Box" class="headerlink" title="Mdat Box"></a>Mdat Box</h3>

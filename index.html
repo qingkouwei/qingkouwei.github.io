@@ -422,7 +422,8 @@
       
         
           
-            <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。<br>众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
+            <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。
+众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
 <p>一旦我们在主线程里面添加了操作复杂的代码，这些代码就很可能阻碍主线程去响应点击/滑动事件，阻碍主线程的 UI 绘制等等。我们知道，为了让屏幕的刷新帧率达到 60fps，我们需要确保 16ms 内完成单次刷新的操作。一旦我们在主线程里面执行的任务过于繁重就可能导致接收到刷新信号的时候因为资源被占用而无法完成这次刷新操作，这样就会产生掉帧的现象，刷新帧率自然也就跟着下降了(一旦刷新帧率降到 20fps 左右，用户就可以明显感知到卡顿不流畅了)。</p>
 <p>为了避免上面提到的掉帧问题，我们需要使用多线程的技术方案，把那些操作复杂的任务移动到其他线程当中执行，这样就不容易阻塞主线程的操作，也就减小了出现掉帧的可能性。</p>
 <p>为主线程减轻负的多线程方案有哪些呢？这些方案分别适合在什么场景下使用？Android 系统为我们提供了若干组工具类来帮助解决这个问题。</p>
@@ -444,24 +445,30 @@
 <li><p>MessageQueue: 使用 Intent，Message，Runnable 作为任务的载体在不同的线程之间进行传递。</p>
 </li>
 </ul>
-<p>把上面三个组件打包到一起进行协作，这就是 HandlerThread<br>我们知道，当程序被启动，系统会帮忙创建进程以及相应的主线程，而这个主线程其实就是一个 HandlerThread。这个主线程会需要处理系统事件，输入事件，系统回调的任务，UI绘制等等任务，为了避免主线程任务过重，我们就会需要不断的开启新的工作线程来处理那些子任务。</p>
-<h3 id="3-Memory-amp-Threading"><a href="#3-Memory-amp-Threading" class="headerlink" title="3. Memory &amp; Threading"></a>3. Memory &amp; Threading</h3><p>增加并发的线程数会导致内存消耗的增加，平衡好这两者的关系是非常重要的。我们知道，多线程并发访问同一块内存区域有可能带来很多问题，例如读写的权限争夺问题，ABA 问题等等。为了解决这些问题，我们会需要引入锁的概念。<br>在 Android 系统中也无法避免因为多线程的引入而导致出现诸如上文提到的种种问题。Android UI 对象的创建，更新，销毁等等操作都默认是执行在主线程，但是如果我们在非主线程对UI对象进行操作，程序将可能出现异常甚至是崩溃。</p>
+<p>把上面三个组件打包到一起进行协作，这就是 HandlerThread
+我们知道，当程序被启动，系统会帮忙创建进程以及相应的主线程，而这个主线程其实就是一个 HandlerThread。这个主线程会需要处理系统事件，输入事件，系统回调的任务，UI绘制等等任务，为了避免主线程任务过重，我们就会需要不断的开启新的工作线程来处理那些子任务。</p>
+<h3 id="3-Memory-amp-Threading"><a href="#3-Memory-amp-Threading" class="headerlink" title="3. Memory &amp; Threading"></a>3. Memory &amp; Threading</h3><p>增加并发的线程数会导致内存消耗的增加，平衡好这两者的关系是非常重要的。我们知道，多线程并发访问同一块内存区域有可能带来很多问题，例如读写的权限争夺问题，ABA 问题等等。为了解决这些问题，我们会需要引入锁的概念。
+在 Android 系统中也无法避免因为多线程的引入而导致出现诸如上文提到的种种问题。Android UI 对象的创建，更新，销毁等等操作都默认是执行在主线程，但是如果我们在非主线程对UI对象进行操作，程序将可能出现异常甚至是崩溃。</p>
 <p>另外，在非 UI 线程中直接持有 UI 对象的引用也很可能出现问题。例如Work线程中持有某个 UI 对象的引用，在 Work 线程执行完毕之前，UI 对象在主线程中被从 ViewHierarchy 中移除了，这个时候 UI 对象的任何属性都已经不再可用了，另外对这个 UI 对象的更新操作也都没有任何意义了，因为它已经从 ViewHierarchy 中被移除，不再绘制到画面上了。</p>
 <p>不仅如此，View 对象本身对所属的 Activity 是有引用关系的，如果工作线程持续保有 View 的引用，这就可能导致 Activity 无法完全释放。除了直接显式的引用关系可能导致内存泄露之外，我们还需要特别留意隐式的引用关系也可能导致泄露。例如通常我们会看到在 Activity 里面定义的一个 AsyncTask，这种类型的 AsyncTask 与外部的 Activity 是存在隐式引用关系的，只要 Task 没有结束，引用关系就会一直存在，这很容易导致 Activity 的泄漏。更糟糕的情况是，它不仅仅发生了内存泄漏，还可能导致程序异常或者崩溃。</p>
 <p>为了解决上面的问题，我们需要谨记的原则就是：不要在任何非 UI 线程里面去持有 UI 对象的引用。系统为了确保所有的 UI 对象都只会被 UI 线程所进行创建，更新，销毁的操作，特地设计了对应的工作机制(当 Activity 被销毁的时候，由该 Activity 所触发的非 UI 线程都将无法对UI对象进行操作，否者就会抛出程序执行异常的错误)来防止 UI 对象被错误的使用。</p>
-<h3 id="4-Good-AsyncTask-Hunting"><a href="#4-Good-AsyncTask-Hunting" class="headerlink" title="4. Good AsyncTask Hunting"></a>4. Good AsyncTask Hunting</h3><p>AsyncTask 是一个让人既爱又恨的组件，它提供了一种简便的异步处理机制，但是它又同时引入了一些令人厌恶的麻烦。一旦对 AsyncTask 使用不当，很可能对程序的性能带来负面影响，同时还可能导致内存泄露。<br>举个例子，常遇到的一个典型的使用场景：用户切换到某个界面，触发了界面上的图片的加载操作，因为图片的加载相对来说耗时比较长，我们需要在子线程中处理图片的加载，当图片在子线程中处理完成之后，再把处理好的图片返回给主线程，交给 UI 更新到画面上。</p>
+<h3 id="4-Good-AsyncTask-Hunting"><a href="#4-Good-AsyncTask-Hunting" class="headerlink" title="4. Good AsyncTask Hunting"></a>4. Good AsyncTask Hunting</h3><p>AsyncTask 是一个让人既爱又恨的组件，它提供了一种简便的异步处理机制，但是它又同时引入了一些令人厌恶的麻烦。一旦对 AsyncTask 使用不当，很可能对程序的性能带来负面影响，同时还可能导致内存泄露。
+举个例子，常遇到的一个典型的使用场景：用户切换到某个界面，触发了界面上的图片的加载操作，因为图片的加载相对来说耗时比较长，我们需要在子线程中处理图片的加载，当图片在子线程中处理完成之后，再把处理好的图片返回给主线程，交给 UI 更新到画面上。</p>
 <p>AsyncTask 的出现就是为了快速的实现上面的使用场景，AsyncTask 把在主线程里面的准备工作放到 onPreExecute()方法里面进行执行，doInBackground()方法执行在工作线程中，用来处理那些繁重的任务，一旦任务执行完毕，就会调用 onPostExecute()方法返回到主线程。</p>
-<p>使用 AsyncTask 需要注意的问题有哪些呢？请关注以下几点：<br>首先，默认情况下，所有的 AsyncTask 任务都是被线性调度执行的，他们处在同一个任务队列当中，按顺序逐个执行。假设你按照顺序启动20个 AsyncTask，一旦其中的某个 AsyncTask 执行时间过长，队列中的其他剩余 AsyncTask 都处于阻塞状态，必须等到该任务执行完毕之后才能够有机会执行下一个任务。</p>
+<p>使用 AsyncTask 需要注意的问题有哪些呢？请关注以下几点：
+首先，默认情况下，所有的 AsyncTask 任务都是被线性调度执行的，他们处在同一个任务队列当中，按顺序逐个执行。假设你按照顺序启动20个 AsyncTask，一旦其中的某个 AsyncTask 执行时间过长，队列中的其他剩余 AsyncTask 都处于阻塞状态，必须等到该任务执行完毕之后才能够有机会执行下一个任务。</p>
 <p>为了解决上面提到的线性队列等待的问题，我们可以使用 AsyncTask.executeOnExecutor()强制指定 AsyncTask 使用线程池并发调度任务。</p>
 <p>其次，如何才能够真正的取消一个 AsyncTask 的执行呢？我们知道 AsyncTaks 有提供 cancel()的方法，但是这个方法实际上做了什么事情呢？线程本身并不具备中止正在执行的代码的能力，为了能够让一个线程更早的被销毁，我们需要在 doInBackground()的代码中不断的添加程序是否被中止的判断逻辑.</p>
-<p>一旦任务被成功中止，AsyncTask 就不会继续调用 onPostExecute()，而是通过调用 onCancelled()的回调方法反馈任务执行取消的结果。我们可以根据任务回调到哪个方法（是 onPostExecute 还是 onCancelled）来决定是对 UI 进行正常的更新还是把对应的任务所占用的内存进行销毁等。<br>最后，使用 AsyncTask 很容易导致内存泄漏，一旦把 AsyncTask 写成 Activity 的内部类的形式就很容易因为 AsyncTask 生命周期的不确定而导致 Activity 发生泄漏。</p>
+<p>一旦任务被成功中止，AsyncTask 就不会继续调用 onPostExecute()，而是通过调用 onCancelled()的回调方法反馈任务执行取消的结果。我们可以根据任务回调到哪个方法（是 onPostExecute 还是 onCancelled）来决定是对 UI 进行正常的更新还是把对应的任务所占用的内存进行销毁等。
+最后，使用 AsyncTask 很容易导致内存泄漏，一旦把 AsyncTask 写成 Activity 的内部类的形式就很容易因为 AsyncTask 生命周期的不确定而导致 Activity 发生泄漏。</p>
 <p>综上所述，AsyncTask 虽然提供了一种简单便捷的异步机制，但是我们还是很有必要特别关注到他的缺点，避免出现因为使用错误而导致的严重系统性能问题。</p>
 <h3 id="5-Getting-a-HandlerThread"><a href="#5-Getting-a-HandlerThread" class="headerlink" title="5. Getting a HandlerThread"></a>5. Getting a HandlerThread</h3><p>大多数情况下，AsyncTask 都能够满足多线程并发的场景需要（在工作线程执行任务并返回结果到主线程），但是它并不是万能的。例如打开相机之后的预览帧数据是通过 onPreviewFrame()的方法进行回调的，onPreviewFrame()和 open()相机的方法是执行在同一个线程的。</p>
 <p>如果这个回调方法执行在 UI 线程，那么在 onPreviewFrame()里面将要执行的数据转换操作将和主线程的界面绘制，事件传递等操作争抢系统资源，这就有可能影响到主界面的表现性能。</p>
 <p>我们需要确保 onPreviewFrame()执行在工作线程。如果使用 AsyncTask，会因为 AsyncTask 默认的线性执行的特性(即使换成并发执行)会导致因为无法把任务及时传递给工作线程而导致任务在主线程中被延迟，直到工作线程空闲，才可以把任务切换到工作线程中进行执行。</p>
 <p>所以我们需要的是一个执行在工作线程，同时又能够处理队列中的复杂任务的功能，而 HandlerThread 的出现就是为了实现这个功能的，它组合了 Handler，MessageQueue，Looper 实现了一个长时间运行的线程，不断的从队列中获取任务进行执行的功能。</p>
 <p>回到刚才的处理相机回调数据的例子，使用 HandlerThread 我们可以把 open()操作与 onPreviewFrame()的操作执行在同一个线程，同时还避免了 AsyncTask 的弊端。如果需要在 onPreviewFrame()里面更新 UI，只需要调用 runOnUiThread()方法把任务回调给主线程就够了。</p>
-<p>HandlerThread 比较合适处理那些在工作线程执行，需要花费时间偏长的任务。我们只需要把任务发送给 HandlerThread，然后就只需要等待任务执行结束的时候通知返回到主线程就好了。<br>另外很重要的一点是，一旦我们使用了 HandlerThread，需要特别注意给 HandlerThread 设置不同的线程优先级，CPU 会根据设置的不同线程优先级对所有的线程进行调度优化。</p>
+<p>HandlerThread 比较合适处理那些在工作线程执行，需要花费时间偏长的任务。我们只需要把任务发送给 HandlerThread，然后就只需要等待任务执行结束的时候通知返回到主线程就好了。
+另外很重要的一点是，一旦我们使用了 HandlerThread，需要特别注意给 HandlerThread 设置不同的线程优先级，CPU 会根据设置的不同线程优先级对所有的线程进行调度优化。</p>
 <p>掌握 HandlerThread 与 AsyncTask 之间的优缺点，可以帮助我们选择合适的方案。</p>
 <h3 id="6-Swimming-in-Threadpools"><a href="#6-Swimming-in-Threadpools" class="headerlink" title="6. Swimming in Threadpools"></a>6. Swimming in Threadpools</h3><p>线程池适合用在把任务进行分解，并发进行执行的场景。通常来说，系统里面会针对不同的任务设置一个单独的守护线程用来专门处理这项任务。例如使用 Networking Thread 用来专门处理网络请求的操作，使用 IO Thread 用来专门处理系统的 <code>I\O</code> 操作。针对那些场景，这样设计是没有问题的，因为对应的任务单次执行的时间并不长而且可以是顺序执行的。但是这种专属的单线程并不能满足所有的情况，例如我们需要一次性 decode 40张图片，每个线程需要执行 4ms 的时间，如果我们使用专属单线程的方案，所有图片执行完毕会需要花费 160ms(40*4)，但是如果我们创建10个线程，每个线程执行4个任务，那么我们就只需要16ms就能够把所有的图片处理完毕。</p>
 <p>为了能够实现上面的线程池模型，系统为我们提供了 ThreadPoolExecutor 帮助类来简化实现，剩下需要做的就只是对任务进行分解就好了。</p>
@@ -478,14 +485,16 @@
 </ul>
 <h3 id="8-Threading-and-Loaders"><a href="#8-Threading-and-Loaders" class="headerlink" title="8. Threading and Loaders"></a>8. Threading and Loaders</h3><p>当启动工作线程的 Activity 被销毁的时候，我们应该做点什么呢？为了方便的控制工作线程的启动与结束，Android 为我们引入了 Loader 来解决这个问题。我们知道 Activity 有可能因为用户的主动切换而频繁的被创建与销毁，也有可能是因为类似屏幕发生旋转等被动原因而销毁再重建。在 Activity 不停的创建与销毁的过程当中，很有可能因为工作线程持有 Activity 的 View 而导致内存泄漏(因为工作线程很可能持有 View 的强引用，另外工作线程的生命周期还无法保证和 Activity 的生命周期一致，这样就容易发生内存泄漏了)。除了可能引起内存泄漏之外，在 Activity 被销毁之后，工作线程还继续更新视图是没有意义的，因为此时视图已经不在界面上显示了。</p>
 <p>Loader 的出现就是为了确保工作线程能够和 Activity 的生命周期保持一致，同时避免出现前面提到的问题。</p>
-<p>LoaderManager 会对查询的操作进行缓存，只要对应 Cursor 上的数据源没有发生变化，在配置信息发生改变的时候(例如屏幕的旋转)，Loader  可以直接把缓存的数据回调到 onLoadFinished()，从而避免重新查询数据。另外系统会在 Loader 不再需要使用到的时候(例如使用 Back 按钮退出当前页面)回调 onLoaderReset()方法，我们可以在这里做数据的清除等等操作。<br>在 Activity 或者 Fragment 中使用 Loader 可以方便的实现异步加载的框架，Loader 有诸多优点。但是实现 Loader 的这套代码还是稍微有点点复杂，Android 官方为我们提供了使用 Loader 的示例代码进行参考学习。</p>
+<p>LoaderManager 会对查询的操作进行缓存，只要对应 Cursor 上的数据源没有发生变化，在配置信息发生改变的时候(例如屏幕的旋转)，Loader  可以直接把缓存的数据回调到 onLoadFinished()，从而避免重新查询数据。另外系统会在 Loader 不再需要使用到的时候(例如使用 Back 按钮退出当前页面)回调 onLoaderReset()方法，我们可以在这里做数据的清除等等操作。
+在 Activity 或者 Fragment 中使用 Loader 可以方便的实现异步加载的框架，Loader 有诸多优点。但是实现 Loader 的这套代码还是稍微有点点复杂，Android 官方为我们提供了使用 Loader 的示例代码进行参考学习。</p>
 <h3 id="9-The-Importance-of-Thread-Priority"><a href="#9-The-Importance-of-Thread-Priority" class="headerlink" title="9. The Importance of Thread Priority"></a>9. The Importance of Thread Priority</h3><p>理论上来说，我们的程序可以创建出非常多的子线程一起并发执行的，可是基于 CPU 时间片轮转调度的机制，不可能所有的线程都可以同时被调度执行，CPU 需要根据线程的优先级赋予不同的时间片。</p>
 <p>Android 系统会根据当前运行的可见的程序和不可见的后台程序对线程进行归类，划分为 forground 的那部分线程会大致占用掉 CPU 的90%左右的时间片，background 的那部分线程就总共只能分享到5%-10%左右的时间片。之所以设计成这样是因为 forground 的程序本身的优先级就更高，理应得到更多的执行时间。</p>
 <p>默认情况下，新创建的线程的优先级默认和创建它的母线程保持一致。如果主 UI 线程创建出了几十个工作线程，这些工作线程的优先级就默认和主线程保持一致了，为了不让新创建的工作线程和主线程抢占 CPU 资源，需要把这些线程的优先级进行降低处理，这样才能给帮组 CPU 识别主次，提高主线程所能得到的系统资源。</p>
 <p>在 Android 系统里面，我们可以通过 android.os.Process.setThreadPriority(int) 设置线程的优先级，参数范围从-20到19，数值越小优先级越高。Android 系统还为我们提供了以下的一些预设值，我们可以通过给不同的工作线程设置不同数值的优先级来达到更细粒度的控制。</p>
 <p>大多数情况下，新创建的线程优先级会被设置为默认的0，主线程设置为0的时候，新创建的线程还可以利用 THREAD_PRIORITY_LESS_FAVORABLE 或者 THREAD_PRIORITY_MORE_FAVORABLE 来控制线程的优先级。</p>
 <p>Android 系统里面的 AsyncTask 与 IntentService已经默认帮助我们设置线程的优先级，但是对于那些非官方提供的多线程工具类，我们需要特别留意根据需要自己手动来设置线程的优先级。</p>
-<h3 id="10-Profile-GPU-Rendering-M-Update"><a href="#10-Profile-GPU-Rendering-M-Update" class="headerlink" title="10. Profile GPU Rendering : M Update"></a>10. Profile GPU Rendering : M Update</h3><p>从 Android M 系统开始，系统更新了 GPU Profiling 的工具来帮助我们定位 UI 的渲染性能问题。早期的 CPU Profiling 工具只能粗略的显示出 Process，Execute，Update 三大步骤的时间耗费情况。<br>但是仅仅显示三大步骤的时间耗费情况，还是不太能够清晰帮助我们定位具体的程序代码问题，所以在 Android M 版本开始，GPU Profiling 工具把渲染操作拆解成如下8个详细的步骤进行显示。</p>
+<h3 id="10-Profile-GPU-Rendering-M-Update"><a href="#10-Profile-GPU-Rendering-M-Update" class="headerlink" title="10. Profile GPU Rendering : M Update"></a>10. Profile GPU Rendering : M Update</h3><p>从 Android M 系统开始，系统更新了 GPU Profiling 的工具来帮助我们定位 UI 的渲染性能问题。早期的 CPU Profiling 工具只能粗略的显示出 Process，Execute，Update 三大步骤的时间耗费情况。
+但是仅仅显示三大步骤的时间耗费情况，还是不太能够清晰帮助我们定位具体的程序代码问题，所以在 Android M 版本开始，GPU Profiling 工具把渲染操作拆解成如下8个详细的步骤进行显示。</p>
 <p>旧版本中提到的 Proces，Execute，Update 还是继续得到了保留，他们的对应关系如下：</p>
 <p>接下去我们看下其他五个步骤分别代表了什么含义：</p>
 <ul>
@@ -652,12 +661,16 @@
 <li>sample table  指明sampe时序和物理布局的表。</li>
 <li>chunk 一个track的几个sample组成的单元。</li>
 </ul>
-<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
+<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
 <h3 id="2-Box"><a href="#2-Box" class="headerlink" title="2.Box"></a>2.Box</h3><p>box中的字节序为网络字节序，也就是大端字节序（Big-Endian），简单的说，就是一个32位的4字节整数存储方式为高位字节在内存的低端。Box由header和body组成，其中header统一指明box的大小和类型，body根据类型有不同的意义和格式。</p>
 <p>标准的box开头的4个字节（32位）为box size，该大小包括box header和box body整个box的大小，这样我们就可以在文件中定位各个box。如果size为1，则表示这个box的大小为large size，真正的size值要在largesize域上得到。（实际上只有“mdat”类型的box才有可能用到large size。）如果size为0，表示该box为文件的最后一个box，文件结尾即为该box结尾。（同样只存在于“mdat”类型的box中。）size后面紧跟的32位为box type，一般是4个字符，如“ftyp”、“moov”等，这些box type都是已经预定义好的，分别表示固定的意义。如果是“uuid”，表示该box为用户扩展类型。如果box type是未定义的，应该将其忽略。</p>
-<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。<br>“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
+<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。
+“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
 <h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
-<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。<br><img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
+<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
 <h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
 <table>
 <thead>
@@ -741,7 +754,70 @@
 </table>
 <p><img src="http://images.wodekouwei.com/M/F/mp4_box_mvhd.png" alt="mvhd"></p>
 <h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。</p>
-<table><br><tr><br><th colspan="6">box类型</th><th colspan="6">说明</th><br></tr><br><tr><br><td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td><br></tr><br><tr><br><td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td><br></tr><br><tr><br><td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td><br></tr><br><tr><br><td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td><br></tr><br><tr><br><td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td><br></tr><br><tr><br><td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td><br></tr><br><td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td><br><br><tr><br><td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td><br></tr><br><tr><br><td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td><br></tr><br><tr><br><td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td><br></tr><br><tr><br><td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td><br></tr><br><tr><br><td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td><br></tr><br></table>  
+<table>
+<tr>
+<th colspan="6">box类型</th><th colspan="6">说明</th>
+</tr>
+<tr>
+<td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td>
+</tr>
+<tr>
+<td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td>
+</tr>
+<tr>
+<td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td>
+</tr>
+<td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td>
+
+<tr>
+<td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td>
+</tr>
+<tr>
+<td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td>
+</tr>
+</table>  
 
 
 <h3 id="Mdat-Box"><a href="#Mdat-Box" class="headerlink" title="Mdat Box"></a>Mdat Box</h3>
