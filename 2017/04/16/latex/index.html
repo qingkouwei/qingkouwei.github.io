@@ -177,7 +177,7 @@ delta
 
 
 \epsilo">
-<meta property="og:updated_time" content="2017-04-16T14:04:54.000Z">
+<meta property="og:updated_time" content="2017-04-16T14:07:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MarkDown中嵌入LaTex">
 <meta name="twitter:description" content="MarkDown中使用标识符$$和$$$$即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中
@@ -1000,8 +1000,42 @@ delta
 </tbody>
 </table>
 <p>备注：
-可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示
-$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$</p>
+可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示</p>
+<p>$$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$$</p>
+<h2 id="矩阵和表达式"><a href="#矩阵和表达式" class="headerlink" title="矩阵和表达式"></a>矩阵和表达式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">\left[ \begin&#123;matrix&#125;</div><div class="line">	b_&#123;1&#125;&amp;c_&#123;1&#125;&amp; &amp; &amp; &amp;0 \\</div><div class="line">	a_&#123;2&#125;&amp;b_&#123;2&#125;&amp;c_&#123;2&#125;&amp; &amp; &amp; \\</div><div class="line">	 &amp;a_&#123;3&#125;&amp;b_&#123;3&#125;&amp;\ddots&amp; &amp;  \\</div><div class="line">	 &amp; &amp;\ddots&amp;\ddots&amp;c_&#123;n-1&#125; &amp; \\</div><div class="line">	0&amp; &amp; &amp; &amp;a_&#123;n&#125;&amp;b_&#123;n&#125;</div><div class="line">\end&#123;matrix&#125;\right]</div><div class="line">\left[ \begin&#123;matrix&#125;</div><div class="line">	x_&#123;1&#125; \\</div><div class="line">	x_&#123;2&#125; \\</div><div class="line">	x_&#123;3&#125; \\</div><div class="line">	\vdots\\</div><div class="line">	x_&#123;n&#125;</div><div class="line">\end&#123;matrix&#125;\right]  =</div><div class="line">\left[ \begin&#123;matrix&#125;</div><div class="line">	d_&#123;1&#125; \\</div><div class="line">	d_&#123;2&#125; \\</div><div class="line">	d_&#123;3&#125; \\</div><div class="line">	\vdots\\</div><div class="line">	d_&#123;n&#125;</div><div class="line">\end&#123;matrix&#125;\right]</div><div class="line">\tag&#123;2&#125;</div><div class="line">$$</div><div class="line"></div><div class="line">$$ c&apos;_i =</div><div class="line">\begin&#123;cases&#125;</div><div class="line">\begin&#123;array&#125;&#123;lcl&#125;</div><div class="line">  \cfrac&#123;c_i&#125;&#123;b_i&#125;                   &amp; &amp; ; i = 1 \\</div><div class="line">  \cfrac&#123;c_i&#125;&#123;b_i - a_i c&apos;_&#123;i - 1&#125;&#125;  &amp; &amp; ; i = 2, 3, \dots, n-1 \\</div><div class="line">\end&#123;array&#125;</div><div class="line">\end&#123;cases&#125;</div><div class="line">\tag&#123;3&#125;$$</div><div class="line">$$</div></pre></td></tr></table></figure>
+<p>$$
+\left[ \begin{matrix}
+    b<em>{1}&amp;c</em>{1}&amp; &amp; &amp; &amp;0 \
+    a<em>{2}&amp;b</em>{2}&amp;c<em>{2}&amp; &amp; &amp; \
+     &amp;a</em>{3}&amp;b<em>{3}&amp;\ddots&amp; &amp;  \
+     &amp; &amp;\ddots&amp;\ddots&amp;c</em>{n-1} &amp; \
+    0&amp; &amp; &amp; &amp;a<em>{n}&amp;b</em>{n}
+\end{matrix}\right]
+\left[ \begin{matrix}
+    x<em>{1} \
+    x</em>{2} \
+    x<em>{3} \
+    \vdots\
+    x</em>{n}
+\end{matrix}\right]  =
+\left[ \begin{matrix}
+    d<em>{1} \
+    d</em>{2} \
+    d<em>{3} \
+    \vdots\
+    d</em>{n}
+\end{matrix}\right]
+\tag{2}
+$$</p>
+<p>$$ c’_i =
+\begin{cases}
+\begin{array}{lcl}
+  \cfrac{c_i}{b_i}                   &amp; &amp; ; i = 1 \
+  \cfrac{c_i}{b_i - a<em>i c’</em>{i - 1}}  &amp; &amp; ; i = 2, 3, \dots, n-1 \
+\end{array}
+\end{cases}
+\tag{3}$$
+$$</p>
 
       
     </div>
@@ -1271,7 +1305,7 @@ $\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } 
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部分希腊字母"><span class="nav-number">1.</span> <span class="nav-text">部分希腊字母</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分运算符"><span class="nav-number">2.</span> <span class="nav-text">部分运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他符号"><span class="nav-number">3.</span> <span class="nav-text">其他符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合关系符号"><span class="nav-number">4.</span> <span class="nav-text">集合关系符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#括号总结"><span class="nav-number">5.</span> <span class="nav-text">括号总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部分希腊字母"><span class="nav-number">1.</span> <span class="nav-text">部分希腊字母</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分运算符"><span class="nav-number">2.</span> <span class="nav-text">部分运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他符号"><span class="nav-number">3.</span> <span class="nav-text">其他符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合关系符号"><span class="nav-number">4.</span> <span class="nav-text">集合关系符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#括号总结"><span class="nav-number">5.</span> <span class="nav-text">括号总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵和表达式"><span class="nav-number"></span> <span class="nav-text">矩阵和表达式</span></a></div>
             
 
           </div>
