@@ -323,6 +323,533 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/C9B8A983F49C0F5EA4C5AB65CC6AA4E4.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/16/latex/" itemprop="url">
+                  MarkDown中嵌入LaTex
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T17:17:15+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MarkDown中使用标识符<code>$$</code>和<code>$$$$</code>即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中</p>
+<h3 id="部分希腊字母"><a href="#部分希腊字母" class="headerlink" title="部分希腊字母"></a>部分希腊字母</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\alpha</td>
+<td>α</td>
+<td></td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<td>\beta</td>
+<td>β</td>
+<td></td>
+<td>B</td>
+<td>B</td>
+</tr>
+<tr>
+<td>\gamma</td>
+<td>γ</td>
+<td></td>
+<td>\Gamma \varGamma</td>
+<td>Γ  Γ</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>δ</td>
+<td></td>
+<td>\Delta \varDelta</td>
+<td>Δ  Δ</td>
+</tr>
+<tr>
+<td>\epsilon</td>
+<td>ϵ</td>
+<td></td>
+<td>E</td>
+<td>E</td>
+</tr>
+<tr>
+<td>\eta</td>
+<td>η</td>
+<td></td>
+<td>H</td>
+<td>H</td>
+</tr>
+<tr>
+<td>\theta</td>
+<td>θ</td>
+<td></td>
+<td>\Theta \varTheta</td>
+<td>Θ  Θ</td>
+</tr>
+<tr>
+<td>\kappa</td>
+<td>κ</td>
+<td></td>
+<td>K</td>
+<td>K</td>
+</tr>
+<tr>
+<td>\lambda</td>
+<td>λ</td>
+<td></td>
+<td>\Lambda \varLambda</td>
+<td>Λ  Λ</td>
+</tr>
+<tr>
+<td>\mu</td>
+<td>μ</td>
+<td></td>
+<td>M</td>
+<td>M</td>
+</tr>
+<tr>
+<td>\nu</td>
+<td>ν</td>
+<td></td>
+<td>N</td>
+<td>N</td>
+</tr>
+<tr>
+<td>\pi</td>
+<td>π</td>
+<td></td>
+<td>\Pi \varPi</td>
+<td>Π  Π</td>
+</tr>
+<tr>
+<td>\rho</td>
+<td>ρ</td>
+<td></td>
+<td>P</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\sigma</td>
+<td>σ</td>
+<td></td>
+<td>\Sigma \varSigma</td>
+<td>Σ  Σ</td>
+</tr>
+<tr>
+<td>\tau</td>
+<td>τ</td>
+<td></td>
+<td>T</td>
+<td>T</td>
+</tr>
+<tr>
+<td>\phi \varphi</td>
+<td>ϕ  φ</td>
+<td></td>
+<td>\Phi \varPhi</td>
+<td>Φ  Φ</td>
+</tr>
+<tr>
+<td>\omega</td>
+<td>ω</td>
+<td></td>
+<td>\Omega \varOmega</td>
+<td>Ω  Ω</td>
+</tr>
+</tbody>
+</table>
+<h3 id="部分运算符"><a href="#部分运算符" class="headerlink" title="部分运算符"></a>部分运算符</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\pm</td>
+<td>±</td>
+<td></td>
+<td>\mp</td>
+<td>∓</td>
+</tr>
+<tr>
+<td>\times</td>
+<td>×</td>
+<td></td>
+<td>\div</td>
+<td>÷</td>
+</tr>
+<tr>
+<td>\circ</td>
+<td>∘</td>
+<td></td>
+<td>\bullet</td>
+<td>∙</td>
+</tr>
+<tr>
+<td>\cdot</td>
+<td>⋅</td>
+<td></td>
+<td>\cup</td>
+<td>∪</td>
+</tr>
+<tr>
+<td>\cap</td>
+<td>∩</td>
+<td></td>
+<td>\subset</td>
+<td>⊂</td>
+</tr>
+<tr>
+<td>\supset</td>
+<td>⊃</td>
+<td></td>
+<td>\subseteq</td>
+<td>⊆</td>
+</tr>
+<tr>
+<td>\supseteq</td>
+<td>⊇</td>
+<td></td>
+<td>\leq</td>
+<td>≤</td>
+</tr>
+<tr>
+<td>\geq</td>
+<td>≥</td>
+<td></td>
+<td>\propto</td>
+<td>∝</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\cdotp</td>
+<td>⋅</td>
+<td></td>
+<td>\cdots</td>
+<td>⋯</td>
+</tr>
+<tr>
+<td>\ddots</td>
+<td>⋱</td>
+<td></td>
+<td>\infty</td>
+<td>∞</td>
+</tr>
+<tr>
+<td>\partial</td>
+<td>∂</td>
+<td></td>
+<td>\bot</td>
+<td>⊥</td>
+</tr>
+<tr>
+<td>\hat{a}</td>
+<td>â</td>
+<td></td>
+<td>\tilde{a}</td>
+<td>ã</td>
+</tr>
+<tr>
+<td>\bar{a}</td>
+<td>a¯</td>
+<td></td>
+<td>\vec{a}</td>
+<td>a⃗</td>
+</tr>
+<tr>
+<td>\dot{a}</td>
+<td>a˙</td>
+<td></td>
+<td>\sqrt{a}</td>
+<td>a‾‾√</td>
+</tr>
+<tr>
+<td>\sqrt[3]{2}</td>
+<td>a‾‾√3</td>
+<td></td>
+<td>a^{3}</td>
+<td>a3</td>
+</tr>
+<tr>
+<td>\frac{1}{a}</td>
+<td>1a</td>
+<td></td>
+<td>\lim_{x \to 0}</td>
+<td>lima→0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="集合关系符号"><a href="#集合关系符号" class="headerlink" title="集合关系符号"></a>集合关系符号</h3><table>
+<thead>
+<tr>
+<th>说明</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集合的大括号</td>
+<td>{ …   }\</td>
+</tr>
+<tr>
+<td>集合中的 &#124;</td>
+<td></td>
+<td>\mid</td>
+</tr>
+<tr>
+<td>属于</td>
+<td>\in</td>
+</tr>
+<tr>
+<td>不属于</td>
+<td>\not\in</td>
+</tr>
+<tr>
+<td>A包含于B</td>
+<td>A\subset B</td>
+</tr>
+<tr>
+<td>A真包含于B</td>
+<td>A\subsetneqq B</td>
+</tr>
+<tr>
+<td>A包含B</td>
+<td>A\supset B</td>
+</tr>
+<tr>
+<td>A真包含B</td>
+<td>A\supsetneqq B</td>
+</tr>
+<tr>
+<td>A不包含于B</td>
+<td>A\not\subset B</td>
+</tr>
+<tr>
+<td>A交B</td>
+<td>A\cap B</td>
+</tr>
+<tr>
+<td>A并B</td>
+<td>A\cup B</td>
+</tr>
+<tr>
+<td>A的闭包</td>
+<td>\overline{A}</td>
+</tr>
+<tr>
+<td>A减去B</td>
+<td>A\setminus B</td>
+</tr>
+<tr>
+<td>实数集合</td>
+<td>\mathbb{R}</td>
+</tr>
+<tr>
+<td>空集</td>
+<td>\emptyset</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>表格中竖线用<code>&amp;#124;</code></p>
+</blockquote>
+<h3 id="括号总结"><a href="#括号总结" class="headerlink" title="括号总结"></a>括号总结</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>语法</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不好看</td>
+<td><code>( \frac{1}{2} )</code></td>
+<td>$(\frac{1}{2})$</td>
+</tr>
+<tr>
+<td>好一点</td>
+<td><code>\left( \frac{1}{2} \right)</code></td>
+<td>$\left ( \frac{1}{2} \right )$</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用<code>\left</code>和<code>\right</code>来显示不同的括号：
+|功能    |语法    |显示|
+|—|—|—|
+|圆括号，小括号|    <code>\left( \frac{a}{b} \right)</code>|    $\left( \frac{a}{b} \right)$|
+|方括号，中括号|    \left[ \frac{a}{b} \right]|    $\left[ \frac{a}{b} \right]$|
+|花括号，大括号|    <code>\left\{ \frac{a}{b} \right\}</code>|$    \left{ \frac{a}{b} \right}$|
+|角括号|    <code>\left \langle \frac{a}{b} \right \rangle</code>    |$\left\langle \frac{a}{b} \right \rangle$|
+|单竖线，绝对值|    \left &#124; \frac{a}{b} \right &#124;||
+|双竖线，范|    \left \ &#124; \frac{a}{b} \right \ &#124;||
+|取整函数|<code>（Floor function）    \left \lfloor \frac{a}{b} \right \rfloor</code>|$    \left \lfloor \frac{a}{b} \right \rfloor$|
+|取顶函数|<code>（Ceiling function)    \left \lceil \frac{c}{d} \right \rceil</code>|$    \left \lceil \frac{c}{d} \right \rceil$|
+|斜线与反斜线|    <code>\left / \frac{a}{b} \right \backslash</code>|$    \left / \frac{a}{b} \right \backslash$|
+|上下箭头|<code>\left \uparrow \frac{a}{b} \right \downarrow</code> <code>\left \Uparrow \frac{a}{b} \right \Downarrow</code> <code>\left \updownarrow \frac{a}{b} \right \Updownarrow</code>|$\left \uparrow \frac{a}{b} \right \downarrow$ $\left \Uparrow \frac{a}{b} \right \Downarrow$ $\left \updownarrow \frac{a}{b} \right \Updownarrow$|
+|混合括号|<code>\left [ 0,1 \right )</code> \left \langle \psi &#124;|$\left [ 0,1 \right )$ $ \left \langle \psi \right)$|
+|单左括号|    <code>\left \{ \frac{a}{b} \right .</code>    |$\left { \frac{a}{b} \right .$|
+|单右括号|    <code>\left . \frac{a}{b} \right \}</code>|$\left . \frac{a}{b} \right }$|
+备注：
+可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示
+$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/13/am-function-and-limitaion/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1211,7 +1738,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1222,7 +1749,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1233,7 +1760,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
