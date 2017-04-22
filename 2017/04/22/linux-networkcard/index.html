@@ -90,18 +90,18 @@
 
 
 <meta name="description" content="linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.
-1.ifconfig(interfaces config)通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信息，在网">
+1.ifconfig(interfaces config)命令方式通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux网卡配置">
 <meta property="og:url" content="http://wodekouwei.com/2017/04/22/linux-networkcard/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.
-1.ifconfig(interfaces config)通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信息，在网">
-<meta property="og:updated_time" content="2017-04-22T10:05:57.000Z">
+1.ifconfig(interfaces config)命令方式通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信">
+<meta property="og:updated_time" content="2017-04-22T10:27:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux网卡配置">
 <meta name="twitter:description" content="linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.
-1.ifconfig(interfaces config)通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信息，在网">
+1.ifconfig(interfaces config)命令方式通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(用ifconfig命令配置的网卡信">
 
 
 
@@ -438,7 +438,7 @@
 
       
         <p>linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.</p>
-<h3 id="1-ifconfig-interfaces-config"><a href="#1-ifconfig-interfaces-config" class="headerlink" title="1.ifconfig(interfaces config)"></a>1.ifconfig(interfaces config)</h3><p>通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(<strong>用ifconfig命令配置的网卡信息，在网卡重启后机器重启后，配置就不存在</strong>)。</p>
+<h3 id="1-ifconfig-interfaces-config-命令方式"><a href="#1-ifconfig-interfaces-config-命令方式" class="headerlink" title="1.ifconfig(interfaces config)命令方式"></a>1.ifconfig(interfaces config)命令方式</h3><p>通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(<strong>用ifconfig命令配置的网卡信息，在网卡重启后机器重启后，配置就不存在</strong>)。</p>
 <h4 id="1-1命令格式"><a href="#1-1命令格式" class="headerlink" title="1.1命令格式"></a>1.1命令格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ifconfig [网络设备] [参数]</div></pre></td></tr></table></figure>
 <h4 id="1-2命令功能"><a href="#1-2命令功能" class="headerlink" title="1.2命令功能"></a>1.2命令功能</h4><p>ifconfig 命令用来查看和配置网络设备。当网络环境发生改变时可通过此命令对网络进行相应的配置。</p>
 <h4 id="1-3命令参数"><a href="#1-3命令参数" class="headerlink" title="1.3命令参数"></a>1.3命令参数</h4><ol>
@@ -522,6 +522,32 @@ ifconfig eth0 mtu 1500
 <p>centos配置文件:<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0(默认)</div><div class="line">HWADDR=00:0C:29:2E:36:16(默认)</div><div class="line">TYPE=Ethernet(默认)</div><div class="line">UUID=XXXXXXX(默认)</div><div class="line">ONBOOT=yes(默认为no,修改为yes意为每次reboot后 ifup eth0)</div><div class="line">MM_CONTROLLED=yes(默认)</div><div class="line">#BOOTPROTO=dhcp(dhcp为自动分配ip地址,我们把他注释了，在下面另外加)</div><div class="line">BOOTPROTO=static(新添加)</div><div class="line">IPV6INIT=no(新添加)</div><div class="line">USERCTL=no(新添加)</div><div class="line">IPADDR=192.168.164.100(新添加)</div><div class="line">NETMASK=255.255.255.0(新添加)</div></pre></td></tr></table></figure></p>
 <p>service network restart重启网卡服务</p>
+<h3 id="3-图形界面方式"><a href="#3-图形界面方式" class="headerlink" title="3.图形界面方式"></a>3.图形界面方式</h3><h3 id="添加虚拟网卡"><a href="#添加虚拟网卡" class="headerlink" title="添加虚拟网卡"></a>添加虚拟网卡</h3><p>一台服务器需要设置多个ip,但又不想添加多块网卡,那就需要设置虚拟网卡.这里介绍几种方式在linux服务器上添加虚拟网卡.
+比如向eth0中添加一块虚拟网卡:</p>
+<h4 id="1-快速创建删除虚拟网卡"><a href="#1-快速创建删除虚拟网卡" class="headerlink" title="1.快速创建删除虚拟网卡"></a>1.快速创建删除虚拟网卡</h4><p><code>sudo ifconfig eth0: 192.168.10.10 up</code>
+以上的命令就可以在eth0网卡上创建一个叫eth0:0的虚拟网卡,他的地址是:192.168.1.63
+如果不想要这个虚拟网卡了,可以使用如下命令删除:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ifconfig eth0:0 down</div></pre></td></tr></table></figure></p>
+<p>重启服务器或者网络后,虚拟网卡就没有了.</p>
+<h4 id="2-修改网卡配置文件"><a href="#2-修改网卡配置文件" class="headerlink" title="2.修改网卡配置文件"></a>2.修改网卡配置文件</h4><p>在ubuntu下,网卡的配置文件是<code>/etc/network/interfaces</code>,所以我们修改它:
+<code>sudo vim /etc/network/interfaces</code>
+在这个文件中增加如下内容并保存:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">auto eth0:0</div><div class="line">iface eth0:0 inet static</div><div class="line">address 192.168.10.10</div><div class="line">netmask 255.255.255.0</div><div class="line">#network 192.168.10.1</div><div class="line">#broadcast 192.168.1.255</div></pre></td></tr></table></figure></p>
+<p>保存后,我们需要重启网卡(重新加载配置文件)才会生效,使用如下命令重启:<code>sudo /etc/init.d/networking restart</code>
+他的优点是重启服务器或者网卡配置不会丢失。</p>
+<h4 id="3-创建tag"><a href="#3-创建tag" class="headerlink" title="3.创建tag"></a>3.创建tag</h4><p>前两种方法都有一个特点，创建的网卡可有不同的ip地址，但是Mac地址相同。无法用来创建虚拟机。
+添加虚拟网卡tap
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tunctl -b</div></pre></td></tr></table></figure></p>
+<p>其他配置命令:
+显示网桥信息:<code>brctl show</code>
+添加网桥:<code>brctl addbr virbr0</code>
+激活网桥:<code>ip link set virbr0 up</code>
+添加虚拟网卡tap:<code>tunctl -b</code>
+tap0 ——-&gt; 执行上面使命就会生成一个tap,后缀从0，1，2依次递增<br>激活创建的tap:<code>ip link set tap0 up</code></p>
+<h2 id="将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0"><a href="#将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0" class="headerlink" title="将tap0虚拟网卡添加到指定网桥上:brctl addif br0 tap0"></a>将tap0虚拟网卡添加到指定网桥上:<code>brctl addif br0 tap0</code></h2><p>给网桥配制ip地址:<code>ifconfig virbr1 169.254.251.4 up</code>
+将virbr1网桥上绑定的网卡eth5解除:</p>
+<pre><code>brctl delif virb1 eth5
+</code></pre><p>给virbr1网桥添加网卡eth6:<code>brctl addif virbr1 eth6</code>   </p>
 
       
     </div>
@@ -596,6 +622,10 @@ ifconfig eth0 mtu 1500
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/22/vmware-network-mode/" rel="prev" title="VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别">
+                VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -675,7 +705,7 @@ ifconfig eth0 mtu 1500
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -697,7 +727,7 @@ ifconfig eth0 mtu 1500
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -791,7 +821,7 @@ ifconfig eth0 mtu 1500
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ifconfig-interfaces-config"><span class="nav-number">1.</span> <span class="nav-text">1.ifconfig(interfaces config)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1命令格式"><span class="nav-number">1.1.</span> <span class="nav-text">1.1命令格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2命令功能"><span class="nav-number">1.2.</span> <span class="nav-text">1.2命令功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3命令参数"><span class="nav-number">1.3.</span> <span class="nav-text">1.3命令参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4使用实例"><span class="nav-number">1.4.</span> <span class="nav-text">1.4使用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-1显示网络设备信息（激活状态的）"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.4.1显示网络设备信息（激活状态的）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-2启动关闭指定网卡"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.4.2启动关闭指定网卡</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-3为网卡配置和删除IPv6地址"><span class="nav-number">1.4.3.</span> <span class="nav-text">1.4.3为网卡配置和删除IPv6地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-4用ifconfig修改MAC地址"><span class="nav-number">1.4.4.</span> <span class="nav-text">1.4.4用ifconfig修改MAC地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-5配置IP地址"><span class="nav-number">1.4.5.</span> <span class="nav-text">1.4.5配置IP地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-6启用和关闭ARP协议"><span class="nav-number">1.4.6.</span> <span class="nav-text">1.4.6启用和关闭ARP协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-7-设置最大传输单元"><span class="nav-number">1.4.7.</span> <span class="nav-text">1.4.7 设置最大传输单元</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配置文件方式"><span class="nav-number">2.</span> <span class="nav-text">2.配置文件方式</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ifconfig-interfaces-config-命令方式"><span class="nav-number">1.</span> <span class="nav-text">1.ifconfig(interfaces config)命令方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1命令格式"><span class="nav-number">1.1.</span> <span class="nav-text">1.1命令格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2命令功能"><span class="nav-number">1.2.</span> <span class="nav-text">1.2命令功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3命令参数"><span class="nav-number">1.3.</span> <span class="nav-text">1.3命令参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4使用实例"><span class="nav-number">1.4.</span> <span class="nav-text">1.4使用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-1显示网络设备信息（激活状态的）"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.4.1显示网络设备信息（激活状态的）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-2启动关闭指定网卡"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.4.2启动关闭指定网卡</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-3为网卡配置和删除IPv6地址"><span class="nav-number">1.4.3.</span> <span class="nav-text">1.4.3为网卡配置和删除IPv6地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-4用ifconfig修改MAC地址"><span class="nav-number">1.4.4.</span> <span class="nav-text">1.4.4用ifconfig修改MAC地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-5配置IP地址"><span class="nav-number">1.4.5.</span> <span class="nav-text">1.4.5配置IP地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-6启用和关闭ARP协议"><span class="nav-number">1.4.6.</span> <span class="nav-text">1.4.6启用和关闭ARP协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-7-设置最大传输单元"><span class="nav-number">1.4.7.</span> <span class="nav-text">1.4.7 设置最大传输单元</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配置文件方式"><span class="nav-number">2.</span> <span class="nav-text">2.配置文件方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-图形界面方式"><span class="nav-number">3.</span> <span class="nav-text">3.图形界面方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加虚拟网卡"><span class="nav-number">4.</span> <span class="nav-text">添加虚拟网卡</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-快速创建删除虚拟网卡"><span class="nav-number">4.1.</span> <span class="nav-text">1.快速创建删除虚拟网卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-修改网卡配置文件"><span class="nav-number">4.2.</span> <span class="nav-text">2.修改网卡配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-创建tag"><span class="nav-number">4.3.</span> <span class="nav-text">3.创建tag</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0"><span class="nav-number"></span> <span class="nav-text">将tap0虚拟网卡添加到指定网桥上:brctl addif br0 tap0</span></a></div>
             
 
           </div>
