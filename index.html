@@ -422,7 +422,20 @@
       
         
           
-            <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Alice-&gt;Bob: Hello Bob, how are you?</div><div class="line">Note right of Bob: Bob thinks</div><div class="line">Bob--&gt;Alice: I am good thanks!</div></pre></td></tr></table></figure>
+            <p>``` sequence
+@found “You”, -&gt;
+  @message “Think”, -&gt;
+    @message “Write your idea”, “JUMLY”, -&gt;
+      @create “Diagram”
+jumly</p>
+<p>@found “Browser”, -&gt;
+  @message “http request”, “HTTP Server”, -&gt;
+    @create “HTTP Session”, -&gt;
+      @message “init”
+      @message “aquire lock”, “Database”
+    @message “do something”
+    @message “release lock”, “Database”
+    @reply “”, “Browser”</p>
 
           
         
