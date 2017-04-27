@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="server,git," />
+  <meta name="keywords" content="webrtc," />
 
 
 
@@ -89,28 +89,25 @@
 
 
 
-<meta name="description" content="纯git server软件安装环境:ubuntu16.0.4
-
-安装Git-Core:sudo apt-get install python-setuptools
-安装openssh-server和openssh-client:sudo apt-get install openssh-server openssh-client
-安装python tool:sudo apt-get install">
+<meta name="description" content="google的chromium项目是用gclient来管理源码的checkout, update等。 gclient是google专门为这种多源项目编写的脚本，它可以将多个源码管理系统中的代码放在一起管理。甚至包括将Git和svn代码放在一起。
+webrtc也是使用gclient管理代码.
+gclient的sync，update等命令密切相关的两类文件.gclient和DEPS。
+.gclient">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git服务搭建">
-<meta property="og:url" content="http://wodekouwei.com/2017/04/25/server-git/index.html">
+<meta property="og:title" content="webrtc之源码管理工具gclient">
+<meta property="og:url" content="http://wodekouwei.com/2017/04/27/webrtc-gclient/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="纯git server软件安装环境:ubuntu16.0.4
-
-安装Git-Core:sudo apt-get install python-setuptools
-安装openssh-server和openssh-client:sudo apt-get install openssh-server openssh-client
-安装python tool:sudo apt-get install">
-<meta property="og:updated_time" content="2017-04-25T09:36:00.000Z">
+<meta property="og:description" content="google的chromium项目是用gclient来管理源码的checkout, update等。 gclient是google专门为这种多源项目编写的脚本，它可以将多个源码管理系统中的代码放在一起管理。甚至包括将Git和svn代码放在一起。
+webrtc也是使用gclient管理代码.
+gclient的sync，update等命令密切相关的两类文件.gclient和DEPS。
+.gclient">
+<meta property="og:updated_time" content="2017-04-27T13:54:45.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="git服务搭建">
-<meta name="twitter:description" content="纯git server软件安装环境:ubuntu16.0.4
-
-安装Git-Core:sudo apt-get install python-setuptools
-安装openssh-server和openssh-client:sudo apt-get install openssh-server openssh-client
-安装python tool:sudo apt-get install">
+<meta name="twitter:title" content="webrtc之源码管理工具gclient">
+<meta name="twitter:description" content="google的chromium项目是用gclient来管理源码的checkout, update等。 gclient是google专门为这种多源项目编写的脚本，它可以将多个源码管理系统中的代码放在一起管理。甚至包括将Git和svn代码放在一起。
+webrtc也是使用gclient管理代码.
+gclient的sync，update等命令密切相关的两类文件.gclient和DEPS。
+.gclient">
 
 
 
@@ -138,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/04/25/server-git/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/04/27/webrtc-gclient/"/>
 
 
 
 
 
-  <title> git服务搭建 | 老司机种菜 </title>
+  <title> webrtc之源码管理工具gclient | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -337,7 +334,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/25/server-git/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-gclient/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -358,7 +355,7 @@
             
             
               
-                git服务搭建
+                webrtc之源码管理工具gclient
               
             
           </h1>
@@ -373,8 +370,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T16:36:53+08:00">
-                2017-04-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T21:33:14+08:00">
+                2017-04-27
               </time>
             
 
@@ -396,8 +393,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
                   </a>
                 </span>
 
@@ -414,7 +411,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/04/25/server-git/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/04/27/webrtc-gclient/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -446,65 +443,49 @@
       
 
       
-        <h3 id="纯git-server"><a href="#纯git-server" class="headerlink" title="纯git server"></a>纯git server</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><p>环境:ubuntu16.0.4</p>
-<ol>
-<li>安装Git-Core:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装openssh-server和openssh-client:<code>sudo apt-get install openssh-server openssh-client</code></li>
-<li>安装python tool:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装gitosis:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/res0nat0r/gitosis.git</div><div class="line"></div><div class="line">cd gitosis/</div><div class="line"></div><div class="line">sudo python setup.py install</div></pre></td></tr></table></figure>
+        <p>google的chromium项目是用gclient来管理源码的checkout, update等。 gclient是google专门为这种多源项目编写的脚本，它可以将多个源码管理系统中的代码放在一起管理。甚至包括将Git和svn代码放在一起。</p>
+<p>webrtc也是使用gclient管理代码.</p>
+<p>gclient的sync，update等命令密切相关的两类文件.gclient和DEPS。</p>
+<p>.gclient文件是gclient的控制文件，该文件放在工作目录的最上层(webrtc环境下与src统计目录)。”.gclient”文件是一个Python的脚本，定义了一组”solutions”，格式类似如下
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">solutions = [  </div><div class="line">  &#123; &quot;name&quot;        : &quot;src&quot;,  </div><div class="line">    &quot;url&quot;         : &quot;svn://svnserver/component/trunk/src&quot;,  </div><div class="line">    &quot;custom_deps&quot; : &#123;  </div><div class="line">      # To use the trunk of a component instead of what&apos;s in DEPS:  </div><div class="line">      #&quot;component&quot;: &quot;https://svnserver/component/trunk/&quot;,  </div><div class="line">      # To exclude a component from your working copy:  </div><div class="line">      #&quot;data/really_large_component&quot;: None,  </div><div class="line">    &#125;  </div><div class="line">  &#125;,  </div><div class="line">]</div></pre></td></tr></table></figure></p>
+<ul>
+<li>name:checkout出源码的名字</li>
+<li>url:源码所在的目录,gclient希望checkout出的源码中包括一个DEPS的文件,这个文件包含了必须checkout到工作目录的源码信息;</li>
+<li>deps_file:这是一个文件名(不包括路径),指在工程目录中包含依赖列表的文件,该项可选,默认值为”DEPS”</li>
+<li><p>custom_deps:这是一个可选的字典对象,会覆盖工程的”DEPS”文件定义的条目.一般它用作本地目录中,那些不用checkout的代码,或者让本地目录从不同位置checkout一个新的代码出来,或者checkout不同的分支,版本等.也可以用于增加在DEPS中不存在的新的项目.如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&quot;custom_deps&quot;: &#123;  </div><div class="line">  &quot;src/content/test/data/layout_tests/LayoutTests&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_win&quot;: None,  </div><div class="line">  &quot;src/chrome_frame/tools/test/reference_build/chrome_win&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_linux&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_mac&quot;: None,  </div><div class="line">  &quot;src/third_party/hunspell_dictionaries&quot;: None,  </div><div class="line">&#125;,</div></pre></td></tr></table></figure>
 </li>
-</ol>
-<h4 id="添加管理账号"><a href="#添加管理账号" class="headerlink" title="添加管理账号"></a>添加管理账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo adduser \</div><div class="line">    --system \</div><div class="line">    --shell /bin/sh \</div><div class="line">    --gecos &apos;git version control&apos; \</div><div class="line">    --group \</div><div class="line">    --disabled-password \</div><div class="line">    --home /home/git \</div><div class="line">    git</div></pre></td></tr></table></figure>
-<p>如果已有git账户,可以替换成gitmanager</p>
-<h4 id="创建链接映射"><a href="#创建链接映射" class="headerlink" title="创建链接映射"></a>创建链接映射</h4><p>由于gitosis默认状态下会将仓库放在用户的repositories目录下，例如gitmanager用户的仓库地址默认在
-/home/gitmanager/repositories/目录下，这里我们需要创建一个链接映射。让他指向我们前面创建的专门用于存放项目的仓库目录/home/gitrepository。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /home/gitrepository /home/gitmanager/repositories</div></pre></td></tr></table></figure></p>
-<h4 id="初始化管理用户"><a href="#初始化管理用户" class="headerlink" title="初始化管理用户"></a>初始化管理用户</h4><ol>
-<li><p>拷贝管理用户公钥到<code>/tmp/</code>下,如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub gitmanager@192.168.0.68:/tmp/</div></pre></td></tr></table></figure>
+<li><p>target_os:这个可选的条目可以指出特殊的平台,根据平台类checkout出不同代码,如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">target_os = [&apos;android&apos;]</div></pre></td></tr></table></figure>
 </li>
-<li><p>使用拷贝来的公钥初始化gitosis:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H -u gitmanager gitosis-init &lt; /tmp/id_ras.pub</div><div class="line">sudo chmod 755 /home/gitmanager/repositories/gitosis-admin.git/hooks/post-update</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="配置账号"><a href="#配置账号" class="headerlink" title="配置账号"></a>配置账号</h4><ol>
-<li>验证ssh<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ssh gitmanager@192.168.0.68</div><div class="line">TY allocation request failed on channel 0</div><div class="line">ERROR:gitosis.serve.main:Need SSH_ORIGINAL_COMMAND in environment.</div><div class="line">  Connection to gitserver closed.</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>说明 Gitosis 认出了该用户的身份，但由于没有运行任何 Git 命令，所以它切断了连接。</p>
-<ol>
-<li>克隆gitosis管理仓库:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone gitmanager@192.168.0.68:gitosis-admin.git</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这会得到一个名为 gitosis-admin 的工作目录，主要由两部分组成：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./gitosis.conf</div><div class="line">./keydir</div></pre></td></tr></table></figure></p>
-<p>gitosis.conf 文件是用来设置用户、仓库和权限的控制文件。keydir 目录则是保存所有具有访问权限用户公钥的地方— 每人一个。在 keydir 里的文件名（比如上面的 qingkouwei.pub） 会自动从使用 gitosis-init 脚本导入的公钥尾部的描述中获取该名字。</p>
-<p>看一下 gitosis.conf 文件的内容，它应该只包含与刚刚克隆的 gitosis-admin 相关的信息：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[gitosis]</div><div class="line"></div><div class="line">[group gitosis-admin]</div><div class="line">members = qingkouwei</div><div class="line">writable = gitosis-admin</div></pre></td></tr></table></figure></p>
-<p>要创建项目demo,在里面加入:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>要为demo项目添加用户user1:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>并将用户user1的公钥计入到keydir,并且公钥名.pub和members里面的名字对应.
-要添加对demo项目只读的用户:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div><div class="line"></div><div class="line">[group demo]</div><div class="line">members = user2</div><div class="line">readonly = demo</div></pre></td></tr></table></figure></p>
-<p>修改完配置文件和keydir,使用git push到gitosis-admin服务器.即可直接<code>git add remote add suervename gitmanager@192.168.0.68:demo.git</code>,然后直接将本地目录推送到demo仓库,不需要再服务器手动创建demo仓库,gitosis会帮忙自动创建.</p>
-<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
-<li><code>ERROR:gitosis.serve.main:Repository read access denied</code>
-原因:
-gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub</li>
-</ol>
-<p>解决方法:
-使keydir的名称与gitosis中members所指的名称一致。 改为members = foo 或 公密名称改为foo@bar.pub</p>
-<ol>
-<li>clone时报does not appear to be a git repository</li>
-</ol>
-<p>原因:
-clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
-<blockquote>
-<p>参考:<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis</a></p>
-</blockquote>
-<h3 id="gitlab服务搭建"><a href="#gitlab服务搭建" class="headerlink" title="gitlab服务搭建"></a>gitlab服务搭建</h3>
+</ul>
+<p>如果target_os_only值为True的话,那么,仅仅checkout出对应的代码,如:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target_os = [ &quot;ios&quot; ]  </div><div class="line">target_os_only = True</div></pre></td></tr></table></figure></p>
+<p>在每个checkout出的工程中，gclient期望发现一个DEPS文件（由deps_file来给定），它定义了工程不同部分都是如何checkout出来。
+“DEPS”也是一个python脚本，最简单的，如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">deps = &#123;  </div><div class="line">  &quot;src/outside&quot; : &quot;http://outside-server/trunk@1234&quot;,  </div><div class="line">  &quot;src/component&quot; : &quot;svn://svnserver/component/trunk/src@77829&quot;,  </div><div class="line">  &quot;src/relative&quot; : &quot;/trunk/src@77829&quot;,  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>deps的每个条目都包含一个key-value对，key是被checkout的本地目录，而value就是对应的远程URL。如果路径是以’/‘开头的，那么它是一个相对URL，相对与.gclient中URL地址。</p>
+<p>URL通常包含一个版本号，以便锁定源码在特定版本上。当然，这是可选的。如果没有，那么它将获取指定分支上最新的版本。</p>
+<p>DEPS还可以包含其他类型的数据，如vars,
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">vars = &#123;</div><div class="line">  &apos;pymox&apos;:</div><div class="line">    &apos;http://pymox.googlecode.com/svn&apos;,</div><div class="line">  &apos;sfntly&apos;:</div><div class="line">    &apos;http://sfntly.googlecode.com/svn&apos;,</div><div class="line">  &apos;eyes-free&apos;:</div><div class="line">    &apos;http://eyes-free.googlecode.com/svn&apos;,</div><div class="line">  &apos;rlz&apos;:</div><div class="line">    &apos;http://rlz.googlecode.com/svn&apos;,</div><div class="line">  &apos;smhasher&apos;:</div><div class="line">    &apos;http://smhasher.googlecode.com/svn&apos;,</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>vars定义了一组变量，在后面，可以通过Var(xxx)来访问。Var(xxx)返回一个字符串，故此，也可以进行操作，如
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">  &apos;src/third_party/cros_dbus_cplusplus/source&apos;:</div><div class="line">  Var(&quot;git.chromium.org&quot;) + &apos;/chromiumos/third_party/dbus-cplusplus.git@5e8f6d9db5c2abfb91d91f751184f25bb5cd0900&apos;,</div><div class="line">&apos;src/third_party/WebKit&apos;:</div><div class="line">  Var(&quot;webkit_trunk&quot;)[:-6] + &apos;/branches/chromium/1548@153044&apos;,</div></pre></td></tr></table></figure></p>
+<p>第二个自立，Var(“webkit_trunk”)[:-6]是一个python表达式，表示取得”webkit_trunk”表示的字符串的最后6个
+Hooks：DEPS包含可选的内容 hooks，也有重要的作用，它表示在sync, update或者recert后，执行一个hook操作。
+如果使用 –nohooks选项（hook默认执行），那么在gclient sync或者其他操作后，不会执行hook。你可以通过gclient runhooks来单独执行； 如果有 gclient sync –force，那么，无论sync是否成功，都会执行hook。
+hook在DEPS中的写法，一般是：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">hooks = [</div><div class="line">  &#123; &quot;pattern&quot;: &quot;\\.(gif|jpe?g|pr0n|png)$&quot;,</div><div class="line">    &quot;action&quot;:  [&quot;python&quot;, &quot;image_indexer.py&quot;, &quot;--all&quot;]&#125;,</div><div class="line">  &#123; &quot;pattern&quot;: &quot;.&quot;,</div><div class="line">    &quot;name&quot;: &quot;gyp&quot;,</div><div class="line">    &quot;action&quot;:  [&quot;python&quot;, &quot;src/build/gyp_chromium&quot;]&#125;,</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>hooks包含一组hook，每个hook有几个重要项:</p>
+<ul>
+<li>pattern 是一个正则表达式，用来匹配工程目录下的文件，一旦匹配成功，action项就会执行</li>
+<li>action 描述一个根据特定参数运行的命令行。这个命令在每次gclient时，无论多少文件匹配，至多运行一次。这个命令和.gclient在同一目录下运行。如果第一个参数是”python”，那么，当前的python解释器将被使用。如果包含字符串 “$matching_files”，它将该字符串扩展为匹配出的文件列表。</li>
+<li>name 可选，标记出hook所属的组，可以被用来覆盖和重新组织。</li>
+</ul>
+<p>deps_os： DEPS中定义不同平台依赖关系的项目，如
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">deps_os = &#123;</div><div class="line">  &quot;win&quot;: &#123;</div><div class="line">    &quot;src/chrome/tools/test/reference_build/chrome_win&quot;:</div><div class="line">      &quot;/trunk/deps/reference_builds/chrome_win@197743&quot;,</div><div class="line"></div><div class="line">    &quot;src/third_party/cygwin&quot;:</div><div class="line">      &quot;/trunk/deps/third_party/cygwin@133786&quot;,</div><div class="line"></div><div class="line">.....</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  &quot;ios&quot;: &#123;</div><div class="line">    &quot;src/third_party/GTM&quot;:</div><div class="line">      (Var(&quot;googlecode_url&quot;) % &quot;google-toolbox-for-mac&quot;) + &quot;/trunk@&quot; +</div><div class="line">      Var(&quot;gtm_revision&quot;),</div><div class="line"></div><div class="line">    &quot;src/third_party/nss&quot;:</div><div class="line">      &quot;/trunk/deps/third_party/nss@&quot; + Var(&quot;nss_revision&quot;),</div><div class="line">....</div><div class="line">   &#125;,</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>deps_os指定不同平台的依赖，它可以包含多种平台，和.gclient中的target_os对应。这种对应关系如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">DEPS_OS_CHOICES = &#123;</div><div class="line">  &quot;win32&quot;: &quot;win&quot;,</div><div class="line">  &quot;win&quot;: &quot;win&quot;,</div><div class="line">  &quot;cygwin&quot;: &quot;win&quot;,</div><div class="line">  &quot;darwin&quot;: &quot;mac&quot;,</div><div class="line">  &quot;mac&quot;: &quot;mac&quot;,</div><div class="line">  &quot;unix&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux2&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux3&quot;: &quot;unix&quot;,</div><div class="line">  &quot;android&quot;: &quot;android&quot;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
       
     </div>
 
@@ -554,9 +535,7 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
       
         <div class="post-tags">
           
-            <a href="/tags/server/" rel="tag"># server</a>
-          
-            <a href="/tags/git/" rel="tag"># git</a>
+            <a href="/tags/webrtc/" rel="tag"># webrtc</a>
           
         </div>
       
@@ -569,8 +548,8 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/22/vmware-network-mode/" rel="next" title="VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别">
-                <i class="fa fa-chevron-left"></i> VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别
+              <a href="/2017/04/27/webrtc-signalling/" rel="next" title="webrtc之信令交互流程">
+                <i class="fa fa-chevron-left"></i> webrtc之信令交互流程
               </a>
             
           </div>
@@ -578,10 +557,6 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/27/webrtc-signalling/" rel="prev" title="webrtc之信令交互流程">
-                webrtc之信令交互流程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -636,17 +611,8 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -767,22 +733,6 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#纯git-server"><span class="nav-number">1.</span> <span class="nav-text">纯git server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#软件安装"><span class="nav-number">1.1.</span> <span class="nav-text">软件安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加管理账号"><span class="nav-number">1.2.</span> <span class="nav-text">添加管理账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建链接映射"><span class="nav-number">1.3.</span> <span class="nav-text">创建链接映射</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化管理用户"><span class="nav-number">1.4.</span> <span class="nav-text">初始化管理用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置账号"><span class="nav-number">1.5.</span> <span class="nav-text">配置账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常见问题"><span class="nav-number">1.6.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitlab服务搭建"><span class="nav-number">2.</span> <span class="nav-text">gitlab服务搭建</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
