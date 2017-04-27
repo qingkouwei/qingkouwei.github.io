@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-04-27T13:54:45.000Z</updated>
+  <updated>2017-04-27T14:44:52.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,107 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webrtc之入门</title>
+    <link href="http://wodekouwei.com/2017/04/27/webrtc-introduce/"/>
+    <id>http://wodekouwei.com/2017/04/27/webrtc-introduce/</id>
+    <published>2017-04-27T14:16:53.000Z</published>
+    <updated>2017-04-27T14:44:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="webrtc-developers"><a href="#webrtc-developers" class="headerlink" title="webrtc developers"></a><a href="http://io13webrtc.appspot.com/#1" target="_blank" rel="external">webrtc developers</a></h2><h3 id="The-WebRTC-APIs"><a href="#The-WebRTC-APIs" class="headerlink" title="The WebRTC APIs"></a>The WebRTC APIs</h3><h4 id="Three-main-tasks"><a href="#Three-main-tasks" class="headerlink" title="Three main tasks"></a>Three main tasks</h4><ul>
+<li>Acquiring audio and video</li>
+<li>Communicating audio and video</li>
+<li>Communicating arbitrary data</li>
+</ul>
+<h4 id="Three-main-JavaScript-APIs"><a href="#Three-main-JavaScript-APIs" class="headerlink" title="Three main JavaScript APIs"></a>Three main JavaScript APIs</h4><ul>
+<li>MediaStream(aka getUserMedia)</li>
+<li>RTCPeerConnection</li>
+<li>RTCDataChannel</li>
+</ul>
+<h3 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h3><p>(Acquiring audio and video)</p>
+<h4 id="MediaStream-1"><a href="#MediaStream-1" class="headerlink" title="MediaStream"></a>MediaStream</h4><ul>
+<li>Pepresent a stream of audio and/or video</li>
+<li>Can contain multiple ‘tracks’</li>
+<li>Obtain a MediaStream with navigator.getUserMedia()</li>
+</ul>
+<h4 id="Constraints"><a href="#Constraints" class="headerlink" title="Constraints"></a>Constraints</h4><ul>
+<li>Controls the contents of the MediaStream</li>
+<li>Media type, resolution, frame rate<h3 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h3>(Audio and video communication between peers)<h4 id="RTCPeerConnection-does-a-lot"><a href="#RTCPeerConnection-does-a-lot" class="headerlink" title="RTCPeerConnection does a lot"></a>RTCPeerConnection does a lot</h4></li>
+<li>Signal processing</li>
+<li>Codec handling</li>
+<li>Peer to peer communication</li>
+<li>Security</li>
+<li>Bandwidth management<h4 id="WebRTC-architecture"><a href="#WebRTC-architecture" class="headerlink" title="WebRTC architecture"></a>WebRTC architecture</h4><img src="http://images.wodekouwei.com/protocol/webrtc_Architecture.png" alt="image"></li>
+</ul>
+<h3 id="RTCDataChannel"><a href="#RTCDataChannel" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h3><p>(Bidirectional communication of arbitrary data between peers)</p>
+<h4 id="RTCDataChannel-1"><a href="#RTCDataChannel-1" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h4><ul>
+<li>Same API as WebSockets</li>
+<li>Ultra-low latency</li>
+<li>Unreliable or reliable</li>
+<li>Secure</li>
+</ul>
+<h3 id="Servers-and-Protocols"><a href="#Servers-and-Protocols" class="headerlink" title="Servers and Protocols"></a>Servers and Protocols</h3><p>(Peer to peer — but we need servers :)</p>
+<h4 id="Abstract-Signaling"><a href="#Abstract-Signaling" class="headerlink" title="Abstract Signaling"></a>Abstract Signaling</h4><ul>
+<li>Need to exchange ‘session description’ objects:<ul>
+<li>What formats I support, what I want to send</li>
+<li>Network information for peer-to-peer setup</li>
+</ul>
+</li>
+<li>Can use any messaging mechanism</li>
+<li>Can use any messaging protocol
+<img src="http://images.wodekouwei.com/protocol/webrtc_signaling_dragram.png" alt="image"></li>
+</ul>
+<h3 id="STUN-and-TRUN"><a href="#STUN-and-TRUN" class="headerlink" title="STUN and TRUN"></a>STUN and TRUN</h3><p>(P2P in the age of firewalls and NATs)</p>
+<h4 id="An-ideal-world"><a href="#An-ideal-world" class="headerlink" title="An ideal world"></a>An ideal world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_noSTUNorTURN.png" alt="image"></p>
+<h4 id="The-real-world"><a href="#The-real-world" class="headerlink" title="The real world"></a>The real world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_firewall.png" alt="image"></p>
+<h4 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h4><ul>
+<li>Tell me what my public IP address is</li>
+<li>Simple server, cheap to run</li>
+<li>Data flows peer-to-peer
+<img src="http://images.wodekouwei.com/protocol/webrtc_stun.png" alt="image"></li>
+</ul>
+<h4 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h4><ul>
+<li>Provide a cloud fallback if peer-to-peer communication fails</li>
+<li>Data is sent through server, uses server bandwidth</li>
+<li>Ensures the call works in almost all environments
+<img src="http://images.wodekouwei.com/protocol/webrtc_STUNandTURN.png" alt="image"></li>
+</ul>
+<h4 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h4><ul>
+<li>ICE: a framework for connecting peers</li>
+<li>Tries to find the best path for each call</li>
+<li>Vast majority of calls can use STUN (webrtcstats.com):</li>
+</ul>
+<h4 id="Deploying-STUN-TURN"><a href="#Deploying-STUN-TURN" class="headerlink" title="Deploying STUN/TURN"></a>Deploying STUN/TURN</h4><ul>
+<li>stun.l.google.com:19302</li>
+<li>WebRTC stunserver, turnserver</li>
+<li>rfc5766-turn-server</li>
+<li>restund</li>
+</ul>
+<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a>Security</h3><h4 id="Security-throughout-WebRTC"><a href="#Security-throughout-WebRTC" class="headerlink" title="Security throughout WebRTC"></a>Security throughout WebRTC</h4><ul>
+<li>Mandatory encryption for media and data</li>
+<li>Secure UI, explicit opt-in</li>
+<li>Sandboxed, no plugins</li>
+<li><a href="http://www.ietf.org/proceedings/82/slides/rtcweb-13.pdf" target="_blank" rel="external">WebRTC Security Architecture</a></li>
+</ul>
+<h3 id="Architectures"><a href="#Architectures" class="headerlink" title="Architectures"></a>Architectures</h3><h4 id="Peer-to-Peer-one-to-one-call"><a href="#Peer-to-Peer-one-to-one-call" class="headerlink" title="Peer to Peer : one-to-one call"></a>Peer to Peer : one-to-one call</h4><p>clientA &lt;——–&gt; clientB</p>
+<h4 id="Mesh-small-N-way-call"><a href="#Mesh-small-N-way-call" class="headerlink" title="Mesh: small N-way call"></a>Mesh: small N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">clientA &lt;-------------&gt; clientB</div><div class="line">  /|\  \               /   /|\</div><div class="line">   |       \    /           |</div><div class="line">   |      /       \         |</div><div class="line">  \|/   /                  \|/</div><div class="line">clientC &lt;--------------&gt; clientD</div></pre></td></tr></table></figure>
+<h4 id="Star-medium-N-way-call"><a href="#Star-medium-N-way-call" class="headerlink" title="Star: medium N-way call"></a>Star: medium N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">clientA &lt;---------&gt; clientB</div><div class="line">clientA &lt;---------&gt; clientC</div><div class="line">clientA &lt;---------&gt; clientD</div></pre></td></tr></table></figure>
+<h4 id="MCU-large-N-way-call"><a href="#MCU-large-N-way-call" class="headerlink" title="MCU: large N-way call"></a>MCU: large N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MCU &lt;--------------&gt;clientA</div><div class="line">MCU &lt;--------------&gt;clientB</div><div class="line">MCU &lt;--------------&gt;clientC</div><div class="line">MCU &lt;--------------&gt;clientD</div><div class="line">MCU &lt;--------------&gt;clientE</div><div class="line">MCU &lt;--------------&gt;clientF</div><div class="line">MCU &lt;--------------&gt;clientG</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;webrtc-developers&quot;&gt;&lt;a href=&quot;#webrtc-developers&quot; class=&quot;headerlink&quot; title=&quot;webrtc developers&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://io13webrtc.appspot.
+    
+    </summary>
+    
+      <category term="webrtc" scheme="http://wodekouwei.com/categories/webrtc/"/>
+    
+    
+      <category term="webrtc" scheme="http://wodekouwei.com/tags/webrtc/"/>
+    
+  </entry>
   
   <entry>
     <title>webrtc之源码管理工具gclient</title>
