@@ -323,6 +323,451 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/03/webrtc-nativeapis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/03/webrtc-nativeapis/" itemprop="url">
+                  webrtc之Native APIs
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T11:51:59+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Block-diagram"><a href="#Block-diagram" class="headerlink" title="Block diagram"></a>Block diagram</h3><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument1.png" alt="image"></p>
+<h3 id="Calling-sequences"><a href="#Calling-sequences" class="headerlink" title="Calling sequences"></a>Calling sequences</h3><h4 id="Set-up-a-call"><a href="#Set-up-a-call" class="headerlink" title="Set up a call"></a>Set up a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument2.png" alt="image"></p>
+<h4 id="Receive-a-call"><a href="#Receive-a-call" class="headerlink" title="Receive a call"></a>Receive a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument3.png" alt="image"></p>
+<h4 id="Close-down-a-call"><a href="#Close-down-a-call" class="headerlink" title="Close down a call"></a>Close down a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument4.png" alt="image"></p>
+<h3 id="Threading-model"><a href="#Threading-model" class="headerlink" title="Threading model"></a>Threading model</h3><p>WebRTC native APIs use two globally available threads: the signaling thread and the worker thread. Depending on how the PeerConnection factory is created, the application can either provide those 2 threads or just let them be created internally.</p>
+<p>The calls to the Stream APIs and the PeerConnection APIs will be proxied to the signaling thread which means that the application can call those APIs from whatever thread.</p>
+<p>All callbacks will be made on the signaling thread. The application should return the callback as quickly as possible to avoid blocking the signaling thread. Resource intensive processes should be posted to a different thread.</p>
+<p>The worker thread is used to handle more resource intensive processes such as data streaming.</p>
+<blockquote>
+<p><a href="https://sites.google.com/site/webrtc/native-code/native-apis" target="_blank" rel="external">https://sites.google.com/site/webrtc/native-code/native-apis</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/02/webrtc-source-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/02/webrtc-source-api/" itemprop="url">
+                  webrtc源码走读之api
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T16:23:59+08:00">
+                2017-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>api目录下封装了webrtc相关的供外部调用接口.</p>
+<h3 id="peerconnection接口"><a href="#peerconnection接口" class="headerlink" title="peerconnection接口"></a>peerconnection接口</h3><p>关于<code>peerconnectioninterface.h</code>说明:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">// This file contains the PeerConnection interface as defined in</div><div class="line">// http://dev.w3.org/2011/webrtc/editor/webrtc.html#peer-to-peer-connections.</div><div class="line">//</div><div class="line">// The PeerConnectionFactory class provides factory methods to create</div><div class="line">// PeerConnection, MediaStream and MediaStreamTrack objects.</div><div class="line">//</div><div class="line">// The following steps are needed to setup a typical call using WebRTC:</div><div class="line">//</div><div class="line">// 1. Create a PeerConnectionFactoryInterface. Check constructors for more</div><div class="line">// information about input parameters.</div><div class="line">//</div><div class="line">// 2. Create a PeerConnection object. Provide a configuration struct which</div><div class="line">// points to STUN and/or TURN servers used to generate ICE candidates, and</div><div class="line">// provide an object that implements the PeerConnectionObserver interface,</div><div class="line">// which is used to receive callbacks from the PeerConnection.</div><div class="line">//</div><div class="line">// 3. Create local MediaStreamTracks using the PeerConnectionFactory and add</div><div class="line">// them to PeerConnection by calling AddTrack (or legacy method, AddStream).</div><div class="line">//</div><div class="line">// 4. Create an offer, call SetLocalDescription with it, serialize it, and send</div><div class="line">// it to the remote peer</div><div class="line">//</div><div class="line">// 5. Once an ICE candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. The candidates must also be serialized and</div><div class="line">// sent to the remote peer.</div><div class="line">//</div><div class="line">// 6. Once an answer is received from the remote peer, call</div><div class="line">// SetRemoteDescription with the remote answer.</div><div class="line">//</div><div class="line">// 7. Once a remote candidate is received from the remote peer, provide it to</div><div class="line">// the PeerConnection by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// The receiver of a call (assuming the application is &quot;call&quot;-based) can decide</div><div class="line">// to accept or reject the call; this decision will be taken by the application,</div><div class="line">// not the PeerConnection.</div><div class="line">//</div><div class="line">// If the application decides to accept the call, it should:</div><div class="line">//</div><div class="line">// 1. Create PeerConnectionFactoryInterface if it doesn&apos;t exist.</div><div class="line">//</div><div class="line">// 2. Create a new PeerConnection.</div><div class="line">//</div><div class="line">// 3. Provide the remote offer to the new PeerConnection object by calling</div><div class="line">// SetRemoteDescription.</div><div class="line">//</div><div class="line">// 4. Generate an answer to the remote offer by calling CreateAnswer and send it</div><div class="line">// back to the remote peer.</div><div class="line">//</div><div class="line">// 5. Provide the local answer to the new PeerConnection by calling</div><div class="line">// SetLocalDescription with the answer.</div><div class="line">//</div><div class="line">// 6. Provide the remote ICE candidates by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// 7. Once a candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. Send these candidates to the remote peer.</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/02/webrtc-source-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/02/webrtc-source-base/" itemprop="url">
+                  webrtc源码走读之base
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T16:12:58+08:00">
+                2017-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>src/webrtc/base</code>是webrtc基础平台库，包括线程、锁、socket,智能指针等.</p>
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p><code>refcount.h</code>定义了rtc::RefCountInterface:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#include &quot;webrtc/base/refcountedobject.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">// Reference count interface.</div><div class="line">class RefCountInterface &#123;</div><div class="line"> public:</div><div class="line">  virtual int AddRef() const = 0;</div><div class="line">  virtual int Release() const = 0;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountInterface() &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
+<p><code>refcountedobject.h</code>下定义了RefCountedObject:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">#include &lt;utility&gt;</div><div class="line"></div><div class="line">#include &quot;webrtc/base/atomicops.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">template &lt;class T&gt;</div><div class="line">class RefCountedObject : public T &#123;</div><div class="line"> public:</div><div class="line">  RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0&gt;</div><div class="line">  explicit RefCountedObject(P0&amp;&amp; p0) : T(std::forward&lt;P0&gt;(p0)) &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0, class P1, class... Args&gt;</div><div class="line">  RefCountedObject(P0&amp;&amp; p0, P1&amp;&amp; p1, Args&amp;&amp;... args)</div><div class="line">      : T(std::forward&lt;P0&gt;(p0),</div><div class="line">          std::forward&lt;P1&gt;(p1),</div><div class="line">          std::forward&lt;Args&gt;(args)...) &#123;&#125;</div><div class="line"></div><div class="line">  virtual int AddRef() const &#123; return AtomicOps::Increment(&amp;ref_count_); &#125;</div><div class="line"></div><div class="line">  virtual int Release() const &#123;</div><div class="line">    int count = AtomicOps::Decrement(&amp;ref_count_);</div><div class="line">    if (!count) &#123;</div><div class="line">      delete this;</div><div class="line">    &#125;</div><div class="line">    return count;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  // Return whether the reference count is one. If the reference count is used</div><div class="line">  // in the conventional way, a reference count of 1 implies that the current</div><div class="line">  // thread owns the reference and no other thread shares it. This call</div><div class="line">  // performs the test for a reference count of one, and performs the memory</div><div class="line">  // barrier needed for the owning thread to act on the object, knowing that it</div><div class="line">  // has exclusive access to the object.</div><div class="line">  virtual bool HasOneRef() const &#123;</div><div class="line">    return AtomicOps::AcquireLoad(&amp;ref_count_) == 1;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  mutable volatile int ref_count_ = 0;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
+<h3 id="线程Thread"><a href="#线程Thread" class="headerlink" title="线程Thread"></a>线程Thread</h3><h3 id="网络Socket"><a href="#网络Socket" class="headerlink" title="网络Socket"></a>网络Socket</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-sdp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -989,7 +1434,7 @@ hook在DEPS中的写法，一般是：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">DEPS_OS_CHOICES = &#123;</div><div class="line">  &quot;win32&quot;: &quot;win&quot;,</div><div class="line">  &quot;win&quot;: &quot;win&quot;,</div><div class="line">  &quot;cygwin&quot;: &quot;win&quot;,</div><div class="line">  &quot;darwin&quot;: &quot;mac&quot;,</div><div class="line">  &quot;mac&quot;: &quot;mac&quot;,</div><div class="line">  &quot;unix&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux2&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux3&quot;: &quot;unix&quot;,</div><div class="line">  &quot;android&quot;: &quot;android&quot;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>下载webrtc android代码的.gclient文件(与src同级目录):
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">solutions = [</div><div class="line">  &#123;</div><div class="line">    &quot;url&quot;: &quot;https://chromium.googlesource.com/external/webrtc.git&quot;,</div><div class="line">    &quot;managed&quot;: False,</div><div class="line">    &quot;name&quot;: &quot;src&quot;,</div><div class="line">    &quot;deps_file&quot;: &quot;DEPS&quot;,</div><div class="line">    &quot;custom_deps&quot;: &#123;&#125;,</div><div class="line">  &#125;,</div><div class="line">]</div><div class="line">target_os = [&quot;android&quot;, &quot;unix&quot;]</div></pre></td></tr></table></figure></p>
-<p>src统计目录下.gclient_entries定义了各模块及对应地址
+<p>src同级目录下.gclient_entries定义了各模块及对应地址
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">entries = &#123;</div><div class="line">  &apos;src&apos;: &apos;https://chromium.googlesource.com/external/webrtc.git&apos;,</div><div class="line">  &apos;src/base&apos;: &apos;https://chromium.googlesource.com/chromium/src/base@413df39df4640665d7ee1e8c198be1e91cedb4d9&apos;,</div><div class="line">  &apos;src/build&apos;: &apos;https://chromium.googlesource.com/chromium/src/build@98f2769027214c848094d0d58156474eada3bc1b&apos;,</div><div class="line">  &apos;src/buildtools&apos;: &apos;https://chromium.googlesource.com/chromium/buildtools.git@98f00fa10dbad2cdbb2e297a66c3d6d5bc3994f3&apos;,</div><div class="line">  &apos;src/testing&apos;: &apos;https://chromium.googlesource.com/chromium/src/testing@3eab1a4b0951ac1fcb2be8bf9cb24143b509ea52&apos;,</div><div class="line">  &apos;src/testing/gmock&apos;: &apos;https://chromium.googlesource.com/external/googlemock.git@0421b6f358139f02e102c9c332ce19a33faf75be&apos;,</div><div class="line">  &apos;src/testing/gtest&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/googletest.git@6f8a66431cb592dad629028a50b3dd418a408c87&apos;,</div><div class="line">  &apos;src/third_party&apos;: &apos;https://chromium.googlesource.com/chromium/src/third_party@939f3a2eae486dd7cf3b31eae38642d2bc243737&apos;,</div><div class="line">  &apos;src/third_party/android_tools&apos;: &apos;https://chromium.googlesource.com/android_tools.git@b65c4776dac2cf1b80e969b3b2d4e081b9c84f29&apos;,</div><div class="line">  &apos;src/third_party/boringssl/src&apos;: &apos;https://boringssl.googlesource.com/boringssl.git@777fdd6443d5f01420b67137118febdf56a1c8e4&apos;,</div><div class="line">  &apos;src/third_party/catapult&apos;: &apos;https://chromium.googlesource.com/external/github.com/catapult-project/catapult.git@6939b1db033bf35f4adf1ee55824b6edb3e324d6&apos;,</div><div class="line">  &apos;src/third_party/ced/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/compact_enc_det.git@e21eb6aed10b9f6e2727f136c52420033214d458&apos;,</div><div class="line">  &apos;src/third_party/colorama/src&apos;: &apos;https://chromium.googlesource.com/external/colorama.git@799604a1041e9b3bc5d2789ecbd7e8db2e18e6b8&apos;,</div><div class="line">  &apos;src/third_party/ffmpeg&apos;: &apos;https://chromium.googlesource.com/chromium/third_party/ffmpeg.git@28a5cdde5c32bcf66715343c10f74e85713f7aaf&apos;,</div><div class="line">  &apos;src/third_party/gflags&apos;: &apos;https://chromium.googlesource.com/external/webrtc/deps/third_party/gflags@892576179b45861b53e04a112996a738309cf364&apos;,</div><div class="line">  &apos;src/third_party/gflags/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/gflags/gflags@03bebcb065c83beff83d50ae025a55a4bf94dfca&apos;,</div><div class="line">  &apos;src/third_party/gtest-parallel&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/gtest-parallel@7eb02a6415979ea59e765c34fe9da6c792f53e26&apos;,</div><div class="line">  &apos;src/third_party/icu&apos;: &apos;https://chromium.googlesource.com/chromium/deps/icu.git@b34251f8b762f8e2112a89c587855ca4297fed96&apos;,</div><div class="line">  &apos;src/third_party/jsoncpp/source&apos;: &apos;https://chromium.googlesource.com/external/github.com/open-source-parsers/jsoncpp.git@f572e8e42e22cfcf5ab0aea26574f408943edfa4&apos;,</div><div class="line">  &apos;src/third_party/jsr-305/src&apos;: &apos;https://chromium.googlesource.com/external/jsr-305.git@642c508235471f7220af6d5df2d3210e3bfc0919&apos;,</div><div class="line">  &apos;src/third_party/junit/src&apos;: &apos;https://chromium.googlesource.com/external/junit.git@64155f8a9babcfcf4263cf4d08253a1556e75481&apos;,</div><div class="line">  &apos;src/third_party/libFuzzer/src&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/llvm/lib/Fuzzer.git@16f5f743c188c836d32cdaf349d5d3effb8a3518&apos;,</div><div class="line">  &apos;src/third_party/libjpeg_turbo&apos;: &apos;https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git@7260e4d8b8e1e40b17f03fafdf1cd83296900f76&apos;,</div><div class="line">  &apos;src/third_party/libsrtp&apos;: &apos;https://chromium.googlesource.com/chromium/deps/libsrtp.git@ccf84786f8ef803cb9c75e919e5a3976b9f5a672&apos;,</div><div class="line">  &apos;src/third_party/libvpx/source/libvpx&apos;: &apos;https://chromium.googlesource.com/webm/libvpx.git@f22b828d685adee4c7a561990302e2d21b5e0047&apos;,</div><div class="line">  &apos;src/third_party/libyuv&apos;: &apos;https://chromium.googlesource.com/libyuv/libyuv.git@fc02cc3806a394a6b887979ba74aa49955f3199b&apos;,</div><div class="line">  &apos;src/third_party/lss&apos;: &apos;https://chromium.googlesource.com/linux-syscall-support.git@63f24c8221a229f677d26ebe8f3d1528a9d787ac&apos;,</div><div class="line">  &apos;src/third_party/mockito/src&apos;: &apos;https://chromium.googlesource.com/external/mockito/mockito.git@de83ad4598ad4cf5ea53c69a8a8053780b04b850&apos;,</div><div class="line">  &apos;src/third_party/openh264/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/cisco/openh264@0fd88df93c5dcaf858c57eb7892bd27763f0f0ac&apos;,</div><div class="line">  &apos;src/third_party/openmax_dl&apos;: &apos;https://chromium.googlesource.com/external/webrtc/deps/third_party/openmax.git@7acede9c039ea5d14cf326f44aad1245b9e674a7&apos;,</div><div class="line">  &apos;src/third_party/requests/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/kennethreitz/requests.git@f172b30356d821d180fa4ecfa3e71c7274a32de4&apos;,</div><div class="line">  &apos;src/third_party/robolectric/robolectric&apos;: &apos;https://chromium.googlesource.com/external/robolectric.git@2a0b6ba221c14f3371813a676ce06143353e448d&apos;,</div><div class="line">  &apos;src/third_party/ub-uiautomator/lib&apos;: &apos;https://chromium.googlesource.com/chromium/third_party/ub-uiautomator.git@00270549ce3161ae72ceb24712618ea28b4f9434&apos;,</div><div class="line">  &apos;src/third_party/usrsctp/usrsctplib&apos;: &apos;https://chromium.googlesource.com/external/github.com/sctplab/usrsctp@8679f2b0bf063ac894dc473debefd61dbbebf622&apos;,</div><div class="line">  &apos;src/third_party/yasm/source/patched-yasm&apos;: &apos;https://chromium.googlesource.com/chromium/deps/yasm/patched-yasm.git@7da28c6c7c6a1387217352ce02b31754deb54d2a&apos;,</div><div class="line">  &apos;src/tools&apos;: &apos;https://chromium.googlesource.com/chromium/src/tools@4718dd2b6d53fb68819b3fd23676b40935f4f31e&apos;,</div><div class="line">  &apos;src/tools/gyp&apos;: &apos;https://chromium.googlesource.com/external/gyp.git@eb296f67da078ec01f5e3a9ea9cdc6d26d680161&apos;,</div><div class="line">  &apos;src/tools/swarming_client&apos;: &apos;https://chromium.googlesource.com/external/swarming.client.git@11e31afa5d330756ff87aa12064bb5d032896cb5&apos;,</div><div class="line">  &apos;src/buildtools/clang_format/script&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git@c09c8deeac31f05bd801995c475e7c8070f9ecda&apos;,</div><div class="line">  &apos;src/buildtools/third_party/libc++/trunk&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/libcxx.git@b1ece9c037d879843b0b0f5a2802e1e9d443b75a&apos;,</div><div class="line">  &apos;src/buildtools/third_party/libc++abi/trunk&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/libcxxabi.git@0edb61e2e581758fc4cd4cd09fc588b3fc91a653&apos;,</div><div class="line">  &apos;src/third_party/android_tools/ndk&apos;: &apos;https://chromium.googlesource.com/android_ndk.git@26d93ec07f3ce2ec2cdfeae1b21ee6f12ff868d8&apos;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 
           
@@ -1826,1163 +2271,6 @@ tap0 ——-&gt; 执行上面使命就会生成一个tap,后缀从0，1，2依�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/19/issues-android-audio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/19/issues-android-audio/" itemprop="url">
-                  Android声音播放与录制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T10:31:45+08:00">
-                2017-04-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AudioTrack"><a href="#AudioTrack" class="headerlink" title="AudioTrack"></a>AudioTrack</h2><h3 id="AudioTrack类说明"><a href="#AudioTrack类说明" class="headerlink" title="AudioTrack类说明:"></a>AudioTrack类说明:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * The AudioTrack class manages and plays a single audio resource for Java applications.</div><div class="line"> * It allows streaming of PCM audio buffers to the audio sink for playback. This is</div><div class="line"> * achieved by &quot;pushing&quot; the data to the AudioTrack object using one of the</div><div class="line"> *  &#123;@link #write(byte[], int, int)&#125;, &#123;@link #write(short[], int, int)&#125;,</div><div class="line"> *  and &#123;@link #write(float[], int, int, int)&#125; methods.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;An AudioTrack instance can operate under two modes: static or streaming.&lt;br&gt;</div><div class="line"> * In Streaming mode, the application writes a continuous stream of data to the AudioTrack, using</div><div class="line"> * one of the &#123;@code write()&#125; methods. These are blocking and return when the data has been</div><div class="line"> * transferred from the Java layer to the native layer and queued for playback. The streaming</div><div class="line"> * mode is most useful when playing blocks of audio data that for instance are:</div><div class="line"> *</div><div class="line"> * &lt;ul&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the duration of the sound to play,&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the characteristics of the audio data</div><div class="line"> *         (high sampling rate, bits per sample ...)&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;received or generated while previously queued audio is playing.&lt;/li&gt;</div><div class="line"> * &lt;/ul&gt;</div><div class="line"> *</div><div class="line"> * The static mode should be chosen when dealing with short sounds that fit in memory and</div><div class="line"> * that need to be played with the smallest latency possible. The static mode will</div><div class="line"> * therefore be preferred for UI and game sounds that are played often, and with the</div><div class="line"> * smallest overhead possible.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Upon creation, an AudioTrack object initializes its associated audio buffer.</div><div class="line"> * The size of this buffer, specified during the construction, determines how long an AudioTrack</div><div class="line"> * can play before running out of data.&lt;br&gt;</div><div class="line"> * For an AudioTrack using the static mode, this size is the maximum size of the sound that can</div><div class="line"> * be played from it.&lt;br&gt;</div><div class="line"> * For the streaming mode, data will be written to the audio sink in chunks of</div><div class="line"> * sizes less than or equal to the total buffer size.</div><div class="line"> *</div><div class="line"> * AudioTrack is not final and thus permits subclasses, but such use is not recommended.</div><div class="line"> */</div><div class="line">public class AudioTrack extends PlayerBase</div><div class="line">                        implements AudioRouting&#123;</div><div class="line"></div><div class="line">                        &#125;</div></pre></td></tr></table></figure>
-<h3 id="构造方法说明"><a href="#构造方法说明" class="headerlink" title="构造方法说明"></a>构造方法说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//根据采样率，采样精度，单双声道来得到frame的大小。</div><div class="line">int bufsize = AudioTrack.getMinBufferSize(8000,//每秒8K个点　　AudioFormat.CHANNEL_CONFIGURATION_STEREO,//双声道</div><div class="line">AudioFormat.ENCODING_PCM_16BIT);//一个采样点16比特-2个字节</div><div class="line">//注意，按照数字音频的知识，这个算出来的是一秒钟buffer的大小。//创建AudioTrack</div><div class="line">AudioTrack trackplayer = new AudioTrack(AudioManager.STREAM_MUSIC, 8000,　　AudioFormat.CHANNEL_CONFIGURATION_ STEREO,</div><div class="line">　　AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">　　bufsize,</div><div class="line">AudioTrack.MODE_STREAM);//</div><div class="line"> trackplayer.play() ;//开始</div><div class="line"></div><div class="line">trackplayer.write(bytes_pkg, 0, bytes_pkg.length) ;//往track中写数据</div><div class="line"></div><div class="line">….</div><div class="line"></div><div class="line">trackplayer.stop();//停止播放</div><div class="line"></div><div class="line">trackplayer.release();//释放底层资源。</div></pre></td></tr></table></figure>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><h5 id="1-AudioTrack-MODE-STREAM的意思："><a href="#1-AudioTrack-MODE-STREAM的意思：" class="headerlink" title="1. AudioTrack.MODE_STREAM的意思："></a>1. AudioTrack.MODE_STREAM的意思：</h5><p>AudioTrack中有MODE_STATIC和MODE_STREAM两种分类。</p>
-<ul>
-<li><p>STREAM的意思是由用户在应用程序通过write方式把数据一次一次得写到audiotrack中。这个和我们在socket中发送数据一样，应用层从某个地方获取数据，例如通过编解码得到PCM数据，然后write到audiotrack。这种方式的坏处就是总是在JAVA层和Native层交互，效率损失较大。</p>
-</li>
-<li><p>而STATIC的意思是一开始创建的时候，就把音频数据放到一个固定的buffer，然后直接传给audiotrack，后续就不用一次次得write了。AudioTrack会自己播放这个buffer中的数据。
-这种方法对于铃声等内存占用较小，延时要求较高的声音来说很适用。</p>
-</li>
-</ul>
-<h5 id="2-StreamType"><a href="#2-StreamType" class="headerlink" title="2. StreamType"></a>2. StreamType</h5><p>这个在构造AudioTrack的第一个参数中使用。这个参数和Android中的AudioManager有关系，涉及到手机上的音频管理策略。
-Android将系统的声音分为以下几类常见的（定义在AudioManager)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/** The audio stream for phone calls */</div><div class="line">public static final int STREAM_VOICE_CALL = AudioSystem.STREAM_VOICE_CALL;</div><div class="line">/** The audio stream for system sounds */</div><div class="line">public static final int STREAM_SYSTEM = AudioSystem.STREAM_SYSTEM;</div><div class="line">/** The audio stream for the phone ring */</div><div class="line">public static final int STREAM_RING = AudioSystem.STREAM_RING;</div><div class="line">/** The audio stream for music playback */</div><div class="line">public static final int STREAM_MUSIC = AudioSystem.STREAM_MUSIC;</div><div class="line">/** The audio stream for alarms */</div><div class="line">public static final int STREAM_ALARM = AudioSystem.STREAM_ALARM;</div><div class="line">/** The audio stream for notifications */</div><div class="line">public static final int STREAM_NOTIFICATION = AudioSystem.STREAM_NOTIFICATION;</div><div class="line">/** @hide The audio stream for phone calls when connected to bluetooth */</div><div class="line">public static final int STREAM_BLUETOOTH_SCO = AudioSystem.STREAM_BLUETOOTH_SCO;</div><div class="line">/** @hide The audio stream for enforced system sounds in certain countries (e.g camera in Japan) */</div><div class="line">public static final int STREAM_SYSTEM_ENFORCED = AudioSystem.STREAM_SYSTEM_ENFORCED;</div><div class="line">/** The audio stream for DTMF Tones */</div><div class="line">public static final int STREAM_DTMF = AudioSystem.STREAM_DTMF;</div><div class="line">/** @hide The audio stream for text to speech (TTS) */</div><div class="line">public static final int STREAM_TTS = AudioSystem.STREAM_TTS;</div></pre></td></tr></table></figure></p>
-<p>常用说明:</p>
-<ul>
-<li>STREAM_ALARM：警告声</li>
-<li>STREAM_MUSCI：音乐声，例如music等</li>
-<li>STREAM_RING：铃声</li>
-<li>STREAM_SYSTEM：系统声音</li>
-<li>STREAM_VOCIE_CALL：电话声音</li>
-</ul>
-<p>为什么要分这么多呢？以前在台式机上开发的时候很少知道有这么多的声音类型，不过仔细思考下，发现这样做是有道理的。例如你在听music的时候接到电话，这个时候music播放肯定会停止，此时你只能听到电话，如果你调节音量的话，这个调节肯定只对电话起作用。当电话打完了，再回到music，你肯定不用再调节音量了。</p>
-<p>其实系统将这几种声音的数据分开管理，所以，这个参数对AudioTrack来说，它的含义就是告诉系统，我现在想使用的是哪种类型的声音，这样系统就可以对应管理他们了。</p>
-<h2 id="AudioRecord"><a href="#AudioRecord" class="headerlink" title="AudioRecord"></a>AudioRecord</h2><h3 id="AudioRecord说明"><a href="#AudioRecord说明" class="headerlink" title="AudioRecord说明"></a>AudioRecord说明</h3><p>The AudioRecord class manages the audio resources for Java applications to record audio from the audio input hardware of the platform. This is achieved by “pulling” (reading) the data from the AudioRecord object. The application is responsible for polling the AudioRecord object in time using one of the following three methods: <code>read(byte[], int, int)</code>, <code>read(short[], int, int)</code> or <code>read(ByteBuffer, int)</code>. The choice of which method to use will be based on the audio data storage format that is the most convenient for the user of AudioRecord.</p>
-<p>Upon creation, an AudioRecord object initializes its associated audio buffer that it will fill with the new audio data. The size of this buffer, specified during the construction, determines how long an AudioRecord can record before “over-running” data that has not been read yet. Data should be read from the audio hardware in chunks of sizes inferior to the total recording buffer size.</p>
-<h3 id="audiosource类型"><a href="#audiosource类型" class="headerlink" title="audiosource类型"></a>audiosource类型</h3><p>定义在MediaRecorder中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/** Default audio source **/</div><div class="line"> public static final int DEFAULT = 0;</div><div class="line"></div><div class="line"> /** Microphone audio source */</div><div class="line"> public static final int MIC = 1;</div><div class="line"></div><div class="line"> /** Voice call uplink (Tx) audio source */</div><div class="line"> public static final int VOICE_UPLINK = 2;</div><div class="line"></div><div class="line"> /** Voice call downlink (Rx) audio source */</div><div class="line"> public static final int VOICE_DOWNLINK = 3;</div><div class="line"></div><div class="line"> /** Voice call uplink + downlink audio source */</div><div class="line"> public static final int VOICE_CALL = 4;</div><div class="line"></div><div class="line"> /** Microphone audio source with same orientation as camera if available, the main</div><div class="line">  *  device microphone otherwise */</div><div class="line"> public static final int CAMCORDER = 5;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice recognition if available, behaves like</div><div class="line">  *  &#123;@link #DEFAULT&#125; otherwise. */</div><div class="line"> public static final int VOICE_RECOGNITION = 6;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice communications such as VoIP. It</div><div class="line">  *  will for instance take advantage of echo cancellation or automatic gain control</div><div class="line">  *  if available. It otherwise behaves like &#123;@link #DEFAULT&#125; if no voice processing</div><div class="line">  *  is applied.</div><div class="line">  */</div><div class="line"> public static final int VOICE_COMMUNICATION = 7;</div></pre></td></tr></table></figure></p>
-<h2 id="AudioManager"><a href="#AudioManager" class="headerlink" title="AudioManager"></a>AudioManager</h2><h3 id="获取系统音量"><a href="#获取系统音量" class="headerlink" title="获取系统音量"></a>获取系统音量</h3><p>代码
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//初始化AudioManager:</div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);</div><div class="line"></div><div class="line">//通话音量</div><div class="line">int max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">int current = mAudioManager.getStreamVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">Log.d(“VIOCE_CALL”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//系统音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">Log.d(“SYSTEM”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//铃声音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_RING );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_RING );</div><div class="line">Log.d(“RING”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//音乐音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_MUSIC );</div><div class="line">Log.d(“MUSIC”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//提示声音音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_ALARM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_ALARM );</div><div class="line">Log.d(“ALARM”, “max : ” + max + ” current : ” + current);</div></pre></td></tr></table></figure></p>
-<p>ps：
-　　游戏过程中只允许调整多媒体音量，而不允许调整通话音量。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);</div></pre></td></tr></table></figure></p>
-<h3 id="控制音量"><a href="#控制音量" class="headerlink" title="控制音量"></a>控制音量</h3><p>AudioManager提供了设置音量的方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void setStreamVolume(intstreamType,intindex,intflags)</div></pre></td></tr></table></figure></p>
-<p>其中streamType有内置的常量，去文档里面就可以看到。
-使用示例:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//音量控制,初始化定义    </div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);    </div><div class="line">//最大音量    </div><div class="line">int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);    </div><div class="line">//当前音量    </div><div class="line">int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);</div><div class="line"></div><div class="line">//直接控制音量</div><div class="line">if(isSilent)&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);    </div><div class="line">&#125;else&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tempVolume, 0); //tempVolume:音量绝对值    </div><div class="line">&#125;    </div><div class="line"></div><div class="line">//以一步步长控制音量的增减，并弹出系统默认音量控制条：</div><div class="line">//降低音量，调出系统音量控制    </div><div class="line">if(flag == 0)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;    </div><div class="line">//增加音量，调出系统音量控制    </div><div class="line">else if(flag == 1)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>监听按键手动控制音量
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">AudioManager audio = (AudioManager) getSystemService(Service.AUDIO_SERVICE);</div><div class="line"></div><div class="line">@Override</div><div class="line">public boolean onKeyDown(int keyCode, KeyEvent event) &#123;</div><div class="line">    switch (keyCode) &#123;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_UP:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_RAISE,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_DOWN:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_LOWER,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    default:</div><div class="line">        break;</div><div class="line">    &#125;</div><div class="line">    return super.onKeyDown(keyCode, event);</div></pre></td></tr></table></figure></p>
-<h4 id="插入耳机状态仍使用扬声器外放音乐"><a href="#插入耳机状态仍使用扬声器外放音乐" class="headerlink" title="插入耳机状态仍使用扬声器外放音乐"></a>插入耳机状态仍使用扬声器外放音乐</h4><p>插入耳机的时候也可以选择使用扬声器播放音乐，来电铃声就是这么用的。但是只能用MediaPlayer，播放音频文件。
-使用AudioTrack.write播放是行不通的(有待验证)。按理说AudioRecord、AudioTrack类相对于MediaRecorder mediaPlayer来说，更加接近底层，应该也行得通的。</p>
-<p>插入耳机，选择外放的代码如下(兼容性验证)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);  </div><div class="line">audioManager.setMicrophoneMute(false);          </div><div class="line">audioManager.setSpeakerphoneOn(true);//使用扬声器外放，即使已经插入耳机  </div><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);//控制声音的大小  </div><div class="line">audioManager.setMode(AudioManager.STREAM_MUSIC);   </div><div class="line"></div><div class="line">//播放一段声音，查看效果          </div><div class="line">MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse(&quot;file:///system/media/audio/ui/camera_click.ogg&quot;));  </div><div class="line">playerSound.start();</div></pre></td></tr></table></figure></p>
-<h3 id="使用STREAM-VOCIE-CALL播放声音与耳机冲突"><a href="#使用STREAM-VOCIE-CALL播放声音与耳机冲突" class="headerlink" title="使用STREAM_VOCIE_CALL播放声音与耳机冲突"></a>使用STREAM_VOCIE_CALL播放声音与耳机冲突</h3><p>使用STREAM_VOCIE_CALL播放声音在某些手机,比如魅蓝等上面会导致声音仍外放,耳机没声音现象.
-WebRtc使用STREAM_VOCIE_CALL播放声音,导致某些手机声音低,没法使用音量键调节,插入耳机声音仍外放等问题.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/16/latex/" itemprop="url">
-                  MarkDown中嵌入LaTex
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T17:17:15+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MarkDown中使用标识符<code>$$</code>和<code>$$$$</code>即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中</p>
-<h3 id="部分希腊字母"><a href="#部分希腊字母" class="headerlink" title="部分希腊字母"></a>部分希腊字母</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\alpha</td>
-<td>α</td>
-<td></td>
-<td>A</td>
-<td>A</td>
-</tr>
-<tr>
-<td>\beta</td>
-<td>β</td>
-<td></td>
-<td>B</td>
-<td>B</td>
-</tr>
-<tr>
-<td>\gamma</td>
-<td>γ</td>
-<td></td>
-<td>\Gamma \varGamma</td>
-<td>Γ  Γ</td>
-</tr>
-<tr>
-<td>delta</td>
-<td>δ</td>
-<td></td>
-<td>\Delta \varDelta</td>
-<td>Δ  Δ</td>
-</tr>
-<tr>
-<td>\epsilon</td>
-<td>ϵ</td>
-<td></td>
-<td>E</td>
-<td>E</td>
-</tr>
-<tr>
-<td>\eta</td>
-<td>η</td>
-<td></td>
-<td>H</td>
-<td>H</td>
-</tr>
-<tr>
-<td>\theta</td>
-<td>θ</td>
-<td></td>
-<td>\Theta \varTheta</td>
-<td>Θ  Θ</td>
-</tr>
-<tr>
-<td>\kappa</td>
-<td>κ</td>
-<td></td>
-<td>K</td>
-<td>K</td>
-</tr>
-<tr>
-<td>\lambda</td>
-<td>λ</td>
-<td></td>
-<td>\Lambda \varLambda</td>
-<td>Λ  Λ</td>
-</tr>
-<tr>
-<td>\mu</td>
-<td>μ</td>
-<td></td>
-<td>M</td>
-<td>M</td>
-</tr>
-<tr>
-<td>\nu</td>
-<td>ν</td>
-<td></td>
-<td>N</td>
-<td>N</td>
-</tr>
-<tr>
-<td>\pi</td>
-<td>π</td>
-<td></td>
-<td>\Pi \varPi</td>
-<td>Π  Π</td>
-</tr>
-<tr>
-<td>\rho</td>
-<td>ρ</td>
-<td></td>
-<td>P</td>
-<td>P</td>
-</tr>
-<tr>
-<td>\sigma</td>
-<td>σ</td>
-<td></td>
-<td>\Sigma \varSigma</td>
-<td>Σ  Σ</td>
-</tr>
-<tr>
-<td>\tau</td>
-<td>τ</td>
-<td></td>
-<td>T</td>
-<td>T</td>
-</tr>
-<tr>
-<td>\phi \varphi</td>
-<td>ϕ  φ</td>
-<td></td>
-<td>\Phi \varPhi</td>
-<td>Φ  Φ</td>
-</tr>
-<tr>
-<td>\omega</td>
-<td>ω</td>
-<td></td>
-<td>\Omega \varOmega</td>
-<td>Ω  Ω</td>
-</tr>
-</tbody>
-</table>
-<p>全部24个字母:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>大写</th>
-<th>Tex</th>
-<th>小写</th>
-<th>Tex</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>alpha</td>
-<td>A</td>
-<td>A</td>
-<td>α</td>
-<td>\alpha</td>
-</tr>
-<tr>
-<td>beta</td>
-<td>B</td>
-<td>B</td>
-<td>β\</td>
-<td>beta</td>
-</tr>
-<tr>
-<td>gamma</td>
-<td>Γ</td>
-<td>\Gamma</td>
-<td>γ</td>
-<td>\gamma</td>
-</tr>
-<tr>
-<td>delta</td>
-<td>Δ</td>
-<td>\Delta</td>
-<td>δ</td>
-<td>\delta</td>
-</tr>
-<tr>
-<td>epsilon</td>
-<td>E</td>
-<td>E</td>
-<td>ϵ</td>
-<td>\epsilon</td>
-</tr>
-<tr>
-<td>zeta</td>
-<td>Z</td>
-<td>Z</td>
-<td>ζ</td>
-<td>\zeta</td>
-</tr>
-<tr>
-<td>eta</td>
-<td>H</td>
-<td>H</td>
-<td>η</td>
-<td>\eta</td>
-</tr>
-<tr>
-<td>theta</td>
-<td>Θ</td>
-<td>\Theta</td>
-<td>θ</td>
-<td>\theta</td>
-</tr>
-<tr>
-<td>iota</td>
-<td>I</td>
-<td>I</td>
-<td>ι</td>
-<td>\iota</td>
-</tr>
-<tr>
-<td>kappa</td>
-<td>K</td>
-<td>K</td>
-<td>κ</td>
-<td>\kappa</td>
-</tr>
-<tr>
-<td>lambda</td>
-<td>Λ</td>
-<td>\Lambda</td>
-<td>λ</td>
-<td>\lambda</td>
-</tr>
-<tr>
-<td>mu</td>
-<td>M</td>
-<td>M</td>
-<td>μ</td>
-<td>\mu</td>
-</tr>
-<tr>
-<td>nu</td>
-<td>N</td>
-<td>N</td>
-<td>ν</td>
-<td>\nu</td>
-</tr>
-<tr>
-<td>xi</td>
-<td>Ξ</td>
-<td>\Xi</td>
-<td>ξ</td>
-<td>\xi</td>
-</tr>
-<tr>
-<td>omicron</td>
-<td>O</td>
-<td>O</td>
-<td>ο</td>
-<td>\omicron</td>
-</tr>
-<tr>
-<td>pi</td>
-<td>Π</td>
-<td>\Pi</td>
-<td>π</td>
-<td>\pi</td>
-</tr>
-<tr>
-<td>rho</td>
-<td>P</td>
-<td>P</td>
-<td>ρ</td>
-<td>\rho</td>
-</tr>
-<tr>
-<td>sigma</td>
-<td>Σ</td>
-<td>\Sigma</td>
-<td>σ</td>
-<td>\sigma</td>
-</tr>
-<tr>
-<td>tau</td>
-<td>T</td>
-<td>T</td>
-<td>τ</td>
-<td>\tau</td>
-</tr>
-<tr>
-<td>upsilon</td>
-<td>Υ</td>
-<td>\Upsilon</td>
-<td>υ</td>
-<td>\upsilon</td>
-</tr>
-<tr>
-<td>phi</td>
-<td>Φ</td>
-<td>\Phi</td>
-<td>ϕ</td>
-<td>\phi</td>
-</tr>
-<tr>
-<td>chi</td>
-<td>X</td>
-<td>X</td>
-<td>χ</td>
-<td>\chi</td>
-</tr>
-<tr>
-<td>psi</td>
-<td>Ψ</td>
-<td>\Psi</td>
-<td>ψ</td>
-<td>\psi</td>
-</tr>
-<tr>
-<td>omega</td>
-<td>Ω</td>
-<td>\Omega</td>
-<td>ω</td>
-<td>\omega</td>
-</tr>
-</tbody>
-</table>
-<h3 id="部分运算符"><a href="#部分运算符" class="headerlink" title="部分运算符"></a>部分运算符</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\pm</td>
-<td>±</td>
-<td></td>
-<td>\mp</td>
-<td>∓</td>
-</tr>
-<tr>
-<td>\times</td>
-<td>×</td>
-<td></td>
-<td>\div</td>
-<td>÷</td>
-</tr>
-<tr>
-<td>\circ</td>
-<td>∘</td>
-<td></td>
-<td>\bullet</td>
-<td>∙</td>
-</tr>
-<tr>
-<td>\cdot</td>
-<td>⋅</td>
-<td></td>
-<td>\cup</td>
-<td>∪</td>
-</tr>
-<tr>
-<td>\cap</td>
-<td>∩</td>
-<td></td>
-<td>\subset</td>
-<td>⊂</td>
-</tr>
-<tr>
-<td>\supset</td>
-<td>⊃</td>
-<td></td>
-<td>\subseteq</td>
-<td>⊆</td>
-</tr>
-<tr>
-<td>\supseteq</td>
-<td>⊇</td>
-<td></td>
-<td>\leq</td>
-<td>≤</td>
-</tr>
-<tr>
-<td>\geq</td>
-<td>≥</td>
-<td></td>
-<td>\propto</td>
-<td>∝</td>
-</tr>
-</tbody>
-</table>
-<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\cdotp</td>
-<td>⋅</td>
-<td></td>
-<td>\cdots</td>
-<td>⋯</td>
-</tr>
-<tr>
-<td>\ddots</td>
-<td>⋱</td>
-<td></td>
-<td>\infty</td>
-<td>∞</td>
-</tr>
-<tr>
-<td>\partial</td>
-<td>∂</td>
-<td></td>
-<td>\bot</td>
-<td>⊥</td>
-</tr>
-<tr>
-<td>\hat{a}</td>
-<td>â</td>
-<td></td>
-<td>\tilde{a}</td>
-<td>ã</td>
-</tr>
-<tr>
-<td>\bar{a}</td>
-<td>a¯</td>
-<td></td>
-<td>\vec{a}</td>
-<td>a⃗</td>
-</tr>
-<tr>
-<td>\dot{a}</td>
-<td>a˙</td>
-<td></td>
-<td>\sqrt{a}</td>
-<td>a‾‾√</td>
-</tr>
-<tr>
-<td>\sqrt[3]{2}</td>
-<td>a‾‾√3</td>
-<td></td>
-<td>a^{3}</td>
-<td>a3</td>
-</tr>
-<tr>
-<td>\frac{1}{a}</td>
-<td>1a</td>
-<td></td>
-<td>\lim_{x \to 0}</td>
-<td>lima→0</td>
-</tr>
-</tbody>
-</table>
-<h3 id="集合关系符号"><a href="#集合关系符号" class="headerlink" title="集合关系符号"></a>集合关系符号</h3><table>
-<thead>
-<tr>
-<th>说明</th>
-<th>命令</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>集合的大括号</td>
-<td>{ …   }\</td>
-</tr>
-<tr>
-<td>集合中的竖线$\mid$</td>
-<td>\mid</td>
-</tr>
-<tr>
-<td>属于</td>
-<td>\in</td>
-</tr>
-<tr>
-<td>不属于</td>
-<td>\not\in</td>
-</tr>
-<tr>
-<td>A包含于B</td>
-<td>A\subset B</td>
-</tr>
-<tr>
-<td>A真包含于B</td>
-<td>A\subsetneqq B</td>
-</tr>
-<tr>
-<td>A包含B</td>
-<td>A\supset B</td>
-</tr>
-<tr>
-<td>A真包含B</td>
-<td>A\supsetneqq B</td>
-</tr>
-<tr>
-<td>A不包含于B</td>
-<td>A\not\subset B</td>
-</tr>
-<tr>
-<td>A交B</td>
-<td>A\cap B</td>
-</tr>
-<tr>
-<td>A并B</td>
-<td>A\cup B</td>
-</tr>
-<tr>
-<td>A的闭包</td>
-<td>\overline{A}</td>
-</tr>
-<tr>
-<td>A减去B</td>
-<td>A\setminus B</td>
-</tr>
-<tr>
-<td>实数集合</td>
-<td>\mathbb{R}</td>
-</tr>
-<tr>
-<td>空集</td>
-<td>\emptyset</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>表格中竖线用<code>&amp;#124;</code></p>
-</blockquote>
-<h3 id="括号总结"><a href="#括号总结" class="headerlink" title="括号总结"></a>括号总结</h3><table>
-<thead>
-<tr>
-<th>功能</th>
-<th>语法</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>不好看</td>
-<td><code>( \frac{1}{2} )</code></td>
-<td>$(\frac{1}{2})$</td>
-</tr>
-<tr>
-<td>好一点</td>
-<td><code>\left( \frac{1}{2} \right)</code></td>
-<td>$\left ( \frac{1}{2} \right )$</td>
-</tr>
-</tbody>
-</table>
-<p>可以使用<code>\left</code>和<code>\right</code>来显示不同的括号：</p>
-<table>
-<thead>
-<tr>
-<th>功能</th>
-<th>语法</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>圆括号，小括号</td>
-<td><code>\left( \frac{a}{b} \right)</code></td>
-<td>$\left( \frac{a}{b} \right)$</td>
-</tr>
-<tr>
-<td>方括号，中括号</td>
-<td>\left[ \frac{a}{b} \right]</td>
-<td>$\left[ \frac{a}{b} \right]$</td>
-</tr>
-<tr>
-<td>花括号，大括号</td>
-<td><code>\left\{ \frac{a}{b} \right\}</code></td>
-<td>$    \left{ \frac{a}{b} \right}$</td>
-</tr>
-<tr>
-<td>角括号</td>
-<td><code>\left \langle \frac{a}{b} \right \rangle</code></td>
-<td>$\left\langle \frac{a}{b} \right \rangle$</td>
-</tr>
-<tr>
-<td>单竖线，绝对值</td>
-<td>\left 竖线 \frac{a}{b} \right 竖线</td>
-<td></td>
-</tr>
-<tr>
-<td>双竖线，范</td>
-<td>\left \ 竖线 \frac{a}{b} \right \ 竖线</td>
-<td></td>
-</tr>
-<tr>
-<td>取整函数</td>
-<td><code>（Floor function）    \left \lfloor \frac{a}{b} \right \rfloor</code></td>
-<td>$    \left \lfloor \frac{a}{b} \right \rfloor$</td>
-</tr>
-<tr>
-<td>取顶函数</td>
-<td><code>（Ceiling function)    \left \lceil \frac{c}{d} \right \rceil</code></td>
-<td>$    \left \lceil \frac{c}{d} \right \rceil$</td>
-</tr>
-<tr>
-<td>斜线与反斜线</td>
-<td><code>\left / \frac{a}{b} \right \backslash</code></td>
-<td>$    \left / \frac{a}{b} \right \backslash$</td>
-</tr>
-<tr>
-<td>上下箭头</td>
-<td><code>\left \uparrow \frac{a}{b} \right \downarrow</code> <code>\left \Uparrow \frac{a}{b} \right \Downarrow</code> <code>\left \updownarrow \frac{a}{b} \right \Updownarrow</code></td>
-<td>$\left \uparrow \frac{a}{b} \right \downarrow$ $\left \Uparrow \frac{a}{b} \right \Downarrow$ $\left \updownarrow \frac{a}{b} \right \Updownarrow$</td>
-</tr>
-<tr>
-<td>混合括号</td>
-<td><code>\left [ 0,1 \right )</code> <code>\left \langle \psi )</code></td>
-<td>$\left [ 0,1 \right )$ $ \left \langle \psi \right)$</td>
-</tr>
-<tr>
-<td>单左括号</td>
-<td><code>\left \{ \frac{a}{b} \right .</code></td>
-<td>$\left { \frac{a}{b} \right .$</td>
-</tr>
-<tr>
-<td>单右括号</td>
-<td><code>\left . \frac{a}{b} \right \}</code></td>
-<td>$\left . \frac{a}{b} \right }$</td>
-</tr>
-</tbody>
-</table>
-<p>备注：
-可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示</p>
-<p>$$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$$</p>
-<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>$$\begin{matrix}…\end{matrix}$$</code>这样的形式来表示矩阵，在<code>\begin与\end</code>之间加入矩阵中的元素即可。矩阵的行之间使用<code>\\</code>分隔，列之间使用&amp;分隔。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">        \begin&#123;matrix&#125;</div><div class="line">        1 &amp; x &amp; x^2 \\</div><div class="line">        1 &amp; y &amp; y^2 \\</div><div class="line">        1 &amp; z &amp; z^2 \\</div><div class="line">        \end&#123;matrix&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<p>$$
-        \begin{matrix}
-        1 &amp; x &amp; x^2 \
-        1 &amp; y &amp; y^2 \
-        1 &amp; z &amp; z^2 \
-        \end{matrix}
-$$</p>
-<h3 id="加括号"><a href="#加括号" class="headerlink" title="加括号"></a>加括号</h3><p>如果要对矩阵加括号，可以像上文中提到的一样，使用<code>\left与\right</code>配合表示括号符号。也可以使用特殊的matrix。即替换<code>\begin{matrix}…\end{matrix}</code>中的matrix为pmatrix，bmatrix，Bmatrix，vmatrix,Vmatrix.</p>
-<h3 id="省略元素"><a href="#省略元素" class="headerlink" title="省略元素"></a>省略元素</h3><p>可以使用<code>\cdots ⋯
- \ddots ⋱
- \vdots ⋮</code>
-来省略矩阵中的元素</p>
-<h3 id="增广矩阵"><a href="#增广矩阵" class="headerlink" title="增广矩阵"></a>增广矩阵</h3><p>增广矩阵需要使用前面的array来实现
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$ \left[</div><div class="line">      \begin&#123;array&#125;&#123;cc|c&#125;</div><div class="line">        1&amp;2&amp;3\\</div><div class="line">        4&amp;5&amp;6</div><div class="line">      \end&#123;array&#125;</div><div class="line">    \right]</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<p>$$ \left[
-      \begin{array}{cc|c}
-        1&amp;2&amp;3\
-        4&amp;5&amp;6
-      \end{array}
-    \right]
-$$</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>使用<code>$$\begin{array}{列样式}…\end{array}$$</code>这样的形式来创建表格，列样式可以是clr表示居中，左，右对齐，还可以使用|表示一条竖线。表格中 各行使用<code>\\</code>分隔，各列使用&amp;分隔。使用<code>\hline</code>在本行前加入一条直线。 例如，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">\begin&#123;array&#125;&#123;c|lcr&#125;</div><div class="line">n &amp; \text&#123;Left&#125; &amp; \text&#123;Center&#125; &amp; \text&#123;Right&#125; \\</div><div class="line">\hline</div><div class="line">1 &amp; 0.24 &amp; 1 &amp; 125 \\</div><div class="line">2 &amp; -1 &amp; 189 &amp; -8 \\</div><div class="line">3 &amp; -20 &amp; 2000 &amp; 1+10i \\</div><div class="line">\end&#123;array&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<h2 id="上标与下标"><a href="#上标与下标" class="headerlink" title="上标与下标"></a>上标与下标</h2><p>上标和下标分别使用<code>^与_</code>，例如<code>x_i^2</code>：$x_i^2$
-。默认情况下，上下标符号仅仅对下一个组起作用。一个组即单个字符或者使用{..}包裹起来的内容。也就是说，如果使用<code>10^10</code>，会得到$10^10$
-，而<code>10^{10}</code>才是$10^{10}$
-。同时，大括号还能消除二义性，如<code>x^5^6</code>将得到一个错误，必须使用大括号来界定<code>^</code>的结合性，如<code>{x^5}^6</code>：${x^5}^6$
- 或者 <code>x^{5^6}</code>：$x^{5^6}$
-。</p>
-<h2 id="对齐的公式"><a href="#对齐的公式" class="headerlink" title="对齐的公式"></a>对齐的公式</h2><h2 id="分类表达式"><a href="#分类表达式" class="headerlink" title="分类表达式"></a>分类表达式</h2><p>定义函数的时候经常需要分情况给出表达式，可使用<code>\begin{cases}…\end{cases}</code>。其中，使用<code>\</code>来分类，使用&amp;指示需要对齐的位置。如：</p>
-<h2 id="多重积分"><a href="#多重积分" class="headerlink" title="多重积分"></a>多重积分</h2><h2 id="连分数"><a href="#连分数" class="headerlink" title="连分数"></a>连分数</h2><h2 id="方程组"><a href="#方程组" class="headerlink" title="方程组"></a>方程组</h2><h2 id="颜色"><a href="#颜色" class="headerlink" title="颜色"></a>颜色</h2><h2 id="公式标记与引用"><a href="#公式标记与引用" class="headerlink" title="公式标记与引用"></a>公式标记与引用</h2><h2 id="求和与积分"><a href="#求和与积分" class="headerlink" title="求和与积分"></a>求和与积分</h2><h2 id="分式与根式"><a href="#分式与根式" class="headerlink" title="分式与根式"></a>分式与根式</h2><h2 id="特殊函数与符号"><a href="#特殊函数与符号" class="headerlink" title="特殊函数与符号"></a>特殊函数与符号</h2><h2 id="空间"><a href="#空间" class="headerlink" title="空间"></a>空间</h2><h2 id="顶部符号"><a href="#顶部符号" class="headerlink" title="顶部符号"></a>顶部符号</h2><blockquote>
-<p>参考
-<a href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/" target="_blank" rel="external">http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/13/am-function-and-limitaion/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/13/am-function-and-limitaion/" itemprop="url">
-                  高数1.函数与极限
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T22:34:04+08:00">
-                2017-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/高数/" itemprop="url" rel="index">
-                    <span itemprop="name">高数</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-映射与函数"><a href="#1-映射与函数" class="headerlink" title="1.映射与函数"></a>1.映射与函数</h2><h3 id="1-1-集合"><a href="#1-1-集合" class="headerlink" title="1.1 集合"></a>1.1 集合</h3><h4 id="1-1-1-集合的概念"><a href="#1-1-1-集合的概念" class="headerlink" title="1.1.1 集合的概念"></a>1.1.1 集合的概念</h4><p>集合(集)是指具有某种特定性质的事物的总体,组成这个集合的事物成为该集合的元素(简称元)</p>
-<p>表示:用大写拉丁字母A,B,C…表示集合,小写拉丁字母表示集合的元素</p>
-<p>分类:</p>
-<ul>
-<li>有限集</li>
-<li>无限集</li>
-</ul>
-<p>表示数集的字母的右上角标<code>*</code>表示该数集内排除0的集,标上<code>+</code>来表示数集内排除0和负数的集</p>
-<p>常用表示</p>
-<ol>
-<li>N={0, 1, 2, 3…};全体非负整数即自然数的集合</li>
-<li>N<sup>+</sup>={1,2,3,…n,….};全体正整数的集合</li>
-<li>Z={…,-n,…-3, -2,-1, 0, 1, 2, 3,…,n…};全体整数的集合</li>
-<li>$Q=\lbrace \frac{p}{q}|p \in Z,q \in N^{+} \rbrace$;全体有理数集</li>
-</ol>
-<p>全体实数记做R,R<sup>*</sup>为排除0的实数集,R<sup>+</sup>为全体正实数集.</p>
-<p>子集概念:</p>
-<ul>
-<li>子集</li>
-<li>真子集</li>
-<li>集合相等:互为子集</li>
-<li>空集 $\emptyset$<h4 id="1-1-2-集合的运算"><a href="#1-1-2-集合的运算" class="headerlink" title="1.1.2 集合的运算"></a>1.1.2 集合的运算</h4></li>
-</ul>
-<h4 id="1-1-3-区间和领域"><a href="#1-1-3-区间和领域" class="headerlink" title="1.1.3 区间和领域"></a>1.1.3 区间和领域</h4>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3032,7 +2320,7 @@ $$</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -3054,7 +2342,7 @@ $$</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

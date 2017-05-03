@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="webrtc,源码," />
 
 
 
@@ -89,12 +89,22 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="老司机种菜">
-<meta property="og:url" content="http://wodekouwei.com/categories/linux管理/index.html">
+<meta name="description" content="api目录下封装了webrtc相关的供外部调用接口.
+peerconnection接口关于peerconnectioninterface.h说明:
+12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455// This file contains the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webrtc源码走读之api">
+<meta property="og:url" content="http://wodekouwei.com/2017/05/02/webrtc-source-api/index.html">
 <meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="api目录下封装了webrtc相关的供外部调用接口.
+peerconnection接口关于peerconnectioninterface.h说明:
+12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455// This file contains the">
+<meta property="og:updated_time" content="2017-05-02T08:38:43.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="老司机种菜">
+<meta name="twitter:title" content="webrtc源码走读之api">
+<meta name="twitter:description" content="api目录下封装了webrtc相关的供外部调用接口.
+peerconnection接口关于peerconnectioninterface.h说明:
+12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455// This file contains the">
 
 
 
@@ -122,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/categories/linux管理/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/05/02/webrtc-source-api/"/>
 
 
 
 
 
-  <title> 分类: linux管理 | 老司机种菜 </title>
+  <title> webrtc源码走读之api | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -163,7 +173,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -311,75 +321,228 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        linux管理
-        <small>分类</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/22/vmware-network-mode/" itemprop="url">
-              
-                <span itemprop="name">VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-22T18:08:51+08:00"
-              content="2017-04-22" >
-          04-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/22/linux-networkcard/" itemprop="url">
-              
-                <span itemprop="name">linux网卡配置</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-22T17:18:11+08:00"
-              content="2017-04-22" >
-          04-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </section>
 
   
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/02/webrtc-source-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                webrtc源码走读之api
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T16:23:59+08:00">
+                2017-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/02/webrtc-source-api/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>api目录下封装了webrtc相关的供外部调用接口.</p>
+<h3 id="peerconnection接口"><a href="#peerconnection接口" class="headerlink" title="peerconnection接口"></a>peerconnection接口</h3><p>关于<code>peerconnectioninterface.h</code>说明:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">// This file contains the PeerConnection interface as defined in</div><div class="line">// http://dev.w3.org/2011/webrtc/editor/webrtc.html#peer-to-peer-connections.</div><div class="line">//</div><div class="line">// The PeerConnectionFactory class provides factory methods to create</div><div class="line">// PeerConnection, MediaStream and MediaStreamTrack objects.</div><div class="line">//</div><div class="line">// The following steps are needed to setup a typical call using WebRTC:</div><div class="line">//</div><div class="line">// 1. Create a PeerConnectionFactoryInterface. Check constructors for more</div><div class="line">// information about input parameters.</div><div class="line">//</div><div class="line">// 2. Create a PeerConnection object. Provide a configuration struct which</div><div class="line">// points to STUN and/or TURN servers used to generate ICE candidates, and</div><div class="line">// provide an object that implements the PeerConnectionObserver interface,</div><div class="line">// which is used to receive callbacks from the PeerConnection.</div><div class="line">//</div><div class="line">// 3. Create local MediaStreamTracks using the PeerConnectionFactory and add</div><div class="line">// them to PeerConnection by calling AddTrack (or legacy method, AddStream).</div><div class="line">//</div><div class="line">// 4. Create an offer, call SetLocalDescription with it, serialize it, and send</div><div class="line">// it to the remote peer</div><div class="line">//</div><div class="line">// 5. Once an ICE candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. The candidates must also be serialized and</div><div class="line">// sent to the remote peer.</div><div class="line">//</div><div class="line">// 6. Once an answer is received from the remote peer, call</div><div class="line">// SetRemoteDescription with the remote answer.</div><div class="line">//</div><div class="line">// 7. Once a remote candidate is received from the remote peer, provide it to</div><div class="line">// the PeerConnection by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// The receiver of a call (assuming the application is &quot;call&quot;-based) can decide</div><div class="line">// to accept or reject the call; this decision will be taken by the application,</div><div class="line">// not the PeerConnection.</div><div class="line">//</div><div class="line">// If the application decides to accept the call, it should:</div><div class="line">//</div><div class="line">// 1. Create PeerConnectionFactoryInterface if it doesn&apos;t exist.</div><div class="line">//</div><div class="line">// 2. Create a new PeerConnection.</div><div class="line">//</div><div class="line">// 3. Provide the remote offer to the new PeerConnection object by calling</div><div class="line">// SetRemoteDescription.</div><div class="line">//</div><div class="line">// 4. Generate an answer to the remote offer by calling CreateAnswer and send it</div><div class="line">// back to the remote peer.</div><div class="line">//</div><div class="line">// 5. Provide the local answer to the new PeerConnection by calling</div><div class="line">// SetLocalDescription with the answer.</div><div class="line">//</div><div class="line">// 6. Provide the remote ICE candidates by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// 7. Once a candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. Send these candidates to the remote peer.</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webrtc/" rel="tag"># webrtc</a>
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/webrtc-source-base/" rel="next" title="webrtc源码走读之base">
+                <i class="fa fa-chevron-left"></i> webrtc源码走读之base
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/03/webrtc-nativeapis/" rel="prev" title="webrtc之Native APIs">
+                webrtc之Native APIs <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -387,6 +550,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
 
         </div>
         
@@ -406,8 +575,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -528,6 +706,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#peerconnection接口"><span class="nav-number">1.</span> <span class="nav-text">peerconnection接口</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -652,6 +846,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -833,26 +1031,6 @@
   
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
