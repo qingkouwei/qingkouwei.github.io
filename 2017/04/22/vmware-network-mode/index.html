@@ -89,34 +89,20 @@
 
 
 
-<meta name="description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：
-
-VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；
-VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；
-VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；
-VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
+<meta name="description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：  VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机； VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机； VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机； VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
+<meta name="keywords" content="网络,虚拟化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别">
 <meta property="og:url" content="http://wodekouwei.com/2017/04/22/vmware-network-mode/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：
-
-VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；
-VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；
-VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；
-VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
+<meta property="og:description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：  VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机； VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机； VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机； VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
 <meta property="og:image" content="http://images.wodekouwei.com/net/vmware_netmode_bridged.jpeg">
 <meta property="og:image" content="http://images.wodekouwei.com/net/vmware_netmode_nat.png">
 <meta property="og:image" content="http://images.wodekouwei.com/net/vmware_netmode_hostonly.png">
 <meta property="og:updated_time" content="2017-04-22T11:53:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别">
-<meta name="twitter:description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：
-
-VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；
-VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；
-VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；
-VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
+<meta name="twitter:description" content="不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：  VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机； VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机； VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机； VMnet2~VMnet7及VMnet9：是VMware用于虚拟">
 <meta name="twitter:image" content="http://images.wodekouwei.com/net/vmware_netmode_bridged.jpeg">
 
 
