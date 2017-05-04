@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="android,view,TextureView," />
 
 
 
@@ -89,12 +89,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="老司机种菜">
-<meta property="og:url" content="http://wodekouwei.com/categories/linux管理/index.html">
+<meta name="description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
+<meta name="keywords" content="android,view,TextureView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android textureview处理预览摄像头变形问题">
+<meta property="og:url" content="http://wodekouwei.com/2017/05/04/android-view-textureview/index.html">
 <meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
+<meta property="og:updated_time" content="2017-05-04T12:07:03.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="老司机种菜">
+<meta name="twitter:title" content="android textureview处理预览摄像头变形问题">
+<meta name="twitter:description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
 
 
 
@@ -122,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/categories/linux管理/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/05/04/android-view-textureview/"/>
 
 
 
 
 
-  <title> 分类: linux管理 | 老司机种菜 </title>
+  <title> android textureview处理预览摄像头变形问题 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -163,7 +168,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -311,75 +316,228 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        linux管理
-        <small>分类</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/22/vmware-network-mode/" itemprop="url">
-              
-                <span itemprop="name">VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-22T18:08:51+08:00"
-              content="2017-04-22" >
-          04-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/22/linux-networkcard/" itemprop="url">
-              
-                <span itemprop="name">linux网卡配置</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-22T17:18:11+08:00"
-              content="2017-04-22" >
-          04-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </section>
 
   
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/04/android-view-textureview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                android textureview处理预览摄像头变形问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T20:03:05+08:00">
+                2017-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/04/android-view-textureview/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public void sizeNotify(Camera.Size size) &#123;</div><div class="line">            float viewWidth = getWidth();</div><div class="line">            float viewHeight = getHeight();</div><div class="line"></div><div class="line">            float scaleX = 1.0f;</div><div class="line">            float scaleY = 1.0f;</div><div class="line">            int mPreviewWidth = size.width;</div><div class="line">            int mPreviewHeight = size.height;</div><div class="line">            if(viewWidth &lt; viewHeight) &#123;</div><div class="line">                mPreviewWidth = size.height;</div><div class="line">                mPreviewHeight = size.width;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123;</div><div class="line">                scaleX = mPreviewWidth / viewWidth;</div><div class="line">                scaleY = mPreviewHeight / viewHeight;</div><div class="line">            &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123;</div><div class="line">                scaleY = viewWidth / mPreviewWidth;</div><div class="line">                scaleX = viewHeight / mPreviewHeight;</div><div class="line">            &#125; else if (viewWidth &gt; mPreviewWidth) &#123;</div><div class="line">                scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight);</div><div class="line">            &#125; else if (viewHeight &gt; mPreviewHeight) &#123;</div><div class="line">                scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Calculate pivot points, in our case crop from center</div><div class="line">            int pivotPointX = (int) (viewWidth / 2);</div><div class="line">            int pivotPointY = (int) (viewHeight / 2);</div><div class="line"></div><div class="line">            Matrix matrix = new Matrix();</div><div class="line">            matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);</div><div class="line">            /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight +</div><div class="line">                    &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight +</div><div class="line">                    &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY +</div><div class="line">                    &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/</div><div class="line">            setTransform(matrix);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>TextureView中setTransform函数说明:
+Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content.</p>
+<p>Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/view/" rel="tag"># view</a>
+          
+            <a href="/tags/TextureView/" rel="tag"># TextureView</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/03/webrtc-nativeapis/" rel="next" title="webrtc之Native APIs">
+                <i class="fa fa-chevron-left"></i> webrtc之Native APIs
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -387,6 +545,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
 
         </div>
         
@@ -652,6 +816,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -833,26 +1001,6 @@
   
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

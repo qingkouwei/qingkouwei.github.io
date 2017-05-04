@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-05-03T03:58:23.000Z</updated>
+  <updated>2017-05-04T12:07:03.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>android textureview处理预览摄像头变形问题</title>
+    <link href="http://wodekouwei.com/2017/05/04/android-view-textureview/"/>
+    <id>http://wodekouwei.com/2017/05/04/android-view-textureview/</id>
+    <published>2017-05-04T12:03:05.000Z</published>
+    <updated>2017-05-04T12:07:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public void sizeNotify(Camera.Size size) &#123;</div><div class="line">            float viewWidth = getWidth();</div><div class="line">            float viewHeight = getHeight();</div><div class="line"></div><div class="line">            float scaleX = 1.0f;</div><div class="line">            float scaleY = 1.0f;</div><div class="line">            int mPreviewWidth = size.width;</div><div class="line">            int mPreviewHeight = size.height;</div><div class="line">            if(viewWidth &lt; viewHeight) &#123;</div><div class="line">                mPreviewWidth = size.height;</div><div class="line">                mPreviewHeight = size.width;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123;</div><div class="line">                scaleX = mPreviewWidth / viewWidth;</div><div class="line">                scaleY = mPreviewHeight / viewHeight;</div><div class="line">            &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123;</div><div class="line">                scaleY = viewWidth / mPreviewWidth;</div><div class="line">                scaleX = viewHeight / mPreviewHeight;</div><div class="line">            &#125; else if (viewWidth &gt; mPreviewWidth) &#123;</div><div class="line">                scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight);</div><div class="line">            &#125; else if (viewHeight &gt; mPreviewHeight) &#123;</div><div class="line">                scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Calculate pivot points, in our case crop from center</div><div class="line">            int pivotPointX = (int) (viewWidth / 2);</div><div class="line">            int pivotPointY = (int) (viewHeight / 2);</div><div class="line"></div><div class="line">            Matrix matrix = new Matrix();</div><div class="line">            matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);</div><div class="line">            /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight +</div><div class="line">                    &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight +</div><div class="line">                    &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY +</div><div class="line">                    &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/</div><div class="line">            setTransform(matrix);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>TextureView中setTransform函数说明:
+Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content.</p>
+<p>Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
+&lt;figure class=&quot;highlight pl
+    
+    </summary>
+    
+      <category term="android" scheme="http://wodekouwei.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="view" scheme="http://wodekouwei.com/tags/view/"/>
+    
+      <category term="TextureView" scheme="http://wodekouwei.com/tags/TextureView/"/>
+    
+  </entry>
   
   <entry>
     <title>webrtc之Native APIs</title>

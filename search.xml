@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[android textureview处理预览摄像头变形问题]]></title>
+    <url>%2F2017%2F05%2F04%2Fandroid-view-textureview%2F</url>
+    <content type="text"><![CDATA[当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(Camera.Size size) &#123; float viewWidth = getWidth(); float viewHeight = getHeight(); float scaleX = 1.0f; float scaleY = 1.0f; int mPreviewWidth = size.width; int mPreviewHeight = size.height; if(viewWidth &lt; viewHeight) &#123; mPreviewWidth = size.height; mPreviewHeight = size.width; &#125; if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123; scaleX = mPreviewWidth / viewWidth; scaleY = mPreviewHeight / viewHeight; &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123; scaleY = viewWidth / mPreviewWidth; scaleX = viewHeight / mPreviewHeight; &#125; else if (viewWidth &gt; mPreviewWidth) &#123; scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight); &#125; else if (viewHeight &gt; mPreviewHeight) &#123; scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth); &#125; // Calculate pivot points, in our case crop from center int pivotPointX = (int) (viewWidth / 2); int pivotPointY = (int) (viewHeight / 2); Matrix matrix = new Matrix(); matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY); /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight + &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight + &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY + &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/ setTransform(matrix); &#125; TextureView中setTransform函数说明: Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content. Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>view</tag>
+        <tag>TextureView</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[webrtc之Native APIs]]></title>
     <url>%2F2017%2F05%2F03%2Fwebrtc-nativeapis%2F</url>
     <content type="text"><![CDATA[Block diagram Calling sequencesSet up a call Receive a call Close down a call Threading modelWebRTC native APIs use two globally available threads: the signaling thread and the worker thread. Depending on how the PeerConnection factory is created, the application can either provide those 2 threads or just let them be created internally. The calls to the Stream APIs and the PeerConnection APIs will be proxied to the signaling thread which means that the application can call those APIs from whatever thread. All callbacks will be made on the signaling thread. The application should return the callback as quickly as possible to avoid blocking the signaling thread. Resource intensive processes should be posted to a different thread. The worker thread is used to handle more resource intensive processes such as data streaming. https://sites.google.com/site/webrtc/native-code/native-apis]]></content>
