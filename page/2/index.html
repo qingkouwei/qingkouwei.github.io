@@ -323,6 +323,199 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/vmware-network-mode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/22/vmware-network-mode/" itemprop="url">
+                  VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T18:08:51+08:00">
+                2017-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux管理/" itemprop="url" rel="index">
+                    <span itemprop="name">linux管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：</p>
+<ul>
+<li>VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；</li>
+<li>VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；</li>
+<li>VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；</li>
+<li>VMnet2~VMnet7及VMnet9：是VMware用于虚拟自定义custom网络下的虚拟交换机；</li>
+<li>VMware Network Adapter VMnet1：这是宿主机用于与Host-Only虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
+<li>VMware Network Adapter VMnet8：这是宿主机用于与NAT虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
+</ul>
+<p>VMware Network Adapter VMnet1与VMware Network Adapter VMnet8可以在宿主机网络连接中看到.</p>
+<h3 id="1-Bridged桥接模式"><a href="#1-Bridged桥接模式" class="headerlink" title="1.Bridged桥接模式"></a>1.Bridged桥接模式</h3><p>VMware在桥接模式下，虚拟机使用VMware为该虚拟机分配的虚拟网卡，宿主机使用自身的物理网卡（有线或无线都行），并且默认使用虚拟交换机VMnet0来连接虚拟机的虚拟网卡和宿主机的物理网卡。在此模式下没有局域网动态地址分配DHCP服务器，也没有网络地址转换ＮＡＴ服务器，虚拟交换机没有连接DHCP服务器和ＮＡＴ服务器。宿主机的网口（插网线的那个口）与宿主机物理网卡相连，同时也就和虚拟机的虚拟网卡相连，也就是和虚拟交换机相连，所以虚拟机相当于在宿主机所在局域网内的一个单独的主机，他的行为和宿主机是同等地位的，没有依存关系。所有桥接下的网卡与网卡都是交换模式的，相互可以访问而不干扰。在桥接模式下，虚拟机ip地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致原理图如下：
+<img src="http://images.wodekouwei.com/net/vmware_netmode_bridged.jpeg" alt="bridged">
+配置虚拟机网卡,编辑<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=none</div><div class="line">IPADDR=192.168.31.128 #设置虚拟机ip地址,与主机ip地址在同一网段</div><div class="line">NETMASK=255.255.255.0 #设置子网掩码</div><div class="line">GATEWAY=192.168.31.1#设置虚拟网关,与主机相同</div><div class="line">DNS1=192.168.31.1 #设置虚拟机DNS,与主机相同</div></pre></td></tr></table></figure></p>
+<p>执行<code>/etc/init.d/network restart</code>重启虚拟机网卡,ping内网与外网测试.</p>
+<h3 id="2-NAT网络地址转换模式："><a href="#2-NAT网络地址转换模式：" class="headerlink" title="2.NAT网络地址转换模式："></a>2.NAT网络地址转换模式：</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_nat.png" alt="nat">
+注意：红色的方框是nat服务器，nat服务器有两个网卡一个是虚拟内网网卡，一个是宿主机的物理网卡。禁用VmNet8，虚拟机仍然可以上网，ping通主机，但是主机ping不通虚拟机的网卡。在NAT模式中，主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网。那么我们会觉得很奇怪，为什么需要虚拟网卡VMware Network Adapter VMnet8呢？原来我们的VMware Network Adapter VMnet8虚拟网卡主要是为了实现主机与虚拟机之间的通信。弥补了NAT协议中外网不能访问局域网的缺点。
+具体配置:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=dhcp #动态获取ip地址,如果此处设置为静态,则下面手动配置ip需要在DHCP地址范围内</div><div class="line">#NAT模式也可以设置静态ip,但需要在DHCP地址范围内</div><div class="line">IPADDR=192.168.31.128</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.31.1</div><div class="line">DNS1=192.168.31.1</div></pre></td></tr></table></figure></p>
+<h3 id="3-Host-Only方式"><a href="#3-Host-Only方式" class="headerlink" title="3.Host-Only方式"></a>3.Host-Only方式</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_hostonly.png" alt="host-only">
+注意：上图中的VmNet8应该为VmNet1。其实跟nat模式的图片是类似的，只是少了nat服务。
+所以host-only上不了外网，只能实现主机的VmNet1网卡和虚拟机的虚拟网卡通信。</p>
+<h3 id="NAT介绍"><a href="#NAT介绍" class="headerlink" title="NAT介绍"></a>NAT介绍</h3><p>NAT（Network Address Translation，网络地址转换）是1994年提出的。当在专用网内部的一些主机本来已经分配到了本地IP地址（即仅在本专用网内使用的专用地址），但现在又想和因特网上的主机通信（并不需要加密）时，可使用NAT方法。
+这种方法需要在专用网连接到因特网的路由器上安装NAT软件。装有NAT软件的路由器叫做NAT路由器，它至少有一个有效的外部全球IP地址。这样，所有使用本地地址的主机在和外界通信时，都要在NAT路由器上将其本地地址转换成全球IP地址，才能和因特网连接。
+另外，这种通过使用少量的公有IP 地址代表较多的私有IP 地址的方式，将有助于减缓可用的IP地址空间的枯竭。</p>
+<h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><p>NAT不仅能解决了lP地址不足的问题，而且还能够有效地避免来自网络外部的攻击，隐藏并保护网络内部的计算机。</p>
+<ol>
+<li>宽带分享：这是 NAT 主机的最大功能。</li>
+<li>安全防护：NAT 之内的 PC 联机到 Internet 上面时，他所显示的 IP 是 NAT 主机的公共 IP，所以 Client 端的 PC 当然就具有一定程度的安全了，外界在进行 portscan（端口扫描） 的时候，就侦测不到源Client 端的 PC 。</li>
+</ol>
+<h4 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h4><p>NAT的实现方式有三种，即静态转换Static Nat、动态转换Dynamic Nat和端口多路复用OverLoad。</p>
+<ol>
+<li>静态转换是指将内部网络的私有IP地址转换为公有IP地址，IP地址对是一对一的，是一成不变的，某个私有IP地址只转换为某个公有IP地址。借助于静态转换，可以实现外部网络对内部网络中某些特定设备（如服务器）的访问。</li>
+<li>动态转换是指将内部网络的私有IP地址转换为公用IP地址时，IP地址是不确定的，是随机的，所有被授权访问上Internet的私有IP地址可随机转换为任何指定的合法IP地址。也就是说，只要指定哪些内部地址可以进行转换，以及用哪些合法地址作为外部地址时，就可以进行动态转换。动态转换可以使用多个合法外部地址集。当ISP提供的合法IP地址略少于网络内部的计算机数量时。可以采用动态转换的方式。</li>
+<li>端口多路复用（Port address Translation,PAT)是指改变外出数据包的源端口并进行端口转换，即端口地址转换（PAT，Port Address Translation).采用端口多路复用方式。内部网络的所有主机均可共享一个合法外部IP地址实现对Internet的访问，从而可以最大限度地节约IP地址资源。同时，又可隐藏网络内部的所有主机，有效避免来自internet的攻击。因此，目前网络中应用最多的就是端口多路复用方式。</li>
+<li>ALG（Application Level Gateway），即应用程序级网关技术：传统的NAT技术只对IP层和传输层头部进行转换处理，但是一些应用层协议，在协议数据报文中包含了地址信息。为了使得这些应用也能透明地完成NAT转换，NAT使用一种称作ALG的技术，它能对这些应用程序在通信时所包含的地址信息也进行相应的NAT转换。例如：对于FTP协议的PORT/PASV命令、DNS协议的 “A” 和 “PTR” queries命令和部分ICMP消息类型等都需要相应的ALG来支持。
+如果协议数据报文中不包含地址信息，则很容易利用传统的NAT技术来完成透明的地址转换功能，通常我们使用的如下应用就可以直接利用传统的NAT技术：HTTP、TELNET、FINGER、NTP、NFS、ARCHIE、RLOGIN、RSH、RCP等。</li>
+</ol>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>借助于NAT，私有（保留）地址的”内部”网络通过路由器发送数据包时，私有地址被转换成合法的IP地址，一个局域网只需使用少量IP地址（甚至是1个）即可实现私有地址网络内所有计算机与Internet的通信需求。
+NAT将自动修改IP报文的源IP地址和目的IP地址，Ip地址校验则在NAT处理过程中自动完成。有些应用程序将源IP地址嵌入到IP报文的数据部分中，所以还需要同时对报文的数据部分进行修改，以匹配IP头中已经修改过的源IP地址。否则，在报文数据部分嵌入IP地址的应用程序就不能正常工作。</p>
+<h4 id="NAPT"><a href="#NAPT" class="headerlink" title="NAPT"></a>NAPT</h4><p>NAPT（Network Address Port Translation），即网络端口地址转换，可将多个内部地址映射为一个合法公网地址，但以不同的协议端口号与不同的内部地址相对应，也就是&lt;内部地址+内部端口&gt;与&lt;外部地址+外部端口&gt;之间的转换。NAPT普遍用于接入设备中，它可以将中小型的网络隐藏在一个合法的IP地址后面。NAPT也被称为“多对一”的NAT，或者叫PAT（Port Address Translations，端口地址转换）、地址超载（address overloading）。
+NAPT与动态地址NAT不同，它将内部连接映射到外部网络中的一个单独的IP地址上，同时在该地址上加上一个由NAT设备选定的TCP端口号。NAPT算得上是一种较流行的NAT变体，通过转换TCP或UDP协议端口号以及地址来提供并发性。除了一对源和目的IP地址以外，这个表还包括一对源和目的协议端口号，以及NAT盒使用的一个协议端口号。
+NAPT的主要优势在于，能够使用一个全球有效IP地址获得通用性。主要缺点在于其通信仅限于TCP或UDP。当所有通信都采用TCP或UDP，NAPT允许一台内部计算机访问多台外部计算机，并允许多台内部主机访问同一台外部计算机，相互之间不会发生冲突。</p>
+<h4 id="NAT穿透方法"><a href="#NAT穿透方法" class="headerlink" title="NAT穿透方法"></a>NAT穿透方法</h4><p>目前常用的针对UDP的NAT 穿透（NAT Traversal）方法主要有：STUN、TURN、ICE、uPnP等。其中ICE方式由于其结合了STUN和TURN的特点，所以使用最为广泛。针对TCP的NAT穿透技术目前仍为难点。实用的技术仍然不多。</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>在配置NAT(网络地址转换)之前，首先需要了解内部本地地址和内部全局地址的分配情况。根据不同的需求，执行以下不同的配置任务。</p>
+<ul>
+<li>内部源地址NAT配置</li>
+<li>内部源地址NAPT配置</li>
+<li>重叠地址NAT配置</li>
+<li>TCP负载均衡</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/linux-networkcard/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2313,7 +2506,7 @@ $$</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2335,7 +2528,7 @@ $$</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
