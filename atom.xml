@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-06-07T14:19:36.000Z</updated>
+  <updated>2017-06-07T14:31:33.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>多媒体技术简介</title>
+    <link href="http://wodekouwei.com/2017/06/07/media-intro/"/>
+    <id>http://wodekouwei.com/2017/06/07/media-intro/</id>
+    <published>2017-06-07T14:28:19.000Z</published>
+    <updated>2017-06-07T14:31:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="关键帧间隔"><a href="#关键帧间隔" class="headerlink" title="关键帧间隔"></a>关键帧间隔</h4><p>关键帧包含了显示帧需要的所有信息</p>
+<p>所有的视频都至少包含一个关键帧，作为文件的第一个帧。其它的关键帧可用来改善视频的质量，不过它们也会增加文件大小。一般而言，每一秒视频至少需要使用 1 个关键帧。若使用此公式，在每秒播放 25个帧的视频中，每 25 个帧就会有 1 个关键帧。增加关键帧个数可改善质量，但是同时增加带宽和网络负载。</p>
+<p>两种彩电视频制式：</p>
+<ul>
+<li>NTSC (525 lines @ 59.94 Hz)  29.97 fps</li>
+<li>PAL (625 lines @ 50 Hz)  25 fps</li>
+</ul>
+<p>NTSC和PAL属于全球两大主要的电视广播制式，但是由于系统投射颜色影像的频率而有所不同。NTSC是National Television System Committee的缩写，其标准主要应用于日本、美国，加拿大、墨西哥等等，PAL 则是Phase Alternating Line的缩写，主要应用于中国，香港、中东地区和欧洲一带。</p>
+<p>GOP最大可含帧数目：18 (NTSC) / 15 (PAL)</p>
+<p>GOP是由固定模式的一系列I帧、P帧、B帧组成。
+I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域冗余。
+常用的结构由15个帧组成，具有以下形式IBBPBBPBBPBBPBB。简称GOP(4,2)，指的是该图像组除了一个I帧外，包含了4个P帧，并且任何两个P帧或者I、P之间都有两个B帧。</p>
+<p>GOP（Group of Pictures）策略影响编码质量：所谓GOP，意思是画面组，一个GOP就是一组连续的画面。MPEG编码将画面（即帧）分为I、P、B三种，I是内部编码帧，P是前向预测帧，B是双向内插帧。简单地讲，I帧是一个完整的画面，而P帧和B帧记录的是相对于I帧的变化。没有I帧，P帧和B帧就无法解码，这就是MPEG格式难以精确剪辑的原因，也是我们之所以要微调头和尾的原因。</p>
+<p>MPEG-2 帧结构
+　　MPEG-2压缩的帧结构有两个参数，一个是GOP（Group Of Picture）图像组的长度，一般可按编码方式从1－15；另一个是I帧和P帧之间B帧的数量，一般是1－2个。前者在理论上记录为N，即多少帧里面出现一次I帧；后者描述为多少帧里出现一次P帧，记录为M。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;关键帧间隔&quot;&gt;&lt;a href=&quot;#关键帧间隔&quot; class=&quot;headerlink&quot; title=&quot;关键帧间隔&quot;&gt;&lt;/a&gt;关键帧间隔&lt;/h4&gt;&lt;p&gt;关键帧包含了显示帧需要的所有信息&lt;/p&gt;
+&lt;p&gt;所有的视频都至少包含一个关键帧，作为文件的第一个帧。其它的关键帧可用
+    
+    </summary>
+    
+      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
+    
+    
+      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
+    
+      <category term="音视频" scheme="http://wodekouwei.com/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>jni介绍</title>
+    <link href="http://wodekouwei.com/2017/06/07/jni-intro/"/>
+    <id>http://wodekouwei.com/2017/06/07/jni-intro/</id>
+    <published>2017-06-07T14:23:23.000Z</published>
+    <updated>2017-06-07T14:27:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-C回调JAVA"><a href="#1-C回调JAVA" class="headerlink" title="1.C回调JAVA"></a>1.C回调JAVA</h3><ol>
+<li><p>c中返回一个字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中返回一个数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line">  </div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-C回调JAVA&quot;&gt;&lt;a href=&quot;#1-C回调JAVA&quot; class=&quot;headerlink&quot; title=&quot;1.C回调JAVA&quot;&gt;&lt;/a&gt;1.C回调JAVA&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;c中返回一个字符串&lt;/p&gt;
+&lt;figure class=&quot;high
+    
+    </summary>
+    
+    
+      <category term="JNI" scheme="http://wodekouwei.com/tags/JNI/"/>
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+  </entry>
   
   <entry>
     <title>FFMPEG编译之Mac</title>
@@ -343,7 +423,7 @@ Sets the transform to associate with this texture view. The specified transform 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">// This file contains the PeerConnection interface as defined in</div><div class="line">// http://dev.w3.org/2011/webrtc/editor/webrtc.html#peer-to-peer-connections.</div><div class="line">//</div><div class="line">// The PeerConnectionFactory class provides factory methods to create</div><div class="line">// PeerConnection, MediaStream and MediaStreamTrack objects.</div><div class="line">//</div><div class="line">// The following steps are needed to setup a typical call using WebRTC:</div><div class="line">//</div><div class="line">// 1. Create a PeerConnectionFactoryInterface. Check constructors for more</div><div class="line">// information about input parameters.</div><div class="line">//</div><div class="line">// 2. Create a PeerConnection object. Provide a configuration struct which</div><div class="line">// points to STUN and/or TURN servers used to generate ICE candidates, and</div><div class="line">// provide an object that implements the PeerConnectionObserver interface,</div><div class="line">// which is used to receive callbacks from the PeerConnection.</div><div class="line">//</div><div class="line">// 3. Create local MediaStreamTracks using the PeerConnectionFactory and add</div><div class="line">// them to PeerConnection by calling AddTrack (or legacy method, AddStream).</div><div class="line">//</div><div class="line">// 4. Create an offer, call SetLocalDescription with it, serialize it, and send</div><div class="line">// it to the remote peer</div><div class="line">//</div><div class="line">// 5. Once an ICE candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. The candidates must also be serialized and</div><div class="line">// sent to the remote peer.</div><div class="line">//</div><div class="line">// 6. Once an answer is received from the remote peer, call</div><div class="line">// SetRemoteDescription with the remote answer.</div><div class="line">//</div><div class="line">// 7. Once a remote candidate is received from the remote peer, provide it to</div><div class="line">// the PeerConnection by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// The receiver of a call (assuming the application is &quot;call&quot;-based) can decide</div><div class="line">// to accept or reject the call; this decision will be taken by the application,</div><div class="line">// not the PeerConnection.</div><div class="line">//</div><div class="line">// If the application decides to accept the call, it should:</div><div class="line">//</div><div class="line">// 1. Create PeerConnectionFactoryInterface if it doesn&apos;t exist.</div><div class="line">//</div><div class="line">// 2. Create a new PeerConnection.</div><div class="line">//</div><div class="line">// 3. Provide the remote offer to the new PeerConnection object by calling</div><div class="line">// SetRemoteDescription.</div><div class="line">//</div><div class="line">// 4. Generate an answer to the remote offer by calling CreateAnswer and send it</div><div class="line">// back to the remote peer.</div><div class="line">//</div><div class="line">// 5. Provide the local answer to the new PeerConnection by calling</div><div class="line">// SetLocalDescription with the answer.</div><div class="line">//</div><div class="line">// 6. Provide the remote ICE candidates by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// 7. Once a candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. Send these candidates to the remote peer.</div></pre></td></tr></table></figure></p>
 <p><script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.27/webfontloader.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">Alice->Bob: Hello Bob, how are you?
 Note right of Bob: Bob thinks
-Bob-->Alice: I am good thanks!</textarea><textarea id="sequence-0-options" style="display: none">{"theme":"simple","scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
+Bob-->Alice: I am good thanks!</textarea><textarea id="sequence-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12,"theme":"simple"}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
 ]]></content>
     
     <summary type="html">
