@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-06-03T13:57:37.000Z</updated>
+  <updated>2017-06-07T14:19:36.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,98 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>FFMPEG编译之Mac</title>
+    <link href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/"/>
+    <id>http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/</id>
+    <published>2017-06-07T13:28:32.000Z</published>
+    <updated>2017-06-07T14:19:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
+<ol>
+<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other *nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
+<li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
+<li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
+</ol>
+<h3 id="手动编译FFMPEG"><a href="#手动编译FFMPEG" class="headerlink" title="手动编译FFMPEG"></a>手动编译FFMPEG</h3><h4 id="1-下载FFMPEG源码"><a href="#1-下载FFMPEG源码" class="headerlink" title="1.下载FFMPEG源码"></a>1.下载FFMPEG源码</h4><p>使用<code>git clone https://github.com/FFmpeg/FFmpeg</code>从github下载ffmpeg源码,切换到要使用的目标分支(这里使用release/3.3):<code>git checkout -b r3.3 origin/release/3.3</code>,或者直接从github下载分支<code>release/3.3</code>的压缩包,解压.</p>
+<h4 id="2-准备Xcode"><a href="#2-准备Xcode" class="headerlink" title="2.准备Xcode"></a>2.准备Xcode</h4><p>Starting with Lion 10.7, Xcode is available for free from the Mac App Store and is required to compile anything on your Mac. Make sure you install the Command Line Tools from Preferences &gt; Downloads &gt; Components. Older versions are still available with an AppleID and free Developer account at ​developer.apple.com.</p>
+<h4 id="3-准备HomeBrew工具"><a href="#3-准备HomeBrew工具" class="headerlink" title="3.准备HomeBrew工具"></a>3.准备HomeBrew工具</h4><p>To get ffmpeg for OS X, you first have to install ​Homebrew. If you don’t want to use Homebrew, see the section below.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
+<p>Then:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install automake fdk-aac git lame libass libtool libvorbis libvpx \</div><div class="line">opus sdl shtool texi2html theora wget x264 x265 xvid yasm</div></pre></td></tr></table></figure></p>
+<p>Mac OS X Lion comes with Freetype already installed (older versions may need ‘X11’ selected during installation), but in an atypical location: /usr/X11. Running freetype-config in Terminal can give the locations of the individual folders, like headers, and libraries, so be prepared to add lines like CFLAGS=<code>freetype-config --cflags</code> LDFLAGS=<code>freetype-config --libs</code> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig before ./configure or add them to your $HOME/.profile file.</p>
+<h4 id="4-编译"><a href="#4-编译" class="headerlink" title="4.编译"></a>4.编译</h4><p>Once you have compiled all of the codecs/libraries you want, you can now download the FFmpeg source either with Git or the from release tarball links on the website. Study the output of ./configure –help and make sure you’ve enabled all the features you want, remembering that –enable-nonfree and –enable-gpl will be necessary for some of the dependencies above. A sample command is:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git clone http://source.ffmpeg.org/git/ffmpeg.git ffmpeg</div><div class="line">cd ffmpeg</div><div class="line">./configure  --prefix=/usr/local/ffmpeg --enable-gpl --enable-nonfree --enable-libass \</div><div class="line">--enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \</div><div class="line">--enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid</div><div class="line">make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
+<p><code>--prefix</code>指定编译完成后安装路径,这里指定到<code>/usr/local/ffmpeg</code>,安装完成会在<code>/usr/local/ffmpeg</code>下生成:bin,include,lib,share四个目录</p>
+<h3 id="安装环境介绍"><a href="#安装环境介绍" class="headerlink" title="安装环境介绍"></a>安装环境介绍</h3><p>A package consists of several related files which are installed in several directories. The configure step usually allows the user to specify the so-called install prefix, and is usually specified through the configure option configure –prefix=PREFIX, where PREFIX usually is by default /usr/local. The prefix specifies the common directory where all the components are installed.</p>
+<p>The following directories are usually involved in the installation:</p>
+<ul>
+<li><code>PREFIX/bin</code>: contains the generated binaries (e.g. ffmpeg, ffplay, ffprobe etc. in the case of FFmpeg)</li>
+<li><code>PREFIX/include</code>: contains the library headers (e.g. libavutil/avstring.h, libavcodec/avcodec.h, libavformat/avformat.h etc. in case of FFmpeg) required to compile applications linked against the package libraries</li>
+<li><code>PREFIX/lib</code>: contains the generated libraries (e.g. libavutil, libavcodec, libavformat etc. in the case of FFmpeg)</li>
+<li><code>PREFIX/share</code>: contains various system-independent components; especially documentation files and examples
+By specifying the prefix it is possible to define the installation layout.</li>
+</ul>
+<p>By using a shared prefix like /usr/local/, different packages will be installed in the same directory, so in general it will be more difficult to revert the installation.</p>
+<p>Using a prefix like /opt/PROJECT/, the project will be installed in a dedicated directory, and to remove from the system you can simply remove the /opt/PREFIX path. On the other hand, such installation will require to edit all the environment variables to point to the custom path.</p>
+<h3 id="Environment-variables"><a href="#Environment-variables" class="headerlink" title="Environment variables"></a>Environment variables</h3><p>Several variables defined in the environment affect your package install. In particular, depending on your installation prefix, you may need to update some of these variables in order to make sure that the installed components can be found by the system tools.</p>
+<p>The list of environment variables can be shown through the command env.</p>
+<p>A list of the affected variables follows:</p>
+<ul>
+<li>PATH: defines the list of :-separated paths where the system looks for binaries. For example if you install your package in /usr/local/, you should update the PATH so that it will contain /usr/local/bin. This can be done for example through the command export PATH=/usr/local/bin:$PATH.</li>
+<li>LD_LIBRARY_PATH: contains the :-separated paths where the system looks for libraries. For example if you install your package in /usr/local/, you should update the LD_LIBRARY_PATH so that it will contain /usr/local/lib. This can be done for example through the command export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH. This variable is sometimes deprecated in favor of the use of ldconfig.</li>
+<li>CFLAGS: contains flags used by the C compiler, and usually includes preprocessing directives like -IPREFIX/include or compilation flags. Custom CFLAGS are usually prefixed to the source package compiler flags by the source package build system. Alternatively many build systems allow to specify the configure option -extra-cflags.</li>
+<li>LDFLAGS: these are directives used by the linker, and usually include linking directives like -LPREFIX/lib needed to find libraries installed in custom paths. Custom LDFLAGS are usually prefixed to the source package linker flags by the source package build system. Alternatively, many build systems allow to specify the configure option -extra-ldflags.</li>
+<li>PKG_CONFIG_PATH: contains the :-separated paths used by pkg-config to detect the pkg-config files used by many build systems to detect the custom CFLAGS/LDFLAGS used by a specific library.
+In case you installed a package in a non standard path, you need to update these environment libraries so that system tools will be able to detect the package components. This is especially required when running a configure script for a package relying on other installed libraries/headers/tools.</li>
+</ul>
+<p>Environment variables are usually defined in the profile file, for example .profile defined in the user directory for sh/bash users, and in /etc/profile. This file can be edited to permanently set the custom environment. Alternatively, the variables can be set in a script or in a particular shell session.</p>
+<p>Remember to export the variables to the child process, e.g. using the export command. Read the fine documentation of your shell for more detailed information.</p>
+<h3 id="MAC下的动态链接库"><a href="#MAC下的动态链接库" class="headerlink" title="MAC下的动态链接库"></a>MAC下的动态链接库</h3><h4 id="扩展名"><a href="#扩展名" class="headerlink" title="扩展名"></a>扩展名</h4><p>Windows下.DLL,Linux下.so,Mac OS X下的扩展名是.dylib。
+.dylib是Mach-O格式，也就是Mac OS X下的二进制文件格式。Mac OS X提供了一系列
+工具，用于创建和访问动态链接库。</p>
+<ul>
+<li>编译器/usr/bin/cc，也就是gcc了，Apple改过的。这个主要还是一个壳，去调用其他
+的一些部件。当然同时还有/usr/bin/c++，等等。</li>
+<li>汇编器/usr/bin/as</li>
+<li>链接器/usr/bin/ld</li>
+</ul>
+<h4 id="MAC下创建动态链接库步骤"><a href="#MAC下创建动态链接库步骤" class="headerlink" title="MAC下创建动态链接库步骤:"></a>MAC下创建动态链接库步骤:</h4><ol>
+<li>首先是生成module文件，也就是.o文件。这跟一般的unix没什么区别。例如<code>cc -c a.c b.c</code>,就得到a.o和b.o</li>
+<li>可以用ld来合并.o文件，比如<code>ld -r -o c.o a.o b.o</code></li>
+<li>然后可以用libtool来创建动态链接库:<code>libtool -dynamic -o c.dylib a.o b.o</code>.（ 这里也可以用<code>libtool -static -o c.a a.o b.o</code>就创建静态库）</li>
+</ol>
+<p>如果用gcc直接编译，我记得linux下一般是可以:
+<code>gcc -shared -o c.so a.c b.c</code>
+而在Mac OS X下需要:
+<code>gcc -dynamiclib -o c.dylib a.c b.c</code></p>
+<h4 id="动态链接库的工具"><a href="#动态链接库的工具" class="headerlink" title="动态链接库的工具"></a>动态链接库的工具</h4><p>nm是最常用的，这个用法跟linux下差不多:<code>nm c.dylib</code>,可以看到导出符号表，等等。
+另一个常用的工具是otool，这个是Mac OS X独有的。比如想看看c.dylib的依赖关系<code>otool -L c.dylib</code></p>
+<h3 id="官网方法"><a href="#官网方法" class="headerlink" title="官网方法"></a>官网方法</h3><ul>
+<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
+<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Mac下FFMPEG使用&quot;&gt;&lt;a href=&quot;#Mac下FFMPEG使用&quot; class=&quot;headerlink&quot; title=&quot;Mac下FFMPEG使用&quot;&gt;&lt;/a&gt;Mac下FFMPEG使用&lt;/h3&gt;&lt;p&gt;There are a few ways to get FF
+    
+    </summary>
+    
+      <category term="FFMPEG" scheme="http://wodekouwei.com/categories/FFMPEG/"/>
+    
+    
+      <category term="Mac" scheme="http://wodekouwei.com/tags/Mac/"/>
+    
+      <category term="FFMPEG" scheme="http://wodekouwei.com/tags/FFMPEG/"/>
+    
+      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
+    
+      <category term="音视频" scheme="http://wodekouwei.com/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
+    
+  </entry>
   
   <entry>
     <title>OpenGL Frame Buffer Object(FBO)</title>
