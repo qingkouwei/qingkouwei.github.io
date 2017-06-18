@@ -323,6 +323,227 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-introduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/27/webrtc-introduce/" itemprop="url">
+                  webrtc之入门
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T22:16:53+08:00">
+                2017-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="webrtc-developers"><a href="#webrtc-developers" class="headerlink" title="webrtc developers"></a><a href="http://io13webrtc.appspot.com/#1" target="_blank" rel="external">webrtc developers</a></h2><h3 id="The-WebRTC-APIs"><a href="#The-WebRTC-APIs" class="headerlink" title="The WebRTC APIs"></a>The WebRTC APIs</h3><h4 id="Three-main-tasks"><a href="#Three-main-tasks" class="headerlink" title="Three main tasks"></a>Three main tasks</h4><ul>
+<li>Acquiring audio and video</li>
+<li>Communicating audio and video</li>
+<li>Communicating arbitrary data</li>
+</ul>
+<h4 id="Three-main-JavaScript-APIs"><a href="#Three-main-JavaScript-APIs" class="headerlink" title="Three main JavaScript APIs"></a>Three main JavaScript APIs</h4><ul>
+<li>MediaStream(aka getUserMedia)</li>
+<li>RTCPeerConnection</li>
+<li>RTCDataChannel</li>
+</ul>
+<h3 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h3><p>(Acquiring audio and video)</p>
+<h4 id="MediaStream-1"><a href="#MediaStream-1" class="headerlink" title="MediaStream"></a>MediaStream</h4><ul>
+<li>Pepresent a stream of audio and/or video</li>
+<li>Can contain multiple ‘tracks’</li>
+<li>Obtain a MediaStream with navigator.getUserMedia()</li>
+</ul>
+<h4 id="Constraints"><a href="#Constraints" class="headerlink" title="Constraints"></a>Constraints</h4><ul>
+<li>Controls the contents of the MediaStream</li>
+<li>Media type, resolution, frame rate<h3 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h3>(Audio and video communication between peers)<h4 id="RTCPeerConnection-does-a-lot"><a href="#RTCPeerConnection-does-a-lot" class="headerlink" title="RTCPeerConnection does a lot"></a>RTCPeerConnection does a lot</h4></li>
+<li>Signal processing</li>
+<li>Codec handling</li>
+<li>Peer to peer communication</li>
+<li>Security</li>
+<li>Bandwidth management<h4 id="WebRTC-architecture"><a href="#WebRTC-architecture" class="headerlink" title="WebRTC architecture"></a>WebRTC architecture</h4><img src="http://images.wodekouwei.com/protocol/webrtc_Architecture.png" alt="image"></li>
+</ul>
+<h3 id="RTCDataChannel"><a href="#RTCDataChannel" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h3><p>(Bidirectional communication of arbitrary data between peers)</p>
+<h4 id="RTCDataChannel-1"><a href="#RTCDataChannel-1" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h4><ul>
+<li>Same API as WebSockets</li>
+<li>Ultra-low latency</li>
+<li>Unreliable or reliable</li>
+<li>Secure</li>
+</ul>
+<h3 id="Servers-and-Protocols"><a href="#Servers-and-Protocols" class="headerlink" title="Servers and Protocols"></a>Servers and Protocols</h3><p>(Peer to peer — but we need servers :)</p>
+<h4 id="Abstract-Signaling"><a href="#Abstract-Signaling" class="headerlink" title="Abstract Signaling"></a>Abstract Signaling</h4><ul>
+<li>Need to exchange ‘session description’ objects:<ul>
+<li>What formats I support, what I want to send</li>
+<li>Network information for peer-to-peer setup</li>
+</ul>
+</li>
+<li>Can use any messaging mechanism</li>
+<li>Can use any messaging protocol
+<img src="http://images.wodekouwei.com/protocol/webrtc_signaling_dragram.png" alt="image"></li>
+</ul>
+<h3 id="STUN-and-TRUN"><a href="#STUN-and-TRUN" class="headerlink" title="STUN and TRUN"></a>STUN and TRUN</h3><p>(P2P in the age of firewalls and NATs)</p>
+<h4 id="An-ideal-world"><a href="#An-ideal-world" class="headerlink" title="An ideal world"></a>An ideal world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_noSTUNorTURN.png" alt="image"></p>
+<h4 id="The-real-world"><a href="#The-real-world" class="headerlink" title="The real world"></a>The real world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_firewall.png" alt="image"></p>
+<h4 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h4><ul>
+<li>Tell me what my public IP address is</li>
+<li>Simple server, cheap to run</li>
+<li>Data flows peer-to-peer
+<img src="http://images.wodekouwei.com/protocol/webrtc_stun.png" alt="image"></li>
+</ul>
+<h4 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h4><ul>
+<li>Provide a cloud fallback if peer-to-peer communication fails</li>
+<li>Data is sent through server, uses server bandwidth</li>
+<li>Ensures the call works in almost all environments
+<img src="http://images.wodekouwei.com/protocol/webrtc_STUNandTURN.png" alt="image"></li>
+</ul>
+<h4 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h4><ul>
+<li>ICE: a framework for connecting peers</li>
+<li>Tries to find the best path for each call</li>
+<li>Vast majority of calls can use STUN (webrtcstats.com):</li>
+</ul>
+<h4 id="Deploying-STUN-TURN"><a href="#Deploying-STUN-TURN" class="headerlink" title="Deploying STUN/TURN"></a>Deploying STUN/TURN</h4><ul>
+<li>stun.l.google.com:19302</li>
+<li>WebRTC stunserver, turnserver</li>
+<li>rfc5766-turn-server</li>
+<li>restund</li>
+</ul>
+<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a>Security</h3><h4 id="Security-throughout-WebRTC"><a href="#Security-throughout-WebRTC" class="headerlink" title="Security throughout WebRTC"></a>Security throughout WebRTC</h4><ul>
+<li>Mandatory encryption for media and data</li>
+<li>Secure UI, explicit opt-in</li>
+<li>Sandboxed, no plugins</li>
+<li><a href="http://www.ietf.org/proceedings/82/slides/rtcweb-13.pdf" target="_blank" rel="external">WebRTC Security Architecture</a></li>
+</ul>
+<h3 id="Architectures"><a href="#Architectures" class="headerlink" title="Architectures"></a>Architectures</h3><h4 id="Peer-to-Peer-one-to-one-call"><a href="#Peer-to-Peer-one-to-one-call" class="headerlink" title="Peer to Peer : one-to-one call"></a>Peer to Peer : one-to-one call</h4><p>clientA &lt;——–&gt; clientB</p>
+<h4 id="Mesh-small-N-way-call"><a href="#Mesh-small-N-way-call" class="headerlink" title="Mesh: small N-way call"></a>Mesh: small N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">clientA &lt;-------------&gt; clientB</div><div class="line">  /|\  \               /   /|\</div><div class="line">   |       \    /           |</div><div class="line">   |      /       \         |</div><div class="line">  \|/   /                  \|/</div><div class="line">clientC &lt;--------------&gt; clientD</div></pre></td></tr></table></figure>
+<h4 id="Star-medium-N-way-call"><a href="#Star-medium-N-way-call" class="headerlink" title="Star: medium N-way call"></a>Star: medium N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">clientA &lt;---------&gt; clientB</div><div class="line">clientA &lt;---------&gt; clientC</div><div class="line">clientA &lt;---------&gt; clientD</div></pre></td></tr></table></figure>
+<h4 id="MCU-large-N-way-call"><a href="#MCU-large-N-way-call" class="headerlink" title="MCU: large N-way call"></a>MCU: large N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MCU &lt;--------------&gt;clientA</div><div class="line">MCU &lt;--------------&gt;clientB</div><div class="line">MCU &lt;--------------&gt;clientC</div><div class="line">MCU &lt;--------------&gt;clientD</div><div class="line">MCU &lt;--------------&gt;clientE</div><div class="line">MCU &lt;--------------&gt;clientF</div><div class="line">MCU &lt;--------------&gt;clientG</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-gclient/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2688,323 +2909,11 @@ $$</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/09/m-f-mp4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/09/m-f-mp4/" itemprop="url">
-                  MP4格式解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T11:31:46+08:00">
-                2017-04-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
-                    <span itemprop="name">音视频封装</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>目前MP4的概念被炒得很火，也很乱。最开始MP4指的是音频（MP3的升级版），即MPEG-2 AAC标准。随后MP4概念被转移到视频上，对应的是MPEG-4标准。而现在我们流行的叫法，多半是指能播放MPEG-4标准编码格式视频的播放器。但是这篇文章介绍的内容跟上面这些都无关，我们要讨论的是MP4文件封装格式，对应的标准为ISO/IEC 14496-12，即信息技术 视听对象编码的第12部分：ISO 基本媒体文件格式（Information technology Coding of audio-visual objects Part 12: ISO base media file format）。ISO/IEC组织指定的标准一般用数字表示，ISO/IEC 14496即MPEG-4标准。</p>
-<p>MP4视频文件封装格式是基于QuickTime容器格式定义的，因此参考QuickTime的格式定义对理解MP4文件格式很有帮助。MP4文件格式是一个十分开放的容器，几乎可以用来描述所有的媒体结构，MP4文件中的媒体描述与媒体数据是分开的，并且媒体数据的组织也很自由，不一定要按照时间顺序排列，甚至媒体数据可以直接引用其他文件。同时，MP4也支持流媒体。MP4目前被广泛用于封装h.264视频和AAC音频，是高清视频的代表。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V,  3GP, F4V等。</p>
-<h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h3><p>MP4文件中的所有数据都装在box（QuickTime中为atom）中，也就是说MP4文件由若干个box组成，每个box有类型和长度，可以将box理解为一个数据对象块。box中可以包含另一个box，这种box称为container box。一个MP4文件首先会有且只有一个“ftyp”类型的box，作为MP4格式的标志并包含关于文件的一些信息；之后会有且只有一个“moov”类型的box（Movie Box），它是一种container box，子box包含了媒体的metadata信息；MP4文件的媒体数据包含在“mdat”类型的box（Midia Data Box）中，该类型的box也是container box，可以有多个，也可以没有（当媒体数据全部引用其他文件时），媒体数据的结构由metadata进行描述。</p>
-<p>下面是一些概念：</p>
-<ul>
-<li>track  表示一些sample的集合，对于媒体数据来说，track表示一个视频或音频序列。</li>
-<li>hint track  这个特殊的track并不包含媒体数据，而是包含了一些将其他数据track打包成流媒体的指示信息。</li>
-<li>sample  对于非hint track来说，video sample即为一帧视频，或一组连续视频帧，audio sample即为一段连续的压缩音频，它们统称sample。对于hint track，sample定义一个或多个流媒体包的格式。</li>
-<li>sample table  指明sampe时序和物理布局的表。</li>
-<li>chunk 一个track的几个sample组成的单元。</li>
-</ul>
-<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。
-<img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
-<h3 id="2-Box"><a href="#2-Box" class="headerlink" title="2.Box"></a>2.Box</h3><p>box中的字节序为网络字节序，也就是大端字节序（Big-Endian），简单的说，就是一个32位的4字节整数存储方式为高位字节在内存的低端。Box由header和body组成，其中header统一指明box的大小和类型，body根据类型有不同的意义和格式。</p>
-<p>标准的box开头的4个字节（32位）为box size，该大小包括box header和box body整个box的大小，这样我们就可以在文件中定位各个box。如果size为1，则表示这个box的大小为large size，真正的size值要在largesize域上得到。（实际上只有“mdat”类型的box才有可能用到large size。）如果size为0，表示该box为文件的最后一个box，文件结尾即为该box结尾。（同样只存在于“mdat”类型的box中。）size后面紧跟的32位为box type，一般是4个字符，如“ftyp”、“moov”等，这些box type都是已经预定义好的，分别表示固定的意义。如果是“uuid”，表示该box为用户扩展类型。如果box type是未定义的，应该将其忽略。</p>
-<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。
-“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
-<h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
-<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。
-<img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
-<h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>字节数</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>box size</td>
-<td>4</td>
-<td>box大小</td>
-</tr>
-<tr>
-<td>box type</td>
-<td>4</td>
-<td>box类型</td>
-</tr>
-<tr>
-<td>version</td>
-<td>1</td>
-<td>box版本，0或1，一般为0。（以下字节数均按version=0）</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>3</td>
-<td></td>
-</tr>
-<tr>
-<td>creation time</td>
-<td>4</td>
-<td>创建时间（相对于UTC时间1904-01-01零点的秒数）</td>
-</tr>
-<tr>
-<td>modification time</td>
-<td>4</td>
-<td>修改时间</td>
-</tr>
-<tr>
-<td>time scale</td>
-<td>4</td>
-<td>文件媒体在1秒时间内的刻度值，可以理解为1秒长度的时间单元数</td>
-</tr>
-<tr>
-<td>duration</td>
-<td>4</td>
-<td>该track的时间长度，用duration和time scale值可以计算track时长，比如audio track的time scale = 8000, duration = 560128，时长为70.016，video track的time scale = 600, duration = 42000，时长为70</td>
-</tr>
-<tr>
-<td>rate</td>
-<td>4</td>
-<td>推荐播放速率，高16位和低16位分别为小数点整数部分和小数部分，即[16.16] 格式，该值为1.0（0x00010000）表示正常前向播放</td>
-</tr>
-<tr>
-<td>volume</td>
-<td>2</td>
-<td>与rate类似，[8.8] 格式，1.0（0x0100）表示最大音量</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>10</td>
-<td>保留位</td>
-</tr>
-<tr>
-<td>matrix</td>
-<td>36</td>
-<td>视频变换矩阵</td>
-</tr>
-<tr>
-<td>pre-defined</td>
-<td>24</td>
-</tr>
-<tr>
-<td>next track id</td>
-<td>4</td>
-<td>下一个track使用的id号</td>
-</tr>
-</tbody>
-</table>
-<p><img src="http://images.wodekouwei.com/M/F/mp4_box_mvhd.png" alt="mvhd"></p>
-<h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。</p>
-<table>
-<tr>
-<th colspan="6">box类型</th><th colspan="6">说明</th>
-</tr>
-<tr>
-<td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td>
-</tr>
-<tr>
-<td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td>
-</tr>
-<tr>
-<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
-</tr>
-<tr>
-<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
-</tr>
-<tr>
-<td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td>
-</tr>
-<tr>
-<td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td>
-</tr>
-<td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td>
-
-<tr>
-<td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td>
-</tr>
-<tr>
-<td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td>
-</tr>
-<tr>
-<td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td>
-</tr>
-</table>  
-
-
-<h3 id="Mdat-Box"><a href="#Mdat-Box" class="headerlink" title="Mdat Box"></a>Mdat Box</h3>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -3049,7 +2958,7 @@ $$</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -3071,7 +2980,7 @@ $$</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
