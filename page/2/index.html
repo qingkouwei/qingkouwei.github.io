@@ -323,6 +323,1180 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/03/gl-fbo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/03/gl-fbo/" itemprop="url">
+                  OpenGL Frame Buffer Object(FBO)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-03T18:57:30+08:00">
+                2017-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Update: Framebuffer object extension is promoted as a core feature of OpenGL version 3.0, and is approved by ARB combining the following extensions;</p>
+<ul>
+<li>EXT_framebuffer_object</li>
+<li>EXT_framebuffer_blit</li>
+<li>EXT_framebuffer_multisample</li>
+<li>EXT_packed_depth_stencil</li>
+</ul>
+<hr>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>In <a href="http://www.songho.ca/opengl/gl_pipeline.html" target="_blank" rel="external">OpenGL rendering pipeline</a>, the geometry data and textures are transformed and passed several tests, and then finally rendered onto a screen as 2D pixels. The final rendering destination of the OpenGL pipeline is called framebuffer. Framebuffer is a collection of 2D arrays or storages utilized by OpenGL; colour buffers, depth buffer, stencil buffer and accumulation buffer. By default, OpenGL uses the framebuffer as a rendering destination that is created and managed entirely by the window system. This default framebuffer is called window-system-provided framebuffer.
+在OpenGL渲染管线中，几何数据和纹理经过多次转化和多次测试，最后以二维像素的形式显示在屏幕上。OpenGL管线的最终渲染目的地被称作帧缓存（framebuffer）。帧缓冲是一些二维数组和OpenG所使用的存储区的集合：颜色缓存、深度缓存、模板缓存和累计缓存。一般情况下，帧缓存完全由window系统生成和管理，由OpenGL使用。这个默认的帧缓存被称作“window系统生成”（window-system-provided）的帧缓存。</p>
+<p>The OpenGL extension, GL_ARB_framebuffer_object provides an interface to create additional non-displayable framebuffer objects (FBO). This framebuffer is called application-created framebuffer in order to distinguish from the default window-system-provided framebuffer. By using framebuffer object (FBO), an OpenGL application can redirect the rendering output to the application-created framebuffer object (FBO) other than the traditional window-system-provided framebuffer. And, it is fully controlled by OpenGL.
+在OpenGL扩展中，GL_EXT_framebuffer_object提供了一种创建额外的不能显示的帧缓存对象的接口。为了和默认的“window系统生成”的帧缓存区别，这种帧缓冲成为应用程序帧缓存（application-createdframebuffer）。通过使用帧缓存对象（FBO），OpenGL可以将显示输出到引用程序帧缓存对象，而不是传统的“window系统生成”帧缓存。而且，它完全受OpenGL控制。</p>
+<p>Similar to window-system-provided framebuffer, a FBO contains a collection of rendering destinations; color, depth and stencil buffer. (Note that accumulation buffer is not defined in FBO.) These logical buffers in a FBO are called framebuffer-attachable images, which are 2D arrays of pixels that can be attached to a framebuffer object.
+相似于window系统提供的帧缓存，一个FBO也包含一些存储颜色、深度和模板数据的区域。（注意：没有累积缓存）我们把FBO中这些逻辑缓存称之为“帧缓存关联图像”，它们是一些能够和一个帧缓存对象关联起来的二维数组像素。</p>
+<p>There are two types of framebuffer-attachable images; texture images and renderbuffer images. If an image of a texture object is attached to a framebuffer, OpenGL performs “render to texture”. And if an image of a renderbuffer object is attached to a framebuffer, then OpenGL performs “offscreen rendering”.
+有两种类型的“帧缓存关联图像”：纹理图像（texture images）和渲染缓存图像（renderbuffer images）。如果纹理对象的图像数据关联到帧缓存，OpenGL执行的是“渲染到纹理”（render to texture）操作。如果渲染缓存的图像数据关联到帧缓存，OpenGL执行的是离线渲染（offscreen rendering）。</p>
+<p>By the way, renderbuffer object is a new type of storage object defined in GL_ARB_framebuffer_object extension. It is used as a rendering destination for a single 2D image during rendering process.
+这里要提到的是，渲染缓存对象是在GL_EXT_framebuffer_object扩展中定义的一种新的存储类型。在渲染过程中它被用作存储单幅二维图像。</p>
+<p>The following diagram shows the connectivity among the framebuffer object, texture object and renderbuffer object. Multiple texture objects or renderbuffer objects can be attached to a framebuffer object through the attachment points.
+下面这幅图显示了帧缓存对象、纹理对象和渲染缓存对象之间的联系。多多个纹理对象或者渲染缓存对象能够通过关联点关联到一个帧缓存对象上。</p>
+<p><img src="http://images.wodekouwei.com/gl/gl_fbo01.png" alt="image">
+There are multiple color attachment points (GL_COLOR_ATTACHMENT0,…, GL_COLOR_ATTACHMENTn), one depth attachment point (GL_DEPTH_ATTACHMENT), and one stencil attachment point (GL_STENCIL_ATTACHMENT) in a framebuffer object. The number of color attachment points is implementation dependent, but each FBO must have at least one color attachement point. You can query the maximum number of color attachement points with GL_MAX_COLOR_ATTACHMENTS, which are supported by a graphics card. The reason that a FBO has multiple color attachement points is to allow to render the color buffer to multiple destinations at the same time. This “multiple render targets” (MRT) can be accomplished by GL_ARB_draw_buffers extension. Notice that the framebuffer object itself does not have any image storage(array) in it, but, it has only multiple attachment points.
+在一个帧缓存对象中有多个颜色关联点（GL_COLOR_ATTACHMENT0_EXT,…,GL_COLOR_ATTACHMENTn_EXT），一个深度关联点（GL_DEPTH_ATTACHMENT_EXT），和一个模板关联点（GL_STENCIL_ATTACHMENT_EXT）。每个FBO中至少有一个颜色关联点，其数目与实体显卡相关。可以通过GL_MAX_COLOR_ATTACHMENTS_EXT来查询颜色关联点的最大数目。FBO有多个颜色关联点的原因是这样可以同时将颜色而换成渲染到多个FBO关联区。这种“多渲染目标”（multiple rendertargets,MRT）可以通过GL_ARB_draw_buffers扩展实现。需要注意的是：FBO本身并没有任何图像存储区，只有多个关联点。</p>
+<p>Framebuffer object (FBO) provides an efficient switching mechanism; detach the previous framebuffer-attachable image from a FBO, and attach a new framebuffer-attachable image to the FBO. Switching framebuffer-attachable images is much faster than switching between FBOs. FBO provides glFramebufferTexture2D() to switch 2D texture objects, and glFramebufferRenderbuffer() to switch renderbuffer objects.
+FBO提供了一种高效的切换机制；将前面的帧缓存关联图像从FBO分离，然后把新的帧缓存关联图像关联到FBO。在帧缓存关联图像之间切换比在FBO之间切换要快得多。FBO提供了glFramebufferTexture2DEXT()来切换2D纹理对象和glFramebufferRenderbufferEXT()来切换渲染缓存对象。</p>
+<hr>
+<h3 id="Creating-Frame-Buffer-Object-FBO"><a href="#Creating-Frame-Buffer-Object-FBO" class="headerlink" title="Creating Frame Buffer Object (FBO)"></a>Creating Frame Buffer Object (FBO)</h3><p>Creating framebuffer objects is similar to generating <a href="http://www.songho.ca/opengl/gl_vbo.html" target="_blank" rel="external">vertex buffer objects (VBO)</a>.
+创建FBO和产生VBO类似。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">void glGenFramebuffers(GLsizei n, GLuint* ids)</div><div class="line">void glDeleteFramebuffers(GLsizei n, const GLuint* ids)</div></pre></td></tr></table></figure></p>
+<p>glGenFramebuffers() requires 2 parameters; the first one is the number of framebuffers to create, and the second parameter is the pointer to a GLuint variable or an array to store a single ID or multiple IDs. It returns the IDs of unused framebuffer objects. ID 0 means the default framebuffer, which is the window-system-provided framebuffer.
+glGenFramebuffersEXT()需要两个参数：第一个是要创建的帧缓存的数目，第二个是指向存储一个或者多个ID的变量或数组的指针。它返回未使用的FBO的ID。ID为0表示默认帧缓存，即window系统提供的帧缓存。</p>
+<p>And, FBO may be deleted by calling glDeleteFramebuffers() when it is not used anymore.
+当FBO不再被使用时，FBO可以通过调用glDeleteFrameBuffersEXT()来删除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">glBindFramebuffer()</div></pre></td></tr></table></figure>
+<p>Once a FBO is created, it has to be bound before using it.
+一旦一个FBO被创建，在使用它之前必须绑定。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void glBindFramebuffer(GLenum target, GLuint id)</div></pre></td></tr></table></figure>
+<p>The first parameter, target, should be GL_FRAMEBUFFER, and the second parameter is the ID of a framebuffer object. Once a FBO is bound, all OpenGL operations affect onto the current bound framebuffer object. The object ID 0 is reserved for the default window-system provided framebuffer. Therefore, in order to unbind the current framebuffer (FBO), use ID 0 in glBindFramebuffer().
+第一个参数target应该是GL_FRAMEBUFFER_EXT，第二个参数是FBO的ID号。一旦FBO被绑定，之后的所有的OpenGL操作都会对当前所绑定的FBO造成影响。ID号为0表示缺省帧缓存，即默认的window提供的帧缓存。因此，在glBindFramebufferEXT()中将ID号设置为0可以解绑定当前FBO。</p>
+<hr>
+<h3 id="Renderbuffer-Object"><a href="#Renderbuffer-Object" class="headerlink" title="Renderbuffer Object"></a>Renderbuffer Object</h3><p>In addition, renderbuffer object is newly introduced for offscreen rendering. It allows to render a scene directly to a renderbuffer object, instead of rendering to a texture object. Renderbuffer is simply a data storage object containing a single image of a renderable internal format. It is used to store OpenGL logical buffers that do not have corresponding texture format, such as stencil or depth buffer.</p>
+<p>另外，渲染缓存是为离线渲染而新引进的。它允许将一个场景直接渲染到一个渲染缓存对象中，而不是渲染到纹理对象中。渲染缓存对象是用于存储单幅图像的数据存储区域。该图像按照一种可渲染的内部格式存储。它用于存储没有相关纹理格式的OpenGL逻辑缓存，比如模板缓存或者深度缓存。</p>
+<h4 id="glGenRenderbuffers"><a href="#glGenRenderbuffers" class="headerlink" title="glGenRenderbuffers()"></a>glGenRenderbuffers()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">void glGenRenderbuffers(GLsizei n, GLuint* ids)</div><div class="line">void glDeleteRenderbuffers(GLsizei n, const Gluint* ids)</div></pre></td></tr></table></figure>
+<p>Once a renderbuffer is created, it returns non-zero positive integer. ID 0 is reserved for OpenGL.
+一旦一个渲染缓存被创建，它返回一个非零的正整数。ID为0是OpenGL保留值。</p>
+<h4 id="glBindRenderbuffer"><a href="#glBindRenderbuffer" class="headerlink" title="glBindRenderbuffer()"></a>glBindRenderbuffer()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void glBindRenderbuffer(GLenum target, GLuint id)</div></pre></td></tr></table></figure>
+<p>Same as other OpenGL objects, you have to bind the current renderbuffer object before referencing it. The target parameter should be GL_RENDERBUFFER for renderbuffer object.
+和OpenGL中其他对象一样，在引用渲染缓存之前必须绑定当前渲染缓存对象。他target参数应该是GL_RENDERBUFFER_EXT。</p>
+<h4 id="glRenderbufferStorage"><a href="#glRenderbufferStorage" class="headerlink" title="glRenderbufferStorage()"></a>glRenderbufferStorage()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glRenderbufferStorage(GLenum  target,</div><div class="line">                           GLenum  internalFormat,</div><div class="line">                           GLsizei width,</div><div class="line">                           GLsizei height)</div></pre></td></tr></table></figure>
+<p>When a renderbuffer object is created, it does not have any data storage, so we have to allocate a memory space for it. This can be done by using glRenderbufferStorage(). The first parameter must be GL_RENDERBUFFER. The second parameter would be color-renderable (GL_RGB, GL_RGBA, etc.), depth-renderable (GL_DEPTH_COMPONENT), or stencil-renderable formats (GL_STENCIL_INDEX). The width and height are the dimension of the renderbuffer image in pixels.
+当一个渲染缓存被创建，它没有任何数据存储区域，所以我们还要为他分配空间。这可以通过用glRenderbufferStorageEXT()实现。第一个参数必须是GL_RENDERBUFFER_EXT。第二个参数可以是用于颜色的（GL_RGB，GL_RGBA，etc.），用于深度的（GL_DEPTH_COMPONENT），或者是用于模板的格式（GL_STENCIL_INDEX）。Width和height是渲染缓存图像的像素维度。
+The width and height should be less than GL_MAX_RENDERBUFFER_SIZE, otherwise, it generates GL_INVALID_VALUE error.
+width和height必须比GL_MAX_RENDERBUFFER_SIZE_EXT小，否则将会产生GL_UNVALID_VALUE错误。</p>
+<h4 id="glGetRenderbufferParameteriv"><a href="#glGetRenderbufferParameteriv" class="headerlink" title="glGetRenderbufferParameteriv()"></a>glGetRenderbufferParameteriv()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void glGetRenderbufferParameteriv(GLenum target,</div><div class="line">                                  GLenum param,</div><div class="line">                                  GLint* value)</div></pre></td></tr></table></figure>
+<p>You also get various parameters of the currently bound renderbuffer object. target should be GL_RENDERBUFFER, and the second parameter is the name of parameter. The last is the pointer to an integer variable to store the returned value. The available names of the renderbuffer parameters are;
+我们也可以得到当前绑定的渲染缓存对象的一些参数。Target应该是GL_RENDERBUFFER_EXT，第二个参数是所要得到的参数名字。最后一个是指向存储返回值的整型量的指针。渲染缓存的变量名有如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">GL_RENDERBUFFER_WIDTH</div><div class="line">GL_RENDERBUFFER_HEIGHT</div><div class="line">GL_RENDERBUFFER_INTERNAL_FORMAT</div><div class="line">GL_RENDERBUFFER_RED_SIZE</div><div class="line">GL_RENDERBUFFER_GREEN_SIZE</div><div class="line">GL_RENDERBUFFER_BLUE_SIZE</div><div class="line">GL_RENDERBUFFER_ALPHA_SIZE</div><div class="line">GL_RENDERBUFFER_DEPTH_SIZE</div><div class="line">GL_RENDERBUFFER_STENCIL_SIZE</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Attaching-images-to-FBO"><a href="#Attaching-images-to-FBO" class="headerlink" title="Attaching images to FBO"></a>Attaching images to FBO</h3><p>FBO itself does not have any image storage(buffer) in it. Instead, we must attach framebuffer-attachable images (texture or renderbuffer objects) to the FBO. This mechanism allows that FBO quickly switch (detach and attach) the framebuffer-attachable images in a FBO. It is much faster to switch framebuffer-attachable images than to switch between FBOs. And, it saves unnecessary data copies and memory consumption. For example, a texture can be attached to multiple FBOs, and its image storage can be shared by multiple FBOs.
+FBO本身没有图像存储区。我们必须帧缓存关联图像（纹理或渲染对象）关联到FBO。这种机制允许FBO快速地切换（分离和关联）帧缓存关联图像。切换帧缓存关联图像比在FBO之间切换要快得多。而且，它节省了不必要的数据拷贝和内存消耗。比如，一个纹理可以被关联到多个FBO上，图像存储区可以被多个FBO共享。</p>
+<h4 id="Attaching-a-2D-texture-image-to-FBO"><a href="#Attaching-a-2D-texture-image-to-FBO" class="headerlink" title="Attaching a 2D texture image to FBO"></a>Attaching a 2D texture image to FBO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">glFramebufferTexture2D(GLenum target,</div><div class="line">                       GLenum attachmentPoint,</div><div class="line">                       GLenum textureTarget,</div><div class="line">                       GLuint textureId,</div><div class="line">                       GLint  level)</div></pre></td></tr></table></figure>
+<p>glFramebufferTexture2D() is to attach a 2D texture image to a FBO. The first parameter must be GL_FRAMEBUFFER, and the second parameter is the attachment point where to connect the texture image. A FBO has multiple color attachment points (GL_COLOR_ATTACHMENT0, …, GL_COLOR_ATTACHMENTn), GL_DEPTH_ATTACHMENT, and GL_STENCIL_ATTACHMENT. The third parameter, “textureTarget” is GL_TEXTURE_2D in most cases. The fourth parameter is the identifier of the texture object. The last parameter is the mipmap level of the texture to be attached.
+glFramebufferTexture2DEXT()把一幅纹理图像关联到一个FBO。第一个参数一定是GL_FRAMEBUFFER_EXT，第二个参数是关联纹理图像的关联点。第三个参数textureTarget在多数情况下是GL_TEXTURE_2D。第四个参数是纹理对象的ID号。最后一个参数是要被关联的纹理的mipmap等级
+If the textureId parameter is set to 0, then, the texture image will be detached from the FBO. If a texture object is deleted while it is still attached to a FBO, then, the texture image will be automatically detached from the currently bound FBO. However, if it is attached to multiple FBOs and deleted, then it will be detached from only the bound FBO, but will not be detached from any other un-bound FBOs.
+如果参数textureId被设置为0，那么纹理图像将会被从FBO分离。如果纹理对象在依然关联在FBO上时被删除，那么纹理对象将会自动从当前帮的FBO上分离。然而，如果它被关联到多个FBO上然后被删除，那么它将只被从绑定的FBO上分离，而不会被从其他非绑定的FBO上分离。</p>
+<h4 id="Attaching-a-Renderbuffer-image-to-FBO"><a href="#Attaching-a-Renderbuffer-image-to-FBO" class="headerlink" title="Attaching a Renderbuffer image to FBO"></a>Attaching a Renderbuffer image to FBO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glFramebufferRenderbuffer(GLenum target,</div><div class="line">                               GLenum attachmentPoint,</div><div class="line">                               GLenum renderbufferTarget,</div><div class="line">                               GLuint renderbufferId)</div></pre></td></tr></table></figure>
+<p>A renderbuffer image can be attached by calling glFramebufferRenderbuffer(). The first and second parameters are same as glFramebufferTexture2D(). The third parameter must be GL_RENDERBUFFER, and the last parameter is the ID of the renderbuffer object.
+通过调用glFramebufferRenderbufferEXT()可以关联渲染缓存图像。前两个参数和glFramebufferTexture2DEXT()一样。第三个参数只能是GL_RENDERBUFFER_EXT，最后一个参数是渲染缓存对象的ID号。
+If renderbufferId parameter is set to 0, the renderbuffer image will be detached from the attachment point in the FBO. If a renderbuffer object is deleted while it is still attached in a FBO, then it will be automatically detached from the bound FBO. However, it will not be detached from any other non-bound FBOs.
+如果参数renderbufferId被设置为0，渲染缓存图像将会从FBO的关联点分离。如果渲染缓存图像在依然关联在FBO上时被删除，那么纹理对象将会自动从当前绑定的FBO上分离，而不会从其他非绑定的FBO上分离。</p>
+<hr>
+<h3 id="FBO-with-MSAA-Multi-Sample-Anti-Aliasing"><a href="#FBO-with-MSAA-Multi-Sample-Anti-Aliasing" class="headerlink" title="FBO with MSAA (Multi Sample Anti Aliasing)"></a>FBO with MSAA (Multi Sample Anti Aliasing)</h3><p>When you render to a FBO, anti-aliasing is not automatically enabled even if you properly create a OpenGL rendering context with the multisampling attribute (SAMPLEBUFFERS_ARB) for window-system-provided framebuffer.</p>
+<p>In order to activate multisample anti-aliasing mode for rendering to a FBO, you need to prepare and attach multisample images to a FBO’s color and/or depth attachement points.</p>
+<p>FBO extension provides glRenderbufferStorageMultisample() to create a renderbuffer image for multisample anti-aliasing rendering mode.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">void glRenderbufferStorageMultisample(GLenum  target,</div><div class="line">                                      GLsizei samples,</div><div class="line">                                      GLenum  internalFormat,</div><div class="line">                                      GLsizei width,</div><div class="line">                                      GLsizei height)</div></pre></td></tr></table></figure>
+<p>It adds new parameter, samples on top of glRenderbufferStorage(), which is the number of multisamples for anti-aliased rendering mode. If it is 0, then no MSAA mode is enabled and glRenderbufferStorage() is called instead. You can query the maximum number of samples with GL_MAX_SAMPLES token in glGetIntegerv().</p>
+<p>The following code is to create a FBO with multisample colorbuffer and depthbuffer images. Note that if multiple images are attached to a FBO, then all images must have the same number of multisamples. Otherwise, the FBO status is incomplete.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">// create a 4x MSAA renderbuffer object for colorbuffer</div><div class="line">int msaa = 4;</div><div class="line">GLuint rboColorId;</div><div class="line">glGenRenderbuffers(1, &amp;rboColorId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboColorId);</div><div class="line">glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGB8, width, height);</div><div class="line"></div><div class="line">// create a 4x MSAA renderbuffer object for depthbuffer</div><div class="line">GLuint rboDepthId;</div><div class="line">glGenRenderbuffers(1, &amp;rboDepthId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboDepthId);</div><div class="line">glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_DEPTH_COMPONENT, width, height);</div><div class="line"></div><div class="line">// create a 4x MSAA framebuffer object</div><div class="line">GLuint fboId;</div><div class="line">glGenFramebuffers(1, &amp;fboMsaaId);</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboMsaaId);</div><div class="line"></div><div class="line">// attach colorbuffer image to FBO</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,       // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_COLOR_ATTACHMENT0, // 2. color attachment point</div><div class="line">                          GL_RENDERBUFFER,      // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboColorId);          // 4. rbo ID</div><div class="line"></div><div class="line">// attach depthbuffer image to FBO</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,       // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_DEPTH_ATTACHMENT,  // 2. depth attachment point</div><div class="line">                          GL_RENDERBUFFER,      // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboDepthId);          // 4. rbo ID</div><div class="line"></div><div class="line">// check FBO status</div><div class="line">GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);</div><div class="line">if(status != GL_FRAMEBUFFER_COMPLETE)</div><div class="line">    fboUsed = false;</div></pre></td></tr></table></figure>
+<p>It is important to know that glRenderbufferStorageMultisample() only enables MSAA rendering to FBO. However, you cannot directly use the result from MSAA FBO. If you need to transfer the result to a texture or other non-multisampled framebuffer, you have to convert (downsample) the result to single-sample image using glBlitFramebuffer().</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glBlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, // source rectangle</div><div class="line">                       GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, // destination rect</div><div class="line">                       GLbitfield mask,</div><div class="line">                       GLenum filter)</div></pre></td></tr></table></figure>
+<p>glBlitFramebuffer() copies a rectangle of images from the source (GL_READ_BUFFER) to the destination framebuffer (GL_DRAW_BUFFER). The “mask” parameter is to specify which buffers are copied, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT and/or GL_STENCIL_BUFFER_BIT. The last parameter, “filter” is to specify the interpolation mode if the source and destination rectangles are not same. It is either GL_NEAREST or GL_LINEAR.</p>
+<p>The following code is to transfer a multisampled image from a FBO to another non-multisampled FBO. Notice it requires an additional FBO to get the result of MSAA rendering. Please see fboMsaa.zip for details to perform render-to-texture with MSAA.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// copy rendered image from MSAA (multi-sample) to normal (single-sample)</div><div class="line">// NOTE: The multi samples at a pixel in read buffer will be converted</div><div class="line">// to a single sample at the target pixel in draw buffer.</div><div class="line">glBindFramebuffer(GL_READ_FRAMEBUFFER, fboMsaaId); // src FBO (multi-sample)</div><div class="line">glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);     // dst FBO (single-sample)</div><div class="line"></div><div class="line">glBlitFramebuffer(0, 0, width, height,             // src rect</div><div class="line">                  0, 0, width, height,             // dst rect</div><div class="line">                  GL_COLOR_BUFFER_BIT,             // buffer mask</div><div class="line">                  GL_LINEAR);                      // scale filter</div></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Checking-FBO-Status"><a href="#Checking-FBO-Status" class="headerlink" title="Checking FBO Status"></a>Checking FBO Status</h3><p>Once attachable images (textures and renderbuffers) are attached to a FBO and before performing FBO operation, you must validate if the FBO status is complete or incomplete by using glCheckFramebufferStatus(). If the FBO is not complete, then any drawing and reading command (glBegin(), glCopyTexImage2D(), etc) will be failed.</p>
+<p>一旦关联图像（纹理和渲染缓存）被关联到FBO上，在执行FBO的操作之前，你必须检查FBO的状态，这可以通过调用glCheckFramebufferStatusEXT()实现。如果这个FBObuilding完整，那么任何绘制和读取命令（glBegin(),glCopyTexImage2D(), etc）都会失败。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GLenum glCheckFramebufferStatus(GLenum target)</div></pre></td></tr></table></figure>
+<p>glCheckFramebufferStatus() validates all its attached images and framebuffer parameters on the currently bound FBO. And, this function cannot be called within glBegin()/glEnd() pair. The target parameter should be GL_FRAMEBUFFER. It returns non-zero value after checking the FBO. If all requirements and rules are satisfied, then it returns GL_FRAMEBUFFER_COMPLETE. Otherwise, it returns a relevant error value, which tells what rule is violated.
+glCheckFramebufferStatusEXT()检查当前帧缓存的关联图像和帧缓存参数。这个函数不能在glBegin()/glEnd()之间调用。Target参数必须为GL_FRAMEBUFFER_EXT。它返回一个非零值。如果所有要求和准则都满足，它返回GL_FRAMEBUFFER_COMPLETE_EXT。否则，返回一个相关错误代码告诉我们哪条准则没有满足。</p>
+<p>The rules of FBO completeness are:</p>
+<ul>
+<li>The width and height of framebuffer-attachable image must be not zero.</li>
+<li>If an image is attached to a color attachment point, then the image must have a color-renderable internal format. (GL_RGBA, GL_DEPTH_COMPONENT, GL_LUMINANCE, etc)</li>
+<li>If an image is attached to GL_DEPTH_ATTACHMENT, then the image must have a depth-renderable internal format. (GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, etc)</li>
+<li>If an image is attached to GL_STENCIL_ATTACHMENT, then the image must have a stencil-renderable internal format. (GL_STENCIL_INDEX, GL_STENCIL_INDEX8, etc)</li>
+<li>FBO must have at least one image attached.</li>
+<li>All images attached a FBO must have the same width and height.</li>
+<li>All images attached the color attachment points must have the same internal format.</li>
+</ul>
+<p>FBO完整性准则有：</p>
+<ol>
+<li>帧缓存关联图像的宽度和高度必须非零。</li>
+<li>如果一幅图像被关联到一个颜色关联点，那么这幅图像必须有颜色可渲染的内部格式（GL_RGBA, GL_DEPTH_COMPONENT, GL_LUMINANCE, etc)。</li>
+<li>如果一幅被图像关联到GL_DEPTH_ATTACHMENT_EXT，那么这幅图像必须有深度可渲染的内部格式(GL_DEPTH_COMPONENT,GL_DEPTH_COMPONENT24_EXT, etc)。</li>
+<li>如果一幅被图像关联到GL_STENCIL_ATTACHMENT_EXT，那么这幅图像必须有模板可渲染的内部格式(GL_STENCIL_INDEX,GL_STENCIL_INDEX8_EXT, etc)。</li>
+<li>FBO至少有一幅图像关联。</li>
+<li>被关联到FBO的缩影图像必须有相同的宽度和高度。</li>
+<li>被关联到颜色关联点上的所有图像必须有相同的内部格式。</li>
+</ol>
+<p>Note that even though all of the above conditions are satisfied, your OpenGL driver may not support some combinations of internal formats and parameters. If a particular implementation is not supported by OpenGL driver, then glCheckFramebufferStatus() returns GL_FRAMEBUFFER_UNSUPPORTED.
+注意：即使以上所有条件都满足，你的OpenGL驱动也可能不支持某些格式和参数的组合。如果一种特别的实现不被OpenGL驱动支持，那么glCheckFramebufferStatusEXT()返回GL_FRAMEBUFFER_UNSUPPORTED_EXT。</p>
+<p>The sample code provides some utility functions to report the information of the current FBO; printFramebufferInfo() and checkFramebufferStatus().</p>
+<hr>
+<h3 id="Example-Render-To-Texture"><a href="#Example-Render-To-Texture" class="headerlink" title="Example: Render To Texture"></a>Example: Render To Texture</h3><p>Sometimes, you need to generate dynamic textures on the fly. The most common examples are generating mirroring/reflection effects, dynamic cube/environment maps and shadow maps. Dynamic texturing can be accomplished by rendering the scene to a texture. A traditional way of render-to-texture is to draw a scene to the framebuffer as normal, and then copy the framebuffer image to a texture by using glCopyTexSubImage2D().
+有时候，你需要产生动态纹理。比较常见的例子是产生镜面反射效果、动态环境贴图和阴影等效果。动态纹理可以通过把场景渲染到纹理来实现。渲染到纹理的一种传统方式是将场景绘制到普通的帧缓存上，然后调用glCopyTexSubImage2D()拷贝帧缓存图像至纹理。</p>
+<p>Using FBO, we can render a scene directly onto a texture, so we don’t have to use the window-system-provided framebuffer at all. Further more, we can eliminate an additional data copy (from framebuffer to texture).
+使用FBO，我们能够将场景直接渲染到纹理，所以我们不必使用window系统提供的帧缓存。并且，我们能够去除额外的数据拷贝（从帧缓存到纹理）；。</p>
+<p>This demo program performs render to texture operation with/without FBO, and compares the performance difference. Other than performance gain, there is another advantage of using FBO. If the texture resolution is larger than the size of the rendering window in traditional render-to-texture mode (without FBO), then the area out of the window region will be clipped. However, FBO does not suffer from this clipping problem. You can create a framebuffer-renderable image larger than the display window.
+这个demo实现了使用FBO和不使用FBO两种情况下渲染到纹理的操作，并且比较了性能差异。除了能够获得性能上的提升，使用FBO的还有另外一个优点。在传统的渲染到纹理的模式中（不使用FBO），如果纹理分辨率比渲染窗口的尺寸大，超出窗口区域的部分将被剪切掉。然后，使用FBO就不会有这个问题。你可以产生比显示窗口大的帧缓存渲染图像。</p>
+<p>The following codes is to setup a FBO and framebuffer-attachable images before the rendering loop is started. Note that not only a texture image is attached to the FBO, but also, a renderbuffer image is attached to the depth attachment point of the FBO. We do not actually use this depth buffer, however, the FBO itself needs it for depth test. If we don’t attach this depth renderable image to the FBO, then the rendering output will be corrupted because of missing depth test. If stencil test is also required during FBO rendering, then additional renderbuffer image should be attached to GL_STENCIL_ATTACHMENT.
+以下代码在渲染循环开始之前，对FBO和帧缓存关联图像进行了初始化。注意只有一幅纹理图像被关联到FBO，但是，一个深度渲染图像被关联到FBO的深度关联点。实际上我们并没有使用这个深度缓存，但是FBO本身需要它进行深度测试。如果我们不把这个深度可渲染的图像关联到FBO，那么由于缺少深度测试渲染输出结果是不正确的。如果在FBO渲染期间模板测试也是必要的，那么也需要把额外的渲染图像和GL_STENCIL_ATTACHMENT_EXT关联起来。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">// create a texture object</div><div class="line">GLuint textureId;</div><div class="line">glGenTextures(1, &amp;textureId);</div><div class="line">glBindTexture(GL_TEXTURE_2D, textureId);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);</div><div class="line">glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap</div><div class="line">glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,</div><div class="line">             GL_RGBA, GL_UNSIGNED_BYTE, 0);</div><div class="line">glBindTexture(GL_TEXTURE_2D, 0);</div><div class="line"></div><div class="line">// create a renderbuffer object to store depth info</div><div class="line">GLuint rboId;</div><div class="line">glGenRenderbuffers(1, &amp;rboId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboId);</div><div class="line">glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT,</div><div class="line">                      TEXTURE_WIDTH, TEXTURE_HEIGHT);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, 0);</div><div class="line"></div><div class="line">// create a framebuffer object</div><div class="line">GLuint fboId;</div><div class="line">glGenFramebuffers(1, &amp;fboId);</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboId);</div><div class="line"></div><div class="line">// attach the texture to FBO color attachment point</div><div class="line">glFramebufferTexture2D(GL_FRAMEBUFFER,        // 1. fbo target: GL_FRAMEBUFFER </div><div class="line">                       GL_COLOR_ATTACHMENT0,  // 2. attachment point</div><div class="line">                       GL_TEXTURE_2D,         // 3. tex target: GL_TEXTURE_2D</div><div class="line">                       textureId,             // 4. tex ID</div><div class="line">                       0);                    // 5. mipmap level: 0(base)</div><div class="line"></div><div class="line">// attach the renderbuffer to depth attachment point</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,      // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_DEPTH_ATTACHMENT, // 2. attachment point</div><div class="line">                          GL_RENDERBUFFER,     // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboId);              // 4. rbo ID</div><div class="line"></div><div class="line">// check FBO status</div><div class="line">GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);</div><div class="line">if(status != GL_FRAMEBUFFER_COMPLETE)</div><div class="line">    fboUsed = false;</div><div class="line"></div><div class="line">// switch back to window-system-provided framebuffer</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, 0);</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>The rendering procedure of render-to-texture is almost same as normal drawing. We only need to switch the rendering destination from the window-system-provided to the non-displayable, application-created framebuffer (FBO).
+渲染到纹理的过程和普通的绘制过程基本一样。我们只需要把渲染的目的地由window系统提供的帧缓存改成不可显示的应用程序创建的帧缓存（FBO）就可以了。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">// set rendering destination to FBO</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboId);</div><div class="line"></div><div class="line">// clear buffers</div><div class="line">glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</div><div class="line"></div><div class="line">// draw a scene to a texture directly</div><div class="line">draw();</div><div class="line"></div><div class="line">// unbind FBO</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, 0);</div><div class="line"></div><div class="line">// trigger mipmaps generation explicitly</div><div class="line">// NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()</div><div class="line">// triggers mipmap generation automatically. However, the texture attached</div><div class="line">// onto a FBO should generate mipmaps manually via glGenerateMipmap().</div><div class="line">glBindTexture(GL_TEXTURE_2D, textureId);</div><div class="line">glGenerateMipmap(GL_TEXTURE_2D);</div><div class="line">glBindTexture(GL_TEXTURE_2D, 0);</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>Note that glGenerateMipmap() is also included as part of FBO extension in order to generate mipmaps explicitly after modifying the base level texture image. If GL_GENERATE_MIPMAP is set to GL_TRUE, then glTex{Sub}Image2D() and glCopyTex{Sub}Image2D() trigger automatic mipmap generation (in OpenGL version 1.4 or greater). However, FBO operation does not generate its mipmaps automatically when the base level texture is modified because FBO does not call glCopyTex{Sub}Image2D() to modify the texture. Therefore, glGenerateMipmap() must be explicitly called for mipmap generation.
+注意到，glGenerateMipmapEXT()也是作为FBO扩展的一部分，用来在改变了纹理图像的基级之后显式生成mipmap的。如果GL_GENERATE_MIPMAP被设置为GL_TRUE，那么glTex{Sub}Image2D()和 glCopyTex{Sub}Image2D()将会启用自动mipmap生成（在OpenGL版本1.4或者更高版本中）。然后，当纹理基级被改变时，FBO操作不会自动产生mipmaps。因为FBO不会调用glCopyTex{Sub}Image2D()来修改纹理。因此，要产生mipmap，glGenerateMipmapEXT()必须被显示调用。</p>
+<p>If you need to a post processing of the texture, it is possible to combine with Pixel Buffer Object (PBO) to modify the texture efficiently.</p>
+<hr>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
+<p><a href="http://www.songho.ca/opengl/gl_fbo.html" target="_blank" rel="external">原文</a>
+<a href="http://blog.csdn.net/xiajun07061225/article/details/7283929" target="_blank" rel="external">译文</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/04/android-view-textureview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/04/android-view-textureview/" itemprop="url">
+                  android textureview处理预览摄像头变形问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T20:03:05+08:00">
+                2017-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public void sizeNotify(Camera.Size size) &#123;</div><div class="line">            float viewWidth = getWidth();</div><div class="line">            float viewHeight = getHeight();</div><div class="line"></div><div class="line">            float scaleX = 1.0f;</div><div class="line">            float scaleY = 1.0f;</div><div class="line">            int mPreviewWidth = size.width;</div><div class="line">            int mPreviewHeight = size.height;</div><div class="line">            if(viewWidth &lt; viewHeight) &#123;</div><div class="line">                mPreviewWidth = size.height;</div><div class="line">                mPreviewHeight = size.width;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123;</div><div class="line">                scaleX = mPreviewWidth / viewWidth;</div><div class="line">                scaleY = mPreviewHeight / viewHeight;</div><div class="line">            &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123;</div><div class="line">                scaleY = viewWidth / mPreviewWidth;</div><div class="line">                scaleX = viewHeight / mPreviewHeight;</div><div class="line">            &#125; else if (viewWidth &gt; mPreviewWidth) &#123;</div><div class="line">                scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight);</div><div class="line">            &#125; else if (viewHeight &gt; mPreviewHeight) &#123;</div><div class="line">                scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Calculate pivot points, in our case crop from center</div><div class="line">            int pivotPointX = (int) (viewWidth / 2);</div><div class="line">            int pivotPointY = (int) (viewHeight / 2);</div><div class="line"></div><div class="line">            Matrix matrix = new Matrix();</div><div class="line">            matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);</div><div class="line">            /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight +</div><div class="line">                    &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight +</div><div class="line">                    &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY +</div><div class="line">                    &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/</div><div class="line">            setTransform(matrix);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>TextureView中setTransform函数说明:
+Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content.</p>
+<p>Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/03/webrtc-nativeapis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/03/webrtc-nativeapis/" itemprop="url">
+                  webrtc之Native APIs
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T11:51:59+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Block-diagram"><a href="#Block-diagram" class="headerlink" title="Block diagram"></a>Block diagram</h3><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument1.png" alt="image"></p>
+<h3 id="Calling-sequences"><a href="#Calling-sequences" class="headerlink" title="Calling sequences"></a>Calling sequences</h3><h4 id="Set-up-a-call"><a href="#Set-up-a-call" class="headerlink" title="Set up a call"></a>Set up a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument2.png" alt="image"></p>
+<h4 id="Receive-a-call"><a href="#Receive-a-call" class="headerlink" title="Receive a call"></a>Receive a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument3.png" alt="image"></p>
+<h4 id="Close-down-a-call"><a href="#Close-down-a-call" class="headerlink" title="Close down a call"></a>Close down a call</h4><p><img src="http://images.wodekouwei.com/protocol/WebRTCNativeAPIsDocument4.png" alt="image"></p>
+<h3 id="Threading-model"><a href="#Threading-model" class="headerlink" title="Threading model"></a>Threading model</h3><p>WebRTC native APIs use two globally available threads: the signaling thread and the worker thread. Depending on how the PeerConnection factory is created, the application can either provide those 2 threads or just let them be created internally.</p>
+<p>The calls to the Stream APIs and the PeerConnection APIs will be proxied to the signaling thread which means that the application can call those APIs from whatever thread.</p>
+<p>All callbacks will be made on the signaling thread. The application should return the callback as quickly as possible to avoid blocking the signaling thread. Resource intensive processes should be posted to a different thread.</p>
+<p>The worker thread is used to handle more resource intensive processes such as data streaming.</p>
+<blockquote>
+<p><a href="https://sites.google.com/site/webrtc/native-code/native-apis" target="_blank" rel="external">https://sites.google.com/site/webrtc/native-code/native-apis</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/02/webrtc-source-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/02/webrtc-source-api/" itemprop="url">
+                  webrtc源码走读之api
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T16:23:59+08:00">
+                2017-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>api目录下封装了webrtc相关的供外部调用接口.</p>
+<div id="sequence-0"></div>
+
+<h3 id="peerconnection接口"><a href="#peerconnection接口" class="headerlink" title="peerconnection接口"></a>peerconnection接口</h3><p>关于<code>peerconnectioninterface.h</code>说明:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">// This file contains the PeerConnection interface as defined in</div><div class="line">// http://dev.w3.org/2011/webrtc/editor/webrtc.html#peer-to-peer-connections.</div><div class="line">//</div><div class="line">// The PeerConnectionFactory class provides factory methods to create</div><div class="line">// PeerConnection, MediaStream and MediaStreamTrack objects.</div><div class="line">//</div><div class="line">// The following steps are needed to setup a typical call using WebRTC:</div><div class="line">//</div><div class="line">// 1. Create a PeerConnectionFactoryInterface. Check constructors for more</div><div class="line">// information about input parameters.</div><div class="line">//</div><div class="line">// 2. Create a PeerConnection object. Provide a configuration struct which</div><div class="line">// points to STUN and/or TURN servers used to generate ICE candidates, and</div><div class="line">// provide an object that implements the PeerConnectionObserver interface,</div><div class="line">// which is used to receive callbacks from the PeerConnection.</div><div class="line">//</div><div class="line">// 3. Create local MediaStreamTracks using the PeerConnectionFactory and add</div><div class="line">// them to PeerConnection by calling AddTrack (or legacy method, AddStream).</div><div class="line">//</div><div class="line">// 4. Create an offer, call SetLocalDescription with it, serialize it, and send</div><div class="line">// it to the remote peer</div><div class="line">//</div><div class="line">// 5. Once an ICE candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. The candidates must also be serialized and</div><div class="line">// sent to the remote peer.</div><div class="line">//</div><div class="line">// 6. Once an answer is received from the remote peer, call</div><div class="line">// SetRemoteDescription with the remote answer.</div><div class="line">//</div><div class="line">// 7. Once a remote candidate is received from the remote peer, provide it to</div><div class="line">// the PeerConnection by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// The receiver of a call (assuming the application is &quot;call&quot;-based) can decide</div><div class="line">// to accept or reject the call; this decision will be taken by the application,</div><div class="line">// not the PeerConnection.</div><div class="line">//</div><div class="line">// If the application decides to accept the call, it should:</div><div class="line">//</div><div class="line">// 1. Create PeerConnectionFactoryInterface if it doesn&apos;t exist.</div><div class="line">//</div><div class="line">// 2. Create a new PeerConnection.</div><div class="line">//</div><div class="line">// 3. Provide the remote offer to the new PeerConnection object by calling</div><div class="line">// SetRemoteDescription.</div><div class="line">//</div><div class="line">// 4. Generate an answer to the remote offer by calling CreateAnswer and send it</div><div class="line">// back to the remote peer.</div><div class="line">//</div><div class="line">// 5. Provide the local answer to the new PeerConnection by calling</div><div class="line">// SetLocalDescription with the answer.</div><div class="line">//</div><div class="line">// 6. Provide the remote ICE candidates by calling AddIceCandidate.</div><div class="line">//</div><div class="line">// 7. Once a candidate has been gathered, the PeerConnection will call the</div><div class="line">// observer function OnIceCandidate. Send these candidates to the remote peer.</div></pre></td></tr></table></figure></p>
+<p><script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.27/webfontloader.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script><textarea id="sequence-0-code" style="display: none">Alice->Bob: Hello Bob, how are you?
+Note right of Bob: Bob thinks
+Bob-->Alice: I am good thanks!</textarea><textarea id="sequence-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12,"theme":"simple"}</textarea><script>  var code = document.getElementById("sequence-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("sequence-0-options").value));  var diagram = Diagram.parse(code);  diagram.drawSVG("sequence-0", options);</script></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/02/webrtc-source-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/02/webrtc-source-base/" itemprop="url">
+                  webrtc源码走读之base
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T16:12:58+08:00">
+                2017-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>src/webrtc/base</code>是webrtc基础平台库，包括线程、锁、socket,智能指针等.</p>
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p><code>refcount.h</code>定义了rtc::RefCountInterface:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#include &quot;webrtc/base/refcountedobject.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">// Reference count interface.</div><div class="line">class RefCountInterface &#123;</div><div class="line"> public:</div><div class="line">  virtual int AddRef() const = 0;</div><div class="line">  virtual int Release() const = 0;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountInterface() &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
+<p><code>refcountedobject.h</code>下定义了RefCountedObject:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">#include &lt;utility&gt;</div><div class="line"></div><div class="line">#include &quot;webrtc/base/atomicops.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">template &lt;class T&gt;</div><div class="line">class RefCountedObject : public T &#123;</div><div class="line"> public:</div><div class="line">  RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0&gt;</div><div class="line">  explicit RefCountedObject(P0&amp;&amp; p0) : T(std::forward&lt;P0&gt;(p0)) &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0, class P1, class... Args&gt;</div><div class="line">  RefCountedObject(P0&amp;&amp; p0, P1&amp;&amp; p1, Args&amp;&amp;... args)</div><div class="line">      : T(std::forward&lt;P0&gt;(p0),</div><div class="line">          std::forward&lt;P1&gt;(p1),</div><div class="line">          std::forward&lt;Args&gt;(args)...) &#123;&#125;</div><div class="line"></div><div class="line">  virtual int AddRef() const &#123; return AtomicOps::Increment(&amp;ref_count_); &#125;</div><div class="line"></div><div class="line">  virtual int Release() const &#123;</div><div class="line">    int count = AtomicOps::Decrement(&amp;ref_count_);</div><div class="line">    if (!count) &#123;</div><div class="line">      delete this;</div><div class="line">    &#125;</div><div class="line">    return count;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  // Return whether the reference count is one. If the reference count is used</div><div class="line">  // in the conventional way, a reference count of 1 implies that the current</div><div class="line">  // thread owns the reference and no other thread shares it. This call</div><div class="line">  // performs the test for a reference count of one, and performs the memory</div><div class="line">  // barrier needed for the owning thread to act on the object, knowing that it</div><div class="line">  // has exclusive access to the object.</div><div class="line">  virtual bool HasOneRef() const &#123;</div><div class="line">    return AtomicOps::AcquireLoad(&amp;ref_count_) == 1;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  mutable volatile int ref_count_ = 0;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
+<h3 id="线程Thread"><a href="#线程Thread" class="headerlink" title="线程Thread"></a>线程Thread</h3><h3 id="网络Socket"><a href="#网络Socket" class="headerlink" title="网络Socket"></a>网络Socket</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-sdp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/27/webrtc-sdp/" itemprop="url">
+                  webrtc之sdp协议
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T22:47:44+08:00">
+                2017-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Session-Description-Protocol-会话描述协议"><a href="#Session-Description-Protocol-会话描述协议" class="headerlink" title="Session Description Protocol(会话描述协议)"></a>Session Description Protocol(会话描述协议)</h1><p>RFC定义SDP的协议有两个:</p>
+<ul>
+<li>RFC3264: An Offer/Answer Model with the session Description Protocol(SDP),用来概述一个请求/响应模型</li>
+<li>RFC2327: SDP:Session Description Protocol,描述数据格式.</li>
+</ul>
+<h2 id="1-RFC2327"><a href="#1-RFC2327" class="headerlink" title="1.RFC2327"></a>1.RFC2327</h2><h3 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1.概述"></a>1.1.概述</h3><p>SDP 完全是一种会话描述格式 ― 它不属于传输协议 ― 它只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP协议是也是基于文本的协议，这样就能保证协议的可扩展性比较强，这样就使其具有广泛的应用范围。SDP 不支持会话内容或媒体编码的协商，所以在流媒体中只用来描述媒体信息。媒体协商这一块要用RTSP来实现．
+SDP包括以下一些方面：</p>
+<ul>
+<li>会话的名称和目的</li>
+<li>会话存活时间</li>
+<li>包含在会话中的媒体信息，包括：<ul>
+<li>媒体类型(video, audio, etc)</li>
+<li>传输协议(RTP/UDP/IP, H.320, etc)</li>
+<li>媒体格式(H.261 video, MPEG video, etc)</li>
+<li>多播或远端（单播）地址和端口</li>
+</ul>
+</li>
+<li>为接收媒体而需的信息(addresses, ports, formats and so on)</li>
+<li>使用的带宽信息</li>
+<li>可信赖的接洽信息（Contact information）</li>
+</ul>
+<h3 id="1-2-SDP协议格式"><a href="#1-2-SDP协议格式" class="headerlink" title="1.2.SDP协议格式"></a>1.2.SDP协议格式</h3><p>SDP描述由许多文本行组成，文本行的格式为&lt;类型&gt;=&lt;值&gt;，&lt;类型&gt;是一个字母，&lt;值&gt;是结构化的文本串，其格式依&lt;类型&gt;而定。
+＜type＞=<value>[CRLF]</value></p>
+<h4 id="1-2-1-fields分类"><a href="#1-2-1-fields分类" class="headerlink" title="1.2.1.fields分类"></a>1.2.1.fields分类</h4><ol>
+<li>Seeesion Description</li>
+</ol>
+<ul>
+<li>v(Protocol Version),mnd,The current protocol version.Always “0” using RFC4566</li>
+<li>o(Origin),Mnd,The session originator’s name and session identifiers.</li>
+<li>s(Session Name), Mnd,The textural session Name</li>
+<li>i(Session Information), opt,Textural information about the session</li>
+<li>u(Uri),opt, A pointer to supplemental session Information</li>
+<li>e(Email Address), opt, Email contract information for the person responsible.</li>
+<li>P(phone Address),opt,Phone contract information for the person responsible</li>
+<li>c(Connection Data),C,The connection type and Address</li>
+<li>b(Bandwidth),opt,Proposed bandwidth limits.</li>
+<li>z(Time Zones), opt, Accounts for daylight saving information</li>
+<li>k(Encryption Keys),opt,A simple mechanism for exchanging keys, Rarely used.</li>
+</ul>
+<ol>
+<li>Timing Description</li>
+</ol>
+<ul>
+<li>t(Timing),mnd, start and end times.</li>
+<li>r(Repeat Times),opt, Specified the duration and intervals for any session repeats.</li>
+</ul>
+<ol>
+<li>Media Description</li>
+</ol>
+<ul>
+<li>m(Media Description),mnd, Media definitions including media type(e.g.”audio”),transport details and formats.</li>
+<li>i(Session Information),opt</li>
+<li>c(Connection Data),c</li>
+<li>b(Bandwidth):opt</li>
+<li>k( Encryption keys),opt</li>
+<li>a(Attributes),opt</li>
+</ul>
+<h4 id="1-2-2-典型格式"><a href="#1-2-2-典型格式" class="headerlink" title="1.2.2.典型格式"></a>1.2.2.典型格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">Session description</div><div class="line">   v=  (protocol version)</div><div class="line">   o=  (owner/creator and session identifier)</div><div class="line">   s=  (session name)</div><div class="line">   i=* (session information)</div><div class="line">   u=* (URI of description)</div><div class="line">   e=* (email address)</div><div class="line">   p=* (phone number)</div><div class="line">   c=* (connection information - not required if included in all media)</div><div class="line">   b=* (zero or more bandwidth information lines)</div><div class="line">   One or more time descriptions (&quot;t=&quot; and &quot;r=&quot; lines, see below)</div><div class="line">   z=* (time zone adjustments)</div><div class="line">   k=* (encryption key)</div><div class="line">   a=* (zero or more session attribute lines)</div><div class="line">   Zero or more media descriptions</div><div class="line">Time description</div><div class="line">   t=  (time the session is active)</div><div class="line">   r=* (zero or more repeat times)</div><div class="line">Media description, if present</div><div class="line">   m=  (media name and transport address)</div><div class="line">   i=* (media title)</div><div class="line">   c=* (connection information - optional if included at</div><div class="line">        session-level)</div><div class="line">   b=* (zero or more bandwidth information lines)</div><div class="line">   k=* (encryption key)</div><div class="line">   a=* (zero or more media attribute lines)</div></pre></td></tr></table></figure>
+<p>带<code>&quot;*&quot;</code>号的是可选的,其余的是必须的。一般顺序也按照上面的顺序来排列。</p>
+<h4 id="1-2-3-各type对应值的结构化文本串"><a href="#1-2-3-各type对应值的结构化文本串" class="headerlink" title="1.2.3.各type对应值的结构化文本串"></a>1.2.3.各type对应值的结构化文本串</h4><ol>
+<li>v=<username> <sess-id> <sess-version> <nettype> <addrtype> <unicast-address>
+其中：nettype是IN,代表internet,addrtype是IP4或IP6。unicast-address任务创建计算机的地址。
+整个这个属性，是唯一表示一个任务。</unicast-address></addrtype></nettype></sess-version></sess-id></username></li>
+<li><code>e=123@126.com</code> <code>或 p=+1 616 555-6011</code>
+对于一个任务只能两者之中的一个，表示会议控制者的联系方式。邮件地址可以是<code>[email]j.doe@example.com[/email] (Jane Doe)</code>形式，括号里面的是描述联系人的名称，或者<code>Jane Doe &lt;[email]j.doe@example.com[/email]&gt;</code>，前面的是联系人的名称。</li>
+<li>c=<nettype> <addrtype> <connection-address>
+这个连接数据，可以是传话级别的连接数据，或者是单独一个媒体数据的连接数据。在是多播时，connection-address就该是一个多播组地址，当是单播时，connection-address就该是一个单播地址。对于addrtype是IP4的情况下，connection-address不仅包含IP地址，并且还要包含a time to live value(TTL 0-255)，如：c=IN IP4 224.2.36.42/128，IP6没有这个TTL值。还允许象这样的<base multicast="" address="">[/<ttl>]/<number of="" addresses="">格式的connection-address。如：c=IN IP4 224.2.1.1/127/3等同于包含c=IN IP4 224.2.1.1/127, c=IN IP4 224.2.1.2/127, c=IN IP4 224.2.1.3/127三行内容。</number></ttl></connection-address></addrtype></nettype></li>
+<li>b=<bwtype>:<bandwidth> bwtype可以是CT或AS，CT方式是设置整个会议的带宽，AS是设置单个会话的带宽。缺省带宽是千比特每秒。
+t=<start-time> <stop-time>，这个可以有行，指定多个不规则时间段，如果是规则的时间段，则r=属性可以使用。start-time和stop- time都遵从NTP(Network Time Protocol),是以秒为单位，自从1900以来的时间。要转换为UNIX时间，减去2208988800。如果stop-time设置为0,则会话没有时间限制。如果start-time也设置为0，则会话被认为是永久的。</stop-time></start-time></bandwidth></bwtype></li>
+<li>b=<bwtype>:<bandwidth> bwtype可以是CT或AS，CT方式是设置整个会议的带宽，AS是设置单个会话的带宽。缺省带宽是千比特每秒。
+t=<start-time> <stop-time>，这个可以有行，指定多个不规则时间段，如果是规则的时间段，则r=属性可以使用。start-time和stop- time都遵从NTP(Network Time Protocol),是以秒为单位，自从1900以来的时间。要转换为UNIX时间，减去2208988800。如果stop-time设置为0,则会话没有时间限制。如果start-time也设置为0，则会话被认为是永久的。</stop-time></start-time></bandwidth></bwtype></li>
+<li>r=<repeat-interval> <active duration=""> <offsets from="" start-time="">重复次数在时间表示里面可以如下表示：
+   d - days (86400 seconds)
+   h - hours (3600 seconds)
+   m - minutes (60 seconds)
+   s - seconds (allowed for completeness)</offsets></active></repeat-interval></li>
+<li>z<code>=&lt;adjustment time&gt; &lt;offset&gt; &lt;adjustment time&gt; &lt;offset&gt; ....</code></li>
+<li><code>k=&lt;method&gt;</code></li>
+<li><code>k=&lt;method&gt;:&lt;encryption key&gt;</code></li>
+<li><code>a=&lt;attribute&gt;</code></li>
+<li><code>a=&lt;attribute&gt;:&lt;value&gt;</code></li>
+<li><code>m=&lt;media&gt; &lt;port&gt; &lt;proto&gt; &lt;fmt&gt; ...</code></li>
+<li><code>m=&lt;media&gt; &lt;port&gt;/&lt;number of ports&gt; &lt;proto&gt; &lt;fmt&gt; ...</code></li>
+<li>a=cat:<category>分类，根据分类接收者隔离相应的会话</category></li>
+<li>a=keywds:<keywords>关键字，根据关键字隔离相应的会话</keywords></li>
+<li>a=tool:<name and="" version="" of="" tool="">创建任务描述的工具的名称及版本号</name></li>
+<li>a=ptime:<packet time="">在一个包里面的以毫秒为单位的媒体长度</packet></li>
+<li>a=maxptime:<maximum packet="" time="">以毫秒为单位，能够压缩进一个包的媒体量。</maximum></li>
+<li>a=rtpmap:<payload type=""> <encoding name="">/<clock rate=""> [/<encoding parameters="">]</encoding></clock></encoding></payload></li>
+<li>a=recvonly</li>
+<li>a=sendrecv</li>
+<li>a=sendonly</li>
+<li>a=inactive，</li>
+<li>a=orient:<orientation>其可能的值，”portrait”, “landscape” and “seascape” 。</orientation></li>
+<li>a=type:<conference type="">,建议值是，”broadcast”, “meeting”, “moderated”, “test” and “H332”。</conference></li>
+<li>a=charset:<character set=""></character></li>
+<li>a=sdplang:<language tag="">指定会话或者是媒体级别使用的语言</language></li>
+<li>a=framerate:<frame rate="">设置最大视频帧速率</li>
+<li>a=quality:<quality>值是0-10</quality></li>
+<li>a=fmtp:<format> <format specific="" parameters="">
+在SIP协议的包含的内容是SDP时，应该把Content-Type设置成application/sdp。<h3 id="1-3-SDP协议例子"><a href="#1-3-SDP协议例子" class="headerlink" title="1.3.SDP协议例子"></a>1.3.SDP协议例子</h3><h4 id="1-3-1-helix流媒体服务器的RTSP协议中的SDP协议"><a href="#1-3-1-helix流媒体服务器的RTSP协议中的SDP协议" class="headerlink" title="1.3.1.helix流媒体服务器的RTSP协议中的SDP协议:"></a>1.3.1.helix流媒体服务器的RTSP协议中的SDP协议:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">v=0 //SDP version</div><div class="line">// o field定义的源的一些信息。其格式为：o=&lt;username&gt; &lt;sess-id&gt; &lt;sess-version&gt; &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;</div><div class="line">o=- 1271659412 1271659412 IN IP4 10.56.136.37 s=&lt;No title&gt;</div><div class="line">i=&lt;No author&gt; &lt;No copyright&gt;  //session的信息</div><div class="line">c=IN IP4 0.0.0.0 //connect 的信息，分别描述了：网络协议，地址的类型，连接地址。</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">t=0 0 //时间信息，分别表示开始的时间和结束的时间，一般在流媒体的直播的时移中见的比较多。</div><div class="line">a=SdpplinVersion:1610641560 //描述性的信息</div><div class="line">a=StreamCount:integer;2 //用来描述媒体流的信息，表示有两个媒体流。integer表示信息的格式为整数。</div><div class="line">a=control:*</div><div class="line">a=DefaultLicenseValue:integer;0 //License信息</div><div class="line">a=FileType:string;&quot;MPEG4&quot; ////用来描述媒体流的信息说明当前协商的文件是mpeg4格式的文件</div><div class="line">a=LicenseKey:string;&quot;license.Summary.Datatypes.RealMPEG4.Enabled&quot;</div><div class="line">a=range:npt=0-72.080000  //用来表示媒体流的长度</div><div class="line">m=audio 0 RTP/AVP 96 //做为媒体描述信息的重要组成部分描述了媒体信息的详细内容：表示session的audio是通过RTP来格式传送的，其payload值为96传送的端口还没有定。</div><div class="line">b=as:24 //audio 的bitrate</div><div class="line">b=RR:1800</div><div class="line">b=RS:600</div><div class="line">a=control:streamid=1  //通过媒体流1来发送音频</div><div class="line">a=range:npt=0-72.080000 //说明媒体流的长度。</div><div class="line">a=length:npt=72.080000</div><div class="line">a=rtpmap:96 MPEG4-GENERIC/32000/2 //rtpmap的信息，表示音频为AAC的其sample为32000</div><div class="line">a=fmtp:96 profile-level-id=15;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1210 //config为AAC的详细格式信息</div><div class="line">a=mimetype:string;&quot;audio/MPEG4-GENERIC&quot;</div><div class="line">a=Helix-Adaptation-Support:1</div><div class="line">a=AvgBitRate:integer;48000</div><div class="line">a=HasOutOfOrderTS:integer;1</div><div class="line">a=MaxBitRate:integer;48000</div><div class="line">a=Preroll:integer;1000</div><div class="line">a=OpaqueData:buffer;&quot;A4CAgCIAAAAEgICAFEAVABgAAAC7gAAAu4AFgICAAhKIBoCAgAEC&quot;</div><div class="line">a=StreamName:string;&quot;Audio Track&quot;</div><div class="line">下面是video的信息基本和audio的信息相对称，这里就不再说了。</div><div class="line">m=video 0 RTP/AVP 97</div><div class="line">b=as:150</div><div class="line">b=RR:11250</div><div class="line">b=RS:3750</div><div class="line">a=control:streamid=2</div><div class="line">a=range:npt=0-72.080000</div><div class="line">a=length:npt=72.080000</div><div class="line">a=rtpmap:97 MP4V-ES/2500</div><div class="line">a=fmtp:97 profile-level-id=1;</div><div class="line">a=mimetype:string;&quot;video/MP4V-ES&quot;</div><div class="line">a=Helix-Adaptation-Support:1</div><div class="line">a=AvgBitRate:integer;300000</div><div class="line">a=HasOutOfOrderTS:integer;1</div><div class="line">a=Height:integer;240 //影片的长度</div><div class="line">a=MaxBitRate:integer;300000</div><div class="line">a=MaxPacketSize:integer;1400</div><div class="line">a=Preroll:integer;1000</div><div class="line">a=Width:integer;320  //影片的宽度</div><div class="line">a=OpaqueData:buffer;&quot;AzcAAB8ELyARAbd0AAST4AAEk+AFIAAAAbDzAAABtQ7gQMDPAAABAAAAASAAhED6KFAg8KIfBgEC&quot;</div><div class="line">a=StreamName:string;&quot;Video Track&quot;</div></pre></td></tr></table></figure>
+</format></format></li>
+</ol>
+<h4 id="1-3-2-Webrtc-SDP示例"><a href="#1-3-2-Webrtc-SDP示例" class="headerlink" title="1.3.2.Webrtc SDP示例"></a>1.3.2.Webrtc SDP示例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">v=0</div><div class="line">o=- 0 0 IN IP4 127.0.0.1</div><div class="line">s=WX-RTC-SERVER</div><div class="line">t=0 0</div><div class="line">a=group:BUNDLE audio video</div><div class="line">a=msid-semantic: WMS ryODEhTpFz</div><div class="line">m=audio 1 UDP/TLS/RTP/SAVPF 0 126</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">a=rtcp:1 IN IP4 0.0.0.0</div><div class="line">a=candidate:1 1 udp 2013266431 192.168.0.68 42739 typ host generation 0</div><div class="line">a=ice-ufrag:T+0c</div><div class="line">a=ice-pwd:FzV1T/5PiBI78s630cwSb6</div><div class="line">a=fingerprint:sha-256 2D:38:ED:09:73:36:F9:18:A6:CB:BC:ED:FB:C5:60:B3:F1:6C:FC:BD:97:57:AD:A6:38:11:9D:D4:8F:77:D6:C3</div><div class="line">a=setup:active</div><div class="line">a=recvonly</div><div class="line">a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level</div><div class="line">a=mid:audio</div><div class="line">a=rtcp-mux</div><div class="line">a=rtpmap:0 PCMU/8000</div><div class="line">a=rtpmap:126 telephone-event/8000</div><div class="line">m=video 1 UDP/TLS/RTP/SAVPF 124 125 96</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">a=rtcp:1 IN IP4 0.0.0.0</div><div class="line">a=candidate:1 1 udp 2013266431 192.168.0.68 42739 typ host generation 0</div><div class="line">a=ice-ufrag:T+0c</div><div class="line">a=ice-pwd:FzV1T/5PiBI78s630cwSb6</div><div class="line">a=extmap:2 urn:ietf:params:rtp-hdrext:toffset</div><div class="line">a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time</div><div class="line">a=extmap:4 urn:3gpp:video-orientation</div><div class="line">a=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay</div><div class="line">a=fingerprint:sha-256 2D:38:ED:09:73:36:F9:18:A6:CB:BC:ED:FB:C5:60:B3:F1:6C:FC:BD:97:57:AD:A6:38:11:9D:D4:8F:77:D6:C3</div><div class="line">a=setup:active</div><div class="line">a=recvonly</div><div class="line">a=mid:video</div><div class="line">a=rtcp-mux</div><div class="line">a=rtpmap:124 H264/90000</div><div class="line">a=rtcp-fb:124 ccm fir</div><div class="line">a=rtcp-fb:124 nack</div><div class="line">a=rtcp-fb:124 nack pli</div><div class="line">a=rtcp-fb:124 goog-remb</div><div class="line">a=fmtp:124 x-google-max-bitrate=800;x-google-min-bitrate=150;x-google-start-bitrate=300</div><div class="line">a=rtpmap:125 H264/90000</div><div class="line">a=rtcp-fb:125 ccm fir</div><div class="line">a=rtcp-fb:125 nack</div><div class="line">a=rtcp-fb:125 nack pli</div><div class="line">a=rtcp-fb:125 goog-remb</div><div class="line">a=fmtp:125 x-google-max-bitrate=800;x-google-min-bitrate=150;x-google-start-bitrate=300</div><div class="line">a=rtpmap:96 VP8/90000</div><div class="line">a=rtcp-fb:96 ccm fir</div><div class="line">a=rtcp-fb:96 nack</div><div class="line">a=rtcp-fb:96 nack pli</div><div class="line">a=rtcp-fb:96 goog-remb</div></pre></td></tr></table></figure>
+<h2 id="2-RFC3264"><a href="#2-RFC3264" class="headerlink" title="2.RFC3264"></a>2.RFC3264</h2><p>An Offer/Answer Model with the Session Description Protocol (SDP)</p>
+<h3 id="2-1情态动词"><a href="#2-1情态动词" class="headerlink" title="2.1情态动词"></a>2.1情态动词</h3><p>定义在RFC2119:</p>
+<ul>
+<li>“MUST”，必须、一定要；</li>
+<li>“MUST NOT”，禁止；</li>
+<li>“REQUIRED”，需要；</li>
+<li>“SHALL”、”SHOULD”，应该；</li>
+<li>“SHALL NOT”、”SHOULD NOT”，不应该；</li>
+<li>“RECOMMENDED”，推荐；</li>
+<li>“MAY”，可以<h3 id="2-2术语"><a href="#2-2术语" class="headerlink" title="2.2术语"></a>2.2术语</h3></li>
+<li>媒体流（Media Stream），或称为媒体类型（Media Type），即我们通常所说的音频流、视频流等，所有通信实体要进行媒体交互之前都必须进行媒体注的协商</li>
+<li>媒体格式（Media Format），每种媒体流都有不同的编码格式，像音频有G711、G712编码，视频有H261、H264等，像现在所谓的高清视频采用是720P、1070P等。</li>
+<li>单一会话（Unitcast Session）</li>
+<li>多会话（Multicast Sessions）</li>
+<li>单一媒体流（Unitcast Streams）</li>
+<li>多媒体流（Multicast Streams）<h3 id="2-3offer-answer"><a href="#2-3offer-answer" class="headerlink" title="2.3offer/answer"></a>2.3offer/answer</h3>rfc3264协议[1]主要概述一个请求/响应模型（offer/answer，以下叙述采用英文），包括请求/响应的实体和不同阶段的操作行为，如初始协商过程和重协商过程，并简单介绍消息中各种参数的含义。具体各个参数的详细说明见rfc2327协议[2]<br><img src="http://images.wodekouwei.com/protocol/webrtc_sdp_3264.png" alt="SDP模型组网图"><h4 id="2-3-1-实体-消息"><a href="#2-3-1-实体-消息" class="headerlink" title="2.3.1.实体,消息"></a>2.3.1.实体,消息</h4>Offer/Answer模型包括两个实体，一个是请求主体Offerer，另外一个是响应实体Answerer，两个实体只是在逻辑上进行区分，在一定条件可以转换。例如，手机A发起媒体协商请求，那么A就是Offerer，反之如果A为接收请求则为Offerer。
+Offerer发给Answerer的请求消息称为请求offer，内容包括媒体流类型、各个媒体流使用的编码集，以及将要用于接收媒体流的IP和端口。
+Answerer收到offer之后，回复给Offerer的消息称为响应，内容包括要使用的媒体编码，是否接收该媒体流以及告诉Offerer其用于接收媒体流的IP和端口。<h4 id="2-3-2-SDP各个参数简单介绍"><a href="#2-3-2-SDP各个参数简单介绍" class="headerlink" title="2.3.2.SDP各个参数简单介绍"></a>2.3.2.SDP各个参数简单介绍</h4>下面示例摘自3264协议[1]</li>
+<li>v=0</li>
+<li>o=carol 28908764872 28908764872 IN IP4 100.3.6.6        //会话ID号和版本</li>
+<li>s=-                                     //用于传递会话主题</li>
+<li>t=0 0                                   //会话时间，一般由其它信令消息控制，因此填0</li>
+<li>c=IN IP4 192.0.2.4              //描述本端将用于传输媒体流的IP</li>
+<li>m=audio 0 RTP/AVP 0 1 3     //媒体类型 端口号 本端媒体使用的编码标识（Payload）集</li>
+<li>a=rtpmap:0 PCMU/8000 //rtpmap映射表，各种编码详细描述参数，包括使用带宽（bandwidth）</li>
+<li>a=rtpmap:1 1016/8000</li>
+<li>a=rtpmap:3 GSM/8000</li>
+<li>a=sendonly     //说明本端媒体流的方向，取值包括sendonly/recvonly/sendrecv/inactive</li>
+<li>a=ptime:20                           //说明媒体流打包时长</li>
+<li>m=video 0 RTP/AVP 31 34</li>
+<li>a=rtpmap:31 H261/90000</li>
+<li>a=rtpmap:34 H263/90000<h4 id="2-3-3-实体行为、操作过程"><a href="#2-3-3-实体行为、操作过程" class="headerlink" title="2.3.3.实体行为、操作过程"></a>2.3.3.实体行为、操作过程</h4><h5 id="2-3-3-1-初始协商的Offer请求"><a href="#2-3-3-1-初始协商的Offer请求" class="headerlink" title="2.3.3.1.初始协商的Offer请求"></a>2.3.3.1.初始协商的Offer请求</h5>实体A &lt;-&gt; 实体B，实体首先发起Offer请求，内容如2节所示，对于作何一个媒体流/媒体通道，这时实体A必须：</li>
+</ul>
+<ol>
+<li>如果媒体流方向标为recvonly/sendrecv，即a=recvonly或a=sendrecv，则A必须（MUST）准备好在这个IP和端口上接收实体B发来的媒体流；</li>
+<li>如果媒体流方向标为sendonly/inactive，即a=recvonly或a=sendrecv，则A不需要进行准备。<h5 id="2-3-3-1-Answer响应"><a href="#2-3-3-1-Answer响应" class="headerlink" title="2.3.3.1.Answer响应"></a>2.3.3.1.Answer响应</h5>实体B收到A的请求offer后，根据自身支持的媒体类型和编码策略，回复响应。</li>
+<li>如果实体B回复的响应中的媒体流数量和顺序必须（MUST）和请求offer一致，以便实体A进行甄别和决策。即m行的数量和顺序必须一致，B不能（MUST NOT）擅自增加或删除媒体流。如果B不支持某个媒体流，可以在对应的端口置0，但不能不带这个m行描述。</li>
+<li>对于某种媒体，实体B必须（MUST）从请求offer中选出A支持且自己也支持的该媒体的编码标识集，并且可以（MAY）附带自己支持的其它类型编码。</li>
+<li>对于响应消息中各个媒体的方向：<ul>
+<li>如果请求某媒体流的方向为sendonly，那么响应中对应媒体的方向必须为recvonly；</li>
+<li>如果请求某媒体流的方向为recvonly，那么响应中对应媒体的方向必须为sendonly；</li>
+<li>如果请求某媒体流的方向为sendrecv，那么响应中对应媒体的方向可以为sendrecv/sendonly/recvonly/inactive中的一种；</li>
+<li>如果请求某媒体流的方向为inactive，那么响应中对应媒体的方向必须为inactive；</li>
+</ul>
+</li>
+<li>响应answer里提供IP和端口，指示Offerer本端期望用于接收媒体流的IP和端口，一旦响应发出之后，Offerer必须（MUST）准备好在这个IP和端口上接收实体A发来的媒体流。</li>
+<li>如果请求offer中带了ptime（媒体流打包间隔）的a行或带宽的a行，则响应answer也应该（SHOULD）相应的携带。</li>
+<li>实体B Offerer应该（SHOULD）使用实体A比较期望的编码生成媒体流发送。一般来说对于m行，如m=video 0 RTP/AVP 31 34，排充越靠前的编码表示该实体越希望以这个编码作为载体，这里示例31(H261)，34（H263）中H261为A更期望使用的编码类型。同理，当实体A收到响应answer后也是这样理解的。<h5 id="2-3-3-2-实体收到响应后的处理"><a href="#2-3-3-2-实体收到响应后的处理" class="headerlink" title="2.3.3.2.实体收到响应后的处理"></a>2.3.3.2.实体收到响应后的处理</h5>当实体A收到B回复的响应后，可以（MAY）开始发送媒体流，如果媒体流方向为sendonly/sendrecv，</li>
+<li>必须（MUST）使用answer列举的媒体类型/编码生成媒体发送；</li>
+<li>应该（SHOULD）使用answer中的ptime和bandwidth来打包发送媒体流；</li>
+<li>可以（MAY）立即停止监听端口，该端口为offer支持answer不支持的媒体所使用的端口。</li>
+</ol>
+<h4 id="2-3-4-修改媒体流（会话）"><a href="#2-3-4-修改媒体流（会话）" class="headerlink" title="2.3.4.修改媒体流（会话）"></a>2.3.4.修改媒体流（会话）</h4><p>修改媒体流的offer-answer操作必须基于之前协商的媒体形式（音频、视频等），不能（MUST NOT）对已有媒体流进行删减。</p>
+<h5 id="2-3-4-1-删除媒体流"><a href="#2-3-4-1-删除媒体流" class="headerlink" title="2.3.4.1.删除媒体流"></a>2.3.4.1.删除媒体流</h5><p>如果实体认定新的会话不支持之前媒商的某个媒体，新的offer只须对这种媒体所在m行的端口置0，但不能不描述这种媒体，即不带对应m行。当answerer收到响应之后，处理同初始协商一样。</p>
+<h5 id="2-3-4-2-增加媒体流"><a href="#2-3-4-2-增加媒体流" class="headerlink" title="2.3.4.2.增加媒体流"></a>2.3.4.2.增加媒体流</h5><p>如果实体打算新增媒体流，在offer里只须加上描述即可或者占用之前端口被置0的媒体流，即用新的媒体描述m行替换旧的。当answerer收到offer请求后，发现有新增媒体描述，或者过于端口被置0的媒体行被新的媒体描述替换，即知道当前为新增媒体流，处理同初始协商。</p>
+<h5 id="2-3-4-3-修改媒体流"><a href="#2-3-4-3-修改媒体流" class="headerlink" title="2.3.4.3.修改媒体流"></a>2.3.4.3.修改媒体流</h5><p>修改媒体注主要是针对初始协商结果，如果有变更即进入修改流程处理，可能的变更包括IP地址、端口，媒体格式（编码），媒体类型（音、视频），媒体属性（ptime，bandwidth，媒体流方向变更等）。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-introduce/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1078,1837 +2252,6 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/vmware-network-mode/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/22/vmware-network-mode/" itemprop="url">
-                  VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T18:08:51+08:00">
-                2017-04-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux管理/" itemprop="url" rel="index">
-                    <span itemprop="name">linux管理</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：</p>
-<ul>
-<li>VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；</li>
-<li>VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；</li>
-<li>VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；</li>
-<li>VMnet2~VMnet7及VMnet9：是VMware用于虚拟自定义custom网络下的虚拟交换机；</li>
-<li>VMware Network Adapter VMnet1：这是宿主机用于与Host-Only虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
-<li>VMware Network Adapter VMnet8：这是宿主机用于与NAT虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
-</ul>
-<p>VMware Network Adapter VMnet1与VMware Network Adapter VMnet8可以在宿主机网络连接中看到.</p>
-<h3 id="1-Bridged桥接模式"><a href="#1-Bridged桥接模式" class="headerlink" title="1.Bridged桥接模式"></a>1.Bridged桥接模式</h3><p>VMware在桥接模式下，虚拟机使用VMware为该虚拟机分配的虚拟网卡，宿主机使用自身的物理网卡（有线或无线都行），并且默认使用虚拟交换机VMnet0来连接虚拟机的虚拟网卡和宿主机的物理网卡。在此模式下没有局域网动态地址分配DHCP服务器，也没有网络地址转换ＮＡＴ服务器，虚拟交换机没有连接DHCP服务器和ＮＡＴ服务器。宿主机的网口（插网线的那个口）与宿主机物理网卡相连，同时也就和虚拟机的虚拟网卡相连，也就是和虚拟交换机相连，所以虚拟机相当于在宿主机所在局域网内的一个单独的主机，他的行为和宿主机是同等地位的，没有依存关系。所有桥接下的网卡与网卡都是交换模式的，相互可以访问而不干扰。在桥接模式下，虚拟机ip地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致原理图如下：
-<img src="http://images.wodekouwei.com/net/vmware_netmode_bridged.jpeg" alt="bridged">
-配置虚拟机网卡,编辑<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=none</div><div class="line">IPADDR=192.168.31.128 #设置虚拟机ip地址,与主机ip地址在同一网段</div><div class="line">NETMASK=255.255.255.0 #设置子网掩码</div><div class="line">GATEWAY=192.168.31.1#设置虚拟网关,与主机相同</div><div class="line">DNS1=192.168.31.1 #设置虚拟机DNS,与主机相同</div></pre></td></tr></table></figure></p>
-<p>执行<code>/etc/init.d/network restart</code>重启虚拟机网卡,ping内网与外网测试.</p>
-<h3 id="2-NAT网络地址转换模式："><a href="#2-NAT网络地址转换模式：" class="headerlink" title="2.NAT网络地址转换模式："></a>2.NAT网络地址转换模式：</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_nat.png" alt="nat">
-注意：红色的方框是nat服务器，nat服务器有两个网卡一个是虚拟内网网卡，一个是宿主机的物理网卡。禁用VmNet8，虚拟机仍然可以上网，ping通主机，但是主机ping不通虚拟机的网卡。在NAT模式中，主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网。那么我们会觉得很奇怪，为什么需要虚拟网卡VMware Network Adapter VMnet8呢？原来我们的VMware Network Adapter VMnet8虚拟网卡主要是为了实现主机与虚拟机之间的通信。弥补了NAT协议中外网不能访问局域网的缺点。
-具体配置:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=dhcp #动态获取ip地址,如果此处设置为静态,则下面手动配置ip需要在DHCP地址范围内</div><div class="line">#NAT模式也可以设置静态ip,但需要在DHCP地址范围内</div><div class="line">IPADDR=192.168.31.128</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.31.1</div><div class="line">DNS1=192.168.31.1</div></pre></td></tr></table></figure></p>
-<h3 id="3-Host-Only方式"><a href="#3-Host-Only方式" class="headerlink" title="3.Host-Only方式"></a>3.Host-Only方式</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_hostonly.png" alt="host-only">
-注意：上图中的VmNet8应该为VmNet1。其实跟nat模式的图片是类似的，只是少了nat服务。
-所以host-only上不了外网，只能实现主机的VmNet1网卡和虚拟机的虚拟网卡通信。</p>
-<h3 id="NAT介绍"><a href="#NAT介绍" class="headerlink" title="NAT介绍"></a>NAT介绍</h3><p>NAT（Network Address Translation，网络地址转换）是1994年提出的。当在专用网内部的一些主机本来已经分配到了本地IP地址（即仅在本专用网内使用的专用地址），但现在又想和因特网上的主机通信（并不需要加密）时，可使用NAT方法。
-这种方法需要在专用网连接到因特网的路由器上安装NAT软件。装有NAT软件的路由器叫做NAT路由器，它至少有一个有效的外部全球IP地址。这样，所有使用本地地址的主机在和外界通信时，都要在NAT路由器上将其本地地址转换成全球IP地址，才能和因特网连接。
-另外，这种通过使用少量的公有IP 地址代表较多的私有IP 地址的方式，将有助于减缓可用的IP地址空间的枯竭。</p>
-<h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><p>NAT不仅能解决了lP地址不足的问题，而且还能够有效地避免来自网络外部的攻击，隐藏并保护网络内部的计算机。</p>
-<ol>
-<li>宽带分享：这是 NAT 主机的最大功能。</li>
-<li>安全防护：NAT 之内的 PC 联机到 Internet 上面时，他所显示的 IP 是 NAT 主机的公共 IP，所以 Client 端的 PC 当然就具有一定程度的安全了，外界在进行 portscan（端口扫描） 的时候，就侦测不到源Client 端的 PC 。</li>
-</ol>
-<h4 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h4><p>NAT的实现方式有三种，即静态转换Static Nat、动态转换Dynamic Nat和端口多路复用OverLoad。</p>
-<ol>
-<li>静态转换是指将内部网络的私有IP地址转换为公有IP地址，IP地址对是一对一的，是一成不变的，某个私有IP地址只转换为某个公有IP地址。借助于静态转换，可以实现外部网络对内部网络中某些特定设备（如服务器）的访问。</li>
-<li>动态转换是指将内部网络的私有IP地址转换为公用IP地址时，IP地址是不确定的，是随机的，所有被授权访问上Internet的私有IP地址可随机转换为任何指定的合法IP地址。也就是说，只要指定哪些内部地址可以进行转换，以及用哪些合法地址作为外部地址时，就可以进行动态转换。动态转换可以使用多个合法外部地址集。当ISP提供的合法IP地址略少于网络内部的计算机数量时。可以采用动态转换的方式。</li>
-<li>端口多路复用（Port address Translation,PAT)是指改变外出数据包的源端口并进行端口转换，即端口地址转换（PAT，Port Address Translation).采用端口多路复用方式。内部网络的所有主机均可共享一个合法外部IP地址实现对Internet的访问，从而可以最大限度地节约IP地址资源。同时，又可隐藏网络内部的所有主机，有效避免来自internet的攻击。因此，目前网络中应用最多的就是端口多路复用方式。</li>
-<li>ALG（Application Level Gateway），即应用程序级网关技术：传统的NAT技术只对IP层和传输层头部进行转换处理，但是一些应用层协议，在协议数据报文中包含了地址信息。为了使得这些应用也能透明地完成NAT转换，NAT使用一种称作ALG的技术，它能对这些应用程序在通信时所包含的地址信息也进行相应的NAT转换。例如：对于FTP协议的PORT/PASV命令、DNS协议的 “A” 和 “PTR” queries命令和部分ICMP消息类型等都需要相应的ALG来支持。
-如果协议数据报文中不包含地址信息，则很容易利用传统的NAT技术来完成透明的地址转换功能，通常我们使用的如下应用就可以直接利用传统的NAT技术：HTTP、TELNET、FINGER、NTP、NFS、ARCHIE、RLOGIN、RSH、RCP等。</li>
-</ol>
-<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>借助于NAT，私有（保留）地址的”内部”网络通过路由器发送数据包时，私有地址被转换成合法的IP地址，一个局域网只需使用少量IP地址（甚至是1个）即可实现私有地址网络内所有计算机与Internet的通信需求。
-NAT将自动修改IP报文的源IP地址和目的IP地址，Ip地址校验则在NAT处理过程中自动完成。有些应用程序将源IP地址嵌入到IP报文的数据部分中，所以还需要同时对报文的数据部分进行修改，以匹配IP头中已经修改过的源IP地址。否则，在报文数据部分嵌入IP地址的应用程序就不能正常工作。</p>
-<h4 id="NAPT"><a href="#NAPT" class="headerlink" title="NAPT"></a>NAPT</h4><p>NAPT（Network Address Port Translation），即网络端口地址转换，可将多个内部地址映射为一个合法公网地址，但以不同的协议端口号与不同的内部地址相对应，也就是&lt;内部地址+内部端口&gt;与&lt;外部地址+外部端口&gt;之间的转换。NAPT普遍用于接入设备中，它可以将中小型的网络隐藏在一个合法的IP地址后面。NAPT也被称为“多对一”的NAT，或者叫PAT（Port Address Translations，端口地址转换）、地址超载（address overloading）。
-NAPT与动态地址NAT不同，它将内部连接映射到外部网络中的一个单独的IP地址上，同时在该地址上加上一个由NAT设备选定的TCP端口号。NAPT算得上是一种较流行的NAT变体，通过转换TCP或UDP协议端口号以及地址来提供并发性。除了一对源和目的IP地址以外，这个表还包括一对源和目的协议端口号，以及NAT盒使用的一个协议端口号。
-NAPT的主要优势在于，能够使用一个全球有效IP地址获得通用性。主要缺点在于其通信仅限于TCP或UDP。当所有通信都采用TCP或UDP，NAPT允许一台内部计算机访问多台外部计算机，并允许多台内部主机访问同一台外部计算机，相互之间不会发生冲突。</p>
-<h4 id="NAT穿透方法"><a href="#NAT穿透方法" class="headerlink" title="NAT穿透方法"></a>NAT穿透方法</h4><p>目前常用的针对UDP的NAT 穿透（NAT Traversal）方法主要有：STUN、TURN、ICE、uPnP等。其中ICE方式由于其结合了STUN和TURN的特点，所以使用最为广泛。针对TCP的NAT穿透技术目前仍为难点。实用的技术仍然不多。</p>
-<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>在配置NAT(网络地址转换)之前，首先需要了解内部本地地址和内部全局地址的分配情况。根据不同的需求，执行以下不同的配置任务。</p>
-<ul>
-<li>内部源地址NAT配置</li>
-<li>内部源地址NAPT配置</li>
-<li>重叠地址NAT配置</li>
-<li>TCP负载均衡</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/linux-networkcard/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/22/linux-networkcard/" itemprop="url">
-                  linux网卡配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T17:18:11+08:00">
-                2017-04-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux管理/" itemprop="url" rel="index">
-                    <span itemprop="name">linux管理</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.</p>
-<h3 id="1-ifconfig-interfaces-config-命令方式"><a href="#1-ifconfig-interfaces-config-命令方式" class="headerlink" title="1.ifconfig(interfaces config)命令方式"></a>1.ifconfig(interfaces config)命令方式</h3><p>通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(<strong>用ifconfig命令配置的网卡信息，在网卡重启后机器重启后，配置就不存在</strong>)。</p>
-<h4 id="1-1命令格式"><a href="#1-1命令格式" class="headerlink" title="1.1命令格式"></a>1.1命令格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ifconfig [网络设备] [参数]</div></pre></td></tr></table></figure>
-<h4 id="1-2命令功能"><a href="#1-2命令功能" class="headerlink" title="1.2命令功能"></a>1.2命令功能</h4><p>ifconfig 命令用来查看和配置网络设备。当网络环境发生改变时可通过此命令对网络进行相应的配置。</p>
-<h4 id="1-3命令参数"><a href="#1-3命令参数" class="headerlink" title="1.3命令参数"></a>1.3命令参数</h4><ol>
-<li>up 启动指定网络设备/网卡。</li>
-<li>down 关闭指定网络设备/网卡。该参数可以有效地阻止通过指定接口的IP信息流，如果想永久地关闭一个接口，我们还需要从核心路由表中将该接口的路由信息全部删除。</li>
-<li>arp 设置指定网卡是否支持ARP协议。
--promisc 设置是否支持网卡的promiscuous模式，如果选择此参数，网卡将接收网络中发给它所有的数据包
--allmulti 设置是否支持多播模式，如果选择此参数，网卡将接收网络中所有的多播数据包
--a 显示全部接口信息
--s 显示摘要信息（类似于 netstat -i）</li>
-<li>add 给指定网卡配置IPv6地址</li>
-<li>del 删除指定网卡的IPv6地址</li>
-<li>&lt;硬件地址&gt; 配置网卡最大的传输单元</li>
-<li>mtu&lt;字节数&gt; 设置网卡的最大传输单元 (bytes)</li>
-<li>netmask&lt;子网掩码&gt; 设置网卡的子网掩码。掩码可以是有前缀0x的32位十六进制数，也可以是用点分开的4个十进制数。如果不打算将网络分成子网，可以不管这一选项；如果要使用子网，那么请记住，网络中每一个系统必须有相同子网掩码。</li>
-<li>tunel 建立隧道</li>
-<li>dstaddr 设定一个远端地址，建立点对点通信</li>
-<li>-broadcast&lt;地址&gt; 为指定网卡设置广播协议</li>
-<li>-pointtopoint&lt;地址&gt; 为网卡设置点对点通讯协议</li>
-<li>multicast 为网卡设置组播标志</li>
-<li>address 为网卡设置IPv4地址</li>
-<li>txqueuelen&lt;长度&gt; 为网卡设置传输列队的长度</li>
-</ol>
-<h4 id="1-4使用实例"><a href="#1-4使用实例" class="headerlink" title="1.4使用实例"></a>1.4使用实例</h4><h5 id="1-4-1显示网络设备信息（激活状态的）"><a href="#1-4-1显示网络设备信息（激活状态的）" class="headerlink" title="1.4.1显示网络设备信息（激活状态的）"></a>1.4.1显示网络设备信息（激活状态的）</h5><p><strong>命令</strong>:<code>ifcofig</code>
-<strong>输出</strong>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:20  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div></pre></td></tr></table></figure></p>
-<p><strong>说明</strong></p>
-<ul>
-<li>eth0 表示第一块网卡， 其中 HWaddr 表示网卡的物理地址，可以看到目前这个网卡的物理地址(MAC地址）是 00:50:56:BF:26:20</li>
-<li>inet addr 用来表示网卡的IP地址，此网卡的 IP地址是 192.168.120.204，广播地址， Bcast:192.168.120.255，掩码地址Mask:255.255.255.0</li>
-<li>lo 是表示主机的回坏地址，这个一般是用来测试一个网络程序，但又不想让局域网或外网的用户能够查看，只能在此台主机上运行和查看所用的网络接口。比如把 HTTPD服务器的指定到回坏地址，在浏览器输入 127.0.0.1 就能看到你所架WEB网站了。但只是您能看得到，局域网的其它主机或用户无从知道。</li>
-<li>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）</li>
-<li>第二行：网卡的IP地址、子网、掩码</li>
-<li>第三行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）MTU:1500（最大传输单元）：1500字节</li>
-<li>第四、五行：接收、发送数据包情况统计</li>
-<li>第七行：接收、发送数据字节数统计信息。</li>
-</ul>
-<h5 id="1-4-2启动关闭指定网卡"><a href="#1-4-2启动关闭指定网卡" class="headerlink" title="1.4.2启动关闭指定网卡"></a>1.4.2启动关闭指定网卡</h5><p><strong>命令</strong>：
-ifconfig eth0 up
-ifconfig eth0 down
-<strong>输出</strong>：
-<strong>说明</strong>：
-ifconfig eth0 up 为启动网卡eth0 ；ifconfig eth0 down 为关闭网卡eth0。ssh登陆linux服务器操作要小心，关闭了就不能开启了，除非你有多网卡。</p>
-<h5 id="1-4-3为网卡配置和删除IPv6地址"><a href="#1-4-3为网卡配置和删除IPv6地址" class="headerlink" title="1.4.3为网卡配置和删除IPv6地址"></a>1.4.3为网卡配置和删除IPv6地址</h5><p><strong>命令</strong>：
-ifconfig eth0 add 33ffe:3240:800:1005::2/64
-ifconfig eth0 del 33ffe:3240:800:1005::2/64
-<strong>输出</strong>：
-<strong>说明</strong>：
-ifconfig eth0 add 33ffe:3240:800:1005::2/64 为网卡eth0配置IPv6地址；
-ifconfig eth0 add 33ffe:3240:800:1005::2/64 为网卡eth0删除IPv6地址；
-练习的时候，ssh登陆linux服务器操作要小心，关闭了就不能开启了，除非你有多网卡。</p>
-<h5 id="1-4-4用ifconfig修改MAC地址"><a href="#1-4-4用ifconfig修改MAC地址" class="headerlink" title="1.4.4用ifconfig修改MAC地址"></a>1.4.4用ifconfig修改MAC地址</h5><p><strong>命令</strong>：
-<code>ifconfig eth0 hw ether 00:AA:BB:CC:DD:EE</code>
-<strong>输出</strong>：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 down //关闭网卡</div><div class="line">[root@localhost ~]# ifconfig eth0 hw ether 00:AA:BB:CC:DD:EE //修改MAC地址</div><div class="line">[root@localhost ~]# ifconfig eth0 up //启动网卡</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:AA:BB:CC:DD:EE  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div><div class="line">[root@localhost ~]# ifconfig eth0 hw ether 00:50:56:BF:26:20 //关闭网卡并修改MAC地址</div><div class="line">[root@localhost ~]# ifconfig eth0 up //启动网卡</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:20  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div></pre></td></tr></table></figure></p>
-<h5 id="1-4-5配置IP地址"><a href="#1-4-5配置IP地址" class="headerlink" title="1.4.5配置IP地址"></a>1.4.5配置IP地址</h5><p><strong>输出</strong>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56</div><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56 netmask 255.255.255.0</div><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56 netmask 255.255.255.0 broadcast 192.168.120.255</div></pre></td></tr></table></figure></p>
-<p><strong>说明</strong>:
-ifconfig eth0 192.168.120.56
-给eth0网卡配置IP地：192.168.120.56
- ifconfig eth0 192.168.120.56 netmask 255.255.255.0
-给eth0网卡配置IP地址：192.168.120.56 ，并加上子掩码：255.255.255.0
-ifconfig eth0 192.168.120.56 netmask 255.255.255.0 broadcast 192.168.120.255
-/给eth0网卡配置IP地址：192.168.120.56，加上子掩码：255.255.255.0，加上个广播地址： 192.168.120.255</p>
-<h5 id="1-4-6启用和关闭ARP协议"><a href="#1-4-6启用和关闭ARP协议" class="headerlink" title="1.4.6启用和关闭ARP协议"></a>1.4.6启用和关闭ARP协议</h5><p><strong>命令</strong>：
-ifconfig eth0 arp
-ifconfig eth0 -arp
-<strong>输出</strong>：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 arp</div><div class="line">[root@localhost ~]# ifconfig eth0 -arp</div></pre></td></tr></table></figure></p>
-<p><strong>说明</strong>
-ifconfig eth0 arp 开启网卡eth0 的arp协议；
-ifconfig eth0 -arp 关闭网卡eth0 的arp协议；</p>
-<h5 id="1-4-7-设置最大传输单元"><a href="#1-4-7-设置最大传输单元" class="headerlink" title="1.4.7 设置最大传输单元"></a>1.4.7 设置最大传输单元</h5><p><strong>命令</strong>：
-ifconfig eth0 mtu 1500
-<strong>输出</strong>：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 mtu 1480</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:1F  </div><div class="line">          inet addr:192.168.120.203  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1480  Metric:1</div><div class="line">          RX packets:8712395 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:36631 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:597062089 (569.4 MiB)  TX bytes:2643973 (2.5 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:9973 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:9973 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:518096 (505.9 KiB)  TX bytes:518096 (505.9 KiB)</div><div class="line"></div><div class="line">[root@localhost ~]# ifconfig eth0 mtu 1500</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:1F  </div><div class="line">          inet addr:192.168.120.203  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8712548 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:36685 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:597072333 (569.4 MiB)  TX bytes:2650581 (2.5 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:9973 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:9973 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:518096 (505.9 KiB)  TX bytes:518096 (505.9 KiB)</div><div class="line"></div><div class="line">[root@localhost ~]#</div></pre></td></tr></table></figure></p>
-<p>说明:
-设置能通过的最大数据包大小为1500bytes</p>
-<h3 id="2-配置文件方式"><a href="#2-配置文件方式" class="headerlink" title="2.配置文件方式"></a>2.配置文件方式</h3><p>ubuntu配置文件:<code>/etc/network/interfaces</code>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">auto lo</div><div class="line">iface lo inet loopback</div><div class="line">auto eth0 #配置静态ip</div><div class="line">iface eth0 inet static</div><div class="line">address 192.168.1.100</div><div class="line">netmask 255.255.255.0</div><div class="line">gateway 192.168.1.1</div></pre></td></tr></table></figure></p>
-<p>centos配置文件:<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0(默认)</div><div class="line">HWADDR=00:0C:29:2E:36:16(默认)</div><div class="line">TYPE=Ethernet(默认)</div><div class="line">UUID=XXXXXXX(默认)</div><div class="line">ONBOOT=yes(默认为no,修改为yes意为每次reboot后 ifup eth0)</div><div class="line">MM_CONTROLLED=yes(默认)</div><div class="line">#BOOTPROTO=dhcp(dhcp为自动分配ip地址,我们把他注释了，在下面另外加)</div><div class="line">BOOTPROTO=static(新添加)</div><div class="line">IPV6INIT=no(新添加)</div><div class="line">USERCTL=no(新添加)</div><div class="line">IPADDR=192.168.164.100(新添加)</div><div class="line">NETMASK=255.255.255.0(新添加)</div></pre></td></tr></table></figure></p>
-<p>service network restart重启网卡服务</p>
-<h3 id="3-图形界面方式"><a href="#3-图形界面方式" class="headerlink" title="3.图形界面方式"></a>3.图形界面方式</h3><h3 id="添加虚拟网卡"><a href="#添加虚拟网卡" class="headerlink" title="添加虚拟网卡"></a>添加虚拟网卡</h3><p>一台服务器需要设置多个ip,但又不想添加多块网卡,那就需要设置虚拟网卡.这里介绍几种方式在linux服务器上添加虚拟网卡.
-比如向eth0中添加一块虚拟网卡:</p>
-<h4 id="1-快速创建删除虚拟网卡"><a href="#1-快速创建删除虚拟网卡" class="headerlink" title="1.快速创建删除虚拟网卡"></a>1.快速创建删除虚拟网卡</h4><p><code>sudo ifconfig eth0: 192.168.10.10 up</code>
-以上的命令就可以在eth0网卡上创建一个叫eth0:0的虚拟网卡,他的地址是:192.168.1.63
-如果不想要这个虚拟网卡了,可以使用如下命令删除:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ifconfig eth0:0 down</div></pre></td></tr></table></figure></p>
-<p>重启服务器或者网络后,虚拟网卡就没有了.</p>
-<h4 id="2-修改网卡配置文件"><a href="#2-修改网卡配置文件" class="headerlink" title="2.修改网卡配置文件"></a>2.修改网卡配置文件</h4><p>在ubuntu下,网卡的配置文件是<code>/etc/network/interfaces</code>,所以我们修改它:
-<code>sudo vim /etc/network/interfaces</code>
-在这个文件中增加如下内容并保存:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">auto eth0:0</div><div class="line">iface eth0:0 inet static</div><div class="line">address 192.168.10.10</div><div class="line">netmask 255.255.255.0</div><div class="line">#network 192.168.10.1</div><div class="line">#broadcast 192.168.1.255</div></pre></td></tr></table></figure></p>
-<p>保存后,我们需要重启网卡(重新加载配置文件)才会生效,使用如下命令重启:<code>sudo /etc/init.d/networking restart</code>
-他的优点是重启服务器或者网卡配置不会丢失。</p>
-<h4 id="3-创建tag"><a href="#3-创建tag" class="headerlink" title="3.创建tag"></a>3.创建tag</h4><p>前两种方法都有一个特点，创建的网卡可有不同的ip地址，但是Mac地址相同。无法用来创建虚拟机。
-添加虚拟网卡tap
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tunctl -b</div></pre></td></tr></table></figure></p>
-<p>其他配置命令:
-显示网桥信息:<code>brctl show</code>
-添加网桥:<code>brctl addbr virbr0</code>
-激活网桥:<code>ip link set virbr0 up</code>
-添加虚拟网卡tap:<code>tunctl -b</code>
-tap0 ——-&gt; 执行上面使命就会生成一个tap,后缀从0，1，2依次递增<br>激活创建的tap:<code>ip link set tap0 up</code></p>
-<h2 id="将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0"><a href="#将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0" class="headerlink" title="将tap0虚拟网卡添加到指定网桥上:brctl addif br0 tap0"></a>将tap0虚拟网卡添加到指定网桥上:<code>brctl addif br0 tap0</code></h2><p>给网桥配制ip地址:<code>ifconfig virbr1 169.254.251.4 up</code>
-将virbr1网桥上绑定的网卡eth5解除:</p>
-<pre><code>brctl delif virb1 eth5
-</code></pre><p>给virbr1网桥添加网卡eth6:<code>brctl addif virbr1 eth6</code>   </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/19/issues-android-audio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/19/issues-android-audio/" itemprop="url">
-                  Android声音播放与录制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T10:31:45+08:00">
-                2017-04-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AudioTrack"><a href="#AudioTrack" class="headerlink" title="AudioTrack"></a>AudioTrack</h2><h3 id="AudioTrack类说明"><a href="#AudioTrack类说明" class="headerlink" title="AudioTrack类说明:"></a>AudioTrack类说明:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * The AudioTrack class manages and plays a single audio resource for Java applications.</div><div class="line"> * It allows streaming of PCM audio buffers to the audio sink for playback. This is</div><div class="line"> * achieved by &quot;pushing&quot; the data to the AudioTrack object using one of the</div><div class="line"> *  &#123;@link #write(byte[], int, int)&#125;, &#123;@link #write(short[], int, int)&#125;,</div><div class="line"> *  and &#123;@link #write(float[], int, int, int)&#125; methods.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;An AudioTrack instance can operate under two modes: static or streaming.&lt;br&gt;</div><div class="line"> * In Streaming mode, the application writes a continuous stream of data to the AudioTrack, using</div><div class="line"> * one of the &#123;@code write()&#125; methods. These are blocking and return when the data has been</div><div class="line"> * transferred from the Java layer to the native layer and queued for playback. The streaming</div><div class="line"> * mode is most useful when playing blocks of audio data that for instance are:</div><div class="line"> *</div><div class="line"> * &lt;ul&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the duration of the sound to play,&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the characteristics of the audio data</div><div class="line"> *         (high sampling rate, bits per sample ...)&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;received or generated while previously queued audio is playing.&lt;/li&gt;</div><div class="line"> * &lt;/ul&gt;</div><div class="line"> *</div><div class="line"> * The static mode should be chosen when dealing with short sounds that fit in memory and</div><div class="line"> * that need to be played with the smallest latency possible. The static mode will</div><div class="line"> * therefore be preferred for UI and game sounds that are played often, and with the</div><div class="line"> * smallest overhead possible.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Upon creation, an AudioTrack object initializes its associated audio buffer.</div><div class="line"> * The size of this buffer, specified during the construction, determines how long an AudioTrack</div><div class="line"> * can play before running out of data.&lt;br&gt;</div><div class="line"> * For an AudioTrack using the static mode, this size is the maximum size of the sound that can</div><div class="line"> * be played from it.&lt;br&gt;</div><div class="line"> * For the streaming mode, data will be written to the audio sink in chunks of</div><div class="line"> * sizes less than or equal to the total buffer size.</div><div class="line"> *</div><div class="line"> * AudioTrack is not final and thus permits subclasses, but such use is not recommended.</div><div class="line"> */</div><div class="line">public class AudioTrack extends PlayerBase</div><div class="line">                        implements AudioRouting&#123;</div><div class="line"></div><div class="line">                        &#125;</div></pre></td></tr></table></figure>
-<h3 id="构造方法说明"><a href="#构造方法说明" class="headerlink" title="构造方法说明"></a>构造方法说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//根据采样率，采样精度，单双声道来得到frame的大小。</div><div class="line">int bufsize = AudioTrack.getMinBufferSize(8000,//每秒8K个点　　AudioFormat.CHANNEL_CONFIGURATION_STEREO,//双声道</div><div class="line">AudioFormat.ENCODING_PCM_16BIT);//一个采样点16比特-2个字节</div><div class="line">//注意，按照数字音频的知识，这个算出来的是一秒钟buffer的大小。//创建AudioTrack</div><div class="line">AudioTrack trackplayer = new AudioTrack(AudioManager.STREAM_MUSIC, 8000,　　AudioFormat.CHANNEL_CONFIGURATION_ STEREO,</div><div class="line">　　AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">　　bufsize,</div><div class="line">AudioTrack.MODE_STREAM);//</div><div class="line"> trackplayer.play() ;//开始</div><div class="line"></div><div class="line">trackplayer.write(bytes_pkg, 0, bytes_pkg.length) ;//往track中写数据</div><div class="line"></div><div class="line">….</div><div class="line"></div><div class="line">trackplayer.stop();//停止播放</div><div class="line"></div><div class="line">trackplayer.release();//释放底层资源。</div></pre></td></tr></table></figure>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><h5 id="1-AudioTrack-MODE-STREAM的意思："><a href="#1-AudioTrack-MODE-STREAM的意思：" class="headerlink" title="1. AudioTrack.MODE_STREAM的意思："></a>1. AudioTrack.MODE_STREAM的意思：</h5><p>AudioTrack中有MODE_STATIC和MODE_STREAM两种分类。</p>
-<ul>
-<li><p>STREAM的意思是由用户在应用程序通过write方式把数据一次一次得写到audiotrack中。这个和我们在socket中发送数据一样，应用层从某个地方获取数据，例如通过编解码得到PCM数据，然后write到audiotrack。这种方式的坏处就是总是在JAVA层和Native层交互，效率损失较大。</p>
-</li>
-<li><p>而STATIC的意思是一开始创建的时候，就把音频数据放到一个固定的buffer，然后直接传给audiotrack，后续就不用一次次得write了。AudioTrack会自己播放这个buffer中的数据。
-这种方法对于铃声等内存占用较小，延时要求较高的声音来说很适用。</p>
-</li>
-</ul>
-<h5 id="2-StreamType"><a href="#2-StreamType" class="headerlink" title="2. StreamType"></a>2. StreamType</h5><p>这个在构造AudioTrack的第一个参数中使用。这个参数和Android中的AudioManager有关系，涉及到手机上的音频管理策略。
-Android将系统的声音分为以下几类常见的（定义在AudioManager)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/** The audio stream for phone calls */</div><div class="line">public static final int STREAM_VOICE_CALL = AudioSystem.STREAM_VOICE_CALL;</div><div class="line">/** The audio stream for system sounds */</div><div class="line">public static final int STREAM_SYSTEM = AudioSystem.STREAM_SYSTEM;</div><div class="line">/** The audio stream for the phone ring */</div><div class="line">public static final int STREAM_RING = AudioSystem.STREAM_RING;</div><div class="line">/** The audio stream for music playback */</div><div class="line">public static final int STREAM_MUSIC = AudioSystem.STREAM_MUSIC;</div><div class="line">/** The audio stream for alarms */</div><div class="line">public static final int STREAM_ALARM = AudioSystem.STREAM_ALARM;</div><div class="line">/** The audio stream for notifications */</div><div class="line">public static final int STREAM_NOTIFICATION = AudioSystem.STREAM_NOTIFICATION;</div><div class="line">/** @hide The audio stream for phone calls when connected to bluetooth */</div><div class="line">public static final int STREAM_BLUETOOTH_SCO = AudioSystem.STREAM_BLUETOOTH_SCO;</div><div class="line">/** @hide The audio stream for enforced system sounds in certain countries (e.g camera in Japan) */</div><div class="line">public static final int STREAM_SYSTEM_ENFORCED = AudioSystem.STREAM_SYSTEM_ENFORCED;</div><div class="line">/** The audio stream for DTMF Tones */</div><div class="line">public static final int STREAM_DTMF = AudioSystem.STREAM_DTMF;</div><div class="line">/** @hide The audio stream for text to speech (TTS) */</div><div class="line">public static final int STREAM_TTS = AudioSystem.STREAM_TTS;</div></pre></td></tr></table></figure></p>
-<p>常用说明:</p>
-<ul>
-<li>STREAM_ALARM：警告声</li>
-<li>STREAM_MUSCI：音乐声，例如music等</li>
-<li>STREAM_RING：铃声</li>
-<li>STREAM_SYSTEM：系统声音</li>
-<li>STREAM_VOCIE_CALL：电话声音</li>
-</ul>
-<p>为什么要分这么多呢？以前在台式机上开发的时候很少知道有这么多的声音类型，不过仔细思考下，发现这样做是有道理的。例如你在听music的时候接到电话，这个时候music播放肯定会停止，此时你只能听到电话，如果你调节音量的话，这个调节肯定只对电话起作用。当电话打完了，再回到music，你肯定不用再调节音量了。</p>
-<p>其实系统将这几种声音的数据分开管理，所以，这个参数对AudioTrack来说，它的含义就是告诉系统，我现在想使用的是哪种类型的声音，这样系统就可以对应管理他们了。</p>
-<h2 id="AudioRecord"><a href="#AudioRecord" class="headerlink" title="AudioRecord"></a>AudioRecord</h2><h3 id="AudioRecord说明"><a href="#AudioRecord说明" class="headerlink" title="AudioRecord说明"></a>AudioRecord说明</h3><p>The AudioRecord class manages the audio resources for Java applications to record audio from the audio input hardware of the platform. This is achieved by “pulling” (reading) the data from the AudioRecord object. The application is responsible for polling the AudioRecord object in time using one of the following three methods: <code>read(byte[], int, int)</code>, <code>read(short[], int, int)</code> or <code>read(ByteBuffer, int)</code>. The choice of which method to use will be based on the audio data storage format that is the most convenient for the user of AudioRecord.</p>
-<p>Upon creation, an AudioRecord object initializes its associated audio buffer that it will fill with the new audio data. The size of this buffer, specified during the construction, determines how long an AudioRecord can record before “over-running” data that has not been read yet. Data should be read from the audio hardware in chunks of sizes inferior to the total recording buffer size.</p>
-<h3 id="audiosource类型"><a href="#audiosource类型" class="headerlink" title="audiosource类型"></a>audiosource类型</h3><p>定义在MediaRecorder中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/** Default audio source **/</div><div class="line"> public static final int DEFAULT = 0;</div><div class="line"></div><div class="line"> /** Microphone audio source */</div><div class="line"> public static final int MIC = 1;</div><div class="line"></div><div class="line"> /** Voice call uplink (Tx) audio source */</div><div class="line"> public static final int VOICE_UPLINK = 2;</div><div class="line"></div><div class="line"> /** Voice call downlink (Rx) audio source */</div><div class="line"> public static final int VOICE_DOWNLINK = 3;</div><div class="line"></div><div class="line"> /** Voice call uplink + downlink audio source */</div><div class="line"> public static final int VOICE_CALL = 4;</div><div class="line"></div><div class="line"> /** Microphone audio source with same orientation as camera if available, the main</div><div class="line">  *  device microphone otherwise */</div><div class="line"> public static final int CAMCORDER = 5;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice recognition if available, behaves like</div><div class="line">  *  &#123;@link #DEFAULT&#125; otherwise. */</div><div class="line"> public static final int VOICE_RECOGNITION = 6;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice communications such as VoIP. It</div><div class="line">  *  will for instance take advantage of echo cancellation or automatic gain control</div><div class="line">  *  if available. It otherwise behaves like &#123;@link #DEFAULT&#125; if no voice processing</div><div class="line">  *  is applied.</div><div class="line">  */</div><div class="line"> public static final int VOICE_COMMUNICATION = 7;</div></pre></td></tr></table></figure></p>
-<h2 id="AudioManager"><a href="#AudioManager" class="headerlink" title="AudioManager"></a>AudioManager</h2><h3 id="获取系统音量"><a href="#获取系统音量" class="headerlink" title="获取系统音量"></a>获取系统音量</h3><p>代码
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//初始化AudioManager:</div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);</div><div class="line"></div><div class="line">//通话音量</div><div class="line">int max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">int current = mAudioManager.getStreamVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">Log.d(“VIOCE_CALL”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//系统音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">Log.d(“SYSTEM”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//铃声音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_RING );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_RING );</div><div class="line">Log.d(“RING”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//音乐音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_MUSIC );</div><div class="line">Log.d(“MUSIC”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//提示声音音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_ALARM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_ALARM );</div><div class="line">Log.d(“ALARM”, “max : ” + max + ” current : ” + current);</div></pre></td></tr></table></figure></p>
-<p>ps：
-　　游戏过程中只允许调整多媒体音量，而不允许调整通话音量。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);</div></pre></td></tr></table></figure></p>
-<h3 id="控制音量"><a href="#控制音量" class="headerlink" title="控制音量"></a>控制音量</h3><p>AudioManager提供了设置音量的方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void setStreamVolume(intstreamType,intindex,intflags)</div></pre></td></tr></table></figure></p>
-<p>其中streamType有内置的常量，去文档里面就可以看到。
-使用示例:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//音量控制,初始化定义    </div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);    </div><div class="line">//最大音量    </div><div class="line">int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);    </div><div class="line">//当前音量    </div><div class="line">int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);</div><div class="line"></div><div class="line">//直接控制音量</div><div class="line">if(isSilent)&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);    </div><div class="line">&#125;else&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tempVolume, 0); //tempVolume:音量绝对值    </div><div class="line">&#125;    </div><div class="line"></div><div class="line">//以一步步长控制音量的增减，并弹出系统默认音量控制条：</div><div class="line">//降低音量，调出系统音量控制    </div><div class="line">if(flag == 0)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;    </div><div class="line">//增加音量，调出系统音量控制    </div><div class="line">else if(flag == 1)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>监听按键手动控制音量
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">AudioManager audio = (AudioManager) getSystemService(Service.AUDIO_SERVICE);</div><div class="line"></div><div class="line">@Override</div><div class="line">public boolean onKeyDown(int keyCode, KeyEvent event) &#123;</div><div class="line">    switch (keyCode) &#123;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_UP:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_RAISE,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_DOWN:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_LOWER,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    default:</div><div class="line">        break;</div><div class="line">    &#125;</div><div class="line">    return super.onKeyDown(keyCode, event);</div></pre></td></tr></table></figure></p>
-<h4 id="插入耳机状态仍使用扬声器外放音乐"><a href="#插入耳机状态仍使用扬声器外放音乐" class="headerlink" title="插入耳机状态仍使用扬声器外放音乐"></a>插入耳机状态仍使用扬声器外放音乐</h4><p>插入耳机的时候也可以选择使用扬声器播放音乐，来电铃声就是这么用的。但是只能用MediaPlayer，播放音频文件。
-使用AudioTrack.write播放是行不通的(有待验证)。按理说AudioRecord、AudioTrack类相对于MediaRecorder mediaPlayer来说，更加接近底层，应该也行得通的。</p>
-<p>插入耳机，选择外放的代码如下(兼容性验证)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);  </div><div class="line">audioManager.setMicrophoneMute(false);          </div><div class="line">audioManager.setSpeakerphoneOn(true);//使用扬声器外放，即使已经插入耳机  </div><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);//控制声音的大小  </div><div class="line">audioManager.setMode(AudioManager.STREAM_MUSIC);   </div><div class="line"></div><div class="line">//播放一段声音，查看效果          </div><div class="line">MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse(&quot;file:///system/media/audio/ui/camera_click.ogg&quot;));  </div><div class="line">playerSound.start();</div></pre></td></tr></table></figure></p>
-<h3 id="使用STREAM-VOCIE-CALL播放声音与耳机冲突"><a href="#使用STREAM-VOCIE-CALL播放声音与耳机冲突" class="headerlink" title="使用STREAM_VOCIE_CALL播放声音与耳机冲突"></a>使用STREAM_VOCIE_CALL播放声音与耳机冲突</h3><p>使用STREAM_VOCIE_CALL播放声音在某些手机,比如魅蓝等上面会导致声音仍外放,耳机没声音现象.
-WebRtc使用STREAM_VOCIE_CALL播放声音,导致某些手机声音低,没法使用音量键调节,插入耳机声音仍外放等问题.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/16/latex/" itemprop="url">
-                  MarkDown中嵌入LaTex
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T17:17:15+08:00">
-                2017-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MarkDown中使用标识符<code>$$</code>和<code>$$$$</code>即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中</p>
-<h3 id="部分希腊字母"><a href="#部分希腊字母" class="headerlink" title="部分希腊字母"></a>部分希腊字母</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\alpha</td>
-<td>α</td>
-<td></td>
-<td>A</td>
-<td>A</td>
-</tr>
-<tr>
-<td>\beta</td>
-<td>β</td>
-<td></td>
-<td>B</td>
-<td>B</td>
-</tr>
-<tr>
-<td>\gamma</td>
-<td>γ</td>
-<td></td>
-<td>\Gamma \varGamma</td>
-<td>Γ  Γ</td>
-</tr>
-<tr>
-<td>delta</td>
-<td>δ</td>
-<td></td>
-<td>\Delta \varDelta</td>
-<td>Δ  Δ</td>
-</tr>
-<tr>
-<td>\epsilon</td>
-<td>ϵ</td>
-<td></td>
-<td>E</td>
-<td>E</td>
-</tr>
-<tr>
-<td>\eta</td>
-<td>η</td>
-<td></td>
-<td>H</td>
-<td>H</td>
-</tr>
-<tr>
-<td>\theta</td>
-<td>θ</td>
-<td></td>
-<td>\Theta \varTheta</td>
-<td>Θ  Θ</td>
-</tr>
-<tr>
-<td>\kappa</td>
-<td>κ</td>
-<td></td>
-<td>K</td>
-<td>K</td>
-</tr>
-<tr>
-<td>\lambda</td>
-<td>λ</td>
-<td></td>
-<td>\Lambda \varLambda</td>
-<td>Λ  Λ</td>
-</tr>
-<tr>
-<td>\mu</td>
-<td>μ</td>
-<td></td>
-<td>M</td>
-<td>M</td>
-</tr>
-<tr>
-<td>\nu</td>
-<td>ν</td>
-<td></td>
-<td>N</td>
-<td>N</td>
-</tr>
-<tr>
-<td>\pi</td>
-<td>π</td>
-<td></td>
-<td>\Pi \varPi</td>
-<td>Π  Π</td>
-</tr>
-<tr>
-<td>\rho</td>
-<td>ρ</td>
-<td></td>
-<td>P</td>
-<td>P</td>
-</tr>
-<tr>
-<td>\sigma</td>
-<td>σ</td>
-<td></td>
-<td>\Sigma \varSigma</td>
-<td>Σ  Σ</td>
-</tr>
-<tr>
-<td>\tau</td>
-<td>τ</td>
-<td></td>
-<td>T</td>
-<td>T</td>
-</tr>
-<tr>
-<td>\phi \varphi</td>
-<td>ϕ  φ</td>
-<td></td>
-<td>\Phi \varPhi</td>
-<td>Φ  Φ</td>
-</tr>
-<tr>
-<td>\omega</td>
-<td>ω</td>
-<td></td>
-<td>\Omega \varOmega</td>
-<td>Ω  Ω</td>
-</tr>
-</tbody>
-</table>
-<p>全部24个字母:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>大写</th>
-<th>Tex</th>
-<th>小写</th>
-<th>Tex</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>alpha</td>
-<td>A</td>
-<td>A</td>
-<td>α</td>
-<td>\alpha</td>
-</tr>
-<tr>
-<td>beta</td>
-<td>B</td>
-<td>B</td>
-<td>β\</td>
-<td>beta</td>
-</tr>
-<tr>
-<td>gamma</td>
-<td>Γ</td>
-<td>\Gamma</td>
-<td>γ</td>
-<td>\gamma</td>
-</tr>
-<tr>
-<td>delta</td>
-<td>Δ</td>
-<td>\Delta</td>
-<td>δ</td>
-<td>\delta</td>
-</tr>
-<tr>
-<td>epsilon</td>
-<td>E</td>
-<td>E</td>
-<td>ϵ</td>
-<td>\epsilon</td>
-</tr>
-<tr>
-<td>zeta</td>
-<td>Z</td>
-<td>Z</td>
-<td>ζ</td>
-<td>\zeta</td>
-</tr>
-<tr>
-<td>eta</td>
-<td>H</td>
-<td>H</td>
-<td>η</td>
-<td>\eta</td>
-</tr>
-<tr>
-<td>theta</td>
-<td>Θ</td>
-<td>\Theta</td>
-<td>θ</td>
-<td>\theta</td>
-</tr>
-<tr>
-<td>iota</td>
-<td>I</td>
-<td>I</td>
-<td>ι</td>
-<td>\iota</td>
-</tr>
-<tr>
-<td>kappa</td>
-<td>K</td>
-<td>K</td>
-<td>κ</td>
-<td>\kappa</td>
-</tr>
-<tr>
-<td>lambda</td>
-<td>Λ</td>
-<td>\Lambda</td>
-<td>λ</td>
-<td>\lambda</td>
-</tr>
-<tr>
-<td>mu</td>
-<td>M</td>
-<td>M</td>
-<td>μ</td>
-<td>\mu</td>
-</tr>
-<tr>
-<td>nu</td>
-<td>N</td>
-<td>N</td>
-<td>ν</td>
-<td>\nu</td>
-</tr>
-<tr>
-<td>xi</td>
-<td>Ξ</td>
-<td>\Xi</td>
-<td>ξ</td>
-<td>\xi</td>
-</tr>
-<tr>
-<td>omicron</td>
-<td>O</td>
-<td>O</td>
-<td>ο</td>
-<td>\omicron</td>
-</tr>
-<tr>
-<td>pi</td>
-<td>Π</td>
-<td>\Pi</td>
-<td>π</td>
-<td>\pi</td>
-</tr>
-<tr>
-<td>rho</td>
-<td>P</td>
-<td>P</td>
-<td>ρ</td>
-<td>\rho</td>
-</tr>
-<tr>
-<td>sigma</td>
-<td>Σ</td>
-<td>\Sigma</td>
-<td>σ</td>
-<td>\sigma</td>
-</tr>
-<tr>
-<td>tau</td>
-<td>T</td>
-<td>T</td>
-<td>τ</td>
-<td>\tau</td>
-</tr>
-<tr>
-<td>upsilon</td>
-<td>Υ</td>
-<td>\Upsilon</td>
-<td>υ</td>
-<td>\upsilon</td>
-</tr>
-<tr>
-<td>phi</td>
-<td>Φ</td>
-<td>\Phi</td>
-<td>ϕ</td>
-<td>\phi</td>
-</tr>
-<tr>
-<td>chi</td>
-<td>X</td>
-<td>X</td>
-<td>χ</td>
-<td>\chi</td>
-</tr>
-<tr>
-<td>psi</td>
-<td>Ψ</td>
-<td>\Psi</td>
-<td>ψ</td>
-<td>\psi</td>
-</tr>
-<tr>
-<td>omega</td>
-<td>Ω</td>
-<td>\Omega</td>
-<td>ω</td>
-<td>\omega</td>
-</tr>
-</tbody>
-</table>
-<h3 id="部分运算符"><a href="#部分运算符" class="headerlink" title="部分运算符"></a>部分运算符</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\pm</td>
-<td>±</td>
-<td></td>
-<td>\mp</td>
-<td>∓</td>
-</tr>
-<tr>
-<td>\times</td>
-<td>×</td>
-<td></td>
-<td>\div</td>
-<td>÷</td>
-</tr>
-<tr>
-<td>\circ</td>
-<td>∘</td>
-<td></td>
-<td>\bullet</td>
-<td>∙</td>
-</tr>
-<tr>
-<td>\cdot</td>
-<td>⋅</td>
-<td></td>
-<td>\cup</td>
-<td>∪</td>
-</tr>
-<tr>
-<td>\cap</td>
-<td>∩</td>
-<td></td>
-<td>\subset</td>
-<td>⊂</td>
-</tr>
-<tr>
-<td>\supset</td>
-<td>⊃</td>
-<td></td>
-<td>\subseteq</td>
-<td>⊆</td>
-</tr>
-<tr>
-<td>\supseteq</td>
-<td>⊇</td>
-<td></td>
-<td>\leq</td>
-<td>≤</td>
-</tr>
-<tr>
-<td>\geq</td>
-<td>≥</td>
-<td></td>
-<td>\propto</td>
-<td>∝</td>
-</tr>
-</tbody>
-</table>
-<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>显示</th>
-<th></th>
-<th>命令</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\cdotp</td>
-<td>⋅</td>
-<td></td>
-<td>\cdots</td>
-<td>⋯</td>
-</tr>
-<tr>
-<td>\ddots</td>
-<td>⋱</td>
-<td></td>
-<td>\infty</td>
-<td>∞</td>
-</tr>
-<tr>
-<td>\partial</td>
-<td>∂</td>
-<td></td>
-<td>\bot</td>
-<td>⊥</td>
-</tr>
-<tr>
-<td>\hat{a}</td>
-<td>â</td>
-<td></td>
-<td>\tilde{a}</td>
-<td>ã</td>
-</tr>
-<tr>
-<td>\bar{a}</td>
-<td>a¯</td>
-<td></td>
-<td>\vec{a}</td>
-<td>a⃗</td>
-</tr>
-<tr>
-<td>\dot{a}</td>
-<td>a˙</td>
-<td></td>
-<td>\sqrt{a}</td>
-<td>a‾‾√</td>
-</tr>
-<tr>
-<td>\sqrt[3]{2}</td>
-<td>a‾‾√3</td>
-<td></td>
-<td>a^{3}</td>
-<td>a3</td>
-</tr>
-<tr>
-<td>\frac{1}{a}</td>
-<td>1a</td>
-<td></td>
-<td>\lim_{x \to 0}</td>
-<td>lima→0</td>
-</tr>
-</tbody>
-</table>
-<h3 id="集合关系符号"><a href="#集合关系符号" class="headerlink" title="集合关系符号"></a>集合关系符号</h3><table>
-<thead>
-<tr>
-<th>说明</th>
-<th>命令</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>集合的大括号</td>
-<td>{ …   }\</td>
-</tr>
-<tr>
-<td>集合中的竖线$\mid$</td>
-<td>\mid</td>
-</tr>
-<tr>
-<td>属于</td>
-<td>\in</td>
-</tr>
-<tr>
-<td>不属于</td>
-<td>\not\in</td>
-</tr>
-<tr>
-<td>A包含于B</td>
-<td>A\subset B</td>
-</tr>
-<tr>
-<td>A真包含于B</td>
-<td>A\subsetneqq B</td>
-</tr>
-<tr>
-<td>A包含B</td>
-<td>A\supset B</td>
-</tr>
-<tr>
-<td>A真包含B</td>
-<td>A\supsetneqq B</td>
-</tr>
-<tr>
-<td>A不包含于B</td>
-<td>A\not\subset B</td>
-</tr>
-<tr>
-<td>A交B</td>
-<td>A\cap B</td>
-</tr>
-<tr>
-<td>A并B</td>
-<td>A\cup B</td>
-</tr>
-<tr>
-<td>A的闭包</td>
-<td>\overline{A}</td>
-</tr>
-<tr>
-<td>A减去B</td>
-<td>A\setminus B</td>
-</tr>
-<tr>
-<td>实数集合</td>
-<td>\mathbb{R}</td>
-</tr>
-<tr>
-<td>空集</td>
-<td>\emptyset</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>表格中竖线用<code>&amp;#124;</code></p>
-</blockquote>
-<h3 id="括号总结"><a href="#括号总结" class="headerlink" title="括号总结"></a>括号总结</h3><table>
-<thead>
-<tr>
-<th>功能</th>
-<th>语法</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>不好看</td>
-<td><code>( \frac{1}{2} )</code></td>
-<td>$(\frac{1}{2})$</td>
-</tr>
-<tr>
-<td>好一点</td>
-<td><code>\left( \frac{1}{2} \right)</code></td>
-<td>$\left ( \frac{1}{2} \right )$</td>
-</tr>
-</tbody>
-</table>
-<p>可以使用<code>\left</code>和<code>\right</code>来显示不同的括号：</p>
-<table>
-<thead>
-<tr>
-<th>功能</th>
-<th>语法</th>
-<th>显示</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>圆括号，小括号</td>
-<td><code>\left( \frac{a}{b} \right)</code></td>
-<td>$\left( \frac{a}{b} \right)$</td>
-</tr>
-<tr>
-<td>方括号，中括号</td>
-<td>\left[ \frac{a}{b} \right]</td>
-<td>$\left[ \frac{a}{b} \right]$</td>
-</tr>
-<tr>
-<td>花括号，大括号</td>
-<td><code>\left\{ \frac{a}{b} \right\}</code></td>
-<td>$    \left{ \frac{a}{b} \right}$</td>
-</tr>
-<tr>
-<td>角括号</td>
-<td><code>\left \langle \frac{a}{b} \right \rangle</code></td>
-<td>$\left\langle \frac{a}{b} \right \rangle$</td>
-</tr>
-<tr>
-<td>单竖线，绝对值</td>
-<td>\left 竖线 \frac{a}{b} \right 竖线</td>
-<td></td>
-</tr>
-<tr>
-<td>双竖线，范</td>
-<td>\left \ 竖线 \frac{a}{b} \right \ 竖线</td>
-<td></td>
-</tr>
-<tr>
-<td>取整函数</td>
-<td><code>（Floor function）    \left \lfloor \frac{a}{b} \right \rfloor</code></td>
-<td>$    \left \lfloor \frac{a}{b} \right \rfloor$</td>
-</tr>
-<tr>
-<td>取顶函数</td>
-<td><code>（Ceiling function)    \left \lceil \frac{c}{d} \right \rceil</code></td>
-<td>$    \left \lceil \frac{c}{d} \right \rceil$</td>
-</tr>
-<tr>
-<td>斜线与反斜线</td>
-<td><code>\left / \frac{a}{b} \right \backslash</code></td>
-<td>$    \left / \frac{a}{b} \right \backslash$</td>
-</tr>
-<tr>
-<td>上下箭头</td>
-<td><code>\left \uparrow \frac{a}{b} \right \downarrow</code> <code>\left \Uparrow \frac{a}{b} \right \Downarrow</code> <code>\left \updownarrow \frac{a}{b} \right \Updownarrow</code></td>
-<td>$\left \uparrow \frac{a}{b} \right \downarrow$ $\left \Uparrow \frac{a}{b} \right \Downarrow$ $\left \updownarrow \frac{a}{b} \right \Updownarrow$</td>
-</tr>
-<tr>
-<td>混合括号</td>
-<td><code>\left [ 0,1 \right )</code> <code>\left \langle \psi )</code></td>
-<td>$\left [ 0,1 \right )$ $ \left \langle \psi \right)$</td>
-</tr>
-<tr>
-<td>单左括号</td>
-<td><code>\left \{ \frac{a}{b} \right .</code></td>
-<td>$\left { \frac{a}{b} \right .$</td>
-</tr>
-<tr>
-<td>单右括号</td>
-<td><code>\left . \frac{a}{b} \right \}</code></td>
-<td>$\left . \frac{a}{b} \right }$</td>
-</tr>
-</tbody>
-</table>
-<p>备注：
-可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示</p>
-<p>$$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$$</p>
-<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>$$\begin{matrix}…\end{matrix}$$</code>这样的形式来表示矩阵，在<code>\begin与\end</code>之间加入矩阵中的元素即可。矩阵的行之间使用<code>\\</code>分隔，列之间使用&amp;分隔。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">        \begin&#123;matrix&#125;</div><div class="line">        1 &amp; x &amp; x^2 \\</div><div class="line">        1 &amp; y &amp; y^2 \\</div><div class="line">        1 &amp; z &amp; z^2 \\</div><div class="line">        \end&#123;matrix&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<p>$$
-        \begin{matrix}
-        1 &amp; x &amp; x^2 \
-        1 &amp; y &amp; y^2 \
-        1 &amp; z &amp; z^2 \
-        \end{matrix}
-$$</p>
-<h3 id="加括号"><a href="#加括号" class="headerlink" title="加括号"></a>加括号</h3><p>如果要对矩阵加括号，可以像上文中提到的一样，使用<code>\left与\right</code>配合表示括号符号。也可以使用特殊的matrix。即替换<code>\begin{matrix}…\end{matrix}</code>中的matrix为pmatrix，bmatrix，Bmatrix，vmatrix,Vmatrix.</p>
-<h3 id="省略元素"><a href="#省略元素" class="headerlink" title="省略元素"></a>省略元素</h3><p>可以使用<code>\cdots ⋯
- \ddots ⋱
- \vdots ⋮</code>
-来省略矩阵中的元素</p>
-<h3 id="增广矩阵"><a href="#增广矩阵" class="headerlink" title="增广矩阵"></a>增广矩阵</h3><p>增广矩阵需要使用前面的array来实现
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$ \left[</div><div class="line">      \begin&#123;array&#125;&#123;cc|c&#125;</div><div class="line">        1&amp;2&amp;3\\</div><div class="line">        4&amp;5&amp;6</div><div class="line">      \end&#123;array&#125;</div><div class="line">    \right]</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<p>$$ \left[
-      \begin{array}{cc|c}
-        1&amp;2&amp;3\
-        4&amp;5&amp;6
-      \end{array}
-    \right]
-$$</p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>使用<code>$$\begin{array}{列样式}…\end{array}$$</code>这样的形式来创建表格，列样式可以是clr表示居中，左，右对齐，还可以使用|表示一条竖线。表格中 各行使用<code>\\</code>分隔，各列使用&amp;分隔。使用<code>\hline</code>在本行前加入一条直线。 例如，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">\begin&#123;array&#125;&#123;c|lcr&#125;</div><div class="line">n &amp; \text&#123;Left&#125; &amp; \text&#123;Center&#125; &amp; \text&#123;Right&#125; \\</div><div class="line">\hline</div><div class="line">1 &amp; 0.24 &amp; 1 &amp; 125 \\</div><div class="line">2 &amp; -1 &amp; 189 &amp; -8 \\</div><div class="line">3 &amp; -20 &amp; 2000 &amp; 1+10i \\</div><div class="line">\end&#123;array&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
-<h2 id="上标与下标"><a href="#上标与下标" class="headerlink" title="上标与下标"></a>上标与下标</h2><p>上标和下标分别使用<code>^与_</code>，例如<code>x_i^2</code>：$x_i^2$
-。默认情况下，上下标符号仅仅对下一个组起作用。一个组即单个字符或者使用{..}包裹起来的内容。也就是说，如果使用<code>10^10</code>，会得到$10^10$
-，而<code>10^{10}</code>才是$10^{10}$
-。同时，大括号还能消除二义性，如<code>x^5^6</code>将得到一个错误，必须使用大括号来界定<code>^</code>的结合性，如<code>{x^5}^6</code>：${x^5}^6$
- 或者 <code>x^{5^6}</code>：$x^{5^6}$
-。</p>
-<h2 id="对齐的公式"><a href="#对齐的公式" class="headerlink" title="对齐的公式"></a>对齐的公式</h2><h2 id="分类表达式"><a href="#分类表达式" class="headerlink" title="分类表达式"></a>分类表达式</h2><p>定义函数的时候经常需要分情况给出表达式，可使用<code>\begin{cases}…\end{cases}</code>。其中，使用<code>\</code>来分类，使用&amp;指示需要对齐的位置。如：</p>
-<h2 id="多重积分"><a href="#多重积分" class="headerlink" title="多重积分"></a>多重积分</h2><h2 id="连分数"><a href="#连分数" class="headerlink" title="连分数"></a>连分数</h2><h2 id="方程组"><a href="#方程组" class="headerlink" title="方程组"></a>方程组</h2><h2 id="颜色"><a href="#颜色" class="headerlink" title="颜色"></a>颜色</h2><h2 id="公式标记与引用"><a href="#公式标记与引用" class="headerlink" title="公式标记与引用"></a>公式标记与引用</h2><h2 id="求和与积分"><a href="#求和与积分" class="headerlink" title="求和与积分"></a>求和与积分</h2><h2 id="分式与根式"><a href="#分式与根式" class="headerlink" title="分式与根式"></a>分式与根式</h2><h2 id="特殊函数与符号"><a href="#特殊函数与符号" class="headerlink" title="特殊函数与符号"></a>特殊函数与符号</h2><h2 id="空间"><a href="#空间" class="headerlink" title="空间"></a>空间</h2><h2 id="顶部符号"><a href="#顶部符号" class="headerlink" title="顶部符号"></a>顶部符号</h2><blockquote>
-<p>参考
-<a href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/" target="_blank" rel="external">http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/13/am-function-and-limitaion/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/13/am-function-and-limitaion/" itemprop="url">
-                  高数1.函数与极限
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T22:34:04+08:00">
-                2017-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/高数/" itemprop="url" rel="index">
-                    <span itemprop="name">高数</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-映射与函数"><a href="#1-映射与函数" class="headerlink" title="1.映射与函数"></a>1.映射与函数</h2><h3 id="1-1-集合"><a href="#1-1-集合" class="headerlink" title="1.1 集合"></a>1.1 集合</h3><h4 id="1-1-1-集合的概念"><a href="#1-1-1-集合的概念" class="headerlink" title="1.1.1 集合的概念"></a>1.1.1 集合的概念</h4><p>集合(集)是指具有某种特定性质的事物的总体,组成这个集合的事物成为该集合的元素(简称元)</p>
-<p>表示:用大写拉丁字母A,B,C…表示集合,小写拉丁字母表示集合的元素</p>
-<p>分类:</p>
-<ul>
-<li>有限集</li>
-<li>无限集</li>
-</ul>
-<p>表示数集的字母的右上角标<code>*</code>表示该数集内排除0的集,标上<code>+</code>来表示数集内排除0和负数的集</p>
-<p>常用表示</p>
-<ol>
-<li>N={0, 1, 2, 3…};全体非负整数即自然数的集合</li>
-<li>N<sup>+</sup>={1,2,3,…n,….};全体正整数的集合</li>
-<li>Z={…,-n,…-3, -2,-1, 0, 1, 2, 3,…,n…};全体整数的集合</li>
-<li>$Q=\lbrace \frac{p}{q}|p \in Z,q \in N^{+} \rbrace$;全体有理数集</li>
-</ol>
-<p>全体实数记做R,R<sup>*</sup>为排除0的实数集,R<sup>+</sup>为全体正实数集.</p>
-<p>子集概念:</p>
-<ul>
-<li>子集</li>
-<li>真子集</li>
-<li>集合相等:互为子集</li>
-<li>空集 $\emptyset$<h4 id="1-1-2-集合的运算"><a href="#1-1-2-集合的运算" class="headerlink" title="1.1.2 集合的运算"></a>1.1.2 集合的运算</h4></li>
-</ul>
-<h4 id="1-1-3-区间和领域"><a href="#1-1-3-区间和领域" class="headerlink" title="1.1.3 区间和领域"></a>1.1.3 区间和领域</h4>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/10/tips-android-thread/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/10/tips-android-thread/" itemprop="url">
-                  Android线程使用总结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T18:39:43+08:00">
-                2017-04-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。
-众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
-<p>一旦我们在主线程里面添加了操作复杂的代码，这些代码就很可能阻碍主线程去响应点击/滑动事件，阻碍主线程的 UI 绘制等等。我们知道，为了让屏幕的刷新帧率达到 60fps，我们需要确保 16ms 内完成单次刷新的操作。一旦我们在主线程里面执行的任务过于繁重就可能导致接收到刷新信号的时候因为资源被占用而无法完成这次刷新操作，这样就会产生掉帧的现象，刷新帧率自然也就跟着下降了(一旦刷新帧率降到 20fps 左右，用户就可以明显感知到卡顿不流畅了)。</p>
-<p>为了避免上面提到的掉帧问题，我们需要使用多线程的技术方案，把那些操作复杂的任务移动到其他线程当中执行，这样就不容易阻塞主线程的操作，也就减小了出现掉帧的可能性。</p>
-<p>为主线程减轻负的多线程方案有哪些呢？这些方案分别适合在什么场景下使用？Android 系统为我们提供了若干组工具类来帮助解决这个问题。</p>
-<ul>
-<li>AsyncTask: 为 UI 线程与工作线程之间进行快速的切换提供一种简单便捷的机制。适用于当下立即需要启动，但是异步执行的生命周期短暂的使用场景。</li>
-<li>HandlerThread: 为某些回调方法或者等待某些任务的执行设置一个专属的线程，并提供线程任务的调度机制。</li>
-<li>ThreadPool: 把任务分解成不同的单元，分发到各个不同的线程上，进行同时并发处理。</li>
-<li>IntentService: 适合于执行由 UI 触发的后台 Service 任务，并可以把后台任务执行的情况通过一定的机制反馈给 UI。</li>
-</ul>
-<p>了解这些系统提供的多线程工具类分别适合在什么场景下，可以帮助我们选择合适的解决方案，避免出现不可预期的麻烦。虽然使用多线程可以提高程序的并发量，但是我们需要特别注意因为引入多线程而可能伴随而来的内存问题。举个例子，在 Activity 内部定义的一个 AsyncTask，它属于一个内部类，该类本身和外面的 Activity 是有引用关系的，如果 Activity 要销毁的时候，AsyncTask 还仍然在运行，这会导致 Activity 没有办法完全释放，从而引发内存泄漏。所以说，多线程是提升程序性能的有效手段之一，但是使用多线程却需要十分谨慎小心，如果不了解背后的执行机制以及使用的注意事项，很可能引起严重的问题。</p>
-<h3 id="2-Understanding-Android-Threading"><a href="#2-Understanding-Android-Threading" class="headerlink" title="2. Understanding Android Threading"></a>2. Understanding Android Threading</h3><p>通常来说，一个线程需要经历三个生命阶段：开始，执行，结束。线程会在任务执行完毕之后结束，那么为了确保线程的存活，我们会在执行阶段给线程赋予不同的任务，然后在里面添加退出的条件从而确保任务能够执行完毕后退出。</p>
-<p>在很多时候，线程不仅仅是线性执行一系列的任务就结束那么简单的，我们会需要增加一个任务队列，让线程不断的从任务队列中获取任务去进行执行，另外我们还可能在线程执行的任务过程中与其他的线程进行协作。如果这些细节都交给我们自己来处理，这将会是件极其繁琐又容易出错的事情。</p>
-<p>所幸的是，Android 系统为我们提供了 Looper，Handler，MessageQueue 来帮助实现上面的线程任务模型：</p>
-<ul>
-<li><p>Looper: 能够确保线程持续存活并且可以不断的从任务队列中获取任务并进行执行。</p>
-</li>
-<li><p>Handler: 能够帮助实现队列任务的管理，不仅仅能够把任务插入到队列的头部，尾部，还可以按照一定的时间延迟来确保任务从队列中能够来得及被取消掉。</p>
-</li>
-<li><p>MessageQueue: 使用 Intent，Message，Runnable 作为任务的载体在不同的线程之间进行传递。</p>
-</li>
-</ul>
-<p>把上面三个组件打包到一起进行协作，这就是 HandlerThread
-我们知道，当程序被启动，系统会帮忙创建进程以及相应的主线程，而这个主线程其实就是一个 HandlerThread。这个主线程会需要处理系统事件，输入事件，系统回调的任务，UI绘制等等任务，为了避免主线程任务过重，我们就会需要不断的开启新的工作线程来处理那些子任务。</p>
-<h3 id="3-Memory-amp-Threading"><a href="#3-Memory-amp-Threading" class="headerlink" title="3. Memory &amp; Threading"></a>3. Memory &amp; Threading</h3><p>增加并发的线程数会导致内存消耗的增加，平衡好这两者的关系是非常重要的。我们知道，多线程并发访问同一块内存区域有可能带来很多问题，例如读写的权限争夺问题，ABA 问题等等。为了解决这些问题，我们会需要引入锁的概念。
-在 Android 系统中也无法避免因为多线程的引入而导致出现诸如上文提到的种种问题。Android UI 对象的创建，更新，销毁等等操作都默认是执行在主线程，但是如果我们在非主线程对UI对象进行操作，程序将可能出现异常甚至是崩溃。</p>
-<p>另外，在非 UI 线程中直接持有 UI 对象的引用也很可能出现问题。例如Work线程中持有某个 UI 对象的引用，在 Work 线程执行完毕之前，UI 对象在主线程中被从 ViewHierarchy 中移除了，这个时候 UI 对象的任何属性都已经不再可用了，另外对这个 UI 对象的更新操作也都没有任何意义了，因为它已经从 ViewHierarchy 中被移除，不再绘制到画面上了。</p>
-<p>不仅如此，View 对象本身对所属的 Activity 是有引用关系的，如果工作线程持续保有 View 的引用，这就可能导致 Activity 无法完全释放。除了直接显式的引用关系可能导致内存泄露之外，我们还需要特别留意隐式的引用关系也可能导致泄露。例如通常我们会看到在 Activity 里面定义的一个 AsyncTask，这种类型的 AsyncTask 与外部的 Activity 是存在隐式引用关系的，只要 Task 没有结束，引用关系就会一直存在，这很容易导致 Activity 的泄漏。更糟糕的情况是，它不仅仅发生了内存泄漏，还可能导致程序异常或者崩溃。</p>
-<p>为了解决上面的问题，我们需要谨记的原则就是：不要在任何非 UI 线程里面去持有 UI 对象的引用。系统为了确保所有的 UI 对象都只会被 UI 线程所进行创建，更新，销毁的操作，特地设计了对应的工作机制(当 Activity 被销毁的时候，由该 Activity 所触发的非 UI 线程都将无法对UI对象进行操作，否者就会抛出程序执行异常的错误)来防止 UI 对象被错误的使用。</p>
-<h3 id="4-Good-AsyncTask-Hunting"><a href="#4-Good-AsyncTask-Hunting" class="headerlink" title="4. Good AsyncTask Hunting"></a>4. Good AsyncTask Hunting</h3><p>AsyncTask 是一个让人既爱又恨的组件，它提供了一种简便的异步处理机制，但是它又同时引入了一些令人厌恶的麻烦。一旦对 AsyncTask 使用不当，很可能对程序的性能带来负面影响，同时还可能导致内存泄露。
-举个例子，常遇到的一个典型的使用场景：用户切换到某个界面，触发了界面上的图片的加载操作，因为图片的加载相对来说耗时比较长，我们需要在子线程中处理图片的加载，当图片在子线程中处理完成之后，再把处理好的图片返回给主线程，交给 UI 更新到画面上。</p>
-<p>AsyncTask 的出现就是为了快速的实现上面的使用场景，AsyncTask 把在主线程里面的准备工作放到 onPreExecute()方法里面进行执行，doInBackground()方法执行在工作线程中，用来处理那些繁重的任务，一旦任务执行完毕，就会调用 onPostExecute()方法返回到主线程。</p>
-<p>使用 AsyncTask 需要注意的问题有哪些呢？请关注以下几点：
-首先，默认情况下，所有的 AsyncTask 任务都是被线性调度执行的，他们处在同一个任务队列当中，按顺序逐个执行。假设你按照顺序启动20个 AsyncTask，一旦其中的某个 AsyncTask 执行时间过长，队列中的其他剩余 AsyncTask 都处于阻塞状态，必须等到该任务执行完毕之后才能够有机会执行下一个任务。</p>
-<p>为了解决上面提到的线性队列等待的问题，我们可以使用 AsyncTask.executeOnExecutor()强制指定 AsyncTask 使用线程池并发调度任务。</p>
-<p>其次，如何才能够真正的取消一个 AsyncTask 的执行呢？我们知道 AsyncTaks 有提供 cancel()的方法，但是这个方法实际上做了什么事情呢？线程本身并不具备中止正在执行的代码的能力，为了能够让一个线程更早的被销毁，我们需要在 doInBackground()的代码中不断的添加程序是否被中止的判断逻辑.</p>
-<p>一旦任务被成功中止，AsyncTask 就不会继续调用 onPostExecute()，而是通过调用 onCancelled()的回调方法反馈任务执行取消的结果。我们可以根据任务回调到哪个方法（是 onPostExecute 还是 onCancelled）来决定是对 UI 进行正常的更新还是把对应的任务所占用的内存进行销毁等。
-最后，使用 AsyncTask 很容易导致内存泄漏，一旦把 AsyncTask 写成 Activity 的内部类的形式就很容易因为 AsyncTask 生命周期的不确定而导致 Activity 发生泄漏。</p>
-<p>综上所述，AsyncTask 虽然提供了一种简单便捷的异步机制，但是我们还是很有必要特别关注到他的缺点，避免出现因为使用错误而导致的严重系统性能问题。</p>
-<h3 id="5-Getting-a-HandlerThread"><a href="#5-Getting-a-HandlerThread" class="headerlink" title="5. Getting a HandlerThread"></a>5. Getting a HandlerThread</h3><p>大多数情况下，AsyncTask 都能够满足多线程并发的场景需要（在工作线程执行任务并返回结果到主线程），但是它并不是万能的。例如打开相机之后的预览帧数据是通过 onPreviewFrame()的方法进行回调的，onPreviewFrame()和 open()相机的方法是执行在同一个线程的。</p>
-<p>如果这个回调方法执行在 UI 线程，那么在 onPreviewFrame()里面将要执行的数据转换操作将和主线程的界面绘制，事件传递等操作争抢系统资源，这就有可能影响到主界面的表现性能。</p>
-<p>我们需要确保 onPreviewFrame()执行在工作线程。如果使用 AsyncTask，会因为 AsyncTask 默认的线性执行的特性(即使换成并发执行)会导致因为无法把任务及时传递给工作线程而导致任务在主线程中被延迟，直到工作线程空闲，才可以把任务切换到工作线程中进行执行。</p>
-<p>所以我们需要的是一个执行在工作线程，同时又能够处理队列中的复杂任务的功能，而 HandlerThread 的出现就是为了实现这个功能的，它组合了 Handler，MessageQueue，Looper 实现了一个长时间运行的线程，不断的从队列中获取任务进行执行的功能。</p>
-<p>回到刚才的处理相机回调数据的例子，使用 HandlerThread 我们可以把 open()操作与 onPreviewFrame()的操作执行在同一个线程，同时还避免了 AsyncTask 的弊端。如果需要在 onPreviewFrame()里面更新 UI，只需要调用 runOnUiThread()方法把任务回调给主线程就够了。</p>
-<p>HandlerThread 比较合适处理那些在工作线程执行，需要花费时间偏长的任务。我们只需要把任务发送给 HandlerThread，然后就只需要等待任务执行结束的时候通知返回到主线程就好了。
-另外很重要的一点是，一旦我们使用了 HandlerThread，需要特别注意给 HandlerThread 设置不同的线程优先级，CPU 会根据设置的不同线程优先级对所有的线程进行调度优化。</p>
-<p>掌握 HandlerThread 与 AsyncTask 之间的优缺点，可以帮助我们选择合适的方案。</p>
-<h3 id="6-Swimming-in-Threadpools"><a href="#6-Swimming-in-Threadpools" class="headerlink" title="6. Swimming in Threadpools"></a>6. Swimming in Threadpools</h3><p>线程池适合用在把任务进行分解，并发进行执行的场景。通常来说，系统里面会针对不同的任务设置一个单独的守护线程用来专门处理这项任务。例如使用 Networking Thread 用来专门处理网络请求的操作，使用 IO Thread 用来专门处理系统的 <code>I\O</code> 操作。针对那些场景，这样设计是没有问题的，因为对应的任务单次执行的时间并不长而且可以是顺序执行的。但是这种专属的单线程并不能满足所有的情况，例如我们需要一次性 decode 40张图片，每个线程需要执行 4ms 的时间，如果我们使用专属单线程的方案，所有图片执行完毕会需要花费 160ms(40*4)，但是如果我们创建10个线程，每个线程执行4个任务，那么我们就只需要16ms就能够把所有的图片处理完毕。</p>
-<p>为了能够实现上面的线程池模型，系统为我们提供了 ThreadPoolExecutor 帮助类来简化实现，剩下需要做的就只是对任务进行分解就好了。</p>
-<p>使用线程池需要特别注意同时并发线程数量的控制，理论上来说，我们可以设置任意你想要的并发数量，但是这样做非常的不好。因为 CPU 只能同时执行固定数量的线程数，一旦同时并发的线程数量超过 CPU 能够同时执行的阈值，CPU 就需要花费精力来判断到底哪些线程的优先级比较高，需要在不同的线程之间进行调度切换。</p>
-<p>一旦同时并发的线程数量达到一定的量级，这个时候 CPU 在不同线程之间进行调度的时间就可能过长，反而导致性能严重下降。另外需要关注的一点是，每开一个新的线程，都会耗费至少 64K+ 的内存。为了能够方便的对线程数量进行控制，ThreadPoolExecutor 为我们提供了初始化的并发线程数量，以及最大的并发数量进行设置。</p>
-<p>另外需要关注的一个问题是：Runtime.getRuntime().availableProcesser()方法并不可靠，他返回的值并不是真实的 CPU 核心数，因为 CPU 会在某些情况下选择对部分核心进行睡眠处理，在这种情况下，返回的数量就只能是激活的 CPU 核心数。</p>
-<h3 id="7-The-Zen-of-IntentService"><a href="#7-The-Zen-of-IntentService" class="headerlink" title="7. The Zen of IntentService"></a>7. The Zen of IntentService</h3><p>默认的 Service 是执行在主线程的，可是通常情况下，这很容易影响到程序的绘制性能(抢占了主线程的资源)。除了前面介绍过的 AsyncTask 与 HandlerThread，我们还可以选择使用 IntentService 来实现异步操作。IntentService 继承自普通 Service 同时又在内部创建了一个 HandlerThread，在 onHandlerIntent()的回调里面处理扔到 IntentService 的任务。所以 IntentService 就不仅仅具备了异步线程的特性，还同时保留了 Service 不受主页面生命周期影响的特点。</p>
-<p>如此一来，我们可以在 IntentService 里面通过设置闹钟间隔性的触发异步任务，例如刷新数据，更新缓存的图片或者是分析用户操作行为等等，当然处理这些任务需要小心谨慎。</p>
-<p>使用 IntentService 需要特别留意以下几点：</p>
-<ul>
-<li>首先，因为 IntentService 内置的是 HandlerThread 作为异步线程，所以每一个交给 IntentService 的任务都将以队列的方式逐个被执行到，一旦队列中有某个任务执行时间过长，那么就会导致后续的任务都会被延迟处理。</li>
-<li>其次，通常使用到 IntentService 的时候，我们会结合使用 BroadcastReceiver 把工作线程的任务执行结果返回给主 UI 线程。使用广播容易引起性能问题，我们可以使用 LocalBroadcastManager 来发送只在程序内部传递的广播，从而提升广播的性能。我们也可以使用 runOnUiThread() 快速回调到主 UI 线程。</li>
-<li>最后，包含正在运行的 IntentService 的程序相比起纯粹的后台程序更不容易被系统杀死，该程序的优先级是介于前台程序与纯后台程序之间的。</li>
-</ul>
-<h3 id="8-Threading-and-Loaders"><a href="#8-Threading-and-Loaders" class="headerlink" title="8. Threading and Loaders"></a>8. Threading and Loaders</h3><p>当启动工作线程的 Activity 被销毁的时候，我们应该做点什么呢？为了方便的控制工作线程的启动与结束，Android 为我们引入了 Loader 来解决这个问题。我们知道 Activity 有可能因为用户的主动切换而频繁的被创建与销毁，也有可能是因为类似屏幕发生旋转等被动原因而销毁再重建。在 Activity 不停的创建与销毁的过程当中，很有可能因为工作线程持有 Activity 的 View 而导致内存泄漏(因为工作线程很可能持有 View 的强引用，另外工作线程的生命周期还无法保证和 Activity 的生命周期一致，这样就容易发生内存泄漏了)。除了可能引起内存泄漏之外，在 Activity 被销毁之后，工作线程还继续更新视图是没有意义的，因为此时视图已经不在界面上显示了。</p>
-<p>Loader 的出现就是为了确保工作线程能够和 Activity 的生命周期保持一致，同时避免出现前面提到的问题。</p>
-<p>LoaderManager 会对查询的操作进行缓存，只要对应 Cursor 上的数据源没有发生变化，在配置信息发生改变的时候(例如屏幕的旋转)，Loader  可以直接把缓存的数据回调到 onLoadFinished()，从而避免重新查询数据。另外系统会在 Loader 不再需要使用到的时候(例如使用 Back 按钮退出当前页面)回调 onLoaderReset()方法，我们可以在这里做数据的清除等等操作。
-在 Activity 或者 Fragment 中使用 Loader 可以方便的实现异步加载的框架，Loader 有诸多优点。但是实现 Loader 的这套代码还是稍微有点点复杂，Android 官方为我们提供了使用 Loader 的示例代码进行参考学习。</p>
-<h3 id="9-The-Importance-of-Thread-Priority"><a href="#9-The-Importance-of-Thread-Priority" class="headerlink" title="9. The Importance of Thread Priority"></a>9. The Importance of Thread Priority</h3><p>理论上来说，我们的程序可以创建出非常多的子线程一起并发执行的，可是基于 CPU 时间片轮转调度的机制，不可能所有的线程都可以同时被调度执行，CPU 需要根据线程的优先级赋予不同的时间片。</p>
-<p>Android 系统会根据当前运行的可见的程序和不可见的后台程序对线程进行归类，划分为 forground 的那部分线程会大致占用掉 CPU 的90%左右的时间片，background 的那部分线程就总共只能分享到5%-10%左右的时间片。之所以设计成这样是因为 forground 的程序本身的优先级就更高，理应得到更多的执行时间。</p>
-<p>默认情况下，新创建的线程的优先级默认和创建它的母线程保持一致。如果主 UI 线程创建出了几十个工作线程，这些工作线程的优先级就默认和主线程保持一致了，为了不让新创建的工作线程和主线程抢占 CPU 资源，需要把这些线程的优先级进行降低处理，这样才能给帮组 CPU 识别主次，提高主线程所能得到的系统资源。</p>
-<p>在 Android 系统里面，我们可以通过 android.os.Process.setThreadPriority(int) 设置线程的优先级，参数范围从-20到19，数值越小优先级越高。Android 系统还为我们提供了以下的一些预设值，我们可以通过给不同的工作线程设置不同数值的优先级来达到更细粒度的控制。</p>
-<p>大多数情况下，新创建的线程优先级会被设置为默认的0，主线程设置为0的时候，新创建的线程还可以利用 THREAD_PRIORITY_LESS_FAVORABLE 或者 THREAD_PRIORITY_MORE_FAVORABLE 来控制线程的优先级。</p>
-<p>Android 系统里面的 AsyncTask 与 IntentService已经默认帮助我们设置线程的优先级，但是对于那些非官方提供的多线程工具类，我们需要特别留意根据需要自己手动来设置线程的优先级。</p>
-<h3 id="10-Profile-GPU-Rendering-M-Update"><a href="#10-Profile-GPU-Rendering-M-Update" class="headerlink" title="10. Profile GPU Rendering : M Update"></a>10. Profile GPU Rendering : M Update</h3><p>从 Android M 系统开始，系统更新了 GPU Profiling 的工具来帮助我们定位 UI 的渲染性能问题。早期的 CPU Profiling 工具只能粗略的显示出 Process，Execute，Update 三大步骤的时间耗费情况。
-但是仅仅显示三大步骤的时间耗费情况，还是不太能够清晰帮助我们定位具体的程序代码问题，所以在 Android M 版本开始，GPU Profiling 工具把渲染操作拆解成如下8个详细的步骤进行显示。</p>
-<p>旧版本中提到的 Proces，Execute，Update 还是继续得到了保留，他们的对应关系如下：</p>
-<p>接下去我们看下其他五个步骤分别代表了什么含义：</p>
-<ul>
-<li>Sync &amp; Upload：通常表示的是准备当前界面上有待绘制的图片所耗费的时间，为了减少该段区域的执行时间，我们可以减少屏幕上的图片数量或者是缩小图片本身的大小。</li>
-<li>Measure &amp; Layout：这里表示的是布局的 onMeasure 与 onLayout 所花费的时间，一旦时间过长，就需要仔细检查自己的布局是不是存在严重的性能问题。</li>
-<li>Animation：表示的是计算执行动画所需要花费的时间，包含的动画有 ObjectAnimator，ViewPropertyAnimator，Transition 等等。一旦这里的执行时间过长，就需要检查是不是使用了非官方的动画工具或者是检查动画执行的过程中是不是触发了读写操作等等。</li>
-<li>Input Handling：表示的是系统处理输入事件所耗费的时间，粗略等于对于的事件处理方法所执行的时间。一旦执行时间过长，意味着在处理用户的输入事件的地方执行了复杂的操作。</li>
-<li>Misc/Vsync Delay：如果稍加注意，我们可以在开发应用的 Log 日志里面看到这样一行提示：I/Choreographer(691): Skipped XXX frames! The application may be doing too much work on its main thread。这意味着我们在主线程执行了太多的任务，导致 UI 渲染跟不上 vSync 的信号而出现掉帧的情况。</li>
-</ul>
-<p>上面八种不同的颜色区分了不同的操作所耗费的时间，为了便于我们迅速找出那些有问题的步骤，GPU Profiling 工具会显示 16ms 的阈值线，这样就很容易找出那些不合理的性能问题，再仔细看对应具体哪个步骤相对来说耗费时间比例更大，结合上面介绍的细化步骤，从而快速定位问题，修复问题。</p>
-<blockquote>
-<p><a href="http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022" target="_blank" rel="external">http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2958,7 +2301,7 @@ $$</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2980,7 +2323,7 @@ $$</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
