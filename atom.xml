@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-06-20T15:10:09.000Z</updated>
+  <updated>2017-06-25T08:20:18.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,143 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>android系统编码MediaCodec</title>
+    <link href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/"/>
+    <id>http://wodekouwei.com/2017/06/25/tips-android-mediacodec/</id>
+    <published>2017-06-25T08:03:24.000Z</published>
+    <updated>2017-06-25T08:20:18.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
+The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>176 x 144 px</td>
+<td>480 x 360 px</td>
+<td>1280 x 720 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>12 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>56 Kbps</td>
+<td>500 Kbps</td>
+<td>2 Mbps</td>
+</tr>
+<tr>
+<td>Audio codec</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+</tr>
+<tr>
+<td>Audio channels</td>
+<td>1 (mono)</td>
+<td>2 (stereo)</td>
+<td>2 (stereo)</td>
+</tr>
+<tr>
+<td>Audio bitrate</td>
+<td>24 Kbps</td>
+<td>128 Kbps</td>
+<td>192 Kbps</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+<th>HD 1080p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>320 x 180 px</td>
+<td>640 x 360 px</td>
+<td>1280 x 720 px</td>
+<td>1920 x 1080 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>800 Kbps</td>
+<td>2 Mbps</td>
+<td>4 Mbps</td>
+<td>10 Mbps</td>
+</tr>
+</tbody>
+</table>
+<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
+<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
+<p>Each profile specifies the following set of parameters:</p>
+<ul>
+<li>The file output format</li>
+<li>Video codec format</li>
+<li>Video bit rate in bits per second</li>
+<li>Video frame rate in frames per second</li>
+<li>Video frame width and height,</li>
+<li>Audio codec format</li>
+<li>Audio bit rate in bits per second,</li>
+<li>Audio sample rate</li>
+<li>Number of audio channels for recording.</li>
+</ul>
+<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
+<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
+<p>the result is always the same ( a very high frame rate )
+Is the encoder ignoring this property ? how can I control the frame rate ?</p>
+<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
+<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
+<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
+<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
+<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
+<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
+<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;android编码器支持参数&quot;&gt;&lt;a href=&quot;#android编码器支持参数&quot; class=&quot;headerlink&quot; title=&quot;android编码器支持参数&quot;&gt;&lt;/a&gt;android编码器支持参数&lt;/h3&gt;&lt;h4 id=&quot;Supported-Media-F
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
   
   <entry>
     <title>media-storage-and-transfer</title>
@@ -76,7 +213,7 @@
     <link href="http://wodekouwei.com/2017/06/20/media-graphic/"/>
     <id>http://wodekouwei.com/2017/06/20/media-graphic/</id>
     <published>2017-06-20T15:07:54.000Z</published>
-    <updated>2017-06-20T23:56:33.000Z</updated>
+    <updated>2017-06-22T10:14:51.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="1-图形与图像的基本概念"><a href="#1-图形与图像的基本概念" class="headerlink" title="1.图形与图像的基本概念"></a>1.图形与图像的基本概念</h2><h3 id="1-1图形与图像的颜色模型"><a href="#1-1图形与图像的颜色模型" class="headerlink" title="1.1图形与图像的颜色模型"></a>1.1图形与图像的颜色模型</h3><h4 id="1-1-1颜色的基本概念"><a href="#1-1-1颜色的基本概念" class="headerlink" title="1.1.1颜色的基本概念"></a>1.1.1颜色的基本概念</h4><h5 id="1-1-1-1-物体的颜色"><a href="#1-1-1-1-物体的颜色" class="headerlink" title="1.1.1.1 物体的颜色"></a>1.1.1.1 物体的颜色</h5><p>物体的颜色不同是因为他们对光的吸收和反射的属性不同.物体的颜色是由该物体所反射的光的波长来决定的.</p>
 <p>人眼看到的物体的颜色不仅取决于该物体所反射的光的波长,还与照射它的光源有关.如果用单一蓝色去照射绿色的树叶,
@@ -90,7 +227,18 @@
 </ul>
 <p>色调和色饱和度统称为色度.</p>
 <h5 id="1-1-1-3-三基色原理"><a href="#1-1-1-3-三基色原理" class="headerlink" title="1.1.1.3 三基色原理"></a>1.1.1.3 三基色原理</h5><p>三基色原理认为自然界中景物的绝大多数的彩色光,能分解为互相独立的红(R),绿(G),蓝(B)三种基色光;反之,用互相独立的红,绿,蓝3种基色光以不同的比例混合,可模拟出自然界中绝大多数景色的光.RGB三基色相互独立的含义是指,任一种基色都不能由另外两种基色混合而产生.三基色的选择并不是唯一的.</p>
-<h5 id="1-1-1-4-像素-pixel"><a href="#1-1-1-4-像素-pixel" class="headerlink" title="1.1.1.4 像素(pixel)"></a>1.1.1.4 像素(pixel)</h5><p>像素是计算机图形与图像中能被单独处理的最小基本单元.</p>
+<h5 id="1-1-1-4-像素-pixel"><a href="#1-1-1-4-像素-pixel" class="headerlink" title="1.1.1.4 像素(pixel)"></a>1.1.1.4 像素(pixel)</h5><p>像素是计算机图形与图像中能被单独处理的最小基本单元.
+从像素的视觉属性看,它是一个最小可是单位.一幅彩色图像可以看成是由许多很小的可是点组成的,这个点就是像素.每个像素点都有确定的颜色和亮度,这个颜色就是有互相独立的红,绿,蓝三种基色光以不同的比例混合而成的.
+从像素的量值属性看,它的数据结构应同时显示地址,色彩,亮度等数据信息,这些数据就称为像素值.</p>
+<h4 id="1-1-2-颜色模型"><a href="#1-1-2-颜色模型" class="headerlink" title="1.1.2 颜色模型"></a>1.1.2 颜色模型</h4><p>颜色模型(或称色彩模型)就是定量颜色方法.在不同的领域应用于图像时,为了尽可能多地,有效地描述各种颜色,往往采用不同的颜色模型,例如,用显示器这类发光物体显示时采用的是RGB模型,用打印机这类吸光物体输出图像时用CMY模型,进行彩色电视信号的显示与传输时采用YUV模型,从事艺术绘画时习惯采用HSL模型.</p>
+<h5 id="1-1-2-1-RGB模型"><a href="#1-1-2-1-RGB模型" class="headerlink" title="1.1.2.1 RGB模型"></a>1.1.2.1 RGB模型</h5><p>RGB模型也称为加色法混色模型.其混色规律是:以等量的红,绿,蓝基色光混合时:</p>
+<ul>
+<li>红 + 绿 = 黄色</li>
+<li>红 + 蓝 = 品红色</li>
+<li>绿 + 蓝 = 青色</li>
+<li>红 + 绿 + 蓝 = 白色</li>
+<li>3种基色光全无 = 黑色</li>
+</ul>
 <h3 id="1-2图形与图像的基本属性"><a href="#1-2图形与图像的基本属性" class="headerlink" title="1.2图形与图像的基本属性"></a>1.2图形与图像的基本属性</h3><h3 id="1-3图形与图像的基本类型"><a href="#1-3图形与图像的基本类型" class="headerlink" title="1.3图形与图像的基本类型"></a>1.3图形与图像的基本类型</h3><h2 id="2-图形与图像的处理"><a href="#2-图形与图像的处理" class="headerlink" title="2.图形与图像的处理"></a>2.图形与图像的处理</h2><h3 id="2-1图形与图像的获取"><a href="#2-1图形与图像的获取" class="headerlink" title="2.1图形与图像的获取"></a>2.1图形与图像的获取</h3><h3 id="2-2图形与图像的存储"><a href="#2-2图形与图像的存储" class="headerlink" title="2.2图形与图像的存储"></a>2.2图形与图像的存储</h3><h3 id="2-3图形与图像的显示"><a href="#2-3图形与图像的显示" class="headerlink" title="2.3图形与图像的显示"></a>2.3图形与图像的显示</h3><h3 id="2-4图形与图像的处理"><a href="#2-4图形与图像的处理" class="headerlink" title="2.4图形与图像的处理"></a>2.4图形与图像的处理</h3><h2 id="3-计算机动画"><a href="#3-计算机动画" class="headerlink" title="3.计算机动画"></a>3.计算机动画</h2><h3 id="3-1计算机动画的原理"><a href="#3-1计算机动画的原理" class="headerlink" title="3.1计算机动画的原理"></a>3.1计算机动画的原理</h3><h3 id="3-2计算机动画的类型"><a href="#3-2计算机动画的类型" class="headerlink" title="3.2计算机动画的类型"></a>3.2计算机动画的类型</h3><h3 id="3-3计算机动画的制作"><a href="#3-3计算机动画的制作" class="headerlink" title="3.3计算机动画的制作"></a>3.3计算机动画的制作</h3><h3 id="3-4虚拟现实动画技术"><a href="#3-4虚拟现实动画技术" class="headerlink" title="3.4虚拟现实动画技术"></a>3.4虚拟现实动画技术</h3>]]></content>
     
     <summary type="html">
@@ -1045,88 +1193,6 @@ hook在DEPS中的写法，一般是：
     
     
       <category term="webrtc" scheme="http://wodekouwei.com/tags/webrtc/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>git服务搭建</title>
-    <link href="http://wodekouwei.com/2017/04/25/server-git/"/>
-    <id>http://wodekouwei.com/2017/04/25/server-git/</id>
-    <published>2017-04-25T08:36:53.000Z</published>
-    <updated>2017-04-25T09:36:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="纯git-server"><a href="#纯git-server" class="headerlink" title="纯git server"></a>纯git server</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><p>环境:ubuntu16.0.4</p>
-<ol>
-<li>安装Git-Core:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装openssh-server和openssh-client:<code>sudo apt-get install openssh-server openssh-client</code></li>
-<li>安装python tool:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装gitosis:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/res0nat0r/gitosis.git</div><div class="line"></div><div class="line">cd gitosis/</div><div class="line"></div><div class="line">sudo python setup.py install</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="添加管理账号"><a href="#添加管理账号" class="headerlink" title="添加管理账号"></a>添加管理账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo adduser \</div><div class="line">    --system \</div><div class="line">    --shell /bin/sh \</div><div class="line">    --gecos &apos;git version control&apos; \</div><div class="line">    --group \</div><div class="line">    --disabled-password \</div><div class="line">    --home /home/git \</div><div class="line">    git</div></pre></td></tr></table></figure>
-<p>如果已有git账户,可以替换成gitmanager</p>
-<h4 id="创建链接映射"><a href="#创建链接映射" class="headerlink" title="创建链接映射"></a>创建链接映射</h4><p>由于gitosis默认状态下会将仓库放在用户的repositories目录下，例如gitmanager用户的仓库地址默认在
-/home/gitmanager/repositories/目录下，这里我们需要创建一个链接映射。让他指向我们前面创建的专门用于存放项目的仓库目录/home/gitrepository。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /home/gitrepository /home/gitmanager/repositories</div></pre></td></tr></table></figure></p>
-<h4 id="初始化管理用户"><a href="#初始化管理用户" class="headerlink" title="初始化管理用户"></a>初始化管理用户</h4><ol>
-<li><p>拷贝管理用户公钥到<code>/tmp/</code>下,如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub gitmanager@192.168.0.68:/tmp/</div></pre></td></tr></table></figure>
-</li>
-<li><p>使用拷贝来的公钥初始化gitosis:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H -u gitmanager gitosis-init &lt; /tmp/id_ras.pub</div><div class="line">sudo chmod 755 /home/gitmanager/repositories/gitosis-admin.git/hooks/post-update</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="配置账号"><a href="#配置账号" class="headerlink" title="配置账号"></a>配置账号</h4><ol>
-<li>验证ssh<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ssh gitmanager@192.168.0.68</div><div class="line">TY allocation request failed on channel 0</div><div class="line">ERROR:gitosis.serve.main:Need SSH_ORIGINAL_COMMAND in environment.</div><div class="line">  Connection to gitserver closed.</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>说明 Gitosis 认出了该用户的身份，但由于没有运行任何 Git 命令，所以它切断了连接。</p>
-<ol>
-<li>克隆gitosis管理仓库:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone gitmanager@192.168.0.68:gitosis-admin.git</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这会得到一个名为 gitosis-admin 的工作目录，主要由两部分组成：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./gitosis.conf</div><div class="line">./keydir</div></pre></td></tr></table></figure></p>
-<p>gitosis.conf 文件是用来设置用户、仓库和权限的控制文件。keydir 目录则是保存所有具有访问权限用户公钥的地方— 每人一个。在 keydir 里的文件名（比如上面的 qingkouwei.pub） 会自动从使用 gitosis-init 脚本导入的公钥尾部的描述中获取该名字。</p>
-<p>看一下 gitosis.conf 文件的内容，它应该只包含与刚刚克隆的 gitosis-admin 相关的信息：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[gitosis]</div><div class="line"></div><div class="line">[group gitosis-admin]</div><div class="line">members = qingkouwei</div><div class="line">writable = gitosis-admin</div></pre></td></tr></table></figure></p>
-<p>要创建项目demo,在里面加入:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>要为demo项目添加用户user1:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>并将用户user1的公钥计入到keydir,并且公钥名.pub和members里面的名字对应.
-要添加对demo项目只读的用户:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div><div class="line"></div><div class="line">[group demo]</div><div class="line">members = user2</div><div class="line">readonly = demo</div></pre></td></tr></table></figure></p>
-<p>修改完配置文件和keydir,使用git push到gitosis-admin服务器.即可直接<code>git add remote add suervename gitmanager@192.168.0.68:demo.git</code>,然后直接将本地目录推送到demo仓库,不需要再服务器手动创建demo仓库,gitosis会帮忙自动创建.</p>
-<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
-<li><code>ERROR:gitosis.serve.main:Repository read access denied</code>
-原因:
-gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub</li>
-</ol>
-<p>解决方法:
-使keydir的名称与gitosis中members所指的名称一致。 改为members = foo 或 公密名称改为foo@bar.pub</p>
-<ol>
-<li>clone时报does not appear to be a git repository</li>
-</ol>
-<p>原因:
-clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
-<blockquote>
-<p>参考:<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis</a></p>
-</blockquote>
-<h3 id="gitlab服务搭建"><a href="#gitlab服务搭建" class="headerlink" title="gitlab服务搭建"></a>gitlab服务搭建</h3>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;纯git-server&quot;&gt;&lt;a href=&quot;#纯git-server&quot; class=&quot;headerlink&quot; title=&quot;纯git server&quot;&gt;&lt;/a&gt;纯git server&lt;/h3&gt;&lt;h4 id=&quot;软件安装&quot;&gt;&lt;a href=&quot;#软件安装&quot; class=&quot;
-    
-    </summary>
-    
-      <category term="server" scheme="http://wodekouwei.com/categories/server/"/>
-    
-    
-      <category term="server" scheme="http://wodekouwei.com/tags/server/"/>
-    
-      <category term="git" scheme="http://wodekouwei.com/tags/git/"/>
     
   </entry>
   

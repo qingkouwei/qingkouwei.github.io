@@ -323,6 +323,259 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/25/tips-android-mediacodec/" itemprop="url">
+                  android系统编码MediaCodec
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T16:03:24+08:00">
+                2017-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
+The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>176 x 144 px</td>
+<td>480 x 360 px</td>
+<td>1280 x 720 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>12 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>56 Kbps</td>
+<td>500 Kbps</td>
+<td>2 Mbps</td>
+</tr>
+<tr>
+<td>Audio codec</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+</tr>
+<tr>
+<td>Audio channels</td>
+<td>1 (mono)</td>
+<td>2 (stereo)</td>
+<td>2 (stereo)</td>
+</tr>
+<tr>
+<td>Audio bitrate</td>
+<td>24 Kbps</td>
+<td>128 Kbps</td>
+<td>192 Kbps</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+<th>HD 1080p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>320 x 180 px</td>
+<td>640 x 360 px</td>
+<td>1280 x 720 px</td>
+<td>1920 x 1080 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>800 Kbps</td>
+<td>2 Mbps</td>
+<td>4 Mbps</td>
+<td>10 Mbps</td>
+</tr>
+</tbody>
+</table>
+<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
+<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
+<p>Each profile specifies the following set of parameters:</p>
+<ul>
+<li>The file output format</li>
+<li>Video codec format</li>
+<li>Video bit rate in bits per second</li>
+<li>Video frame rate in frames per second</li>
+<li>Video frame width and height,</li>
+<li>Audio codec format</li>
+<li>Audio bit rate in bits per second,</li>
+<li>Audio sample rate</li>
+<li>Number of audio channels for recording.</li>
+</ul>
+<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
+<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
+<p>the result is always the same ( a very high frame rate )
+Is the encoder ignoring this property ? how can I control the frame rate ?</p>
+<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
+<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
+<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
+<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
+<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
+<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
+<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/20/media-storage-and-transfer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -914,7 +1167,18 @@
 </ul>
 <p>色调和色饱和度统称为色度.</p>
 <h5 id="1-1-1-3-三基色原理"><a href="#1-1-1-3-三基色原理" class="headerlink" title="1.1.1.3 三基色原理"></a>1.1.1.3 三基色原理</h5><p>三基色原理认为自然界中景物的绝大多数的彩色光,能分解为互相独立的红(R),绿(G),蓝(B)三种基色光;反之,用互相独立的红,绿,蓝3种基色光以不同的比例混合,可模拟出自然界中绝大多数景色的光.RGB三基色相互独立的含义是指,任一种基色都不能由另外两种基色混合而产生.三基色的选择并不是唯一的.</p>
-<h5 id="1-1-1-4-像素-pixel"><a href="#1-1-1-4-像素-pixel" class="headerlink" title="1.1.1.4 像素(pixel)"></a>1.1.1.4 像素(pixel)</h5><p>像素是计算机图形与图像中能被单独处理的最小基本单元.</p>
+<h5 id="1-1-1-4-像素-pixel"><a href="#1-1-1-4-像素-pixel" class="headerlink" title="1.1.1.4 像素(pixel)"></a>1.1.1.4 像素(pixel)</h5><p>像素是计算机图形与图像中能被单独处理的最小基本单元.
+从像素的视觉属性看,它是一个最小可是单位.一幅彩色图像可以看成是由许多很小的可是点组成的,这个点就是像素.每个像素点都有确定的颜色和亮度,这个颜色就是有互相独立的红,绿,蓝三种基色光以不同的比例混合而成的.
+从像素的量值属性看,它的数据结构应同时显示地址,色彩,亮度等数据信息,这些数据就称为像素值.</p>
+<h4 id="1-1-2-颜色模型"><a href="#1-1-2-颜色模型" class="headerlink" title="1.1.2 颜色模型"></a>1.1.2 颜色模型</h4><p>颜色模型(或称色彩模型)就是定量颜色方法.在不同的领域应用于图像时,为了尽可能多地,有效地描述各种颜色,往往采用不同的颜色模型,例如,用显示器这类发光物体显示时采用的是RGB模型,用打印机这类吸光物体输出图像时用CMY模型,进行彩色电视信号的显示与传输时采用YUV模型,从事艺术绘画时习惯采用HSL模型.</p>
+<h5 id="1-1-2-1-RGB模型"><a href="#1-1-2-1-RGB模型" class="headerlink" title="1.1.2.1 RGB模型"></a>1.1.2.1 RGB模型</h5><p>RGB模型也称为加色法混色模型.其混色规律是:以等量的红,绿,蓝基色光混合时:</p>
+<ul>
+<li>红 + 绿 = 黄色</li>
+<li>红 + 蓝 = 品红色</li>
+<li>绿 + 蓝 = 青色</li>
+<li>红 + 绿 + 蓝 = 白色</li>
+<li>3种基色光全无 = 黑色</li>
+</ul>
 <h3 id="1-2图形与图像的基本属性"><a href="#1-2图形与图像的基本属性" class="headerlink" title="1.2图形与图像的基本属性"></a>1.2图形与图像的基本属性</h3><h3 id="1-3图形与图像的基本类型"><a href="#1-3图形与图像的基本类型" class="headerlink" title="1.3图形与图像的基本类型"></a>1.3图形与图像的基本类型</h3><h2 id="2-图形与图像的处理"><a href="#2-图形与图像的处理" class="headerlink" title="2.图形与图像的处理"></a>2.图形与图像的处理</h2><h3 id="2-1图形与图像的获取"><a href="#2-1图形与图像的获取" class="headerlink" title="2.1图形与图像的获取"></a>2.1图形与图像的获取</h3><h3 id="2-2图形与图像的存储"><a href="#2-2图形与图像的存储" class="headerlink" title="2.2图形与图像的存储"></a>2.2图形与图像的存储</h3><h3 id="2-3图形与图像的显示"><a href="#2-3图形与图像的显示" class="headerlink" title="2.3图形与图像的显示"></a>2.3图形与图像的显示</h3><h3 id="2-4图形与图像的处理"><a href="#2-4图形与图像的处理" class="headerlink" title="2.4图形与图像的处理"></a>2.4图形与图像的处理</h3><h2 id="3-计算机动画"><a href="#3-计算机动画" class="headerlink" title="3.计算机动画"></a>3.计算机动画</h2><h3 id="3-1计算机动画的原理"><a href="#3-1计算机动画的原理" class="headerlink" title="3.1计算机动画的原理"></a>3.1计算机动画的原理</h3><h3 id="3-2计算机动画的类型"><a href="#3-2计算机动画的类型" class="headerlink" title="3.2计算机动画的类型"></a>3.2计算机动画的类型</h3><h3 id="3-3计算机动画的制作"><a href="#3-3计算机动画的制作" class="headerlink" title="3.3计算机动画的制作"></a>3.3计算机动画的制作</h3><h3 id="3-4虚拟现实动画技术"><a href="#3-4虚拟现实动画技术" class="headerlink" title="3.4虚拟现实动画技术"></a>3.4虚拟现实动画技术</h3>
           
         
@@ -1548,212 +1812,6 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/ffmpeg-compile-mac/" itemprop="url">
-                  FFMPEG编译之Mac
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T21:28:32+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
-                    <span itemprop="name">FFMPEG</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
-<ol>
-<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other *nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
-<li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
-<li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
-</ol>
-<h3 id="手动编译FFMPEG"><a href="#手动编译FFMPEG" class="headerlink" title="手动编译FFMPEG"></a>手动编译FFMPEG</h3><h4 id="1-下载FFMPEG源码"><a href="#1-下载FFMPEG源码" class="headerlink" title="1.下载FFMPEG源码"></a>1.下载FFMPEG源码</h4><p>使用<code>git clone https://github.com/FFmpeg/FFmpeg</code>从github下载ffmpeg源码,切换到要使用的目标分支(这里使用release/3.3):<code>git checkout -b r3.3 origin/release/3.3</code>,或者直接从github下载分支<code>release/3.3</code>的压缩包,解压.</p>
-<h4 id="2-准备Xcode"><a href="#2-准备Xcode" class="headerlink" title="2.准备Xcode"></a>2.准备Xcode</h4><p>Starting with Lion 10.7, Xcode is available for free from the Mac App Store and is required to compile anything on your Mac. Make sure you install the Command Line Tools from Preferences &gt; Downloads &gt; Components. Older versions are still available with an AppleID and free Developer account at ​developer.apple.com.</p>
-<h4 id="3-准备HomeBrew工具"><a href="#3-准备HomeBrew工具" class="headerlink" title="3.准备HomeBrew工具"></a>3.准备HomeBrew工具</h4><p>To get ffmpeg for OS X, you first have to install ​Homebrew. If you don’t want to use Homebrew, see the section below.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
-<p>Then:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install automake fdk-aac git lame libass libtool libvorbis libvpx \</div><div class="line">opus sdl shtool texi2html theora wget x264 x265 xvid yasm</div></pre></td></tr></table></figure></p>
-<p>Mac OS X Lion comes with Freetype already installed (older versions may need ‘X11’ selected during installation), but in an atypical location: /usr/X11. Running freetype-config in Terminal can give the locations of the individual folders, like headers, and libraries, so be prepared to add lines like CFLAGS=<code>freetype-config --cflags</code> LDFLAGS=<code>freetype-config --libs</code> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig before ./configure or add them to your $HOME/.profile file.</p>
-<h4 id="4-编译"><a href="#4-编译" class="headerlink" title="4.编译"></a>4.编译</h4><p>Once you have compiled all of the codecs/libraries you want, you can now download the FFmpeg source either with Git or the from release tarball links on the website. Study the output of ./configure –help and make sure you’ve enabled all the features you want, remembering that –enable-nonfree and –enable-gpl will be necessary for some of the dependencies above. A sample command is:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git clone http://source.ffmpeg.org/git/ffmpeg.git ffmpeg</div><div class="line">cd ffmpeg</div><div class="line">./configure  --prefix=/usr/local/ffmpeg --enable-gpl --enable-nonfree --enable-libass \</div><div class="line">--enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \</div><div class="line">--enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid</div><div class="line">make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
-<p><code>--prefix</code>指定编译完成后安装路径,这里指定到<code>/usr/local/ffmpeg</code>,安装完成会在<code>/usr/local/ffmpeg</code>下生成:bin,include,lib,share四个目录</p>
-<h3 id="安装环境介绍"><a href="#安装环境介绍" class="headerlink" title="安装环境介绍"></a>安装环境介绍</h3><p>A package consists of several related files which are installed in several directories. The configure step usually allows the user to specify the so-called install prefix, and is usually specified through the configure option configure –prefix=PREFIX, where PREFIX usually is by default /usr/local. The prefix specifies the common directory where all the components are installed.</p>
-<p>The following directories are usually involved in the installation:</p>
-<ul>
-<li><code>PREFIX/bin</code>: contains the generated binaries (e.g. ffmpeg, ffplay, ffprobe etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/include</code>: contains the library headers (e.g. libavutil/avstring.h, libavcodec/avcodec.h, libavformat/avformat.h etc. in case of FFmpeg) required to compile applications linked against the package libraries</li>
-<li><code>PREFIX/lib</code>: contains the generated libraries (e.g. libavutil, libavcodec, libavformat etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/share</code>: contains various system-independent components; especially documentation files and examples
-By specifying the prefix it is possible to define the installation layout.</li>
-</ul>
-<p>By using a shared prefix like /usr/local/, different packages will be installed in the same directory, so in general it will be more difficult to revert the installation.</p>
-<p>Using a prefix like /opt/PROJECT/, the project will be installed in a dedicated directory, and to remove from the system you can simply remove the /opt/PREFIX path. On the other hand, such installation will require to edit all the environment variables to point to the custom path.</p>
-<h3 id="Environment-variables"><a href="#Environment-variables" class="headerlink" title="Environment variables"></a>Environment variables</h3><p>Several variables defined in the environment affect your package install. In particular, depending on your installation prefix, you may need to update some of these variables in order to make sure that the installed components can be found by the system tools.</p>
-<p>The list of environment variables can be shown through the command env.</p>
-<p>A list of the affected variables follows:</p>
-<ul>
-<li>PATH: defines the list of :-separated paths where the system looks for binaries. For example if you install your package in /usr/local/, you should update the PATH so that it will contain /usr/local/bin. This can be done for example through the command export PATH=/usr/local/bin:$PATH.</li>
-<li>LD_LIBRARY_PATH: contains the :-separated paths where the system looks for libraries. For example if you install your package in /usr/local/, you should update the LD_LIBRARY_PATH so that it will contain /usr/local/lib. This can be done for example through the command export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH. This variable is sometimes deprecated in favor of the use of ldconfig.</li>
-<li>CFLAGS: contains flags used by the C compiler, and usually includes preprocessing directives like -IPREFIX/include or compilation flags. Custom CFLAGS are usually prefixed to the source package compiler flags by the source package build system. Alternatively many build systems allow to specify the configure option -extra-cflags.</li>
-<li>LDFLAGS: these are directives used by the linker, and usually include linking directives like -LPREFIX/lib needed to find libraries installed in custom paths. Custom LDFLAGS are usually prefixed to the source package linker flags by the source package build system. Alternatively, many build systems allow to specify the configure option -extra-ldflags.</li>
-<li>PKG_CONFIG_PATH: contains the :-separated paths used by pkg-config to detect the pkg-config files used by many build systems to detect the custom CFLAGS/LDFLAGS used by a specific library.
-In case you installed a package in a non standard path, you need to update these environment libraries so that system tools will be able to detect the package components. This is especially required when running a configure script for a package relying on other installed libraries/headers/tools.</li>
-</ul>
-<p>Environment variables are usually defined in the profile file, for example .profile defined in the user directory for sh/bash users, and in /etc/profile. This file can be edited to permanently set the custom environment. Alternatively, the variables can be set in a script or in a particular shell session.</p>
-<p>Remember to export the variables to the child process, e.g. using the export command. Read the fine documentation of your shell for more detailed information.</p>
-<h3 id="MAC下的动态链接库"><a href="#MAC下的动态链接库" class="headerlink" title="MAC下的动态链接库"></a>MAC下的动态链接库</h3><h4 id="扩展名"><a href="#扩展名" class="headerlink" title="扩展名"></a>扩展名</h4><p>Windows下.DLL,Linux下.so,Mac OS X下的扩展名是.dylib。
-.dylib是Mach-O格式，也就是Mac OS X下的二进制文件格式。Mac OS X提供了一系列
-工具，用于创建和访问动态链接库。</p>
-<ul>
-<li>编译器/usr/bin/cc，也就是gcc了，Apple改过的。这个主要还是一个壳，去调用其他
-的一些部件。当然同时还有/usr/bin/c++，等等。</li>
-<li>汇编器/usr/bin/as</li>
-<li>链接器/usr/bin/ld</li>
-</ul>
-<h4 id="MAC下创建动态链接库步骤"><a href="#MAC下创建动态链接库步骤" class="headerlink" title="MAC下创建动态链接库步骤:"></a>MAC下创建动态链接库步骤:</h4><ol>
-<li>首先是生成module文件，也就是.o文件。这跟一般的unix没什么区别。例如<code>cc -c a.c b.c</code>,就得到a.o和b.o</li>
-<li>可以用ld来合并.o文件，比如<code>ld -r -o c.o a.o b.o</code></li>
-<li>然后可以用libtool来创建动态链接库:<code>libtool -dynamic -o c.dylib a.o b.o</code>.（ 这里也可以用<code>libtool -static -o c.a a.o b.o</code>就创建静态库）</li>
-</ol>
-<p>如果用gcc直接编译，我记得linux下一般是可以:
-<code>gcc -shared -o c.so a.c b.c</code>
-而在Mac OS X下需要:
-<code>gcc -dynamiclib -o c.dylib a.c b.c</code></p>
-<h4 id="动态链接库的工具"><a href="#动态链接库的工具" class="headerlink" title="动态链接库的工具"></a>动态链接库的工具</h4><p>nm是最常用的，这个用法跟linux下差不多:<code>nm c.dylib</code>,可以看到导出符号表，等等。
-另一个常用的工具是otool，这个是Mac OS X独有的。比如想看看c.dylib的依赖关系<code>otool -L c.dylib</code></p>
-<h3 id="官网方法"><a href="#官网方法" class="headerlink" title="官网方法"></a>官网方法</h3><ul>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1803,7 +1861,7 @@ In case you installed a package in a non standard path, you need to update these
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

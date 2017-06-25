@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[android系统编码MediaCodec]]></title>
+    <url>%2F2017%2F06%2F25%2Ftips-android-mediacodec%2F</url>
+    <content type="text"><![CDATA[android编码器支持参数Supported Media FormatsVideo encoding recommendations The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later. SD (Low quality) SD (High quality) HD 720p (N/A on all devices) Video resolution 176 x 144 px 480 x 360 px 1280 x 720 px Video frame rate 12 fps 30 fps 30 fps Video bitrate 56 Kbps 500 Kbps 2 Mbps Audio codec AAC-LC AAC-LC AAC-LC Audio channels 1 (mono) 2 (stereo) 2 (stereo) Audio bitrate 24 Kbps 128 Kbps 192 Kbps The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec. SD (Low quality) SD (High quality) HD 720p (N/A on all devices) HD 1080p (N/A on all devices) Video resolution 320 x 180 px 640 x 360 px 1280 x 720 px 1920 x 1080 px Video frame rate 30 fps 30 fps 30 fps 30 fps Video bitrate 800 Kbps 2 Mbps 4 Mbps 10 Mbps CamcorderProfileRetrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only. The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video. Each profile specifies the following set of parameters: The file output format Video codec format Video bit rate in bits per second Video frame rate in frames per second Video frame width and height, Audio codec format Audio bit rate in bits per second, Audio sample rate Number of audio channels for recording. Android编码器常见问题MediaCodec KEY_FRAME_RATE seems to be ignored总结起来就是和输入编码器的帧率有关系 I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in: 1format-&gt;setFloat(&quot;frame-rate&quot;, 5); the result is always the same ( a very high frame rate ) Is the encoder ignoring this property ? how can I control the frame rate ? The frame-rate value is not ignored, but it doesn’t do what you want. The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post). The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it. The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file. You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms. The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder. In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>多媒体</tag>
+        <tag>Android</tag>
+        <tag>tips</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[media-storage-and-transfer]]></title>
     <url>%2F2017%2F06%2F20%2Fmedia-storage-and-transfer%2F</url>
     <content type="text"></content>
@@ -23,7 +36,7 @@
   <entry>
     <title><![CDATA[多媒体技术(一)之图形图像]]></title>
     <url>%2F2017%2F06%2F20%2Fmedia-graphic%2F</url>
-    <content type="text"><![CDATA[1.图形与图像的基本概念1.1图形与图像的颜色模型1.1.1颜色的基本概念1.1.1.1 物体的颜色物体的颜色不同是因为他们对光的吸收和反射的属性不同.物体的颜色是由该物体所反射的光的波长来决定的. 人眼看到的物体的颜色不仅取决于该物体所反射的光的波长,还与照射它的光源有关.如果用单一蓝色去照射绿色的树叶, 则此时的树叶只能是黑色的.因为蓝色光源中没有绿色成分,树叶吸收了全部蓝色而呈现黑色. 在彩色显示器中,为了使颜色具有较好的还原度和真实感,通常采用类似自然光作为照明光源. 1.1.1.2 彩色三要素颜色信息对人的视觉反应,可通过色调,色饱和度和亮度这三个参量来表示: 色调:用来描述颜色的不同类别的物理量称为色调,如红,橙,黄,绿,青,蓝,紫.色调取决于该种颜色的主要波长. 色饱和度:色饱和度则是描述颜色的深浅程度的物理量,它按该种颜色混入白光的比例来表示,当某色光的饱和度为100%时,就是表示该色光是完全没有混入白色光的单色光饱和度越高则颜色也越浓.如果大量混入白色光使饱和度降低,人视觉会感到颜色变淡.例如,在浓的的红色光中混入大量的白光,由于饱和度降低就变成了粉红色,但是因为红色是基本色,所以色调并不改变.在某颜色中混入白光与增强白光对某颜色物体的照射是不同的.前者是在摄入人眼的眸色光中混入白光,而后者的结果则是加强了某色物体的反射光的强度,在摄入人眼的反射光中并没有混入白光,因此它并没有改变该色的饱和度. 亮度:用来描述色光的明暗变化的强度的物理量成为亮度.亮度是色光能量的一种描述,是指色调和色饱和度已经固定的光,当它的全部能量增强时感觉明亮,否则感觉暗淡. 色调和色饱和度统称为色度. 1.1.1.3 三基色原理三基色原理认为自然界中景物的绝大多数的彩色光,能分解为互相独立的红(R),绿(G),蓝(B)三种基色光;反之,用互相独立的红,绿,蓝3种基色光以不同的比例混合,可模拟出自然界中绝大多数景色的光.RGB三基色相互独立的含义是指,任一种基色都不能由另外两种基色混合而产生.三基色的选择并不是唯一的. 1.1.1.4 像素(pixel)像素是计算机图形与图像中能被单独处理的最小基本单元. 1.2图形与图像的基本属性1.3图形与图像的基本类型2.图形与图像的处理2.1图形与图像的获取2.2图形与图像的存储2.3图形与图像的显示2.4图形与图像的处理3.计算机动画3.1计算机动画的原理3.2计算机动画的类型3.3计算机动画的制作3.4虚拟现实动画技术]]></content>
+    <content type="text"><![CDATA[1.图形与图像的基本概念1.1图形与图像的颜色模型1.1.1颜色的基本概念1.1.1.1 物体的颜色物体的颜色不同是因为他们对光的吸收和反射的属性不同.物体的颜色是由该物体所反射的光的波长来决定的. 人眼看到的物体的颜色不仅取决于该物体所反射的光的波长,还与照射它的光源有关.如果用单一蓝色去照射绿色的树叶, 则此时的树叶只能是黑色的.因为蓝色光源中没有绿色成分,树叶吸收了全部蓝色而呈现黑色. 在彩色显示器中,为了使颜色具有较好的还原度和真实感,通常采用类似自然光作为照明光源. 1.1.1.2 彩色三要素颜色信息对人的视觉反应,可通过色调,色饱和度和亮度这三个参量来表示: 色调:用来描述颜色的不同类别的物理量称为色调,如红,橙,黄,绿,青,蓝,紫.色调取决于该种颜色的主要波长. 色饱和度:色饱和度则是描述颜色的深浅程度的物理量,它按该种颜色混入白光的比例来表示,当某色光的饱和度为100%时,就是表示该色光是完全没有混入白色光的单色光饱和度越高则颜色也越浓.如果大量混入白色光使饱和度降低,人视觉会感到颜色变淡.例如,在浓的的红色光中混入大量的白光,由于饱和度降低就变成了粉红色,但是因为红色是基本色,所以色调并不改变.在某颜色中混入白光与增强白光对某颜色物体的照射是不同的.前者是在摄入人眼的眸色光中混入白光,而后者的结果则是加强了某色物体的反射光的强度,在摄入人眼的反射光中并没有混入白光,因此它并没有改变该色的饱和度. 亮度:用来描述色光的明暗变化的强度的物理量成为亮度.亮度是色光能量的一种描述,是指色调和色饱和度已经固定的光,当它的全部能量增强时感觉明亮,否则感觉暗淡. 色调和色饱和度统称为色度. 1.1.1.3 三基色原理三基色原理认为自然界中景物的绝大多数的彩色光,能分解为互相独立的红(R),绿(G),蓝(B)三种基色光;反之,用互相独立的红,绿,蓝3种基色光以不同的比例混合,可模拟出自然界中绝大多数景色的光.RGB三基色相互独立的含义是指,任一种基色都不能由另外两种基色混合而产生.三基色的选择并不是唯一的. 1.1.1.4 像素(pixel)像素是计算机图形与图像中能被单独处理的最小基本单元. 从像素的视觉属性看,它是一个最小可是单位.一幅彩色图像可以看成是由许多很小的可是点组成的,这个点就是像素.每个像素点都有确定的颜色和亮度,这个颜色就是有互相独立的红,绿,蓝三种基色光以不同的比例混合而成的. 从像素的量值属性看,它的数据结构应同时显示地址,色彩,亮度等数据信息,这些数据就称为像素值. 1.1.2 颜色模型颜色模型(或称色彩模型)就是定量颜色方法.在不同的领域应用于图像时,为了尽可能多地,有效地描述各种颜色,往往采用不同的颜色模型,例如,用显示器这类发光物体显示时采用的是RGB模型,用打印机这类吸光物体输出图像时用CMY模型,进行彩色电视信号的显示与传输时采用YUV模型,从事艺术绘画时习惯采用HSL模型. 1.1.2.1 RGB模型RGB模型也称为加色法混色模型.其混色规律是:以等量的红,绿,蓝基色光混合时: 红 + 绿 = 黄色 红 + 蓝 = 品红色 绿 + 蓝 = 青色 红 + 绿 + 蓝 = 白色 3种基色光全无 = 黑色 1.2图形与图像的基本属性1.3图形与图像的基本类型2.图形与图像的处理2.1图形与图像的获取2.2图形与图像的存储2.3图形与图像的显示2.4图形与图像的处理3.计算机动画3.1计算机动画的原理3.2计算机动画的类型3.3计算机动画的制作3.4虚拟现实动画技术]]></content>
       <categories>
         <category>media</category>
       </categories>
@@ -274,8 +287,8 @@
       </categories>
       <tags>
         <tag>Android</tag>
-        <tag>多线程</tag>
         <tag>tips</tag>
+        <tag>多线程</tag>
       </tags>
   </entry>
   <entry>
