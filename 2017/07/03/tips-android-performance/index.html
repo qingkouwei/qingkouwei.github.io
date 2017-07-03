@@ -1,0 +1,1123 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,性能,tips," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Android手机由于其本身的后台机制和硬件特点，性能上一直被诟病，所以软件开发者对软件本身的性能优化就显得尤为重要；本文将对Android开发过程中性能优化的各个方面做一个回顾与总结。 Cache优化 ListView缓存：  ListView中有一个回收器，Item滑出界面的时候View会回收到这里，需要显示新的Item的时候，就尽量重用回收器里面的View；每次在getView函数中infl">
+<meta name="keywords" content="Android,性能,tips">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android应用性能优化">
+<meta property="og:url" content="http://wodekouwei.com/2017/07/03/tips-android-performance/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="Android手机由于其本身的后台机制和硬件特点，性能上一直被诟病，所以软件开发者对软件本身的性能优化就显得尤为重要；本文将对Android开发过程中性能优化的各个方面做一个回顾与总结。 Cache优化 ListView缓存：  ListView中有一个回收器，Item滑出界面的时候View会回收到这里，需要显示新的Item的时候，就尽量重用回收器里面的View；每次在getView函数中infl">
+<meta property="og:updated_time" content="2017-07-03T15:02:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android应用性能优化">
+<meta name="twitter:description" content="Android手机由于其本身的后台机制和硬件特点，性能上一直被诟病，所以软件开发者对软件本身的性能优化就显得尤为重要；本文将对Android开发过程中性能优化的各个方面做一个回顾与总结。 Cache优化 ListView缓存：  ListView中有一个回收器，Item滑出界面的时候View会回收到这里，需要显示新的Item的时候，就尽量重用回收器里面的View；每次在getView函数中infl">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2017/07/03/tips-android-performance/"/>
+
+
+
+
+
+  <title> Android应用性能优化 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/03/tips-android-performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android应用性能优化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-03T22:53:59+08:00">
+                2017-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/07/03/tips-android-performance/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android手机由于其本身的后台机制和硬件特点，性能上一直被诟病，所以软件开发者对软件本身的性能优化就显得尤为重要；本文将对Android开发过程中性能优化的各个方面做一个回顾与总结。</p>
+<h3 id="Cache优化"><a href="#Cache优化" class="headerlink" title="Cache优化"></a>Cache优化</h3><ul>
+<li><p>ListView缓存：</p>
+<ul>
+<li>ListView中有一个回收器，Item滑出界面的时候View会回收到这里，需要显示新的Item的时候，就尽量重用回收器里面的View；每次在getView函数中inflate新的item之前会先判断回收器中是否有缓存的view，即判断convertView是否为null，是则inflate一个新的item View，否则重用回收器中的item。</li>
+<li>此外，ListView还使用静态的ViewHolder减少findViewById的次数</li>
+<li>ListView中有getViewTypeCount()函数用于获取列表有几种布局类型，getItemViewType(int position)用于获取在position位置上的布局类型; 我们可以利用ViewType来给不同类型的item创建不同的View，这样可以利于ListView的回收</li>
+<li>对Item中图片进行适当压缩, 并进行异步加载；如果快速滑动，不加载图片；实现数据的分页加载</li>
+</ul>
+</li>
+<li><p>IO缓存：在文件和网络IO中使用具有缓存策略的输入流，BufferedInputStream替代InputStream，BufferedReader替代Reader，BufferedReader替代BufferedInputStream</p>
+</li>
+<li><p>data缓存(空间换时间)：①缓存数据库的查询结果，比如缓存数据库表中的数据条数，这样就可以避免多次的select count查询 ②缓存磁盘文件中需要频繁访问的数据到内存中 ③缓存耗时计算的结果</p>
+</li>
+</ul>
+<h3 id="Battery优化"><a href="#Battery优化" class="headerlink" title="Battery优化"></a>Battery优化</h3><ul>
+<li>cpu的使用率和使用频率将直接或间接的影响电量的分配和使用，cpu降频可以节约电量</li>
+<li><p>service优化</p>
+<ul>
+<li><p>service作为一个运行在主线程中的后台服务，应该尽量避免耗时动作，而应该尽量新开线程去处理耗时动作
+监听系统广播看service是否存活，否则kill掉；降低service优先级使得系统内存吃紧时会被自动kill掉</p>
+</li>
+<li><p>使用Android提供的IntentService代替service，因为IntentService会在运行完成之后自动停止，而service需要手动调用stopService()才能停止运行</p>
+</li>
+<li><p>定时执行任务的Alarm机制：Android的定时任务有两种实现方式，Timer类和Alarm机制；Timer不适合长期后台运行的定时任务。因为每种手机都会有自己的休眠策略，Android手机就会在长时间不操作的情况下自动让CPU进入到睡眠状态，这就有可能导致Timer中的定时任务无法正常运行。而Alarm机制则不存在这种情况，它具有唤醒CPU的功能，即可以保证每次需要执行定时任务的时候CPU能正常工作。然而从Android4.4之后，Alarm任务的触发时间将会变得不准确，有可能会延迟一段时间后任务才能得到执行。这不是bug，而是系统在耗电性方面进行的优化。系统会自动检测目前有多少Alarm任务存在，然后将触发时间将近的几个任务放在一起执行，这就可以大幅度的减少CPU被唤醒的次数，从而有效延长电池的使用时间</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="渲染层优化"><a href="#渲染层优化" class="headerlink" title="渲染层优化"></a>渲染层优化</h3><ul>
+<li><p>Android 界面卡顿的原因？</p>
+<ul>
+<li>UI线程中做耗时操作，比如进行网络请求,磁盘读取，位图修改，更新UI等耗时操作，从而导致UI线程卡顿</li>
+<li>布局Layout过于复杂，无法在16ms内完成渲染，或者嵌套层次过深</li>
+<li>View过度绘制或者频繁的触发measure、layout，同一时间动画执行的次数过多，导致CPU或GPU负载过重</li>
+<li>冗余资源及逻辑等导致加载和执行缓慢</li>
+</ul>
+</li>
+<li>Android 界面卡顿怎么处理？<ul>
+<li>xml布局优化：尽量使用include、merge、ViewStub标签，尽量不存在冗余嵌套及过于复杂布局（譬如10层就会直接异常），例如使用RelativeLayout代替LinearLayout可以减少布局层次和复杂性，View的嵌套层次不能过深，尽量使用GONE替换INVISIBLE，使用weight后尽量将width和heigh设置为0dp，减少运算，Item存在非常复杂的嵌套时考虑使用自定义Item View来取代，减少measure与layout次数等。</li>
+<li>ListView及Adapter优化；尽量复用getView方法中的相关View，不重复获取实例导致卡顿，列表尽量在滑动过程中不进行UI元素刷新等。</li>
+<li>背景和图片等内存分配优化；尽量减少不必要的背景设置，图片尽量压缩处理显示，尽量避免频繁内存抖动等问题出现；尽可能为不同分辨率创建资源，以减少不必要的硬件缩放</li>
+<li>自定义View等绘图与布局优化；尽量避免在draw、measure、layout中做过于耗时及耗内存操作，尤其是draw方法中，尽量减少draw、measure、layout等执行次数，避免过度渲染和绘制；减少不必要的inflate，尽量使用全局变量缓存View</li>
+<li>避免ANR，不要在UI线程中做耗时操作，譬如多次数据库操作等</li>
+</ul>
+</li>
+<li><p>Layout常用的标签</p>
+<ul>
+<li><p>include标签：该标签可以用于将布局文件中的公共部分提取出来给其它布局文件复用，从而使得布局模块化，代码轻量化; 注意点: ①如果标签已经定义了id，而嵌入布局文件的root布局文件也定义了id，标签的id会覆盖掉嵌入布局文件root的id，如果include标签没有定义id则会使用嵌入文件root的id ②如果想使用标签覆盖嵌入布局root布局属性，必须同时覆盖layout_height和layout_width属性，否则会直接报编译时语法错误</p>
+</li>
+<li><p>viewstub标签：该标签与include一样用于引入布局模块，只是引入的布局默认不会扩张，既不会占用显示也不会占用位置，从而在解析layout时节省cpu和内存，只有通过调用setVisibility函数或者Inflate函数才会将其要装载的目标布局给加载出来，从而达到延迟加载的效果；例如条目详情、进度条标识或者未读消息等，这些情况如果在一开始初始化，虽然设置可见性View.GONE,但是在Inflate的时候View仍然会被Inflate，仍然会创建对象。</p>
+</li>
+<li><p>merge标签：该标签在layout中会被自动忽略，从而减少一层布局嵌套，其主要用处是当一个布局作为子布局被其他布局include时，使用merge当作该布局的顶节点来代替layout顶节点就可以减少一层嵌套</p>
+</li>
+<li><p>hierarchy viewer：该工具可以方便的查看Activity的布局，各个View的属性、measure、layout、draw的时间，如果耗时较多会用红色标记，否则显示绿色</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络优化"><a href="#网络优化" class="headerlink" title="网络优化"></a>网络优化</h3><ul>
+<li>异步请求网络数据，避免频繁请求数据（例如如果某个页面内请求过多，可以考虑做一定的请求合并），尽可能的减少网络请求次数和减小网络请求时间间隔</li>
+<li>网络应用传输中使用高效率的数据格式，譬如使用JSON代替XML，使用WebP代替其他图片格式,并对数据进行Gzip压缩数据，比如post请求的body和header内容</li>
+<li>及时缓存数据到内存/文件/数据库</li>
+<li><p>执行某些操作前尽量先进行网络状态判断，比如wifi传输数据比蜂窝数据更省电，所以尽量在wifi下进行数据的预加载</p>
+</li>
+<li><p>httpClient和httpUrlConnection对比：</p>
+<ul>
+<li>httpClient是apache的开源实现，API数量多，非常稳定</li>
+<li>httpUrlConnection是java自带的模块: ①可以直接支持GZIP压缩,而HttpClient虽然也支持GZIP，但要自己写代码处理 ②httpUrlConnection直接在系统层面做了缓存策略处理，加快重复请求的速度 ③API简单，体积较小,而且直接支持系统级连接池，即打开的连接不会直接关闭，在一段时间内所有程序可共用</li>
+<li>HttpURLConnection在Android2.2之前有个重大Bug，调用close()函数会影响连接池，导致连接复用失效，需要关闭keepAlive;因此在2.2之前http请求都是用httpClient，2.2之后则是使用HttpURLConnection</li>
+<li>但是!!!现在!!!Android不再推荐这两种方式！二是直接使用OKHttp这种成熟方案！支持Android 2.3及其以上版本</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据结构优化"><a href="#数据结构优化" class="headerlink" title="数据结构优化"></a>数据结构优化</h3><ul>
+<li><p>ArrayList和LinkedList的选择：ArrayList根据index取值更快，LinkedList更占内存、随机插入删除更快速、扩容效率更高</p>
+</li>
+<li><p>ArrayList、HashMap、LinkedHashMap、HashSet的选择：hash系列数据结构查询速度更优，ArrayList存储有序元素，HashMap为键值对数据结构，LinkedHashMap可以记住加入次序的hashMap，HashSet不允许重复元素</p>
+</li>
+<li><p>HashMap、WeakHashMap选择：WeakHashMap中元素可在适当时候被系统垃圾回收器自动回收，所以适合在内存紧张时使用</p>
+</li>
+<li><p>Collections.synchronizedMap和ConcurrentHashMap的选择：ConcurrentHashMap为细分锁，锁粒度更小，并发性能更优；Collections.synchronizedMap为对象锁，自己添加函数进行锁控制更方便</p>
+</li>
+<li><p>Android中性能更优的数据类型：如SparseArray、SparseBooleanArray、SparseIntArray、Pair；Sparse系列的数据结构是为key为int情况的特殊处理，采用二分查找及简单的数组存储，加上不需要泛型转换的开销，相对Map来说性能更优</p>
+</li>
+</ul>
+<h3 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h3><ul>
+<li>Android应用内存溢出OOM<ul>
+<li>内存溢出的主要导致原因有如下几类：①应用代码存在内存泄露，长时间积累无法释放导致OOM；②应用的某些逻辑操作疯狂的消耗掉大量内存（譬如加载一张不经过处理的超大超高清图片等）导致超过阈值OOM</li>
+<li>解决思路①在内存引用上做些处理，常用的有软引用、弱引用 ②在内存中加载图片时直接在内存中做处理，如：边界压缩 ③动态回收内存，手动recyle bitmap，回收对象 ④优化Dalvik虚拟机的堆内存分配 ⑤自定义堆内存大小</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/性能/" rel="tag"># 性能</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/27/media-terminology/" rel="next" title="多媒体之术语">
+                <i class="fa fa-chevron-left"></i> 多媒体之术语
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache优化"><span class="nav-number">1.</span> <span class="nav-text">Cache优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Battery优化"><span class="nav-number">2.</span> <span class="nav-text">Battery优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染层优化"><span class="nav-number">3.</span> <span class="nav-text">渲染层优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络优化"><span class="nav-number">4.</span> <span class="nav-text">网络优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构优化"><span class="nav-number">5.</span> <span class="nav-text">数据结构优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存优化"><span class="nav-number">6.</span> <span class="nav-text">内存优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

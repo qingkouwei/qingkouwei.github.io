@@ -323,6 +323,605 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/18/tips-qt-pack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/18/tips-qt-pack/" itemprop="url">
+                  mac下打包qt程序成dmg
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-18T19:06:08+08:00">
+                2017-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>参考<a href="http://doc.qt.digia.com/4.7-snapshot/appicon.html" target="_blank" rel="external">http://doc.qt.digia.com/4.7-snapshot/appicon.html</a></li>
+<li>图片格式在线转换<a href="http://iconverticons.com/，可以生成icns格式图片。" target="_blank" rel="external">http://iconverticons.com/，可以生成icns格式图片。</a></li>
+<li>Test.pro中添加macx{ICON = Test.icns} （记得把Test.icns添加到工程中）</li>
+<li>发布dmb包</li>
+</ol>
+<ul>
+<li>QT在mac下有个发布命令：<code>macdeployqt</code></li>
+<li>我的mac上macdeployqt目录如下：<code>/Users/duobianxing/QtSDK/Desktop/Qt/4.8.1/gcc/bin</code></li>
+<li>将macdeployqt的路径添加到环境变量里面
+终端里 <code>vim /etc/profile</code>（如果在保存时有问题，可以用 <code>sudo vim /etc/profile</code>）<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#在最后添加一行，如下所示：</div><div class="line"># System-wide .profile for sh(1)</div><div class="line"></div><div class="line">if [ -x /usr/libexec/path_helper ]; then</div><div class="line"></div><div class="line">        eval `/usr/libexec/path_helper -s`</div><div class="line"></div><div class="line">fi</div><div class="line"></div><div class="line">if [ &quot;$&#123;BASH-no&#125;&quot; != &quot;no&quot; ]; then</div><div class="line"></div><div class="line">        [ -r /etc/bashrc ] &amp;&amp; . /etc/bashrc</div><div class="line"></div><div class="line">fi</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><code>export PATH=/Users/duobianxing/QtSDK/Desktop/Qt/4.8.1/gcc/bin:$PATH</code></p>
+<ul>
+<li>cd进入到Test.app所在目录，然后执行<code>macdeployqt extractor.app -verbose=1 -dmg</code>，即可生成Test.dmg包。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/18/tips-seekto/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/18/tips-seekto/" itemprop="url">
+                  mpeg编码seekto方法精确定位到指定帧
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-18T18:11:40+08:00">
+                2017-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://developer.android.com/intl/es/reference/android/media/MediaExtractor.html" target="_blank" rel="external">MediaExtractor</a>有一个方法如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//All selected tracks seek near the requested time according to the specified mode.</div><div class="line">public void seekTo (long timeUs, int mode)</div></pre></td></tr></table></figure></p>
+<p>timeUs是要seek的时间戳，mode是seek的模式，可以是SEEK_TO_PREVIOUS_SYNC, SEEK_TO_CLOSEST_SYNC, SEEK_TO_NEXT_SYNC，分别是seek指定帧的上一帧，最近帧和下一帧。
+此方法可用于视频播放时动态定位播放帧，用于动态改变视频播放进度，比如使用seekBar来跟踪视频播放进度，同时可拖动来动态改变播放进度。</p>
+<p>mpeg编码决定seekTo方法无法精确定位到指定帧。即使使用的是某一帧精确的时间戳作为seekTo方法的输入参数也无法实现精确定位。</p>
+<p>在google, stackoverlfow查询得出的结论是：在每次seekTo方法调用后，MediaCodec必须从关键帧开始解码。因此seekTo方法只会seek到最近的／上一个／下一个关键帧，也就是I-Frame(key frame = I frame = sync frame)。之所以要从关键帧开始解码，是因为每一帧不一定是单独编码的，只有I frame才是帧内编码，而P, B frame都是要参考别的帧来进行编码，因此单独拿出来是不完整的一帧。</p>
+<p>stackoverflow上有人对此的做法是：seekTo的输入参数mode设置为SEEK_TO_PREVIOUS_SYNC,即seek的是指定帧的上一个关键帧。然后判断当前的时间戳是否小于定位关键帧的时间戳，如果是就调用MediaExtractor的advance方法，“快进”到指定帧。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">extractor.seekTo(expectedPts, MediaExtractor.SEEK_TO_PREVIOUS_SYNC);  </div><div class="line">while (currentPts &lt; expectedPts) &#123;  </div><div class="line">    extractor.advance();  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>但是这个方法仍不理想，如果seek的位置和当前位置比较远的话，会有一定延迟。而且视频内容偶尔会出现不完整的帧的闪现。
+经过一段时间的研究，终于解决了这个问题，现在播放时可以根据seekBar随时拖动到视频任何一帧，不会有任何延迟，甚至可以实现倒播了。
+因为之前播放视频的是自己用MediaCodec, MediaMuxer等编码合成的视频文件，在编码参数设置的时候，将关键帧间隔KEY_I_FRAME_INTERVAL设置为了1（因为要求参数为整数）。注意这个参数的单位是秒，而不是帧数！网上看到很多例子包括fadden的bigflake和Grafika上都将这里设置为了20几。搞得我一开始还以为是每隔二十几帧就有一个关键帧。如果设置为20几，那么就是说你用MediaCodec编码录制一段20多秒的视频，只有开头的一个关键帧！剩下的都是P或者B帧。
+这显然是不合理的。一般来说是每隔1秒有一个关键帧，这样就可以seek到对应秒的关键帧。或者说1秒内如果有30帧，那么这30帧至少有一个关键帧。因此我将KEY_I_FRAME_INTERVAL设置为了1。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);</div></pre></td></tr></table></figure></p>
+<p>这也是为什么我在播放用这种参数编码的视频的时候，使用seekTo方法不能准确定位帧了。之前有讲，seekTo是定位到关键帧的，如果不是关键帧，那么它会去找上一个／最近一个／下一个关键帧，这取决于你输入参数mode的设置。
+因此如果想使用seekBar准确拖动定位到任何一帧播放，必须保证每一帧都是关键帧。
+于是，我将KEY_I_FRAME_INTERVAL设置为了0：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 0);</div></pre></td></tr></table></figure></p>
+<p>事实也证明这样可以保证录制的每一帧都是关键帧，因此在使用seekTo方法的时候终于可以准确定位任何一帧了。拖动seekBar的时候视频内容也会立刻改变，无论是往前还是往后，都不会有任何延迟和画面不完整的情况.
+但是，把视频每一帧都设置为关键帧是否合理呢？是否会占太大空间呢？
+带着这个疑问，我使用ffmpeg查看了我测试使用的手机（Lenovo X2)内置相机录制的视频。
+只需一行代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ffprobe -show_frames video.mp4  &gt; frames.txt</div></pre></td></tr></table></figure></p>
+<p>打开frames.txt可以看到每一帧的key_frame=1，表示是关键帧</p>
+<p>这说明了手机本来录像就是把每一帧都作为关键帧的。
+当然，不能以偏概全，于是我使用iPhone 6s录制的一段普通视频和慢动作视频。使用ffmpeg查看，发现每一帧也都是关键帧（慢动作视频1秒有240帧也都全部作为关键帧也是蛮拼的）。</p>
+<p>目前我测试的两部手机都是如此，具体为什么手机录的视频每一帧都是关键帧我也不明白。而视频文件体积大小和是否将每一帧设为关键帧似乎不成线性关系，所以将KEY_I_FRAME_INTERVAL设置为0的方案是可行的。
+因此只要保证视频每帧都是关键帧，那么seekTo方法就可以精确定位指定帧了。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/media-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/07/media-intro/" itemprop="url">
+                  多媒体技术简介
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:28:19+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="关键帧间隔"><a href="#关键帧间隔" class="headerlink" title="关键帧间隔"></a>关键帧间隔</h4><p>关键帧包含了显示帧需要的所有信息</p>
+<p>所有的视频都至少包含一个关键帧，作为文件的第一个帧。其它的关键帧可用来改善视频的质量，不过它们也会增加文件大小。一般而言，每一秒视频至少需要使用 1 个关键帧。若使用此公式，在每秒播放 25个帧的视频中，每 25 个帧就会有 1 个关键帧。增加关键帧个数可改善质量，但是同时增加带宽和网络负载。</p>
+<p>两种彩电视频制式：</p>
+<ul>
+<li>NTSC (525 lines @ 59.94 Hz)  29.97 fps</li>
+<li>PAL (625 lines @ 50 Hz)  25 fps</li>
+</ul>
+<p>NTSC和PAL属于全球两大主要的电视广播制式，但是由于系统投射颜色影像的频率而有所不同。NTSC是National Television System Committee的缩写，其标准主要应用于日本、美国，加拿大、墨西哥等等，PAL 则是Phase Alternating Line的缩写，主要应用于中国，香港、中东地区和欧洲一带。</p>
+<p>GOP最大可含帧数目：18 (NTSC) / 15 (PAL)</p>
+<p>GOP是由固定模式的一系列I帧、P帧、B帧组成。
+I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域冗余。
+常用的结构由15个帧组成，具有以下形式IBBPBBPBBPBBPBB。简称GOP(4,2)，指的是该图像组除了一个I帧外，包含了4个P帧，并且任何两个P帧或者I、P之间都有两个B帧。</p>
+<p>GOP（Group of Pictures）策略影响编码质量：所谓GOP，意思是画面组，一个GOP就是一组连续的画面。MPEG编码将画面（即帧）分为I、P、B三种，I是内部编码帧，P是前向预测帧，B是双向内插帧。简单地讲，I帧是一个完整的画面，而P帧和B帧记录的是相对于I帧的变化。没有I帧，P帧和B帧就无法解码，这就是MPEG格式难以精确剪辑的原因，也是我们之所以要微调头和尾的原因。</p>
+<p>MPEG-2 帧结构
+　　MPEG-2压缩的帧结构有两个参数，一个是GOP（Group Of Picture）图像组的长度，一般可按编码方式从1－15；另一个是I帧和P帧之间B帧的数量，一般是1－2个。前者在理论上记录为N，即多少帧里面出现一次I帧；后者描述为多少帧里出现一次P帧，记录为M。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/jni-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/07/jni-intro/" itemprop="url">
+                  jni介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:23:23+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-C回调JAVA"><a href="#1-C回调JAVA" class="headerlink" title="1.C回调JAVA"></a>1.C回调JAVA</h3><ol>
+<li><p>c中返回一个字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中返回一个数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line">  </div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1392,877 +1991,11 @@ Bob-->Alice: I am good thanks!</textarea><textarea id="sequence-0-options" style
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-sdp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/27/webrtc-sdp/" itemprop="url">
-                  webrtc之sdp协议
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T22:47:44+08:00">
-                2017-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Session-Description-Protocol-会话描述协议"><a href="#Session-Description-Protocol-会话描述协议" class="headerlink" title="Session Description Protocol(会话描述协议)"></a>Session Description Protocol(会话描述协议)</h1><p>RFC定义SDP的协议有两个:</p>
-<ul>
-<li>RFC3264: An Offer/Answer Model with the session Description Protocol(SDP),用来概述一个请求/响应模型</li>
-<li>RFC2327: SDP:Session Description Protocol,描述数据格式.</li>
-</ul>
-<h2 id="1-RFC2327"><a href="#1-RFC2327" class="headerlink" title="1.RFC2327"></a>1.RFC2327</h2><h3 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1.概述"></a>1.1.概述</h3><p>SDP 完全是一种会话描述格式 ― 它不属于传输协议 ― 它只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP协议是也是基于文本的协议，这样就能保证协议的可扩展性比较强，这样就使其具有广泛的应用范围。SDP 不支持会话内容或媒体编码的协商，所以在流媒体中只用来描述媒体信息。媒体协商这一块要用RTSP来实现．
-SDP包括以下一些方面：</p>
-<ul>
-<li>会话的名称和目的</li>
-<li>会话存活时间</li>
-<li>包含在会话中的媒体信息，包括：<ul>
-<li>媒体类型(video, audio, etc)</li>
-<li>传输协议(RTP/UDP/IP, H.320, etc)</li>
-<li>媒体格式(H.261 video, MPEG video, etc)</li>
-<li>多播或远端（单播）地址和端口</li>
-</ul>
-</li>
-<li>为接收媒体而需的信息(addresses, ports, formats and so on)</li>
-<li>使用的带宽信息</li>
-<li>可信赖的接洽信息（Contact information）</li>
-</ul>
-<h3 id="1-2-SDP协议格式"><a href="#1-2-SDP协议格式" class="headerlink" title="1.2.SDP协议格式"></a>1.2.SDP协议格式</h3><p>SDP描述由许多文本行组成，文本行的格式为&lt;类型&gt;=&lt;值&gt;，&lt;类型&gt;是一个字母，&lt;值&gt;是结构化的文本串，其格式依&lt;类型&gt;而定。
-＜type＞=<value>[CRLF]</value></p>
-<h4 id="1-2-1-fields分类"><a href="#1-2-1-fields分类" class="headerlink" title="1.2.1.fields分类"></a>1.2.1.fields分类</h4><ol>
-<li>Seeesion Description</li>
-</ol>
-<ul>
-<li>v(Protocol Version),mnd,The current protocol version.Always “0” using RFC4566</li>
-<li>o(Origin),Mnd,The session originator’s name and session identifiers.</li>
-<li>s(Session Name), Mnd,The textural session Name</li>
-<li>i(Session Information), opt,Textural information about the session</li>
-<li>u(Uri),opt, A pointer to supplemental session Information</li>
-<li>e(Email Address), opt, Email contract information for the person responsible.</li>
-<li>P(phone Address),opt,Phone contract information for the person responsible</li>
-<li>c(Connection Data),C,The connection type and Address</li>
-<li>b(Bandwidth),opt,Proposed bandwidth limits.</li>
-<li>z(Time Zones), opt, Accounts for daylight saving information</li>
-<li>k(Encryption Keys),opt,A simple mechanism for exchanging keys, Rarely used.</li>
-</ul>
-<ol>
-<li>Timing Description</li>
-</ol>
-<ul>
-<li>t(Timing),mnd, start and end times.</li>
-<li>r(Repeat Times),opt, Specified the duration and intervals for any session repeats.</li>
-</ul>
-<ol>
-<li>Media Description</li>
-</ol>
-<ul>
-<li>m(Media Description),mnd, Media definitions including media type(e.g.”audio”),transport details and formats.</li>
-<li>i(Session Information),opt</li>
-<li>c(Connection Data),c</li>
-<li>b(Bandwidth):opt</li>
-<li>k( Encryption keys),opt</li>
-<li>a(Attributes),opt</li>
-</ul>
-<h4 id="1-2-2-典型格式"><a href="#1-2-2-典型格式" class="headerlink" title="1.2.2.典型格式"></a>1.2.2.典型格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">Session description</div><div class="line">   v=  (protocol version)</div><div class="line">   o=  (owner/creator and session identifier)</div><div class="line">   s=  (session name)</div><div class="line">   i=* (session information)</div><div class="line">   u=* (URI of description)</div><div class="line">   e=* (email address)</div><div class="line">   p=* (phone number)</div><div class="line">   c=* (connection information - not required if included in all media)</div><div class="line">   b=* (zero or more bandwidth information lines)</div><div class="line">   One or more time descriptions (&quot;t=&quot; and &quot;r=&quot; lines, see below)</div><div class="line">   z=* (time zone adjustments)</div><div class="line">   k=* (encryption key)</div><div class="line">   a=* (zero or more session attribute lines)</div><div class="line">   Zero or more media descriptions</div><div class="line">Time description</div><div class="line">   t=  (time the session is active)</div><div class="line">   r=* (zero or more repeat times)</div><div class="line">Media description, if present</div><div class="line">   m=  (media name and transport address)</div><div class="line">   i=* (media title)</div><div class="line">   c=* (connection information - optional if included at</div><div class="line">        session-level)</div><div class="line">   b=* (zero or more bandwidth information lines)</div><div class="line">   k=* (encryption key)</div><div class="line">   a=* (zero or more media attribute lines)</div></pre></td></tr></table></figure>
-<p>带<code>&quot;*&quot;</code>号的是可选的,其余的是必须的。一般顺序也按照上面的顺序来排列。</p>
-<h4 id="1-2-3-各type对应值的结构化文本串"><a href="#1-2-3-各type对应值的结构化文本串" class="headerlink" title="1.2.3.各type对应值的结构化文本串"></a>1.2.3.各type对应值的结构化文本串</h4><ol>
-<li>v=<username> <sess-id> <sess-version> <nettype> <addrtype> <unicast-address>
-其中：nettype是IN,代表internet,addrtype是IP4或IP6。unicast-address任务创建计算机的地址。
-整个这个属性，是唯一表示一个任务。</unicast-address></addrtype></nettype></sess-version></sess-id></username></li>
-<li><code>e=123@126.com</code> <code>或 p=+1 616 555-6011</code>
-对于一个任务只能两者之中的一个，表示会议控制者的联系方式。邮件地址可以是<code>[email]j.doe@example.com[/email] (Jane Doe)</code>形式，括号里面的是描述联系人的名称，或者<code>Jane Doe &lt;[email]j.doe@example.com[/email]&gt;</code>，前面的是联系人的名称。</li>
-<li>c=<nettype> <addrtype> <connection-address>
-这个连接数据，可以是传话级别的连接数据，或者是单独一个媒体数据的连接数据。在是多播时，connection-address就该是一个多播组地址，当是单播时，connection-address就该是一个单播地址。对于addrtype是IP4的情况下，connection-address不仅包含IP地址，并且还要包含a time to live value(TTL 0-255)，如：c=IN IP4 224.2.36.42/128，IP6没有这个TTL值。还允许象这样的<base multicast="" address="">[/<ttl>]/<number of="" addresses="">格式的connection-address。如：c=IN IP4 224.2.1.1/127/3等同于包含c=IN IP4 224.2.1.1/127, c=IN IP4 224.2.1.2/127, c=IN IP4 224.2.1.3/127三行内容。</number></ttl></connection-address></addrtype></nettype></li>
-<li>b=<bwtype>:<bandwidth> bwtype可以是CT或AS，CT方式是设置整个会议的带宽，AS是设置单个会话的带宽。缺省带宽是千比特每秒。
-t=<start-time> <stop-time>，这个可以有行，指定多个不规则时间段，如果是规则的时间段，则r=属性可以使用。start-time和stop- time都遵从NTP(Network Time Protocol),是以秒为单位，自从1900以来的时间。要转换为UNIX时间，减去2208988800。如果stop-time设置为0,则会话没有时间限制。如果start-time也设置为0，则会话被认为是永久的。</stop-time></start-time></bandwidth></bwtype></li>
-<li>b=<bwtype>:<bandwidth> bwtype可以是CT或AS，CT方式是设置整个会议的带宽，AS是设置单个会话的带宽。缺省带宽是千比特每秒。
-t=<start-time> <stop-time>，这个可以有行，指定多个不规则时间段，如果是规则的时间段，则r=属性可以使用。start-time和stop- time都遵从NTP(Network Time Protocol),是以秒为单位，自从1900以来的时间。要转换为UNIX时间，减去2208988800。如果stop-time设置为0,则会话没有时间限制。如果start-time也设置为0，则会话被认为是永久的。</stop-time></start-time></bandwidth></bwtype></li>
-<li>r=<repeat-interval> <active duration=""> <offsets from="" start-time="">重复次数在时间表示里面可以如下表示：
-   d - days (86400 seconds)
-   h - hours (3600 seconds)
-   m - minutes (60 seconds)
-   s - seconds (allowed for completeness)</offsets></active></repeat-interval></li>
-<li>z<code>=&lt;adjustment time&gt; &lt;offset&gt; &lt;adjustment time&gt; &lt;offset&gt; ....</code></li>
-<li><code>k=&lt;method&gt;</code></li>
-<li><code>k=&lt;method&gt;:&lt;encryption key&gt;</code></li>
-<li><code>a=&lt;attribute&gt;</code></li>
-<li><code>a=&lt;attribute&gt;:&lt;value&gt;</code></li>
-<li><code>m=&lt;media&gt; &lt;port&gt; &lt;proto&gt; &lt;fmt&gt; ...</code></li>
-<li><code>m=&lt;media&gt; &lt;port&gt;/&lt;number of ports&gt; &lt;proto&gt; &lt;fmt&gt; ...</code></li>
-<li>a=cat:<category>分类，根据分类接收者隔离相应的会话</category></li>
-<li>a=keywds:<keywords>关键字，根据关键字隔离相应的会话</keywords></li>
-<li>a=tool:<name and="" version="" of="" tool="">创建任务描述的工具的名称及版本号</name></li>
-<li>a=ptime:<packet time="">在一个包里面的以毫秒为单位的媒体长度</packet></li>
-<li>a=maxptime:<maximum packet="" time="">以毫秒为单位，能够压缩进一个包的媒体量。</maximum></li>
-<li>a=rtpmap:<payload type=""> <encoding name="">/<clock rate=""> [/<encoding parameters="">]</encoding></clock></encoding></payload></li>
-<li>a=recvonly</li>
-<li>a=sendrecv</li>
-<li>a=sendonly</li>
-<li>a=inactive，</li>
-<li>a=orient:<orientation>其可能的值，”portrait”, “landscape” and “seascape” 。</orientation></li>
-<li>a=type:<conference type="">,建议值是，”broadcast”, “meeting”, “moderated”, “test” and “H332”。</conference></li>
-<li>a=charset:<character set=""></character></li>
-<li>a=sdplang:<language tag="">指定会话或者是媒体级别使用的语言</language></li>
-<li>a=framerate:<frame rate="">设置最大视频帧速率</li>
-<li>a=quality:<quality>值是0-10</quality></li>
-<li>a=fmtp:<format> <format specific="" parameters="">
-在SIP协议的包含的内容是SDP时，应该把Content-Type设置成application/sdp。<h3 id="1-3-SDP协议例子"><a href="#1-3-SDP协议例子" class="headerlink" title="1.3.SDP协议例子"></a>1.3.SDP协议例子</h3><h4 id="1-3-1-helix流媒体服务器的RTSP协议中的SDP协议"><a href="#1-3-1-helix流媒体服务器的RTSP协议中的SDP协议" class="headerlink" title="1.3.1.helix流媒体服务器的RTSP协议中的SDP协议:"></a>1.3.1.helix流媒体服务器的RTSP协议中的SDP协议:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">v=0 //SDP version</div><div class="line">// o field定义的源的一些信息。其格式为：o=&lt;username&gt; &lt;sess-id&gt; &lt;sess-version&gt; &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;</div><div class="line">o=- 1271659412 1271659412 IN IP4 10.56.136.37 s=&lt;No title&gt;</div><div class="line">i=&lt;No author&gt; &lt;No copyright&gt;  //session的信息</div><div class="line">c=IN IP4 0.0.0.0 //connect 的信息，分别描述了：网络协议，地址的类型，连接地址。</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">t=0 0 //时间信息，分别表示开始的时间和结束的时间，一般在流媒体的直播的时移中见的比较多。</div><div class="line">a=SdpplinVersion:1610641560 //描述性的信息</div><div class="line">a=StreamCount:integer;2 //用来描述媒体流的信息，表示有两个媒体流。integer表示信息的格式为整数。</div><div class="line">a=control:*</div><div class="line">a=DefaultLicenseValue:integer;0 //License信息</div><div class="line">a=FileType:string;&quot;MPEG4&quot; ////用来描述媒体流的信息说明当前协商的文件是mpeg4格式的文件</div><div class="line">a=LicenseKey:string;&quot;license.Summary.Datatypes.RealMPEG4.Enabled&quot;</div><div class="line">a=range:npt=0-72.080000  //用来表示媒体流的长度</div><div class="line">m=audio 0 RTP/AVP 96 //做为媒体描述信息的重要组成部分描述了媒体信息的详细内容：表示session的audio是通过RTP来格式传送的，其payload值为96传送的端口还没有定。</div><div class="line">b=as:24 //audio 的bitrate</div><div class="line">b=RR:1800</div><div class="line">b=RS:600</div><div class="line">a=control:streamid=1  //通过媒体流1来发送音频</div><div class="line">a=range:npt=0-72.080000 //说明媒体流的长度。</div><div class="line">a=length:npt=72.080000</div><div class="line">a=rtpmap:96 MPEG4-GENERIC/32000/2 //rtpmap的信息，表示音频为AAC的其sample为32000</div><div class="line">a=fmtp:96 profile-level-id=15;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1210 //config为AAC的详细格式信息</div><div class="line">a=mimetype:string;&quot;audio/MPEG4-GENERIC&quot;</div><div class="line">a=Helix-Adaptation-Support:1</div><div class="line">a=AvgBitRate:integer;48000</div><div class="line">a=HasOutOfOrderTS:integer;1</div><div class="line">a=MaxBitRate:integer;48000</div><div class="line">a=Preroll:integer;1000</div><div class="line">a=OpaqueData:buffer;&quot;A4CAgCIAAAAEgICAFEAVABgAAAC7gAAAu4AFgICAAhKIBoCAgAEC&quot;</div><div class="line">a=StreamName:string;&quot;Audio Track&quot;</div><div class="line">下面是video的信息基本和audio的信息相对称，这里就不再说了。</div><div class="line">m=video 0 RTP/AVP 97</div><div class="line">b=as:150</div><div class="line">b=RR:11250</div><div class="line">b=RS:3750</div><div class="line">a=control:streamid=2</div><div class="line">a=range:npt=0-72.080000</div><div class="line">a=length:npt=72.080000</div><div class="line">a=rtpmap:97 MP4V-ES/2500</div><div class="line">a=fmtp:97 profile-level-id=1;</div><div class="line">a=mimetype:string;&quot;video/MP4V-ES&quot;</div><div class="line">a=Helix-Adaptation-Support:1</div><div class="line">a=AvgBitRate:integer;300000</div><div class="line">a=HasOutOfOrderTS:integer;1</div><div class="line">a=Height:integer;240 //影片的长度</div><div class="line">a=MaxBitRate:integer;300000</div><div class="line">a=MaxPacketSize:integer;1400</div><div class="line">a=Preroll:integer;1000</div><div class="line">a=Width:integer;320  //影片的宽度</div><div class="line">a=OpaqueData:buffer;&quot;AzcAAB8ELyARAbd0AAST4AAEk+AFIAAAAbDzAAABtQ7gQMDPAAABAAAAASAAhED6KFAg8KIfBgEC&quot;</div><div class="line">a=StreamName:string;&quot;Video Track&quot;</div></pre></td></tr></table></figure>
-</format></format></li>
-</ol>
-<h4 id="1-3-2-Webrtc-SDP示例"><a href="#1-3-2-Webrtc-SDP示例" class="headerlink" title="1.3.2.Webrtc SDP示例"></a>1.3.2.Webrtc SDP示例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">v=0</div><div class="line">o=- 0 0 IN IP4 127.0.0.1</div><div class="line">s=WX-RTC-SERVER</div><div class="line">t=0 0</div><div class="line">a=group:BUNDLE audio video</div><div class="line">a=msid-semantic: WMS ryODEhTpFz</div><div class="line">m=audio 1 UDP/TLS/RTP/SAVPF 0 126</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">a=rtcp:1 IN IP4 0.0.0.0</div><div class="line">a=candidate:1 1 udp 2013266431 192.168.0.68 42739 typ host generation 0</div><div class="line">a=ice-ufrag:T+0c</div><div class="line">a=ice-pwd:FzV1T/5PiBI78s630cwSb6</div><div class="line">a=fingerprint:sha-256 2D:38:ED:09:73:36:F9:18:A6:CB:BC:ED:FB:C5:60:B3:F1:6C:FC:BD:97:57:AD:A6:38:11:9D:D4:8F:77:D6:C3</div><div class="line">a=setup:active</div><div class="line">a=recvonly</div><div class="line">a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level</div><div class="line">a=mid:audio</div><div class="line">a=rtcp-mux</div><div class="line">a=rtpmap:0 PCMU/8000</div><div class="line">a=rtpmap:126 telephone-event/8000</div><div class="line">m=video 1 UDP/TLS/RTP/SAVPF 124 125 96</div><div class="line">c=IN IP4 0.0.0.0</div><div class="line">a=rtcp:1 IN IP4 0.0.0.0</div><div class="line">a=candidate:1 1 udp 2013266431 192.168.0.68 42739 typ host generation 0</div><div class="line">a=ice-ufrag:T+0c</div><div class="line">a=ice-pwd:FzV1T/5PiBI78s630cwSb6</div><div class="line">a=extmap:2 urn:ietf:params:rtp-hdrext:toffset</div><div class="line">a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time</div><div class="line">a=extmap:4 urn:3gpp:video-orientation</div><div class="line">a=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay</div><div class="line">a=fingerprint:sha-256 2D:38:ED:09:73:36:F9:18:A6:CB:BC:ED:FB:C5:60:B3:F1:6C:FC:BD:97:57:AD:A6:38:11:9D:D4:8F:77:D6:C3</div><div class="line">a=setup:active</div><div class="line">a=recvonly</div><div class="line">a=mid:video</div><div class="line">a=rtcp-mux</div><div class="line">a=rtpmap:124 H264/90000</div><div class="line">a=rtcp-fb:124 ccm fir</div><div class="line">a=rtcp-fb:124 nack</div><div class="line">a=rtcp-fb:124 nack pli</div><div class="line">a=rtcp-fb:124 goog-remb</div><div class="line">a=fmtp:124 x-google-max-bitrate=800;x-google-min-bitrate=150;x-google-start-bitrate=300</div><div class="line">a=rtpmap:125 H264/90000</div><div class="line">a=rtcp-fb:125 ccm fir</div><div class="line">a=rtcp-fb:125 nack</div><div class="line">a=rtcp-fb:125 nack pli</div><div class="line">a=rtcp-fb:125 goog-remb</div><div class="line">a=fmtp:125 x-google-max-bitrate=800;x-google-min-bitrate=150;x-google-start-bitrate=300</div><div class="line">a=rtpmap:96 VP8/90000</div><div class="line">a=rtcp-fb:96 ccm fir</div><div class="line">a=rtcp-fb:96 nack</div><div class="line">a=rtcp-fb:96 nack pli</div><div class="line">a=rtcp-fb:96 goog-remb</div></pre></td></tr></table></figure>
-<h2 id="2-RFC3264"><a href="#2-RFC3264" class="headerlink" title="2.RFC3264"></a>2.RFC3264</h2><p>An Offer/Answer Model with the Session Description Protocol (SDP)</p>
-<h3 id="2-1情态动词"><a href="#2-1情态动词" class="headerlink" title="2.1情态动词"></a>2.1情态动词</h3><p>定义在RFC2119:</p>
-<ul>
-<li>“MUST”，必须、一定要；</li>
-<li>“MUST NOT”，禁止；</li>
-<li>“REQUIRED”，需要；</li>
-<li>“SHALL”、”SHOULD”，应该；</li>
-<li>“SHALL NOT”、”SHOULD NOT”，不应该；</li>
-<li>“RECOMMENDED”，推荐；</li>
-<li>“MAY”，可以<h3 id="2-2术语"><a href="#2-2术语" class="headerlink" title="2.2术语"></a>2.2术语</h3></li>
-<li>媒体流（Media Stream），或称为媒体类型（Media Type），即我们通常所说的音频流、视频流等，所有通信实体要进行媒体交互之前都必须进行媒体注的协商</li>
-<li>媒体格式（Media Format），每种媒体流都有不同的编码格式，像音频有G711、G712编码，视频有H261、H264等，像现在所谓的高清视频采用是720P、1070P等。</li>
-<li>单一会话（Unitcast Session）</li>
-<li>多会话（Multicast Sessions）</li>
-<li>单一媒体流（Unitcast Streams）</li>
-<li>多媒体流（Multicast Streams）<h3 id="2-3offer-answer"><a href="#2-3offer-answer" class="headerlink" title="2.3offer/answer"></a>2.3offer/answer</h3>rfc3264协议[1]主要概述一个请求/响应模型（offer/answer，以下叙述采用英文），包括请求/响应的实体和不同阶段的操作行为，如初始协商过程和重协商过程，并简单介绍消息中各种参数的含义。具体各个参数的详细说明见rfc2327协议[2]<br><img src="http://images.wodekouwei.com/protocol/webrtc_sdp_3264.png" alt="SDP模型组网图"><h4 id="2-3-1-实体-消息"><a href="#2-3-1-实体-消息" class="headerlink" title="2.3.1.实体,消息"></a>2.3.1.实体,消息</h4>Offer/Answer模型包括两个实体，一个是请求主体Offerer，另外一个是响应实体Answerer，两个实体只是在逻辑上进行区分，在一定条件可以转换。例如，手机A发起媒体协商请求，那么A就是Offerer，反之如果A为接收请求则为Offerer。
-Offerer发给Answerer的请求消息称为请求offer，内容包括媒体流类型、各个媒体流使用的编码集，以及将要用于接收媒体流的IP和端口。
-Answerer收到offer之后，回复给Offerer的消息称为响应，内容包括要使用的媒体编码，是否接收该媒体流以及告诉Offerer其用于接收媒体流的IP和端口。<h4 id="2-3-2-SDP各个参数简单介绍"><a href="#2-3-2-SDP各个参数简单介绍" class="headerlink" title="2.3.2.SDP各个参数简单介绍"></a>2.3.2.SDP各个参数简单介绍</h4>下面示例摘自3264协议[1]</li>
-<li>v=0</li>
-<li>o=carol 28908764872 28908764872 IN IP4 100.3.6.6        //会话ID号和版本</li>
-<li>s=-                                     //用于传递会话主题</li>
-<li>t=0 0                                   //会话时间，一般由其它信令消息控制，因此填0</li>
-<li>c=IN IP4 192.0.2.4              //描述本端将用于传输媒体流的IP</li>
-<li>m=audio 0 RTP/AVP 0 1 3     //媒体类型 端口号 本端媒体使用的编码标识（Payload）集</li>
-<li>a=rtpmap:0 PCMU/8000 //rtpmap映射表，各种编码详细描述参数，包括使用带宽（bandwidth）</li>
-<li>a=rtpmap:1 1016/8000</li>
-<li>a=rtpmap:3 GSM/8000</li>
-<li>a=sendonly     //说明本端媒体流的方向，取值包括sendonly/recvonly/sendrecv/inactive</li>
-<li>a=ptime:20                           //说明媒体流打包时长</li>
-<li>m=video 0 RTP/AVP 31 34</li>
-<li>a=rtpmap:31 H261/90000</li>
-<li>a=rtpmap:34 H263/90000<h4 id="2-3-3-实体行为、操作过程"><a href="#2-3-3-实体行为、操作过程" class="headerlink" title="2.3.3.实体行为、操作过程"></a>2.3.3.实体行为、操作过程</h4><h5 id="2-3-3-1-初始协商的Offer请求"><a href="#2-3-3-1-初始协商的Offer请求" class="headerlink" title="2.3.3.1.初始协商的Offer请求"></a>2.3.3.1.初始协商的Offer请求</h5>实体A &lt;-&gt; 实体B，实体首先发起Offer请求，内容如2节所示，对于作何一个媒体流/媒体通道，这时实体A必须：</li>
-</ul>
-<ol>
-<li>如果媒体流方向标为recvonly/sendrecv，即a=recvonly或a=sendrecv，则A必须（MUST）准备好在这个IP和端口上接收实体B发来的媒体流；</li>
-<li>如果媒体流方向标为sendonly/inactive，即a=recvonly或a=sendrecv，则A不需要进行准备。<h5 id="2-3-3-1-Answer响应"><a href="#2-3-3-1-Answer响应" class="headerlink" title="2.3.3.1.Answer响应"></a>2.3.3.1.Answer响应</h5>实体B收到A的请求offer后，根据自身支持的媒体类型和编码策略，回复响应。</li>
-<li>如果实体B回复的响应中的媒体流数量和顺序必须（MUST）和请求offer一致，以便实体A进行甄别和决策。即m行的数量和顺序必须一致，B不能（MUST NOT）擅自增加或删除媒体流。如果B不支持某个媒体流，可以在对应的端口置0，但不能不带这个m行描述。</li>
-<li>对于某种媒体，实体B必须（MUST）从请求offer中选出A支持且自己也支持的该媒体的编码标识集，并且可以（MAY）附带自己支持的其它类型编码。</li>
-<li>对于响应消息中各个媒体的方向：<ul>
-<li>如果请求某媒体流的方向为sendonly，那么响应中对应媒体的方向必须为recvonly；</li>
-<li>如果请求某媒体流的方向为recvonly，那么响应中对应媒体的方向必须为sendonly；</li>
-<li>如果请求某媒体流的方向为sendrecv，那么响应中对应媒体的方向可以为sendrecv/sendonly/recvonly/inactive中的一种；</li>
-<li>如果请求某媒体流的方向为inactive，那么响应中对应媒体的方向必须为inactive；</li>
-</ul>
-</li>
-<li>响应answer里提供IP和端口，指示Offerer本端期望用于接收媒体流的IP和端口，一旦响应发出之后，Offerer必须（MUST）准备好在这个IP和端口上接收实体A发来的媒体流。</li>
-<li>如果请求offer中带了ptime（媒体流打包间隔）的a行或带宽的a行，则响应answer也应该（SHOULD）相应的携带。</li>
-<li>实体B Offerer应该（SHOULD）使用实体A比较期望的编码生成媒体流发送。一般来说对于m行，如m=video 0 RTP/AVP 31 34，排充越靠前的编码表示该实体越希望以这个编码作为载体，这里示例31(H261)，34（H263）中H261为A更期望使用的编码类型。同理，当实体A收到响应answer后也是这样理解的。<h5 id="2-3-3-2-实体收到响应后的处理"><a href="#2-3-3-2-实体收到响应后的处理" class="headerlink" title="2.3.3.2.实体收到响应后的处理"></a>2.3.3.2.实体收到响应后的处理</h5>当实体A收到B回复的响应后，可以（MAY）开始发送媒体流，如果媒体流方向为sendonly/sendrecv，</li>
-<li>必须（MUST）使用answer列举的媒体类型/编码生成媒体发送；</li>
-<li>应该（SHOULD）使用answer中的ptime和bandwidth来打包发送媒体流；</li>
-<li>可以（MAY）立即停止监听端口，该端口为offer支持answer不支持的媒体所使用的端口。</li>
-</ol>
-<h4 id="2-3-4-修改媒体流（会话）"><a href="#2-3-4-修改媒体流（会话）" class="headerlink" title="2.3.4.修改媒体流（会话）"></a>2.3.4.修改媒体流（会话）</h4><p>修改媒体流的offer-answer操作必须基于之前协商的媒体形式（音频、视频等），不能（MUST NOT）对已有媒体流进行删减。</p>
-<h5 id="2-3-4-1-删除媒体流"><a href="#2-3-4-1-删除媒体流" class="headerlink" title="2.3.4.1.删除媒体流"></a>2.3.4.1.删除媒体流</h5><p>如果实体认定新的会话不支持之前媒商的某个媒体，新的offer只须对这种媒体所在m行的端口置0，但不能不描述这种媒体，即不带对应m行。当answerer收到响应之后，处理同初始协商一样。</p>
-<h5 id="2-3-4-2-增加媒体流"><a href="#2-3-4-2-增加媒体流" class="headerlink" title="2.3.4.2.增加媒体流"></a>2.3.4.2.增加媒体流</h5><p>如果实体打算新增媒体流，在offer里只须加上描述即可或者占用之前端口被置0的媒体流，即用新的媒体描述m行替换旧的。当answerer收到offer请求后，发现有新增媒体描述，或者过于端口被置0的媒体行被新的媒体描述替换，即知道当前为新增媒体流，处理同初始协商。</p>
-<h5 id="2-3-4-3-修改媒体流"><a href="#2-3-4-3-修改媒体流" class="headerlink" title="2.3.4.3.修改媒体流"></a>2.3.4.3.修改媒体流</h5><p>修改媒体注主要是针对初始协商结果，如果有变更即进入修改流程处理，可能的变更包括IP地址、端口，媒体格式（编码），媒体类型（音、视频），媒体属性（ptime，bandwidth，媒体流方向变更等）。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-introduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/27/webrtc-introduce/" itemprop="url">
-                  webrtc之入门
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T22:16:53+08:00">
-                2017-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="webrtc-developers"><a href="#webrtc-developers" class="headerlink" title="webrtc developers"></a><a href="http://io13webrtc.appspot.com/#1" target="_blank" rel="external">webrtc developers</a></h2><h3 id="The-WebRTC-APIs"><a href="#The-WebRTC-APIs" class="headerlink" title="The WebRTC APIs"></a>The WebRTC APIs</h3><h4 id="Three-main-tasks"><a href="#Three-main-tasks" class="headerlink" title="Three main tasks"></a>Three main tasks</h4><ul>
-<li>Acquiring audio and video</li>
-<li>Communicating audio and video</li>
-<li>Communicating arbitrary data</li>
-</ul>
-<h4 id="Three-main-JavaScript-APIs"><a href="#Three-main-JavaScript-APIs" class="headerlink" title="Three main JavaScript APIs"></a>Three main JavaScript APIs</h4><ul>
-<li>MediaStream(aka getUserMedia)</li>
-<li>RTCPeerConnection</li>
-<li>RTCDataChannel</li>
-</ul>
-<h3 id="MediaStream"><a href="#MediaStream" class="headerlink" title="MediaStream"></a>MediaStream</h3><p>(Acquiring audio and video)</p>
-<h4 id="MediaStream-1"><a href="#MediaStream-1" class="headerlink" title="MediaStream"></a>MediaStream</h4><ul>
-<li>Pepresent a stream of audio and/or video</li>
-<li>Can contain multiple ‘tracks’</li>
-<li>Obtain a MediaStream with navigator.getUserMedia()</li>
-</ul>
-<h4 id="Constraints"><a href="#Constraints" class="headerlink" title="Constraints"></a>Constraints</h4><ul>
-<li>Controls the contents of the MediaStream</li>
-<li>Media type, resolution, frame rate<h3 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h3>(Audio and video communication between peers)<h4 id="RTCPeerConnection-does-a-lot"><a href="#RTCPeerConnection-does-a-lot" class="headerlink" title="RTCPeerConnection does a lot"></a>RTCPeerConnection does a lot</h4></li>
-<li>Signal processing</li>
-<li>Codec handling</li>
-<li>Peer to peer communication</li>
-<li>Security</li>
-<li>Bandwidth management<h4 id="WebRTC-architecture"><a href="#WebRTC-architecture" class="headerlink" title="WebRTC architecture"></a>WebRTC architecture</h4><img src="http://images.wodekouwei.com/protocol/webrtc_Architecture.png" alt="image"></li>
-</ul>
-<h3 id="RTCDataChannel"><a href="#RTCDataChannel" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h3><p>(Bidirectional communication of arbitrary data between peers)</p>
-<h4 id="RTCDataChannel-1"><a href="#RTCDataChannel-1" class="headerlink" title="RTCDataChannel"></a>RTCDataChannel</h4><ul>
-<li>Same API as WebSockets</li>
-<li>Ultra-low latency</li>
-<li>Unreliable or reliable</li>
-<li>Secure</li>
-</ul>
-<h3 id="Servers-and-Protocols"><a href="#Servers-and-Protocols" class="headerlink" title="Servers and Protocols"></a>Servers and Protocols</h3><p>(Peer to peer — but we need servers :)</p>
-<h4 id="Abstract-Signaling"><a href="#Abstract-Signaling" class="headerlink" title="Abstract Signaling"></a>Abstract Signaling</h4><ul>
-<li>Need to exchange ‘session description’ objects:<ul>
-<li>What formats I support, what I want to send</li>
-<li>Network information for peer-to-peer setup</li>
-</ul>
-</li>
-<li>Can use any messaging mechanism</li>
-<li>Can use any messaging protocol
-<img src="http://images.wodekouwei.com/protocol/webrtc_signaling_dragram.png" alt="image"></li>
-</ul>
-<h3 id="STUN-and-TRUN"><a href="#STUN-and-TRUN" class="headerlink" title="STUN and TRUN"></a>STUN and TRUN</h3><p>(P2P in the age of firewalls and NATs)</p>
-<h4 id="An-ideal-world"><a href="#An-ideal-world" class="headerlink" title="An ideal world"></a>An ideal world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_noSTUNorTURN.png" alt="image"></p>
-<h4 id="The-real-world"><a href="#The-real-world" class="headerlink" title="The real world"></a>The real world</h4><p><img src="http://images.wodekouwei.com/protocol/webrtc_firewall.png" alt="image"></p>
-<h4 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h4><ul>
-<li>Tell me what my public IP address is</li>
-<li>Simple server, cheap to run</li>
-<li>Data flows peer-to-peer
-<img src="http://images.wodekouwei.com/protocol/webrtc_stun.png" alt="image"></li>
-</ul>
-<h4 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h4><ul>
-<li>Provide a cloud fallback if peer-to-peer communication fails</li>
-<li>Data is sent through server, uses server bandwidth</li>
-<li>Ensures the call works in almost all environments
-<img src="http://images.wodekouwei.com/protocol/webrtc_STUNandTURN.png" alt="image"></li>
-</ul>
-<h4 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h4><ul>
-<li>ICE: a framework for connecting peers</li>
-<li>Tries to find the best path for each call</li>
-<li>Vast majority of calls can use STUN (webrtcstats.com):</li>
-</ul>
-<h4 id="Deploying-STUN-TURN"><a href="#Deploying-STUN-TURN" class="headerlink" title="Deploying STUN/TURN"></a>Deploying STUN/TURN</h4><ul>
-<li>stun.l.google.com:19302</li>
-<li>WebRTC stunserver, turnserver</li>
-<li>rfc5766-turn-server</li>
-<li>restund</li>
-</ul>
-<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a>Security</h3><h4 id="Security-throughout-WebRTC"><a href="#Security-throughout-WebRTC" class="headerlink" title="Security throughout WebRTC"></a>Security throughout WebRTC</h4><ul>
-<li>Mandatory encryption for media and data</li>
-<li>Secure UI, explicit opt-in</li>
-<li>Sandboxed, no plugins</li>
-<li><a href="http://www.ietf.org/proceedings/82/slides/rtcweb-13.pdf" target="_blank" rel="external">WebRTC Security Architecture</a></li>
-</ul>
-<h3 id="Architectures"><a href="#Architectures" class="headerlink" title="Architectures"></a>Architectures</h3><h4 id="Peer-to-Peer-one-to-one-call"><a href="#Peer-to-Peer-one-to-one-call" class="headerlink" title="Peer to Peer : one-to-one call"></a>Peer to Peer : one-to-one call</h4><p>clientA &lt;——–&gt; clientB</p>
-<h4 id="Mesh-small-N-way-call"><a href="#Mesh-small-N-way-call" class="headerlink" title="Mesh: small N-way call"></a>Mesh: small N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">clientA &lt;-------------&gt; clientB</div><div class="line">  /|\  \               /   /|\</div><div class="line">   |       \    /           |</div><div class="line">   |      /       \         |</div><div class="line">  \|/   /                  \|/</div><div class="line">clientC &lt;--------------&gt; clientD</div></pre></td></tr></table></figure>
-<h4 id="Star-medium-N-way-call"><a href="#Star-medium-N-way-call" class="headerlink" title="Star: medium N-way call"></a>Star: medium N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">clientA &lt;---------&gt; clientB</div><div class="line">clientA &lt;---------&gt; clientC</div><div class="line">clientA &lt;---------&gt; clientD</div></pre></td></tr></table></figure>
-<h4 id="MCU-large-N-way-call"><a href="#MCU-large-N-way-call" class="headerlink" title="MCU: large N-way call"></a>MCU: large N-way call</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MCU &lt;--------------&gt;clientA</div><div class="line">MCU &lt;--------------&gt;clientB</div><div class="line">MCU &lt;--------------&gt;clientC</div><div class="line">MCU &lt;--------------&gt;clientD</div><div class="line">MCU &lt;--------------&gt;clientE</div><div class="line">MCU &lt;--------------&gt;clientF</div><div class="line">MCU &lt;--------------&gt;clientG</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-gclient/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/27/webrtc-gclient/" itemprop="url">
-                  webrtc之源码管理工具gclient
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T21:33:14+08:00">
-                2017-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>google的chromium项目是用gclient来管理源码的checkout, update等。 gclient是google专门为这种多源项目编写的脚本，它可以将多个源码管理系统中的代码放在一起管理。甚至包括将Git和svn代码放在一起。</p>
-<p>webrtc也是使用gclient管理代码.</p>
-<p>gclient的sync，update等命令密切相关的两类文件.gclient和DEPS。</p>
-<p>.gclient文件是gclient的控制文件，该文件放在工作目录的最上层(webrtc环境下与src统计目录)。”.gclient”文件是一个Python的脚本，定义了一组”solutions”，格式类似如下
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">solutions = [  </div><div class="line">  &#123; &quot;name&quot;        : &quot;src&quot;,  </div><div class="line">    &quot;url&quot;         : &quot;svn://svnserver/component/trunk/src&quot;,  </div><div class="line">    &quot;custom_deps&quot; : &#123;  </div><div class="line">      # To use the trunk of a component instead of what&apos;s in DEPS:  </div><div class="line">      #&quot;component&quot;: &quot;https://svnserver/component/trunk/&quot;,  </div><div class="line">      # To exclude a component from your working copy:  </div><div class="line">      #&quot;data/really_large_component&quot;: None,  </div><div class="line">    &#125;  </div><div class="line">  &#125;,  </div><div class="line">]</div></pre></td></tr></table></figure></p>
-<ul>
-<li>name:checkout出源码的名字</li>
-<li>url:源码所在的目录,gclient希望checkout出的源码中包括一个DEPS的文件,这个文件包含了必须checkout到工作目录的源码信息;</li>
-<li>deps_file:这是一个文件名(不包括路径),指在工程目录中包含依赖列表的文件,该项可选,默认值为”DEPS”</li>
-<li><p>custom_deps:这是一个可选的字典对象,会覆盖工程的”DEPS”文件定义的条目.一般它用作本地目录中,那些不用checkout的代码,或者让本地目录从不同位置checkout一个新的代码出来,或者checkout不同的分支,版本等.也可以用于增加在DEPS中不存在的新的项目.如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&quot;custom_deps&quot;: &#123;  </div><div class="line">  &quot;src/content/test/data/layout_tests/LayoutTests&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_win&quot;: None,  </div><div class="line">  &quot;src/chrome_frame/tools/test/reference_build/chrome_win&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_linux&quot;: None,  </div><div class="line">  &quot;src/chrome/tools/test/reference_build/chrome_mac&quot;: None,  </div><div class="line">  &quot;src/third_party/hunspell_dictionaries&quot;: None,  </div><div class="line">&#125;,</div></pre></td></tr></table></figure>
-</li>
-<li><p>target_os:这个可选的条目可以指出特殊的平台,根据平台类checkout出不同代码,如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">target_os = [&apos;android&apos;]</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>如果target_os_only值为True的话,那么,仅仅checkout出对应的代码,如:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target_os = [ &quot;ios&quot; ]  </div><div class="line">target_os_only = True</div></pre></td></tr></table></figure></p>
-<p>在每个checkout出的工程中，gclient期望发现一个DEPS文件（由deps_file来给定），它定义了工程不同部分都是如何checkout出来。
-“DEPS”也是一个python脚本，最简单的，如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">deps = &#123;  </div><div class="line">  &quot;src/outside&quot; : &quot;http://outside-server/trunk@1234&quot;,  </div><div class="line">  &quot;src/component&quot; : &quot;svn://svnserver/component/trunk/src@77829&quot;,  </div><div class="line">  &quot;src/relative&quot; : &quot;/trunk/src@77829&quot;,  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>deps的每个条目都包含一个key-value对，key是被checkout的本地目录，而value就是对应的远程URL。如果路径是以’/‘开头的，那么它是一个相对URL，相对与.gclient中URL地址。</p>
-<p>URL通常包含一个版本号，以便锁定源码在特定版本上。当然，这是可选的。如果没有，那么它将获取指定分支上最新的版本。</p>
-<p>DEPS还可以包含其他类型的数据，如vars,
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">vars = &#123;</div><div class="line">  &apos;pymox&apos;:</div><div class="line">    &apos;http://pymox.googlecode.com/svn&apos;,</div><div class="line">  &apos;sfntly&apos;:</div><div class="line">    &apos;http://sfntly.googlecode.com/svn&apos;,</div><div class="line">  &apos;eyes-free&apos;:</div><div class="line">    &apos;http://eyes-free.googlecode.com/svn&apos;,</div><div class="line">  &apos;rlz&apos;:</div><div class="line">    &apos;http://rlz.googlecode.com/svn&apos;,</div><div class="line">  &apos;smhasher&apos;:</div><div class="line">    &apos;http://smhasher.googlecode.com/svn&apos;,</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>vars定义了一组变量，在后面，可以通过Var(xxx)来访问。Var(xxx)返回一个字符串，故此，也可以进行操作，如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&apos;src/third_party/cros_dbus_cplusplus/source&apos;:</div><div class="line">Var(&quot;git.chromium.org&quot;) + &apos;/chromiumos/third_party/dbus-cplusplus.git@5e8f6d9db5c2abfb91d91f751184f25bb5cd0900&apos;,</div><div class="line">&apos;src/third_party/WebKit&apos;:</div><div class="line">Var(&quot;webkit_trunk&quot;)[:-6] + &apos;/branches/chromium/1548@153044&apos;,</div></pre></td></tr></table></figure></p>
-<p>第二个自立，Var(“webkit_trunk”)[:-6]是一个python表达式，表示取得”webkit_trunk”表示的字符串的最后6个
-Hooks：DEPS包含可选的内容 hooks，也有重要的作用，它表示在sync, update或者recert后，执行一个hook操作。
-如果使用 –nohooks选项（hook默认执行），那么在gclient sync或者其他操作后，不会执行hook。你可以通过gclient runhooks来单独执行； 如果有 gclient sync –force，那么，无论sync是否成功，都会执行hook。
-hook在DEPS中的写法，一般是：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">hooks = [</div><div class="line">  &#123; &quot;pattern&quot;: &quot;\\.(gif|jpe?g|pr0n|png)$&quot;,</div><div class="line">    &quot;action&quot;:  [&quot;python&quot;, &quot;image_indexer.py&quot;, &quot;--all&quot;]&#125;,</div><div class="line">  &#123; &quot;pattern&quot;: &quot;.&quot;,</div><div class="line">    &quot;name&quot;: &quot;gyp&quot;,</div><div class="line">    &quot;action&quot;:  [&quot;python&quot;, &quot;src/build/gyp_chromium&quot;]&#125;,</div><div class="line">]</div></pre></td></tr></table></figure></p>
-<p>hooks包含一组hook，每个hook有几个重要项:</p>
-<ul>
-<li>pattern 是一个正则表达式，用来匹配工程目录下的文件，一旦匹配成功，action项就会执行</li>
-<li>action 描述一个根据特定参数运行的命令行。这个命令在每次gclient时，无论多少文件匹配，至多运行一次。这个命令和.gclient在同一目录下运行。如果第一个参数是”python”，那么，当前的python解释器将被使用。如果包含字符串 “$matching_files”，它将该字符串扩展为匹配出的文件列表。</li>
-<li>name 可选，标记出hook所属的组，可以被用来覆盖和重新组织。</li>
-</ul>
-<p>deps_os： DEPS中定义不同平台依赖关系的项目，如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">deps_os = &#123;</div><div class="line">  &quot;win&quot;: &#123;</div><div class="line">    &quot;src/chrome/tools/test/reference_build/chrome_win&quot;:</div><div class="line">      &quot;/trunk/deps/reference_builds/chrome_win@197743&quot;,</div><div class="line"></div><div class="line">    &quot;src/third_party/cygwin&quot;:</div><div class="line">      &quot;/trunk/deps/third_party/cygwin@133786&quot;,</div><div class="line"></div><div class="line">.....</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  &quot;ios&quot;: &#123;</div><div class="line">    &quot;src/third_party/GTM&quot;:</div><div class="line">      (Var(&quot;googlecode_url&quot;) % &quot;google-toolbox-for-mac&quot;) + &quot;/trunk@&quot; +</div><div class="line">      Var(&quot;gtm_revision&quot;),</div><div class="line"></div><div class="line">    &quot;src/third_party/nss&quot;:</div><div class="line">      &quot;/trunk/deps/third_party/nss@&quot; + Var(&quot;nss_revision&quot;),</div><div class="line">....</div><div class="line">   &#125;,</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>deps_os指定不同平台的依赖，它可以包含多种平台，和.gclient中的target_os对应。这种对应关系如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">DEPS_OS_CHOICES = &#123;</div><div class="line">  &quot;win32&quot;: &quot;win&quot;,</div><div class="line">  &quot;win&quot;: &quot;win&quot;,</div><div class="line">  &quot;cygwin&quot;: &quot;win&quot;,</div><div class="line">  &quot;darwin&quot;: &quot;mac&quot;,</div><div class="line">  &quot;mac&quot;: &quot;mac&quot;,</div><div class="line">  &quot;unix&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux2&quot;: &quot;unix&quot;,</div><div class="line">  &quot;linux3&quot;: &quot;unix&quot;,</div><div class="line">  &quot;android&quot;: &quot;android&quot;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>下载webrtc android代码的.gclient文件(与src同级目录):
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">solutions = [</div><div class="line">  &#123;</div><div class="line">    &quot;url&quot;: &quot;https://chromium.googlesource.com/external/webrtc.git&quot;,</div><div class="line">    &quot;managed&quot;: False,</div><div class="line">    &quot;name&quot;: &quot;src&quot;,</div><div class="line">    &quot;deps_file&quot;: &quot;DEPS&quot;,</div><div class="line">    &quot;custom_deps&quot;: &#123;&#125;,</div><div class="line">  &#125;,</div><div class="line">]</div><div class="line">target_os = [&quot;android&quot;, &quot;unix&quot;]</div></pre></td></tr></table></figure></p>
-<p>src同级目录下.gclient_entries定义了各模块及对应地址
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">entries = &#123;</div><div class="line">  &apos;src&apos;: &apos;https://chromium.googlesource.com/external/webrtc.git&apos;,</div><div class="line">  &apos;src/base&apos;: &apos;https://chromium.googlesource.com/chromium/src/base@413df39df4640665d7ee1e8c198be1e91cedb4d9&apos;,</div><div class="line">  &apos;src/build&apos;: &apos;https://chromium.googlesource.com/chromium/src/build@98f2769027214c848094d0d58156474eada3bc1b&apos;,</div><div class="line">  &apos;src/buildtools&apos;: &apos;https://chromium.googlesource.com/chromium/buildtools.git@98f00fa10dbad2cdbb2e297a66c3d6d5bc3994f3&apos;,</div><div class="line">  &apos;src/testing&apos;: &apos;https://chromium.googlesource.com/chromium/src/testing@3eab1a4b0951ac1fcb2be8bf9cb24143b509ea52&apos;,</div><div class="line">  &apos;src/testing/gmock&apos;: &apos;https://chromium.googlesource.com/external/googlemock.git@0421b6f358139f02e102c9c332ce19a33faf75be&apos;,</div><div class="line">  &apos;src/testing/gtest&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/googletest.git@6f8a66431cb592dad629028a50b3dd418a408c87&apos;,</div><div class="line">  &apos;src/third_party&apos;: &apos;https://chromium.googlesource.com/chromium/src/third_party@939f3a2eae486dd7cf3b31eae38642d2bc243737&apos;,</div><div class="line">  &apos;src/third_party/android_tools&apos;: &apos;https://chromium.googlesource.com/android_tools.git@b65c4776dac2cf1b80e969b3b2d4e081b9c84f29&apos;,</div><div class="line">  &apos;src/third_party/boringssl/src&apos;: &apos;https://boringssl.googlesource.com/boringssl.git@777fdd6443d5f01420b67137118febdf56a1c8e4&apos;,</div><div class="line">  &apos;src/third_party/catapult&apos;: &apos;https://chromium.googlesource.com/external/github.com/catapult-project/catapult.git@6939b1db033bf35f4adf1ee55824b6edb3e324d6&apos;,</div><div class="line">  &apos;src/third_party/ced/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/compact_enc_det.git@e21eb6aed10b9f6e2727f136c52420033214d458&apos;,</div><div class="line">  &apos;src/third_party/colorama/src&apos;: &apos;https://chromium.googlesource.com/external/colorama.git@799604a1041e9b3bc5d2789ecbd7e8db2e18e6b8&apos;,</div><div class="line">  &apos;src/third_party/ffmpeg&apos;: &apos;https://chromium.googlesource.com/chromium/third_party/ffmpeg.git@28a5cdde5c32bcf66715343c10f74e85713f7aaf&apos;,</div><div class="line">  &apos;src/third_party/gflags&apos;: &apos;https://chromium.googlesource.com/external/webrtc/deps/third_party/gflags@892576179b45861b53e04a112996a738309cf364&apos;,</div><div class="line">  &apos;src/third_party/gflags/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/gflags/gflags@03bebcb065c83beff83d50ae025a55a4bf94dfca&apos;,</div><div class="line">  &apos;src/third_party/gtest-parallel&apos;: &apos;https://chromium.googlesource.com/external/github.com/google/gtest-parallel@7eb02a6415979ea59e765c34fe9da6c792f53e26&apos;,</div><div class="line">  &apos;src/third_party/icu&apos;: &apos;https://chromium.googlesource.com/chromium/deps/icu.git@b34251f8b762f8e2112a89c587855ca4297fed96&apos;,</div><div class="line">  &apos;src/third_party/jsoncpp/source&apos;: &apos;https://chromium.googlesource.com/external/github.com/open-source-parsers/jsoncpp.git@f572e8e42e22cfcf5ab0aea26574f408943edfa4&apos;,</div><div class="line">  &apos;src/third_party/jsr-305/src&apos;: &apos;https://chromium.googlesource.com/external/jsr-305.git@642c508235471f7220af6d5df2d3210e3bfc0919&apos;,</div><div class="line">  &apos;src/third_party/junit/src&apos;: &apos;https://chromium.googlesource.com/external/junit.git@64155f8a9babcfcf4263cf4d08253a1556e75481&apos;,</div><div class="line">  &apos;src/third_party/libFuzzer/src&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/llvm/lib/Fuzzer.git@16f5f743c188c836d32cdaf349d5d3effb8a3518&apos;,</div><div class="line">  &apos;src/third_party/libjpeg_turbo&apos;: &apos;https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git@7260e4d8b8e1e40b17f03fafdf1cd83296900f76&apos;,</div><div class="line">  &apos;src/third_party/libsrtp&apos;: &apos;https://chromium.googlesource.com/chromium/deps/libsrtp.git@ccf84786f8ef803cb9c75e919e5a3976b9f5a672&apos;,</div><div class="line">  &apos;src/third_party/libvpx/source/libvpx&apos;: &apos;https://chromium.googlesource.com/webm/libvpx.git@f22b828d685adee4c7a561990302e2d21b5e0047&apos;,</div><div class="line">  &apos;src/third_party/libyuv&apos;: &apos;https://chromium.googlesource.com/libyuv/libyuv.git@fc02cc3806a394a6b887979ba74aa49955f3199b&apos;,</div><div class="line">  &apos;src/third_party/lss&apos;: &apos;https://chromium.googlesource.com/linux-syscall-support.git@63f24c8221a229f677d26ebe8f3d1528a9d787ac&apos;,</div><div class="line">  &apos;src/third_party/mockito/src&apos;: &apos;https://chromium.googlesource.com/external/mockito/mockito.git@de83ad4598ad4cf5ea53c69a8a8053780b04b850&apos;,</div><div class="line">  &apos;src/third_party/openh264/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/cisco/openh264@0fd88df93c5dcaf858c57eb7892bd27763f0f0ac&apos;,</div><div class="line">  &apos;src/third_party/openmax_dl&apos;: &apos;https://chromium.googlesource.com/external/webrtc/deps/third_party/openmax.git@7acede9c039ea5d14cf326f44aad1245b9e674a7&apos;,</div><div class="line">  &apos;src/third_party/requests/src&apos;: &apos;https://chromium.googlesource.com/external/github.com/kennethreitz/requests.git@f172b30356d821d180fa4ecfa3e71c7274a32de4&apos;,</div><div class="line">  &apos;src/third_party/robolectric/robolectric&apos;: &apos;https://chromium.googlesource.com/external/robolectric.git@2a0b6ba221c14f3371813a676ce06143353e448d&apos;,</div><div class="line">  &apos;src/third_party/ub-uiautomator/lib&apos;: &apos;https://chromium.googlesource.com/chromium/third_party/ub-uiautomator.git@00270549ce3161ae72ceb24712618ea28b4f9434&apos;,</div><div class="line">  &apos;src/third_party/usrsctp/usrsctplib&apos;: &apos;https://chromium.googlesource.com/external/github.com/sctplab/usrsctp@8679f2b0bf063ac894dc473debefd61dbbebf622&apos;,</div><div class="line">  &apos;src/third_party/yasm/source/patched-yasm&apos;: &apos;https://chromium.googlesource.com/chromium/deps/yasm/patched-yasm.git@7da28c6c7c6a1387217352ce02b31754deb54d2a&apos;,</div><div class="line">  &apos;src/tools&apos;: &apos;https://chromium.googlesource.com/chromium/src/tools@4718dd2b6d53fb68819b3fd23676b40935f4f31e&apos;,</div><div class="line">  &apos;src/tools/gyp&apos;: &apos;https://chromium.googlesource.com/external/gyp.git@eb296f67da078ec01f5e3a9ea9cdc6d26d680161&apos;,</div><div class="line">  &apos;src/tools/swarming_client&apos;: &apos;https://chromium.googlesource.com/external/swarming.client.git@11e31afa5d330756ff87aa12064bb5d032896cb5&apos;,</div><div class="line">  &apos;src/buildtools/clang_format/script&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git@c09c8deeac31f05bd801995c475e7c8070f9ecda&apos;,</div><div class="line">  &apos;src/buildtools/third_party/libc++/trunk&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/libcxx.git@b1ece9c037d879843b0b0f5a2802e1e9d443b75a&apos;,</div><div class="line">  &apos;src/buildtools/third_party/libc++abi/trunk&apos;: &apos;https://chromium.googlesource.com/chromium/llvm-project/libcxxabi.git@0edb61e2e581758fc4cd4cd09fc588b3fc91a653&apos;,</div><div class="line">  &apos;src/third_party/android_tools/ndk&apos;: &apos;https://chromium.googlesource.com/android_ndk.git@26d93ec07f3ce2ec2cdfeae1b21ee6f12ff868d8&apos;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-signalling/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/27/webrtc-signalling/" itemprop="url">
-                  webrtc之信令交互流程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T14:47:28+08:00">
-                2017-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>无论是使用前端JS的WebRTC API接口，还是在WebRTC源码上构建自己的对聊框架，都需要遵循以下执行流程：
-<img src="http://images.wodekouwei.com/protocol/webrtc_signalling.png" alt="image"></p>
-<p>上述序列中，WebRTC并不提供Stun服务器和Signal服务器，服务器端需要自己实现。Stun服务器可以用google提供的实现stun协议的测试服务器（stun:stun.l.google.com:19302），Signal服务器则完全需要自己实现了，它需要在ClientA和ClientB之间传送彼此的SDP信息和candidate信息，ClientA和ClientB通过这些信息建立P2P连接来传送音视频数据。 stun/turn、relay服务器的实现在WebRTC源码中都有示例。</p>
-<p>上述序列中，标注的场景是ClientA向ClientB发起对聊请求，调用描述如下：</p>
-<ol>
-<li>ClientA首先创建PeerConnection对象，然后打开本地音视频设备，将音视频数据封装成MediaStream添加到PeerConnection中。</li>
-<li>ClientA调用PeerConnection的CreateOffer方法创建一个用于offer的SDP对象，SDP对象中保存当前音视频的相关参数。ClientA通过PeerConnection的SetLocalDescription方法将该SDP对象保存起来，并通过Signal服务器发送给ClientB。</li>
-<li>ClientB接收到ClientA发送过的offer SDP对象，通过PeerConnection的SetRemoteDescription方法将其保存起来，并调用PeerConnection的CreateAnswer方法创建一个应答的SDP对象，通过PeerConnection的SetLocalDescription的方法保存该应答SDP对象并将它通过Signal服务器发送给ClientA。</li>
-<li>ClientA接收到ClientB发送过来的应答SDP对象，将其通过PeerConnection的SetRemoteDescription方法保存起来。</li>
-<li>在SDP信息的offer/answer流程中，ClientA和ClientB已经根据SDP信息创建好相应的音频Channel和视频Channel并开启Candidate数据的收集，Candidate数据可以简单地理解成Client端的IP地址信息（本地IP地址、公网IP地址、Relay服务端分配的地址）。</li>
-<li>当ClientA收集到Candidate信息后，PeerConnection会通过OnIceCandidate接口给ClientA发送通知，ClientA将收到的Candidate信息通过Signal服务器发送给ClientB，ClientB通过PeerConnection的AddIceCandidate方法保存起来。同样的操作ClientB对ClientA再来一次。</li>
-<li>这样ClientA和ClientB就已经建立了音视频传输的P2P通道，ClientB接收到ClientA传送过来的音视频流，会通过PeerConnection的OnAddStream回调接口返回一个标识ClientA端音视频流的MediaStream对象，在ClientB端渲染出来即可。同样操作也适应ClientB到ClientA的音视频流的传输。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2307,7 +2040,7 @@ hook在DEPS中的写法，一般是：
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2329,7 +2062,7 @@ hook在DEPS中的写法，一般是：
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

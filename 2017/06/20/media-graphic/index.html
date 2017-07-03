@@ -96,10 +96,13 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/06/20/media-graphic/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1.图形与图像的基本概念1.1图形与图像的颜色模型1.1.1颜色的基本概念1.1.1.1 物体的颜色物体的颜色不同是因为他们对光的吸收和反射的属性不同.物体的颜色是由该物体所反射的光的波长来决定的. 人眼看到的物体的颜色不仅取决于该物体所反射的光的波长,还与照射它的光源有关.如果用单一蓝色去照射绿色的树叶, 则此时的树叶只能是黑色的.因为蓝色光源中没有绿色成分,树叶吸收了全部蓝色而呈现黑色. 在彩">
-<meta property="og:updated_time" content="2017-06-22T10:14:51.000Z">
+<meta property="og:image" content="http://images.wodekouwei.com/media/rgb.png">
+<meta property="og:image" content="http://images.wodekouwei.com/media/yuv_yiq.bmp">
+<meta property="og:updated_time" content="2017-06-29T14:59:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多媒体技术(一)之图形图像">
 <meta name="twitter:description" content="1.图形与图像的基本概念1.1图形与图像的颜色模型1.1.1颜色的基本概念1.1.1.1 物体的颜色物体的颜色不同是因为他们对光的吸收和反射的属性不同.物体的颜色是由该物体所反射的光的波长来决定的. 人眼看到的物体的颜色不仅取决于该物体所反射的光的波长,还与照射它的光源有关.如果用单一蓝色去照射绿色的树叶, 则此时的树叶只能是黑色的.因为蓝色光源中没有绿色成分,树叶吸收了全部蓝色而呈现黑色. 在彩">
+<meta name="twitter:image" content="http://images.wodekouwei.com/media/rgb.png">
 
 
 
@@ -459,7 +462,72 @@
 <li>红 + 绿 + 蓝 = 白色</li>
 <li>3种基色光全无 = 黑色</li>
 </ul>
-<h3 id="1-2图形与图像的基本属性"><a href="#1-2图形与图像的基本属性" class="headerlink" title="1.2图形与图像的基本属性"></a>1.2图形与图像的基本属性</h3><h3 id="1-3图形与图像的基本类型"><a href="#1-3图形与图像的基本类型" class="headerlink" title="1.3图形与图像的基本类型"></a>1.3图形与图像的基本类型</h3><h2 id="2-图形与图像的处理"><a href="#2-图形与图像的处理" class="headerlink" title="2.图形与图像的处理"></a>2.图形与图像的处理</h2><h3 id="2-1图形与图像的获取"><a href="#2-1图形与图像的获取" class="headerlink" title="2.1图形与图像的获取"></a>2.1图形与图像的获取</h3><h3 id="2-2图形与图像的存储"><a href="#2-2图形与图像的存储" class="headerlink" title="2.2图形与图像的存储"></a>2.2图形与图像的存储</h3><h3 id="2-3图形与图像的显示"><a href="#2-3图形与图像的显示" class="headerlink" title="2.3图形与图像的显示"></a>2.3图形与图像的显示</h3><h3 id="2-4图形与图像的处理"><a href="#2-4图形与图像的处理" class="headerlink" title="2.4图形与图像的处理"></a>2.4图形与图像的处理</h3><h2 id="3-计算机动画"><a href="#3-计算机动画" class="headerlink" title="3.计算机动画"></a>3.计算机动画</h2><h3 id="3-1计算机动画的原理"><a href="#3-1计算机动画的原理" class="headerlink" title="3.1计算机动画的原理"></a>3.1计算机动画的原理</h3><h3 id="3-2计算机动画的类型"><a href="#3-2计算机动画的类型" class="headerlink" title="3.2计算机动画的类型"></a>3.2计算机动画的类型</h3><h3 id="3-3计算机动画的制作"><a href="#3-3计算机动画的制作" class="headerlink" title="3.3计算机动画的制作"></a>3.3计算机动画的制作</h3><h3 id="3-4虚拟现实动画技术"><a href="#3-4虚拟现实动画技术" class="headerlink" title="3.4虚拟现实动画技术"></a>3.4虚拟现实动画技术</h3>
+<p>加色法的混色规律可以使用下图表示,3个圆分别红绿蓝3种基色,圆与圆的叠加区域表示以等量的基色相混合时所合成的颜色,其色调如该区域的文字表示.当3种基色等量相加时,就会得到白色.其中,又尝尝把品红色成为绿色的补色,青色称为红色的补色,黄色称为蓝色的补色.
+<img src="http://images.wodekouwei.com/media/rgb.png" alt="image">
+物体的颜色是丰富多彩的,任何一种颜色和这3种基色之间的关系可以用下面的配色方程式来描述:
+F(物体颜色)=R(红色的百分比) + G(绿色的百分比) + B(蓝色的百分比)</p>
+<p>由于人类的视觉特性,两种或3种基色产生混色效果,不一定要同时和同一空间位置混合.例如,在心理学实验中有一个色轮实验,它是在可旋转的圆盘上按扇形面积均等的分成3部分,并涂上3种基色,当圆盘慢慢旋转时能够分辨出3中基色,但当圆盘旋转的频率提高到闪光融合频率以上时,人眼不再能分辨出3种基色,而产生白颜色的感觉,以达到混色的效果.这就是 <strong>“时间混色法”</strong> .最初的顺序制彩色电视就应用了人的这一视觉效果.例如,很细小的红点和旅店均匀间置互相靠的很近,只有在近距离仔细观看才能区分出来,当观看距离很远时就只感觉到黄色的一篇了,这就是 <strong>“空间混色法”</strong> .目前广泛使用的彩色显像管以及大型LED真彩色广告屏就是利用了这一混色视觉效应.</p>
+<p>在多媒体技术中,RGB颜色模型是最基本的模型,因为彩色显示器只有按RGB分量式输入,才能在显示屏幕上合成任意颜色.</p>
+<h5 id="1-1-2-2-CMY模型"><a href="#1-1-2-2-CMY模型" class="headerlink" title="1.1.2.2 CMY模型"></a>1.1.2.2 CMY模型</h5><p>CMY(Cyan Magenta Yellow)模型是采用青,品红,黄色3种基本颜色按一定比例合成颜色的方法.CMY模型又称为减色法混色模型,因为色彩的显示不是直接来自于光线的色彩,而是光线被物体吸收掉一部分之后发射回来的剩余光线所产生的.光线都被吸收时称为黑色,当光线都被反射时成为白色.这种模式适合于彩色打印机等用彩色墨水或颜料进行混合显示的情况.</p>
+<p>在相减混色中,当3种基本颜色等量相减时得到黑色;等量黄色(Y)和品红(M)相减而青色为0时,等到红色(R);等量青色(C)和品红(M)相减而黄色为0时,得到蓝色(B);等量黄色(Y)和青色(C)相减而品红(M)为0时,得到绿色(G).</p>
+<p>由于颜料的化学特性,实际上等量的CMY混合后并不能产生真正的黑色,因此在印刷时通常再加上黑色(Black),这样又称为CMYK模式,四色印刷便是由此而来.</p>
+<p>显然,RGB与CMY模型是颜色互补的模型,它们之间可以互相转换.如果按每个像素每种颜色用一位二进制数表示的话,RGB与CMY模型之间的颜色关系如下表所示.利用它们之间的关系,可以把显示器显示的颜色转换成打印的颜色.但实际上因为发射光与反射光的性质完全不同,显示器上的颜色不可能精确地在打印机上复制出来,因此实际的转换过程会利用一定的算法进行一定程度上的失真补偿.
+|RGB|CMY|颜色|
+|—|—|—|
+|000|111|黑|
+|001|110|蓝|
+|010|101|绿|
+|011|100|青|
+|100|011|红|
+|101|010|品红|
+|110|001|黄|
+|111|000|白|</p>
+<h5 id="1-1-2-3-YUV与YIQ模型"><a href="#1-1-2-3-YUV与YIQ模型" class="headerlink" title="1.1.2.3 YUV与YIQ模型"></a>1.1.2.3 YUV与YIQ模型</h5><p>在彩色电视系统中不采用RGB颜色模型,而采用YUV或YIQ模型表示彩色图像.YUV适用于PAL(Phase Altermation Line,同行倒相制式)和SECAM(法文)(Sequential C欧了让Memo,顺序传送彩色与存储制式)彩色电视制式,而YIQ适用于美国国家电视标准委员会(NTSC,National Television System Committee)彩色电视制式.</p>
+<p>Y是亮度信号,U和V则是两个色差信号,分别传送红基色分量和蓝基色分量与亮度分量的差值信号.</p>
+<p>采用YUV颜色模型的好处是:其一,亮度信号Y解决了彩色电视与黑白电视的兼容性问题;其二,由于人眼对颜色细节的分辨率低于对亮度细节的分辨率,所以可以用一个通道来传送,Y,U,V这3个信号,给亮度信号较大的带宽(6MHz)来传送图像的细节,而给色差信号较小的带宽(1.3MHz)来进行大面积涂色.这样,总的传输数据量和RGB模型相比,要明显小一些,起到了一种数据压缩节省存储空间的作用,而对于这种数据压缩带来的画面变化人眼一般是感觉不到的.</p>
+<p>电视系统通常采用摄像机把摄得的彩色图像信号经分色,放大和校正分成RGB这3个分量的信号,再经过矩阵变换电路将彩色信号分解成亮度信号Y和色差信号,U,V,而后对其进行编码,用同一信道发送出去.接收端再通过编码及矩阵逆变换还原成3个基色显示.</p>
+<p>在NTSC彩色电视制式中使用YIQ模型,其特性与YUV模型相近.其中的Y表示亮度,I,Q也是两个色差分量,但它们在色度矢量图中与U,V的位置不同.Q,I正交坐标轴与U,V正交坐标轴之间有33度夹角,如图所示:</p>
+<p><img src="http://images.wodekouwei.com/media/yuv_yiq.bmp" alt="image"></p>
+<p>I,Q与U,V之间的关系如下:
+I = Vcos33 - Usin33
+Q = Vsin33 + Ucos33</p>
+<p>人眼的彩色视觉特性表明,人眼分辨红与黄之间的颜色变化的能力最强,而分辨蓝,紫之间颜色变化的能力最弱.因此YIQ模型在色度矢量图中,选择I轴正好处于夹角123度处,即人眼具有最大彩色分辨率的红与黄之间的橙色和青色(相角为303度)处,选择与I轴正交的色度信号轴为Q轴(相角为33度),正是人眼最不敏感的色轴位置.因而YIQ模型传送分辨力较强的I信号时,用较宽的频带(1.3MHz~1.5MHz),传送分辨力弱的Q信号时,可用较窄的频带(0.5MHz),这就可以在保证较好的颜色传输特性情况下,最大限度地节省存储空间.</p>
+<h5 id="1-1-2-4-HSI颜色模型"><a href="#1-1-2-4-HSI颜色模型" class="headerlink" title="1.1.2.4 HSI颜色模型"></a>1.1.2.4 HSI颜色模型</h5><p>HSI或HSL是Hue Saturation Intensity(Lightness)的英文缩写,颜色模型用H,S,I这三个参数描述颜色特性,其中H定义颜色的波长,称为色调;S表示颜色的深浅程度,称为饱和度;I表示强度或亮度,这正是颜色的三要素.</p>
+<p>HSI模型更接近人对颜色更接近人对彩色的认识,符合人眼对颜色的感知方式,是一种从事艺术绘画的画家们习惯使用的描述色彩的方法.它比RGB模型使用更方便,从而能减少彩色图像处理的复杂性,增加快速性,因此一般的图像处理软件中,都提供了这种定量色彩的方式.</p>
+<h4 id="1-1-3-颜色模型的转换"><a href="#1-1-3-颜色模型的转换" class="headerlink" title="1.1.3 颜色模型的转换"></a>1.1.3 颜色模型的转换</h4><p>无论采用什么颜色模型来表示彩色图形与图像,由于所有的显示器都需要RGB值来驱动,所以在显示每个像素之前,必须要把彩色分量值转换成RGB值.</p>
+<h5 id="1-1-3-1-YUV与RGB颜色模型变换"><a href="#1-1-3-1-YUV与RGB颜色模型变换" class="headerlink" title="1.1.3.1 YUV与RGB颜色模型变换"></a>1.1.3.1 YUV与RGB颜色模型变换</h5><p>RGB与YUV的对应关系可以近似地用下面的方程表示:</p>
+<ul>
+<li>Y = 0.299R + 0.587G + 0.114B</li>
+<li>U = -0.147R - 0.289G + 0.436B</li>
+<li>V = 0.615R - 0.515G - 0.096B<h5 id="1-1-3-2-YIQ与RGB颜色模型变换"><a href="#1-1-3-2-YIQ与RGB颜色模型变换" class="headerlink" title="1.1.3.2 YIQ与RGB颜色模型变换"></a>1.1.3.2 YIQ与RGB颜色模型变换</h5>YIQ与RGB的对应关系可以近似地用下面的方程表示:</li>
+<li>Y = 0.229R + 0.587G + 0.114B</li>
+<li>I = 0.596R - 0.275G - 0.321B</li>
+<li>Q = 0.212R - 0.523G + 0.311B</li>
+</ul>
+<h5 id="HSI-与-RGB颜色变换"><a href="#HSI-与-RGB颜色变换" class="headerlink" title="HSI 与 RGB颜色变换"></a>HSI 与 RGB颜色变换</h5><p>HSI与RGB空间的转换关系可以用下面的方程表示:</p>
+<ul>
+<li>H = [90 - arctan(F/sqr(3)) + [0, G&gt;B;180,G&lt;B]]/360</li>
+<li>S = 1 - min(R,G,B)/I</li>
+<li>I = (R+G+B)/3
+其中,F=(2R-G-B)/(G-B),sqr为求平方根</li>
+</ul>
+<h3 id="1-2图形与图像的基本属性"><a href="#1-2图形与图像的基本属性" class="headerlink" title="1.2图形与图像的基本属性"></a>1.2图形与图像的基本属性</h3><p>一幅彩色图像可以看成二维连续函数f(x,y),其彩色幅度是位置(x,y)的函数.计算机多媒体技术从其图像的生成,显示,处理和存储的机制出发,需要对彩色图像数字化.数字化一幅彩色图像就是要把连续函数f(x,y)在空间的坐标和彩色幅度进行离散和量化.空间坐标x,y的离散化通常以分辨率来表征,而彩色幅度的离散化则由像素的颜色深度来表征.</p>
+<h4 id="1-2-1分辨率"><a href="#1-2-1分辨率" class="headerlink" title="1.2.1分辨率"></a>1.2.1分辨率</h4><p>分辨率是一个统称,分为显示分辨率,图像分辨率,扫描分辨率和打印分辨率等.</p>
+<h5 id="1-2-1-1显示分辨率"><a href="#1-2-1-1显示分辨率" class="headerlink" title="1.2.1.1显示分辨率"></a>1.2.1.1显示分辨率</h5><p>是指某一种显示方式下,显示屏上能够显示出的像素数目,以水平和垂直的像素表示.例如,显示分辨率为640*480表示显示屏分成480行,每行显示640个像素,整个显示屏就含有307200个显像点.屏幕上的像素越多,分辨率就越高,显示出来的图像也就越细腻,显示的图像质量也就约高.屏幕能够显示的最大像素数目越多,也说明显示设备的最大分辨率越高.显示屏上的每个彩色像素由代表R,G,B这3种模拟信号的相对强度决定,这些彩色像素点就构成一幅彩色图像.</p>
+<h5 id="1-2-1-2图像分辨率"><a href="#1-2-1-2图像分辨率" class="headerlink" title="1.2.1.2图像分辨率"></a>1.2.1.2图像分辨率</h5><p>图像分辨率指数字化图像的大小,以水平和垂直的像素数表示.如果组成图像的像素数目越多,则说明图像的分辨率越高,看起来就越逼真,图像分辨率实际上决定了图像的显示质量,也就是说,即使提高了显示分辨率,也无法真正改善图像的质量.图像分辨率与显示分辨率是两个不同的概念.图像分辨率的确定组成一幅图像的像素数目,而显示分辨率是确定显示图像的区域大小.当图像分辨率与屏幕分辨率一致时,图像正好占据满屏;当图像分辨率小于屏幕分辨率时,图像占据屏幕的一部分;当图像分辨率大于屏幕分辨率时,则屏幕仅能显示图像的一部分.</p>
+<h5 id="1-2-1-3扫描分辨率和打印分辨率"><a href="#1-2-1-3扫描分辨率和打印分辨率" class="headerlink" title="1.2.1.3扫描分辨率和打印分辨率"></a>1.2.1.3扫描分辨率和打印分辨率</h5><p>在用于扫描仪扫描图像时,通常要指定扫描的分辨率,用每英寸包含的点(d/i,dots per inch)表示.如果用300d/i来扫描一幅8<em>6的彩色图像,就得到一幅2400</em>1800个像素的图像.分辨率越高,像素就越多.</p>
+<p>打印分辨率是指图像打印时每英寸可识别的点数,也使用d/i(dots per inch)为衡量单位.两种分辨率之间是有区别的,扫描分辨率反映了扫描后的图像与原始图像之间的差异程度,分辨率越高,差异越小.打印分辨率反映了打印的图像与原数字图像之间的差异程度,分辨率越接近原图像的分辨率,打印质量越高.两种分辨率的最高值都受到设备的限制.</p>
+<h4 id="1-2-2颜色深度"><a href="#1-2-2颜色深度" class="headerlink" title="1.2.2颜色深度"></a>1.2.2颜色深度</h4><p>颜色深度是指图像中每个像素的颜色(或亮度)信息所占的二进制数位数,记做位/像素(b/p,bits per pixel).屏幕上的每一个像素都占有一个或多个位,用于存放与它相关的颜色信息.颜色深度决定了构成图像的每个像素可能出现的最大颜色数,因而颜色深度值越高,显示的图像色彩越丰富.反之,颜色深度太浅,会影响图像的质量,图像看起来让人觉得很粗糙和很不自然.常见颜色深度有一下5种:</p>
+<ol>
+<li>4bit:这是VGA标准支持的颜色深度,共2的四次方16种颜色;</li>
+<li>8bit:这是多媒体应用中的最低颜色深度,共2的8次方256种颜色,称为索引彩色图(由颜色查找决定);</li>
+<li>16bit:在16bit中,用其中的15bit表示RGB这3种颜色,每种颜色5bit,用剩余的以为表示图像的其他属性,如透明度.所以16bit的颜色深度实际可以表示为2的15次方32<em>32</em>32共32768种颜色.称为HI-Color(高彩色)图像.</li>
+<li>24bit:用3个8bit分别表示RGB,可生成的颜色数2的24次16777216种,约16M种颜色,这已经成为真彩色;</li>
+<li>32bit:同24bit颜色深度一样,也是用3个bit分别表示RGB这三种颜色,剩余的8bit用来表示图像的其他属性,如透明度等.</li>
+</ol>
+<p>虽然像素的颜色颜色深度值越大图像色彩越丰富,但由于设备的限制,人眼分辨率的限制,不一定要追求特别深的颜色深度,一般来说,32bit的颜色深度已经足够.此外,像素颜色深度越深,所占用的存储空间越大.</p>
+<p>一个像素的颜色深度位数除R,G,B分量占用固定bit数表示颜色外,一般要腾出1bit或几bit作为属性(Attribute)位.属性位用来指定该像素应具有的性质.例如,像素的颜色深度为32bit时,R,G,B分别用8bit表示,那么余下的8bit常称为a通道(Alpha Channel)位,或称为覆盖(Overlay)位,中断位,属性位,它用来控制该像素点的透明度.假如定义一个像素值(A,R,G,B)的4个分量(其中A为Alpha属性位数值)都用归一化的数值表示,那么像素91,1,0,0)时显示红色.当像素为(0.5,1,0,0)时,预乘的结果就变成了(0.5.0.5,0,0),这表示现在显示的红色的强度减低一半.用这种定义像素属性的办法可以实现两幅彩色图像之间的透明叠加效果.当Alpha数值很小时,渲染出来的效果是几乎透明的,如玻璃;当Alpha数值处于中间的位置时,则可以得到一种半透明的效果;当Alpha数值接近255时,是几乎不透明的效果.这种属性位的加入为实现透明和半透明的显示掉过带来了方便.</p>
+<h4 id="1-2-3文件的大小"><a href="#1-2-3文件的大小" class="headerlink" title="1.2.3文件的大小"></a>1.2.3文件的大小</h4><h3 id="1-3图形与图像的基本类型"><a href="#1-3图形与图像的基本类型" class="headerlink" title="1.3图形与图像的基本类型"></a>1.3图形与图像的基本类型</h3><h2 id="2-图形与图像的处理"><a href="#2-图形与图像的处理" class="headerlink" title="2.图形与图像的处理"></a>2.图形与图像的处理</h2><h3 id="2-1图形与图像的获取"><a href="#2-1图形与图像的获取" class="headerlink" title="2.1图形与图像的获取"></a>2.1图形与图像的获取</h3><h3 id="2-2图形与图像的存储"><a href="#2-2图形与图像的存储" class="headerlink" title="2.2图形与图像的存储"></a>2.2图形与图像的存储</h3><h3 id="2-3图形与图像的显示"><a href="#2-3图形与图像的显示" class="headerlink" title="2.3图形与图像的显示"></a>2.3图形与图像的显示</h3><h3 id="2-4图形与图像的处理"><a href="#2-4图形与图像的处理" class="headerlink" title="2.4图形与图像的处理"></a>2.4图形与图像的处理</h3><h2 id="3-计算机动画"><a href="#3-计算机动画" class="headerlink" title="3.计算机动画"></a>3.计算机动画</h2><h3 id="3-1计算机动画的原理"><a href="#3-1计算机动画的原理" class="headerlink" title="3.1计算机动画的原理"></a>3.1计算机动画的原理</h3><h3 id="3-2计算机动画的类型"><a href="#3-2计算机动画的类型" class="headerlink" title="3.2计算机动画的类型"></a>3.2计算机动画的类型</h3><h3 id="3-3计算机动画的制作"><a href="#3-3计算机动画的制作" class="headerlink" title="3.3计算机动画的制作"></a>3.3计算机动画的制作</h3><h3 id="3-4虚拟现实动画技术"><a href="#3-4虚拟现实动画技术" class="headerlink" title="3.4虚拟现实动画技术"></a>3.4虚拟现实动画技术</h3>
       
     </div>
 
@@ -614,7 +682,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -636,7 +704,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -730,7 +798,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-图形与图像的基本概念"><span class="nav-number">1.</span> <span class="nav-text">1.图形与图像的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1图形与图像的颜色模型"><span class="nav-number">1.1.</span> <span class="nav-text">1.1图形与图像的颜色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1颜色的基本概念"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1颜色的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-1-物体的颜色"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1.1.1.1 物体的颜色</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-2-彩色三要素"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">1.1.1.2 彩色三要素</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-3-三基色原理"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">1.1.1.3 三基色原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-4-像素-pixel"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">1.1.1.4 像素(pixel)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-2-颜色模型"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 颜色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-1-RGB模型"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">1.1.2.1 RGB模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2图形与图像的基本属性"><span class="nav-number">1.2.</span> <span class="nav-text">1.2图形与图像的基本属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3图形与图像的基本类型"><span class="nav-number">1.3.</span> <span class="nav-text">1.3图形与图像的基本类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-图形与图像的处理"><span class="nav-number">2.</span> <span class="nav-text">2.图形与图像的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1图形与图像的获取"><span class="nav-number">2.1.</span> <span class="nav-text">2.1图形与图像的获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2图形与图像的存储"><span class="nav-number">2.2.</span> <span class="nav-text">2.2图形与图像的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3图形与图像的显示"><span class="nav-number">2.3.</span> <span class="nav-text">2.3图形与图像的显示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4图形与图像的处理"><span class="nav-number">2.4.</span> <span class="nav-text">2.4图形与图像的处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-计算机动画"><span class="nav-number">3.</span> <span class="nav-text">3.计算机动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1计算机动画的原理"><span class="nav-number">3.1.</span> <span class="nav-text">3.1计算机动画的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2计算机动画的类型"><span class="nav-number">3.2.</span> <span class="nav-text">3.2计算机动画的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3计算机动画的制作"><span class="nav-number">3.3.</span> <span class="nav-text">3.3计算机动画的制作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4虚拟现实动画技术"><span class="nav-number">3.4.</span> <span class="nav-text">3.4虚拟现实动画技术</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-图形与图像的基本概念"><span class="nav-number">1.</span> <span class="nav-text">1.图形与图像的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1图形与图像的颜色模型"><span class="nav-number">1.1.</span> <span class="nav-text">1.1图形与图像的颜色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1颜色的基本概念"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1颜色的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-1-物体的颜色"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1.1.1.1 物体的颜色</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-2-彩色三要素"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">1.1.1.2 彩色三要素</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-3-三基色原理"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">1.1.1.3 三基色原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-4-像素-pixel"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">1.1.1.4 像素(pixel)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-2-颜色模型"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 颜色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-1-RGB模型"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">1.1.2.1 RGB模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-2-CMY模型"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">1.1.2.2 CMY模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-3-YUV与YIQ模型"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">1.1.2.3 YUV与YIQ模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-4-HSI颜色模型"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">1.1.2.4 HSI颜色模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-3-颜色模型的转换"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3 颜色模型的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-3-1-YUV与RGB颜色模型变换"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1.1.3.1 YUV与RGB颜色模型变换</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-3-2-YIQ与RGB颜色模型变换"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">1.1.3.2 YIQ与RGB颜色模型变换</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HSI-与-RGB颜色变换"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">HSI 与 RGB颜色变换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2图形与图像的基本属性"><span class="nav-number">1.2.</span> <span class="nav-text">1.2图形与图像的基本属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1分辨率"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1分辨率</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1-1显示分辨率"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">1.2.1.1显示分辨率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1-2图像分辨率"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">1.2.1.2图像分辨率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1-3扫描分辨率和打印分辨率"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">1.2.1.3扫描分辨率和打印分辨率</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2颜色深度"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2颜色深度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-3文件的大小"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.2.3文件的大小</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3图形与图像的基本类型"><span class="nav-number">1.3.</span> <span class="nav-text">1.3图形与图像的基本类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-图形与图像的处理"><span class="nav-number">2.</span> <span class="nav-text">2.图形与图像的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1图形与图像的获取"><span class="nav-number">2.1.</span> <span class="nav-text">2.1图形与图像的获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2图形与图像的存储"><span class="nav-number">2.2.</span> <span class="nav-text">2.2图形与图像的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3图形与图像的显示"><span class="nav-number">2.3.</span> <span class="nav-text">2.3图形与图像的显示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4图形与图像的处理"><span class="nav-number">2.4.</span> <span class="nav-text">2.4图形与图像的处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-计算机动画"><span class="nav-number">3.</span> <span class="nav-text">3.计算机动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1计算机动画的原理"><span class="nav-number">3.1.</span> <span class="nav-text">3.1计算机动画的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2计算机动画的类型"><span class="nav-number">3.2.</span> <span class="nav-text">3.2计算机动画的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3计算机动画的制作"><span class="nav-number">3.3.</span> <span class="nav-text">3.3计算机动画的制作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4虚拟现实动画技术"><span class="nav-number">3.4.</span> <span class="nav-text">3.4虚拟现实动画技术</span></a></li></ol></li></ol></div>
             
 
           </div>
