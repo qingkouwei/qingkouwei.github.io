@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="Mac下FFMPEG使用There are a few ways to get FFmpeg on OS X.  One is to build it yourself. Compiling on Mac OS X is as easy as any other *nix machine, there are just a few caveats(警告). The general procedur">
-<meta property="og:updated_time" content="2017-06-07T14:19:36.000Z">
+<meta property="og:updated_time" content="2017-07-07T15:20:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FFMPEG编译之Mac">
 <meta name="twitter:description" content="Mac下FFMPEG使用There are a few ways to get FFmpeg on OS X.  One is to build it yourself. Compiling on Mac OS X is as easy as any other *nix machine, there are just a few caveats(警告). The general procedur">
@@ -437,7 +437,7 @@
       
         <h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
 <ol>
-<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other *nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
+<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other <code>*</code>nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
 <li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
 <li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
 </ol>
@@ -499,6 +499,10 @@ In case you installed a package in a non standard path, you need to update these
 <li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
 <li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
 </ul>
+<h3 id="编译ffmpeg3-3结果没有ffplay"><a href="#编译ffmpeg3-3结果没有ffplay" class="headerlink" title="编译ffmpeg3.3结果没有ffplay"></a>编译ffmpeg3.3结果没有ffplay</h3><p>因为系统没有sdl环境或sdl版本不匹配,ffmpeg3.3需要sdl2</p>
+<p><a href="http://www.libsdl.org/download-2.0.php" target="_blank" rel="external">http://www.libsdl.org/download-2.0.php</a> 下载Source Code SDL2-2.0.5.zip - GPG signed,解压缩,执行命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure  </div><div class="line">make  </div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>进行编译</p>
 
       
     </div>
@@ -660,7 +664,7 @@ In case you installed a package in a non standard path, you need to update these
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -671,7 +675,7 @@ In case you installed a package in a non standard path, you need to update these
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -682,7 +686,7 @@ In case you installed a package in a non standard path, you need to update these
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -776,7 +780,7 @@ In case you installed a package in a non standard path, you need to update these
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac下FFMPEG使用"><span class="nav-number">1.</span> <span class="nav-text">Mac下FFMPEG使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动编译FFMPEG"><span class="nav-number">2.</span> <span class="nav-text">手动编译FFMPEG</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载FFMPEG源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.下载FFMPEG源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-准备Xcode"><span class="nav-number">2.2.</span> <span class="nav-text">2.准备Xcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-准备HomeBrew工具"><span class="nav-number">2.3.</span> <span class="nav-text">3.准备HomeBrew工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-编译"><span class="nav-number">2.4.</span> <span class="nav-text">4.编译</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装环境介绍"><span class="nav-number">3.</span> <span class="nav-text">安装环境介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Environment-variables"><span class="nav-number">4.</span> <span class="nav-text">Environment variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MAC下的动态链接库"><span class="nav-number">5.</span> <span class="nav-text">MAC下的动态链接库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展名"><span class="nav-number">5.1.</span> <span class="nav-text">扩展名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MAC下创建动态链接库步骤"><span class="nav-number">5.2.</span> <span class="nav-text">MAC下创建动态链接库步骤:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态链接库的工具"><span class="nav-number">5.3.</span> <span class="nav-text">动态链接库的工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官网方法"><span class="nav-number">6.</span> <span class="nav-text">官网方法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac下FFMPEG使用"><span class="nav-number">1.</span> <span class="nav-text">Mac下FFMPEG使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动编译FFMPEG"><span class="nav-number">2.</span> <span class="nav-text">手动编译FFMPEG</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载FFMPEG源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.下载FFMPEG源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-准备Xcode"><span class="nav-number">2.2.</span> <span class="nav-text">2.准备Xcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-准备HomeBrew工具"><span class="nav-number">2.3.</span> <span class="nav-text">3.准备HomeBrew工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-编译"><span class="nav-number">2.4.</span> <span class="nav-text">4.编译</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装环境介绍"><span class="nav-number">3.</span> <span class="nav-text">安装环境介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Environment-variables"><span class="nav-number">4.</span> <span class="nav-text">Environment variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MAC下的动态链接库"><span class="nav-number">5.</span> <span class="nav-text">MAC下的动态链接库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展名"><span class="nav-number">5.1.</span> <span class="nav-text">扩展名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MAC下创建动态链接库步骤"><span class="nav-number">5.2.</span> <span class="nav-text">MAC下创建动态链接库步骤:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态链接库的工具"><span class="nav-number">5.3.</span> <span class="nav-text">动态链接库的工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官网方法"><span class="nav-number">6.</span> <span class="nav-text">官网方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译ffmpeg3-3结果没有ffplay"><span class="nav-number">7.</span> <span class="nav-text">编译ffmpeg3.3结果没有ffplay</span></a></li></ol></div>
             
 
           </div>
