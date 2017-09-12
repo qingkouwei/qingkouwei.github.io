@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-08-30T02:37:11.000Z</updated>
+  <updated>2017-09-12T08:40:48.000Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,372 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>音视频参数之Profile</title>
+    <link href="http://wodekouwei.com/2017/09/12/tips-media-profile/"/>
+    <id>http://wodekouwei.com/2017/09/12/tips-media-profile/</id>
+    <published>2017-09-12T04:12:19.000Z</published>
+    <updated>2017-09-12T08:40:48.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前两天发现公司产品 <strong>触发</strong> 有导入从微信等下载的外部小视频时失败的情况, <strong>触发</strong> 导入视频时使用开源库<a href="https://github.com/INDExOS/media-for-mobile" target="_blank" rel="external">media-for-mobile</a>对视频进行重新编码.media-for-mobile使用android系统接口<code>android.media.MediaExtractor</code>对mp4文件解复用,使用android硬件编解码接口<code>android.media.MediaCodec</code>对视频解码-处理-编码操作,最后通过Android系统API<code>android.media.MediaMuxer</code>将视频写成文件.</p>
+<p>反馈的两个有问题视频,一个视频导入时报<code>BufferOverFlowException</code>错误,另一个视频不报错但是导入时进度一直为0%.</p>
+<p>经分析出问题的两个视频的Video profile为High,普通视频为<code>Baseline</code>,报<code>BufferOverFlowException</code>错误的视频的Audio profile为<code>HE-AAC</code>,普通视频的Audio profile为<code>LC</code>.
+详细了解了一下H264 与AAC profile:</p>
+<h4 id="H264各种profile"><a href="#H264各种profile" class="headerlink" title="H264各种profile"></a>H264各种profile</h4><p>作为行业标准，H.264编码体系定义了4种不同的Profile(类)：Baseline(基线类),Main(主要类), Extended(扩展类)和High Profile(高端类)（它们各自下分成许多个层）：</p>
+<ol>
+<li><code>Baseline Profile</code>: 提供I/P帧，仅支持progressive(逐行扫描)和CAVLC；</li>
+<li><code>Extended Profile</code>: 提供I/P/B/SP/SI帧，仅支持progressive(逐行扫描)和CAVLC；</li>
+<li><code>Main Profile:</code> 提供I/P/B帧，支持progressive(逐行扫描)和interlaced(隔行扫描)，提供CAVLC或CABAC；</li>
+<li><code>High Profile</code>: （也就是FRExt）在Main Profile基础上新增：8x8 intra prediction(8x8 帧内预测), custom quant(自定义量化), lossless video coding(无损视频编码), 更多的yuv格式（4:4:4…）；</li>
+</ol>
+<p>H.264在高清中具有最小体积。在同等图像质量下，采用H.264技术压缩后的数据量只有MPEG2的1/8，MPEG4的1/3，相对Xvid、Divx等属于MPEG4编码而言，其体积优势明显，在互联网上，H.264资源处在爆发趋势。而High Profile是H.264解码中的高端类型，拥有最完善的支持程度、最优秀的特性，可以说是高清视频编码中的劳斯莱斯，只有征服了这个优秀的编码，MP4才能将H.264完全掌控，也才能充分享受到高清视频带来的视觉震撼，意义非凡。</p>
+<p>针对当前高清是视频会议行业的主流发展趋势，而目前高清普及的主要阻力之一就是带宽的限制。而High Profile H.264技术在同等视频质量的情况下可节省50%的带宽，为客户节省大量的网络带宽成本。据业内专家介绍，此次H.264 High Profile的推出是视频技术的一个巨大进步，其意义不亚于2003年从H.263向H.264过渡的价值。它将为目前正在推广的高清视频通信应用扫清了令人头疼的网络带宽障碍，不仅如此，这些变化对于包括CIF、标清等品质的视频通信应用也同样适用。</p>
+<p>鉴于High Profile H.264对于视频会议行业的非凡影响，目前已有国内外厂商尝鲜，宣布其旗下产品全面支持该项技术，包括宝利通、华平、华腾网讯。从这一趋势来看，未来视频会议产品全面支持High Profile H.264也经成为不可逆转的潮流，而高清普及也在技术层面更近了一步。</p>
+<blockquote>
+<p>参考:
+<a href="http://blog.csdn.net/qiaoliang328/article/details/10153313" target="_blank" rel="external">H264 各种profile</a></p>
+</blockquote>
+<h4 id="AAC各种profile"><a href="#AAC各种profile" class="headerlink" title="AAC各种profile"></a>AAC各种profile</h4><h5 id="AAC共有9种规格，以适应不同的场合的需要："><a href="#AAC共有9种规格，以适应不同的场合的需要：" class="headerlink" title="AAC共有9种规格，以适应不同的场合的需要："></a>AAC共有9种规格，以适应不同的场合的需要：</h5><ol>
+<li><code>MPEG-2 AAC LC</code>: 低复杂度规格（Low Complexity）–比较简单，没有增益控制，但提高了编码效率，在中等码率的编码效率以及音质方面，都能找到平衡点</li>
+<li><code>MPEG-2 AAC Main</code>: 主规格    </li>
+<li><code>MPEG-2 AAC SSR</code>: 可变采样率规格（Scaleable Sample Rate）</li>
+<li><code>MPEG-4 AAC LC</code>: 低复杂度规格（Low Complexity）——现在的手机比较常见的MP4文件中的音频部份就包括了该规格音频文件</li>
+<li><code>MPEG-4 AAC Main</code>: 主规格   ——包含了除增益控制之外的全部功能，其音质最好</li>
+<li><code>MPEG-4 AAC SSR</code>: 可变采样率规格（Scaleable Sample Rate）</li>
+<li><code>MPEG-4 AAC LTP</code>: 长时期预测规格（Long Term Predicition）</li>
+<li><code>MPEG-4 AAC LD</code>: 低延迟规格（Low Delay）</li>
+<li><code>MPEG-4 AAC HE</code>: 高效率规格（High Efficiency）—–这种规格适合用于低码率编码，有Nero ACC 编码器支持</li>
+</ol>
+<p>14496-3标准，里面定义的profile除了上述的一些规格，还有如Scalable 、 TwinVQ、  CELP、  HVXC等更多其他的profile。</p>
+<p>目前听到用的比较多的应该是LC和HE(适合低码率)。流行的Nero AAC的命令行编码程序就支持LC，HE，HEv2这三种，试用后，用MediaInfo分析了编码后的AAC音频，发现规格显示都是LC，当时就感到奇怪，不是说支持三种规格吗？然后才又查资料发现，原来HE其实就是AAC（LC）+SBR技术，HEv2就是AAC（LC）+SBR+PS技术，难怪用MediaInfo分析后，HE规格的文件即显示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">格式简介:LC</div><div class="line">格式设置,SBR:是</div><div class="line">格式设置,PS:否</div></pre></td></tr></table></figure></p>
+<h5 id="HE与HEv2"><a href="#HE与HEv2" class="headerlink" title="HE与HEv2"></a>HE与HEv2</h5><ul>
+<li><p>HE：“high efficiency”（高效性）。HE-AAC v1（又称AACPlusV1，SBR)用容器的方法加了原AAC（LC）+SBR技术。SBR其实代表的是Spectral Band Replication(频段复制)。简单概括一下，音乐的主要频谱集中在低频段，高频段幅度很小（但很重要，决定了音质），如果对整个频段编码，要么为了保护高频造成低频段编码过细以致文件巨大，要么为了保存了低频的主要成分而失去高频成分以致丧失音质。SBR把频谱切割开来，低频单独编码保存主要成分，高频单独放大编码保存音质，“统筹兼顾”了，在减少文件大小的情况下还保存了音质，完美的化解了一对矛盾</p>
+</li>
+<li><p>HEv2 它用容器的方法包含了HE-AAC v1和PS技术。PS指“parametric stereo”（参数立体声）。这个其实好理解，原来的立体声文件，文件大小是一个声道的两倍。但是两个声道的声音存在某种相似性，根据香农信息熵编码定理，相关性应该被去掉才能减小文件大小。所以PS技术存储了一个声道的全部信息，然后，花很少的字节用参数描述另一个声道和它不同的地方
+这样，HEv1和HEv2用个图简单表示下就是：(图中的AAC即指的是原来的AAC-LC)
+<img src="http://images.wodekouwei.com/media/aac-he.jpg" alt="image">
+由于NERO AAC编码后产生的是经过MP4容器封装后的，而我们的decoder需要处理的是未经封装的AAC流，因此还需要处理从MP4封装格式中extract出AAC流的步骤；哦，这里提到了MP4容器封装，就再把我看到的一些关于MP4容器的心得插入在此也说下：</p>
+</li>
+</ul>
+<p>其实.mp4格式规范是MPEG4 Part 1标准定义的。但是这个格式本身相当通用，并不是只能用来存贮MPEG4视频格式。举个例子，一个.mp4文件中包含的可能是H.263的视频轨及AMR的音频轨。这样它和MPEG4视频压缩算法就半点边都沾不上。但它绝对是一个合法的.mp4文件。从这个意义上讲，.mp4是一个独立的封包格式。也许它的原始设计意图是仅用于MPEG4，但事实上大家觉得它很好用，已经把它扩展成可以包容其它格式了。现在市场上比如某产品号称“支持MP4播放”，到底是什么意思呢？如果它是指可以播放<em>.mp4这种文件，那里面的音频和视频格式它能支持多少种组合呢？没说清楚吧。举个极端的例子，假设一台设备仅支持“视频为未压缩YUV以及不带音频轨的.mp4文件，但它的文件名确实可以是</em>.mp4，是不是也可以在盒子上印上“支持MP4”呢？那么，买回去，复制一个网上下载的.mp4文件（MPEG4视频和AAC音频应该是个比较流行的组合），结果却发现根本不能播放。就算不举这么极端的例子，一般.mp4文件中常见的视频音频格式也有多种，一个产品要做到支持所有的格式是很难的。所以，如果要准确的描述，应该写清楚类似“支持视频格式为MPEG4或H.264/AVC，音频为AMR或AAC的*.mp4文件”。其实更严格一些，还应该写清楚MPEG4支持到哪种profile, AMR是NB还是WB，AAC是LC还是HE等更多细节。当然，这种误导型的说明应该在减少，不过如果有比较确切的格式需求，最好还是先搞清楚这些细节。看到网上还有人说到N73，其实只支持视频为MPEG4 Simple Profile / Advanced Simple Profile及H.263 Profile 0 &amp; 3，音频为AMR-NB/WB或者AAC-LC, HE-AAC的mp4文件。如果你放一个视频格式为H.264/AVC的mp4上去，是无法播放出画面来的。</p>
+<p>在网上找了一些工具，如MP4UI,MP4BOX,Yamb(mp4box的GUI程序),采用它们进行extract操作后发现，原来的SBR和PS等信息咋没有了，都变成LC规格的AAC文件啦。好容易准备的测试流，难道还是不能用？于是一番苦寻发现，可能是SBR和PS等信息在ADTS头中是无法体现的，所以分析ADTS格式头的AAC，就无法判别是否是HE和HEv2啦。但是我总觉得SBR和PS等技术信息在AAC流中应该还是存在的。因为我还在一个国外的论坛上看到这么几句话：There’s no requirement for MP4 with AAC to have SBR indicated in the headers. It’s still correct not to have it marked and have SBR or PS data in the stream anyway. Likewise, decoding a frame and not seeing any SBR or PS info doesn’t mean you can’t find it further up in the stream anyway（我理解就是说SBR OR PS信息不一定在Header中有，但是并不意味着你不能进一步在stream中发现它）。</p>
+<p><strong>HE-AAC的.mp4码流，经过extract出AAC(ADTS)后，44.1KHZ的变成了22.05KHZ。HEv2-AAC的.mp4码流，经过extract出AAC(ADTS)后，不但44.1KHZ的变成了22.05KHZ(一半)，连2channels也变成了1channels</strong>，这个问题更奇怪了，在论坛上找，发现也有人有此问题：“I get 22050Hz, 1 channel for audio that is in fact 44100Hz, 2channels and having both SBR and PS”。</p>
+<p>后来看到MSDN中的AAC Decoder的描述中有这么一小段话：
+The media type gives the sample rate and number of channels prior to the application of spectral band replication (SBR) and parametric stereo (PS) tools, if present. The effect of the SBR tool is to double the decoded sample rate relative to the core AAC-LC sample rate. The effect of the PS tool is to decode stereo from a mono-channel core AAC-LC stream.
+我的理解是AAC的decoder如果支持SBR和PS，会将AAC-HEV1(SBR)中的sample rate提高一倍，而会将AAC-HEV2(SBR+PS)中不仅sample rate提高一倍，单声道也提高至双声道了。结合前面提到的SBR(频段复制)和PS(参数立体声）技术的简单介绍，好像觉得这样是有点儿道理的哦~~
+用IPP example提供的解码工具simple_player简单试了下，对于44.1khz，stereo的HEv2-AAC的.mp4码流，经过extract出22.05KHZ，mono 的AAC(ADTS)后，再使用simple_player进行音频解码测试，解完后，果然发现又恢复了44.1khz和stereo。（但目前也测试了好几种extract出的HE和HEv2的aac码流，有的能将sample rate和channel 又double回来，有的又不能，这个具体原因是不是由于Ipp example提供的解码器的问题还不确定）。</p>
+<p>另外，用simple_player如果直接decoder编码出的经过封装的.mp4格式的AAC音频的话，发现：其它都正常，只AAC-HEv2格式的.mp4音频解码后变成了单声道。难道是解码器中的PS tools没能发挥作用？初步估计应该是IPP 的那个小解码器的问题吧。</p>
+<h5 id="关于ADTS-amp-ADIF"><a href="#关于ADTS-amp-ADIF" class="headerlink" title="关于ADTS&amp;ADIF"></a>关于ADTS&amp;ADIF</h5><p>上面说到了ADTS头格式的AAC。其实，AAC的音频文件格式有以下两种：</p>
+<ul>
+<li><strong>ADIF</strong>：Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不需进行在音频数据流中间开始的解码，即它的解码必须在明确定义的开始处进行。故这种格式常用在磁盘文件中。</li>
+<li><strong>ADTS</strong>：Audio Data Transport Stream 音频数据传输流。这种格式的特征是它是一个有同步字的比特流，解码可以在这个流中任何位置开始。它的特征类似于mp3数据流格式。
+简单说，ADTS可以在任意帧解码，也就是说它每一帧都有头信息。ADIF只有一个统一的头，所以必须得到所有的数据后解码。且这两种的header的格式也是不同的，具体的组织结构在这里就不详说了。</li>
+</ul>
+<blockquote>
+<p>参考:
+<a href="http://blog.csdn.net/axdc_qa_team/article/details/4271043" target="_blank" rel="external">AAC的各种规格</a></p>
+</blockquote>
+<h4 id="问题原因分析"><a href="#问题原因分析" class="headerlink" title="问题原因分析"></a>问题原因分析</h4><p>首先<code>BufferOverFlowException</code>问题,由于音频采用AAC-HE导致MediaExtractor解析出的音频采样率为本身采样率的一半,同时创建出的解码OutputBuffer的大小是编码InputBuffer的2倍,而media-for-mobile开源项目直接将从解码器OutputBuffer取出的数据塞入编码器InputBuffer中,2倍的数据放入一倍的Buffer导致溢出,暂时的解决办法手动指定编码器InputBuffer max-size为一个较大值(10*1024).同时,由于MediaExtractor不能获取正确的audio profile,也无法确认获取到的采样率是否不正确采样率的一半,所以采用ffmpeg接口获取profile,但是ffmpeg调用<code>avcodec_open2</code>获取到的profile为-99,而且采样率依然为正常采样率一半,只有在解码一帧音频后才能得到正确的profile与采样率.</p>
+<p>其次,转码进度不增加的问题,主要是High的H264视频,media-for-mobile使用一个MediaExtractor一次抽取音视频帧,如果是音频则交音频解码器,如果为视频则交视频解码器,解码后将解码帧转交编码器,编码后将数据写入MediaMuxer,将数据写入MediaMuxer的前提是吊用过addTrack,将音视频track加入到Muxer中,而addTrack需要在音视频解码若干帧后产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>,若没有addTrack会导致编码后数据如法写入Muxer,卡死编码器,Baseline视频只需要少量帧就可以产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>,但High视频产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>需要更多的帧,而media-for-mobile中,MediaExtractor首先一直获取到的是音频数据,音频一直解码编码,但是输出的muxer时,videotrack未被添加,所以无法将音频编码器的数据写入muxer,音频解码器被卡死,而mediasource一直被产生的audio数据无法被消费,无法获取到视频数据导致视频<code>INFO_OUTPUT_FORMAT_CHANGED</code>一直无法产生,最终产生死锁,导致audio等待video的<code>INFO_OUTPUT_FORMAT_CHANGED</code>,video等待audio被读完后读到video解码产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>.</p>
+<p>最后将audio和video使用两个<code>MediaExtractor</code>各读取各自内容.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前两天发现公司产品 &lt;strong&gt;触发&lt;/strong&gt; 有导入从微信等下载的外部小视频时失败的情况, &lt;strong&gt;触发&lt;/strong&gt; 导入视频时使用开源库&lt;a href=&quot;https://github.com/INDExOS/media-for-mobile&quot; 
+    
+    </summary>
+    
+      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
+    
+    
+      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
+    
+      <category term="音视频" scheme="http://wodekouwei.com/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>android自动化测试(一):UiAutomator官方介绍</title>
+    <link href="http://wodekouwei.com/2017/08/30/at-android-start/"/>
+    <id>http://wodekouwei.com/2017/08/30/at-android-start/</id>
+    <published>2017-08-30T13:43:15.000Z</published>
+    <updated>2017-08-31T02:03:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>了解android测试需要查询android官方文档,android官方培训教程<a href="https://developer.android.com/training/testing/start/index.html" target="_blank" rel="external">Getting Started with Testing</a>介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确.</p>
+<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型:</p>
+<h4 id="本地单元测试-Local-unit-tests"><a href="#本地单元测试-Local-unit-tests" class="headerlink" title="本地单元测试(Local unit tests)"></a>本地单元测试(Local unit tests)</h4><p>位于<code>module-name/src/test/java/.</code>下,运行在PC端本地的JVM虚拟机上,并且不能访问Android框架的接口.
+参考<a href="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html" target="_blank" rel="external">Building Local Tests</a></p>
+<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;了解android测试需要查询android官方文档,android官方培训教程&lt;a href=&quot;https://developer.android.com/training/testing/start/index.html&quot; target=&quot;_blank&quot; rel=&quot;ex
+    
+    </summary>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/categories/autotest/"/>
+    
+    
+      <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
+    
+      <category term="tools" scheme="http://wodekouwei.com/tags/tools/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>android自动化测试(N):UiAutomator官方介绍</title>
+    <link href="http://wodekouwei.com/2017/08/30/at-android-uiautomator-official/"/>
+    <id>http://wodekouwei.com/2017/08/30/at-android-uiautomator-official/</id>
+    <published>2017-08-30T07:58:35.000Z</published>
+    <updated>2017-08-30T13:43:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Automating-User-Interface-Tests"><a href="#Automating-User-Interface-Tests" class="headerlink" title="Automating User Interface Tests"></a><a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a></h3><p>User interface (UI) testing lets you ensure that your app meets its functional requirements and achieves a high standard of quality such that it is more likely to be successfully adopted by users.</p>
+<p>One approach to UI testing is to simply have a human tester perform a set of user operations on the target app and verify that it is behaving correctly. However, this manual approach can be time-consuming, tedious, and error-prone. A more efficient approach is to write your UI tests such that user actions are performed in an automated way. The automated approach allows you to run your tests quickly and reliably in a repeatable manner.</p>
+<blockquote>
+<p>Note: It is strongly encouraged that you use Android Studio for building your test apps, because it provides project setup, library inclusion, and packaging conveniences. This class assumes you are using Android Studio.</p>
+</blockquote>
+<p>To automate UI tests with Android Studio, you implement your test code in a separate Android test folder (src/androidTest/java). The Android Plug-in for Gradle builds a test app based on your test code, then loads the test app on the same device as the target app. In your test code, you can use UI testing frameworks to simulate user interactions on the target app, in order to perform testing tasks that cover specific usage scenarios.</p>
+<p>For testing Android apps, you typically create these types of automated UI tests:</p>
+<ul>
+<li>UI tests that span a single app: This type of test verifies that the target app behaves as expected when a user performs a specific action or enters a specific input in its activities. It allows you to check that the target app returns the correct UI output in response to user interactions in the app’s activities. UI testing frameworks like Espresso allow you to programmatically simulate user actions and test complex intra-app user interactions.</li>
+<li>UI tests that span multiple apps: This type of test verifies the correct behavior of interactions between different user apps or between user apps and system apps. For example, you might want to test that your camera app shares images correctly with a 3rd-party social media app, or with the default Android Photos app. UI testing frameworks that support cross-app interactions, such as UI Automator, allow you to create tests for such scenarios.
+The lessons in this class teach you how to use the tools and APIs in the Android Testing Support Library to build these types of automated tests. Before you begin building tests using these APIs, you must install the Android Testing Support Library, as described in Downloading the Android Testing Support Library.</li>
+</ul>
+<h3 id="UI-Testing"><a href="#UI-Testing" class="headerlink" title="UI Testing"></a><a href="https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html" target="_blank" rel="external">UI Testing</a></h3><p>In addition to unit testing the individual components that make up your Android application (such as activities, services, and content providers), it is also important that you test the behavior of your application’s user interface (UI) when it is running on a device. UI testing ensures that your application returns the correct UI output in response to a sequence of user actions on a device, such as entering keyboard input or pressing toolbars, menus, dialogs, images, and other UI controls.</p>
+<p>Functional or black-box UI testing does not require testers to know the internal implementation details of the app, only its expected output when a user performs a specific action or enters a specific input. This approach allows for better separation of development and testing roles in your organization.</p>
+<p>One common approach to UI testing is to run tests manually and verify that the app is behaving as expected. However, this approach can be time-consuming, tedious, and error-prone. A more efficient and reliable approach is to automate the UI testing with a software testing framework. Automated testing involves creating programs to perform testing tasks (test cases) to cover specific usage scenarios, and then using the testing framework to run the test cases automatically and in a repeatable manner.</p>
+<h4 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h4><p>he Android SDK provides the following tools to support automated, functional UI testing on your application:</p>
+<ul>
+<li>uiautomatorviewer - A GUI tool to scan and analyze the UI components of an Android application.</li>
+<li><p>uiautomator - A Java library containing APIs to create customized functional UI tests, and an execution engine to automate and run the tests.
+To use these tools, you must have the following versions of the Android development tools installed:</p>
+</li>
+<li><p>Android SDK Tools, Revision 21 or higher</p>
+</li>
+<li>Android SDK Platform, API 16 or higher</li>
+</ul>
+<p><strong>Workflow for the the uiautomator testing framework</strong>
+Here’s a short overview of the steps required to automate UI testing:</p>
+<ol>
+<li>Prepare to test by installing the app on a test device, analyzing the app’s UI components, and ensuring that your application is accessible by the test automation framework.</li>
+<li>Create automated tests to simulate specific user interactions on your application.</li>
+<li>Compile your test cases into a JAR file and install it on your test device along with your app.</li>
+<li>Run the tests and view the test results.</li>
+<li>Correct any bugs or defects discovered in testing.</li>
+</ol>
+<h4 id="Analyzing-Your-Application’s-UI"><a href="#Analyzing-Your-Application’s-UI" class="headerlink" title="Analyzing Your Application’s UI"></a>Analyzing Your Application’s UI</h4><p>Before you start writing your test cases, it’s helpful to familiarize yourself with the UI components (including the views and controls) of the targeted application. You can use the uiautomatorviewer tool to take a snapshot of the foreground UI screen on any Android device that is connected to your development machine. The uiautomatorviewer tool provides a convenient visual interface to inspect the layout hierarchy and view the properties of the individual UI components that are displayed on the test device. Using this information, you can later create uiautomator tests with selector objects that target specific UI components to test.</p>
+<p>To analyze the UI components of the application that you want to test:</p>
+<ol>
+<li>Connect your Android device to your development machine.</li>
+<li>Open a terminal window and navigate to <android-sdk>/tools/.</android-sdk></li>
+<li><p>Run the tool with this command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ uiautomatorviewer</div></pre></td></tr></table></figure>
+</li>
+<li><p>To capture a screen for analysis, click the Device Screenshot button in the GUI of the uiautomatorviewer tool.</p>
+<blockquote>
+<p>Note: If you have more than one device connected, specify the device for screen capture by setting the ANDROID_SERIAL environment variable:</p>
+</blockquote>
+</li>
+</ol>
+<p>a. Find the serial numbers for your connected devices by running this command:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ adb devices</div><div class="line">```  </div><div class="line">b. Set the ANDROID_SERIAL environment variable to select the device to test:</div></pre></td></tr></table></figure></p>
+<p>#In Windows:
+set ANDROID_SERIAL=<device serial="" number=""></device></p>
+<p>#In UNIX:
+export ANDROID_SERIAL=<device serial="" number="">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">If you are connected to only a single device, you do not need to set the ANDROID_SERIAL environment variable.</div><div class="line"></div><div class="line">5. View the UI properties for your application:</div><div class="line">- Hover over the snapshot in the left-hand panel to see the UI components identified by the uiautomatorviewer tool. You can view the component’s properties listed in the lower right-hand panel, and the layout hierarchy in the upper right-hand panel.</div><div class="line">- Optionally, click on the Toggle NAF Nodes button to see UI components that are not accessible to the uiautomator testing framework. Only limited information may be available for these components.</div><div class="line"></div><div class="line">#### Preparing to Test</div><div class="line">Before using the uiautomator testing framework, complete these pre-flight tasks:</div><div class="line"></div><div class="line">##### Load the application to a device</div><div class="line"></div><div class="line">If you are reading this document, chances are that the Android application that you want to test has not been published yet. If you have a copy of the APK file, you can install the APK onto a test device by using the adb tool. To learn how to install an APK file using the adb tool, see the [adb](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/adb.html#move) documentation.</div><div class="line"></div><div class="line">##### Identify the application’s UI components</div><div class="line"></div><div class="line">Before writing your `uiautomator` tests, first identify the UI components in the application that you want to test. Typically, good candidates for testing are UI components that are visible and that users can interact with. The UI components should also have visible text labels, `android:contentDescription` values, or both.</div><div class="line"></div><div class="line">You can inspect the visible screen objects in an application conveniently by using the `uiautomatorviewer` tool. For more information about how to analyze an application screen with this tool, see the section [Analyzing Your Application’s UI](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html#uianalaysis). For more information about the common types of UI components provided by Android, see [User Interface](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/index.html).</div><div class="line"></div><div class="line">##### Ensure that the application is accessible</div><div class="line"></div><div class="line">This step is required because the `uiautomator` tool depends on the accessibility features of the Android framework to execute your functional UI tests. You should include these minimum optimizations to support the `uiautomator` tool:</div><div class="line">- Use the `android:contentDescription` attribute to label the `ImageButton`, `ImageView`, `CheckBox` and other user interface controls.</div><div class="line">- Provide an `android:hint` attribute instead of a content description for `EditText` fields</div><div class="line">- Associate an `android:hint` attribute with any graphical icons used by controls that provide feedback to the user (for example, status or state information).</div><div class="line">- Make sure that all the user interface elements are accessible with a directional controller, such as a trackball or D-pad.</div><div class="line">- Use the `uiautomatorviewer` tool to ensure that the UI component is accessible to the testing framework. You can also test the application by turning on accessibility services like TalkBack and Explore by Touch, and try using your application using only directional controls.</div><div class="line"></div><div class="line">For more information about implementing and testing accessibility, see [Making Applications Accessible](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/accessibility/apps.html).</div><div class="line"></div><div class="line">&gt; Note: To identify the non-accessible components in the UI, click on the Toggle NAF Nodes option in the `uiautomatorviewer` tool.</div><div class="line"></div><div class="line">Generally, Android application developers get accessibility support for free, courtesy of the `View` and `ViewGroup` classes. However, some applications use custom view components to provide a richer user experience. Such custom components won&apos;t get the accessibility support that is provided by the standard Android UI components. If this applies to your application, ensure that the application developer exposes the custom drawn UI components to Android accessibility services, by implementing the `AccessibilityNodeProvider` class. For more information about making custom view components accessible, see [Making Applications Accessible](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/accessibility/apps.html#custom-views).</div><div class="line"></div><div class="line">##### Configure your development environment</div><div class="line">If you&apos;re developing in Eclipse, the Android SDK provides additional tools that help you write test cases using `uiautomator` and buiild your JAR file. In order to set up Eclipse to assist you, you need to create a project that includes the `uiautomator` client library, along with the Android SDK library. To configure Eclipse:</div><div class="line"></div><div class="line">1. Create a new Java project in Eclipse, and give your project a name that is relevant to the tests you’re about to create (for example, &quot;MyAppNameTests&quot;). In the project, you will create the test cases that are specific to the application that you want to test.</div><div class="line">2. From the Project Explorer, right-click on the new project that you created, then select Properties &gt; Java Build Path, and do the following:</div><div class="line">    - Click Add Library &gt; JUnit then select JUnit3 to add JUnit support.</div><div class="line">    - Click Add External JARs... and navigate to the SDK directory. Under the platforms directory, select the latest SDK version and add both the uiautomator.jar and android.jar files.</div><div class="line">If you did not configure Eclipse as your development environment, make sure that the `uiautomator.jar` and `android.jar` files from the `&lt;android-sdk&gt;/platforms/&lt;sdk&gt;` directory are in your Java class path.</div><div class="line"></div><div class="line">Once you have completed these prerequisite tasks, you&apos;re almost ready to start creating your `uiautomator` tests.</div><div class="line"></div><div class="line">#### Creating uiautomator Tests</div><div class="line">To build a test that runs in the `uiautomator` framework, create a test case that extends the `UiAutomatorTestCase` class. In Eclipse, the test case file goes under the `src` directory in your project. Later, you will build the test case as a JAR file, then copy this file to the test device. The test JAR file is not an APK file and resides separately from the application that you want to test on the device.</div><div class="line"></div><div class="line">Because the `UiAutomatorTestCase` class extends `junit.framework.TestCase`, you can use the `JUnit` Assert class to test that UI components in the app return the expected results. To learn more about JUnit, you can read the documentation on the `junit.org` home page.</div><div class="line"></div><div class="line">The first thing your test case should do is access the device that contains the target app. It’s also good practice to start the test from the Home screen of the device. From the Home screen (or some other starting location you’ve chosen in the target app), you can use the classes provided by the `uiautomator` API to simulate user actions and to test specific UI components. For an example of how to put together a `uiautomator` test case, see the sample test case.</div><div class="line"></div><div class="line">##### uiautomator API</div><div class="line">The `uiautomator` API is bundled in the `uiautomator.jar` file under the `&lt;android-sdk&gt;/platforms/` directory. The API includes these key classes that allow you to capture and manipulate UI components on the target app:</div><div class="line">- [UiDevice](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiDevice.html)</div><div class="line">Represents the device state. In your tests, you can call methods on the UiDevice instance to check for the state of various properties, such as current orientation or display size. Your tests also can use the UiDevice instance to perform device level actions, such as forcing the device into a specific rotation, pressing the d-pad hardware button, or pressing the Home and Menu buttons.</div><div class="line">To get an instance of UiDevice and simulate a Home button press:</div></pre></td></tr></table></figure></device></p>
+<p>getUiDevice().pressHome();
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- [UiSelector](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiSelector.html)</div><div class="line">Represents a search criteria to query and get a handle on specific elements in the currently displayed UI. If more than one matching element is found, the first matching element in the layout hierarchy is returned as the target UiObject. When constructing a UiSelector, you can chain together multiple properties to refine your search. If no matching UI element is found, a `UiAutomatorObjectNotFoundException` is thrown. You can use the childSelector() method to nest multiple UiSelector instances. For example, the following code example shows how to specify a search to find the first ListView in the currently displayed UI, then search within that ListView to find a UI element with the text property Apps.</div></pre></td></tr></table></figure></p>
+<p>UiObject appItem = new UiObject(new UiSelector()
+   .className(“android.widget.ListView”).instance(1)
+   .childSelector(new UiSelector().text(“Apps”)));
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">- [UiObject](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiObject.html)</div><div class="line">Represents a UI element. To create a UiObject instance, use a UiSelector that describes how to search for, or select, the UI element.</div><div class="line">The following code example shows how to construct UiObject instances that represent a Cancel button and a OK button in your application.</div></pre></td></tr></table></figure></p>
+<p>UiObject cancelButton = new UiObject(new UiSelector().text(“Cancel”));
+UiObject okButton = new UiObject(new UiSelector().text(“OK”));
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">You can reuse the UiObject instances that you have created in other parts of your app testing, as needed. Note that the `uiautomator` test framework searches the current display for a match every time your test uses a UiObject instance to click on a UI element or query a property.</div><div class="line">In the following code example, the `uiautomator` test framework searches for a UI element with the text property OK. If a match is found and if the element is enabled, the framework simulates a user click action on the element.</div></pre></td></tr></table></figure></p>
+<p>if(okButton.exists() &amp;&amp; okButton.isEnabled())
+{
+  okButton.click();
+}
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">You can also restrict the search to find only elements of a specific class. For example, to find matches of the Button class:</div></pre></td></tr></table></figure></p>
+<p>UiObject cancelButton = new UiObject(new UiSelector().text(“Cancel”)
+   .className(“android.widget.Button”));
+UiObject okButton = new UiObject(new UiSelector().text(“OK”)
+   .className(“android.widget.Button”));
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- [UiCollection](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiCollection.html)</div><div class="line">Represents a collection of items, for example songs in a music album or a list of emails in an inbox. Similar to a UiObject, you construct a UiCollection instance by specifying a UiSelector. The UiSelector for a UiCollection should search for a UI element that is a container or wrapper of other child UI elements (such as a layout view that contains child UI elements). For example, the following code snippet shows how to construct a UiCollection to represent a video album that is displayed within a FrameLayout:</div></pre></td></tr></table></figure></p>
+<p>UiCollection videos = new UiCollection(new UiSelector()
+   .className(“android.widget.FrameLayout”));
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">If the videos are listed within a LinearLayout view, and you want to to retrieve the number of videos in this collection:</div></pre></td></tr></table></figure></p>
+<p>int count = videos.getChildCount(new UiSelector()
+   .className(“android.widget.LinearLayout”));
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">If you want to find a specific video that is labeled with the text element Cute Baby Laughing from the collection and simulate a user-click on the video:</div></pre></td></tr></table></figure></p>
+<p>UiObject video = videos.getChildByText(new UiSelector()
+   .className(“android.widget.LinearLayout”), “Cute Baby Laughing”);
+video.click();
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Similarly, you can simulate other user actions on the UI object. For example, if you want to simulate selecting a checkbox that is associated with the video:</div></pre></td></tr></table></figure></p>
+<p>UiObject checkBox = video.getChild(new UiSelector()
+   .className(“android.widget.Checkbox”));
+if(!checkBox.isSelected()) checkbox.click();
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- [UiScrollable](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiScrollable.html)</div><div class="line">Represents a scrollable collection of UI elements. You can use the UiScrollable class to simulate vertical or horizontal scrolling across a display. This technique is helpful when a UI element is positioned off-screen and you need to scroll to bring it into view.</div><div class="line">For example, the following code shows how to simulate scrolling down the Settings menu and clicking on an About tablet option:</div></pre></td></tr></table></figure></p>
+<p>UiScrollable settingsItem = new UiScrollable(new UiSelector()
+   .className(“android.widget.ListView”));
+UiObject about = settingsItem.getChildByText(new UiSelector()
+   .className(“android.widget.LinearLayout”), “About  tablet”);
+about.click()
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">For more information about these APIs, see the uiautomator reference.</div><div class="line"></div><div class="line">##### A sample uiautomator test case</div><div class="line">The following code example shows a simple test case which simulates a user bringing up the Settings app in a stock Android device. The test case mimics all the steps that a user would typically take to perform this task, including opening the Home screen, launching the All Apps screen, scrolling to the Settings app icon, and clicking on the icon to enter the Settings app.</div></pre></td></tr></table></figure></p>
+<p>package com.uia.example.my;</p>
+<p>// Import the uiautomator libraries
+import com.android.uiautomator.core.UiObject;
+import com.android.uiautomator.core.UiObjectNotFoundException;
+import com.android.uiautomator.core.UiScrollable;
+import com.android.uiautomator.core.UiSelector;
+import com.android.uiautomator.testrunner.UiAutomatorTestCase;</p>
+<p>public class LaunchSettings extends UiAutomatorTestCase {   </p>
+<p>   public void testDemo() throws UiObjectNotFoundException {   </p>
+<pre><code>// Simulate a short press on the HOME button.
+getUiDevice().pressHome();
+
+// We’re now in the home screen. Next, we want to simulate
+// a user bringing up the All Apps screen.
+// If you use the uiautomatorviewer tool to capture a snapshot
+// of the Home screen, notice that the All Apps button’s
+// content-description property has the value “Apps”.  We can
+// use this property to create a UiSelector to find the button.
+UiObject allAppsButton = new UiObject(new UiSelector()
+   .description(&quot;Apps&quot;));
+
+// Simulate a click to bring up the All Apps screen.
+allAppsButton.clickAndWaitForNewWindow();
+
+// In the All Apps screen, the Settings app is located in
+// the Apps tab. To simulate the user bringing up the Apps tab,
+// we create a UiSelector to find a tab with the text
+// label “Apps”.
+UiObject appsTab = new UiObject(new UiSelector()
+   .text(&quot;Apps&quot;));
+
+// Simulate a click to enter the Apps tab.
+appsTab.click();
+
+// Next, in the apps tabs, we can simulate a user swiping until
+// they come to the Settings app icon.  Since the container view
+// is scrollable, we can use a UiScrollable object.
+UiScrollable appViews = new UiScrollable(new UiSelector()
+   .scrollable(true));
+
+// Set the swiping mode to horizontal (the default is vertical)
+appViews.setAsHorizontalList();
+
+// Create a UiSelector to find the Settings app and simulate      
+// a user click to launch the app.
+UiObject settingsApp = appViews.getChildByText(new UiSelector()
+   .className(android.widget.TextView.class.getName()),
+   &quot;Settings&quot;);
+settingsApp.clickAndWaitForNewWindow();
+
+// Validate that the package name is the expected one
+UiObject settingsValidation = new UiObject(new UiSelector()
+   .packageName(&quot;com.android.settings&quot;));
+assertTrue(&quot;Unable to detect Settings&quot;,
+   settingsValidation.exists());   
+</code></pre><p>  }<br>}
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#### Building and Deploying Your uiautomator Tests</div><div class="line">1. Once you have coded your test, follow these steps to build and deploy your test JAR to your target Android test device:</div><div class="line">Create the required build configuration files to build the output JAR. To generate the build configuration files, open a terminal and run the following command:</div></pre></td></tr></table></figure></p>
+<p><android-sdk>/tools/android create uitest-project -n <name> -t 1 -p <path></path>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">The &lt;name&gt; is the name of the project that contains your uiautomator test source files, and the &lt;path&gt; is the path to the corresponding project directory.</div><div class="line">2. From the command line, set the ANDROID_HOME variable:</div><div class="line">- In Windows:`set ANDROID_HOME=&lt;path_to_your_sdk&gt;`</div><div class="line">- In UNIX:`export ANDROID_HOME=&lt;path_to_your_sdk&gt;`</div><div class="line">3. Go to the project directory where your build.xml file is located and build your test JAR.</div></pre></td></tr></table></figure></name></android-sdk></p>
+<p>ant build
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">4. Deploy your generated test JAR file to the test device by using the adb push command:</div></pre></td></tr></table></figure></p>
+<p>adb push <path_to_output_jar> /data/local/tmp/
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Here’s an example:</div></pre></td></tr></table></figure></path_to_output_jar></p>
+<p>adb push ~/dev/workspace/LaunchSettings/bin/LaunchSettings.jar /data/local/tmp/
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#### Running uiautomator Tests</div><div class="line">Here’s an example of how to run a test that is implemented in the `LaunchSettings.jar` file. The tests are bundled in the `com.uia.example.my` package:</div></pre></td></tr></table></figure></p>
+<p>adb shell uiautomator runtest LaunchSettings.jar -c com.uia.example.my.LaunchSettings
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">To learn more about the syntax, subcommands, and options for uiautomator, see the [uiautomator](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/index.html) reference.</div><div class="line"></div><div class="line">#### Best Practices</div><div class="line">Here are some best practices for functional UI testing with the uiautomator framework:</div><div class="line"></div><div class="line">- Ensure that you validate the same UI functions on your application across the various types of devices that your application might run on (for example, devices with different screen densities).</div><div class="line">- You should also test your UI against common scenarios such as in-coming phone calls, network interruptions, and user-initiated switching to other applications on the device.</div><div class="line"></div><div class="line">### [uiautomator tools](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/index.html)</div><div class="line">The uiautomator testing framework lets you test your user interface (UI) efficiently by creating automated functional UI testcases that can be run against your app on one or more devices.</div><div class="line"></div><div class="line">For more information on testing with the uiautomator framework, see [UI Testing](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html).</div><div class="line"></div><div class="line">#### Syntax</div><div class="line">To run your testcases on the target device, you can use the `adb shell` command to invoke the `uiautomator` tool. The syntax is:</div></pre></td></tr></table></figure></p>
+<p>adb shell uiautomator runtest <jar> -c <test_class_or_method> [options]
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Here’s an example:</div></pre></td></tr></table></figure></test_class_or_method></jar></p>
+<p>adb shell uiautomator runtest LaunchSettings.jar -c com.uia.example.my.LaunchSettings
+```</p>
+<h4 id="Command-line-Options"><a href="#Command-line-Options" class="headerlink" title="Command-line Options"></a>Command-line Options</h4><p>The following table describes the subcommands and options for uiautomator.
+Table 1. Command-line options for uiautomator</p>
+<table>
+<thead>
+<tr>
+<th>Subcommand</th>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>runtest</td>
+<td><code>&lt;jar&gt;</code></td>
+<td>Required. The <jar> argument is the name of one or more JAR files that you deployed to the target device which contain your uiautomator testcases. You can list more than one JAR file by using a space as a separator.</jar></td>
+</tr>
+<tr>
+<td></td>
+<td><code>-c &lt;test_class_or_method&gt;</code></td>
+<td>Required. The <test_class_or_method> argument is a list of one or more specific test classes or test methods from the JARs that you want uiautomator to run.Each class or method must be fully qualified with the package name, in one of these formats: package_name.class_name package_name.class_name#method_name You can list multiple classes or methods by using a space as a separator.</test_class_or_method></td>
+</tr>
+<tr>
+<td></td>
+<td>–nohup</td>
+<td>Runs the test to completion on the device even if its parent process is terminated (for example, if the device is disconnected).</td>
+</tr>
+<tr>
+<td></td>
+<td>-e</td>
+<td><name> <value></value></name></td>
+<td>Specify other name-value pairs to be passed to test classes. May be repeated.Note: The -e options cannot be combined; you must prefix each option with a separate -e flag.</td>
+</tr>
+<tr>
+<td></td>
+<td>-e debug [true</td>
+<td>false]</td>
+<td>Wait for debugger to connect before starting.</td>
+</tr>
+<tr>
+<td></td>
+<td>dump    [file]</td>
+<td>Generate an XML file with a dump of the current UI hierarchy. If a filepath is not specified, by default, the generated dump file is stored on the device in this location <code>/storage/sdcard0/window_dump.xml</code>.</td>
+</tr>
+<tr>
+<td>events</td>
+<td></td>
+<td>Prints out accessibility events to the console until the connection to the device is terminated</td>
+</tr>
+</tbody>
+</table>
+<h3 id="UiAutomation-api"><a href="#UiAutomation-api" class="headerlink" title="UiAutomation api"></a><a href="https://developer.android.com/reference/android/app/UiAutomation.html" target="_blank" rel="external">UiAutomation api</a></h3><p>Class for interacting with the device’s UI by simulation user actions and introspection of the screen content. It relies on the platform accessibility APIs to introspect the screen and to perform some actions on the remote view tree. It also allows injecting of arbitrary raw input events simulating user interaction with keyboards and touch devices. One can think of a UiAutomation as a special type of AccessibilityService which does not provide hooks for the service life cycle and exposes other APIs that are useful for UI test automation.
+这是一个通过模拟用户操作来与设备用户界面交互以及获取屏幕内容的类。它依赖于平台的辅助功能APIs来在远程的控件树上获取屏幕内容以及执行一些操作。同时它也允许通过注入原生事件(译者注:指的就是InputEvent. KeyEvent也是继承于InputEvent的，所以说它是原生事件)来模拟用户的按键和触屏操作。我们可以认为UiAutomation就是一个特殊类型的AccessibilityService,其既不会为控制服务的生命周期而提供钩子函数，也不会暴露任何其他可以直接用于用户界面测试自动化的APIs.</p>
+<p>The APIs exposed by this class are low-level to maximize flexibility when developing UI test automation tools and libraries. Generally, a UiAutomation client should be using a higher-level library or implement high-level functions. For example, performing a tap on the screen requires construction and injecting of a touch down and up events which have to be delivered to the system by a call to injectInputEvent(InputEvent, boolean).
+这个类暴露出来的APIs是很低层的，目的就是为了在开发用户界面测试自动化框架和库时提供最大的弹性。总的来说，一个UiAutomation客户端应该使用一些（基于UiAutomation的)更高层次的库或者实现更高层次的方法。比如，模拟一个用户在屏幕上的点击事件需要构造并注入一个按下和一个弹起事件，然后必须调用UiAutomation的一个injectInputEvent(InputEvent, boolean)的调用来发送给操作系统。</p>
+<p>The APIs exposed by this class operate across applications enabling a client to write tests that cover use cases spanning over multiple applications. For example, going to the settings application to change a setting and then interacting with another application whose behavior depends on that setting.
+这个类暴露出来的APIs可以跨应用，这样用户就可以编写可以跨越多个应用的测试用例脚本了。比如，打开系统的设置应用去修改一些设置然后再与另外一个依赖于该设置的应用进行交互（译者注：这个在instrumentation这个框架可以做不到的）</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Automating-User-Interface-Tests&quot;&gt;&lt;a href=&quot;#Automating-User-Interface-Tests&quot; class=&quot;headerlink&quot; title=&quot;Automating User Interface Test
+    
+    </summary>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/categories/autotest/"/>
+    
+    
+      <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
+    
+      <category term="tools" scheme="http://wodekouwei.com/tags/tools/"/>
+    
+  </entry>
   
   <entry>
     <title>android自动化测试之(N):测试支持库</title>
@@ -150,9 +516,9 @@ android {
       <category term="autotest" scheme="http://wodekouwei.com/categories/autotest/"/>
     
     
-      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
-    
       <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
     
       <category term="tools" scheme="http://wodekouwei.com/tags/tools/"/>
     
@@ -192,9 +558,9 @@ android {
       <category term="autotest" scheme="http://wodekouwei.com/categories/autotest/"/>
     
     
-      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
-    
       <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
     
       <category term="tools" scheme="http://wodekouwei.com/tags/tools/"/>
     
@@ -1794,235 +2160,6 @@ ms-help://MS.MSDNQTR.v90.chs/medfound/html/13cd1106-48b3-4522-ac09-8efbaab5c31d.
       <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
     
       <category term="翻译" scheme="http://wodekouwei.com/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OpenGL混色</title>
-    <link href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/"/>
-    <id>http://wodekouwei.com/2017/06/27/gl-glBlendFunc/</id>
-    <published>2017-06-27T02:44:39.000Z</published>
-    <updated>2017-06-27T08:03:12.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。
-假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把将要绘制上去的红色和原来的绿色进行混合，于是得到一种新的颜色，看上去就好像玻璃是半透明的。
-要使用OpenGL的混合功能，只需要调用：<code>glEnable(GL_BLEND);</code>即可。要关闭OpenGL的混合功能，只需要调用：<code>glDisable(GL_BLEND);</code>即可。
-<strong>注意：</strong> 只有在RGBA模式下，才可以使用混合功能，颜色索引模式下是无法使用混合功能的。</p>
-<h3 id="1-源因子和目标因子"><a href="#1-源因子和目标因子" class="headerlink" title="1.源因子和目标因子"></a>1.源因子和目标因子</h3><p>混合需要把原来的颜色和将要画上去的颜色找出来，经过某种方式处理后得到一种新的颜色。这里把将要画上去的颜色称为“源颜色”，把原来的颜色称为“目标颜色”。
-OpenGL 会把源颜色和目标颜色各自取出，并乘以一个系数（源颜色乘以的系数称为“源因子”，目标颜色乘以的系数称为“目标因子”），然后相加，这样就得到了新的颜 色。（也可以不是相加，新版本的OpenGL可以设置运算方式，包括加、减、取两者中较大的、取两者中较小的、逻辑运算等）
-下面用数学公式来表达一下这个运算方式。假设源颜色的四个分量（指红色，绿色，蓝色，alpha值）是(Rs, Gs, Bs,  As)，目标颜色的四个分量是(Rd, Gd, Bd, Ad)，又设源因子为(Sr, Sg, Sb, Sa)，目标因子为(Dr, Dg, Db,  Da)。则混合产生的新颜色可以表示为：
-<code>(Rs*Sr+Rd*Dr, Gs*Sg+Gd*Dg, Bs*Sb+Bd*Db, As*Sa+Ad*Da)</code>
-如果颜色的某一分量超过了1.0，则它会被自动截取为1.0，不需要考虑越界的问题。</p>
-<p>源因子和目标因子是可以通过<code>glBlendFunc</code>函数来进行设置的。glBlendFunc有两个参数，前者表示源因子，后者表示目标因子。这两个参数可以是多种值，下面介绍比较常用的几种。</p>
-<ul>
-<li>GL_ZERO：表示使用0.0作为因子，实际上相当于不使用这种颜色参与混合运算。</li>
-<li>GL_ONE：表示使用1.0作为因子，实际上相当于完全的使用了这种颜色参与混合运算。</li>
-<li>GL_SRC_ALPHA：表示使用源颜色的alpha值来作为因子。</li>
-<li>GL_DST_ALPHA：表示使用目标颜色的alpha值来作为因子。</li>
-<li>GL_ONE_MINUS_SRC_ALPHA：表示用1.0减去源颜色的alpha值来作为因子。</li>
-<li>GL_ONE_MINUS_DST_ALPHA：表示用1.0减去目标颜色的alpha值来作为因子。</li>
-<li>GL_SRC_COLOR: 把源颜色的四个分量分别作为因子的四个分量</li>
-<li>GL_ONE_MINUS_SRC_COLOR</li>
-<li>GL_DST_COLOR</li>
-<li>GL_ONE_MINUS_DST_COLOR
-GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目标因子，GL_DST_COLOR与GL_ONE_MINUS_DST_COLOR在OpenGL 旧版本中只能用于设置源因子。新版本的OpenGL则没有这个限制，并且支持新的GL_CONST_COLOR（设定一种常数颜色，将其四个分量分别作为 因子的四个分量）、GL_ONE_MINUS_CONST_COLOR、GL_CONST_ALPHA、 GL_ONE_MINUS_CONST_ALPHA。另外还有GL_SRC_ALPHA_SATURATE。新版本的OpenGL还允许颜色的alpha 值和RGB值采用不同的混合因子。</li>
-</ul>
-<h3 id="2-模式示例"><a href="#2-模式示例" class="headerlink" title="2.模式示例"></a>2.模式示例</h3><ul>
-<li>如果设置了glBlendFunc(GL_ONE, GL_ZERO);，则表示完全使用源颜色，完全不使用目标颜色，因此画面效果和不使用混合的时候一致（当然效率可能会低一点点）。如果没有设置源因子和目标因子，则默认情况就是这样的设置。</li>
-<li>如果设置了glBlendFunc(GL_ZERO, GL_ONE);，则表示完全不使用源颜色，因此无论你想画什么，最后都不会被画上去了。（但这并不是说这样设置就没有用，有些时候可能有特殊用途）</li>
-<li>如果设置了glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);，则表示源颜色乘以自身的alpha 值，目标颜色乘以1.0减去源颜色的alpha值，这样一来，源颜色的alpha值越大，则产生的新颜色中源颜色所占比例就越大，而目标颜色所占比例则减 小。这种情况下，我们可以简单的将源颜色的alpha值理解为“不透明度”。这也是混合时最常用的方式。</li>
-<li>如果设置了glBlendFunc(GL_ONE, GL_ONE);，则表示完全使用源颜色和目标颜色，最终的颜色实际上就是两种颜色的简单相加。例如红色(1, 0, 0)和绿色(0, 1, 0)相加得到(1, 1, 0)，结果为黄色。
-注意：
-所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。</li>
-</ul>
-<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
-<p>模式二:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
-<p>模式一是传统的alpha通道混合，这种模式下颜色和alpha值是分立的，rgb决定颜色，alpha决定..（英文是决定how solid it is 水平有限找不到准确的中文来表达）
-在数学上表达式是：<code>blend(source, dest) = (source.rgb * source.a) + (dest.rgb * (1 – source.a)).</code>要注意的是这种模式下，透明只跟alpha有关，跟rgb值无关，一个透明的颜色，不透明的颜色有相同的rgb值，只要alpha=0即可。</p>
-<p>模式二是alpha预乘的混合（Premultiplied Alpha Blending），这种模式下rgb与alpha是联系在一起的，数学上的表达式是
-<code>blend(source, dest) = source.rgb + (dest.rgb * (1 – source.a))</code>,在这种模式下，透明的表示是rgb值都为0.</p>
-<h3 id="4-EGLSurface背景透明设置"><a href="#4-EGLSurface背景透明设置" class="headerlink" title="4.EGLSurface背景透明设置"></a>4.EGLSurface背景透明设置</h3><p>在OpenGL绘制中,除了设置混色外,还要设置EGLSurface配置支持Alpha,如果不设置EGL相关的EGLSurface支持透明,就算OpenGL函数中开启混色,绘制完成后仍是有黑色背景.</p>
-<h4 id="4-1GLSurfaceView"><a href="#4-1GLSurfaceView" class="headerlink" title="4.1GLSurfaceView"></a>4.1GLSurfaceView</h4><p>在onSurfaceCreated里，调用GLES20.glClearColor(0f, 0f, 0f, 0f);alpha为0，即透明。</p>
-<p>然后，对surfaceview要作一定处理：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</div><div class="line">TestRenderer renderer = new TestRenderer();</div><div class="line">mGLSurfaceView.setRender(renderer);</div><div class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</div><div class="line">mGLSurfaceView.setZOrderOnTop(true);</div></pre></td></tr></table></figure></p>
-<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">int[] CONFIG_RGBA = &#123;</div><div class="line">          EGL10.EGL_RED_SIZE, 8,</div><div class="line">          EGL10.EGL_GREEN_SIZE, 8,</div><div class="line">          EGL10.EGL_BLUE_SIZE, 8,</div><div class="line">          EGL10.EGL_ALPHA_SIZE, 8,</div><div class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</div><div class="line">          EGL10.EGL_NONE</div><div class="line">  &#125;;</div></pre></td></tr></table></figure></p>
-<h3 id="5-实现三维混合"><a href="#5-实现三维混合" class="headerlink" title="5.实现三维混合"></a>5.实现三维混合</h3><p>在进行三维场景的混合时必须注意的是深度缓冲。</p>
-<p>深度缓冲是这样一段数据，它记录了每一个像素距离观察者有多近。在启用深度缓冲测试的情况下，如果将要绘制的像素比原来的像素更近，则像素将被绘制。否则,像素就会被忽略掉，不进行绘制。这在绘制不透明的物体时非常有用——不管是先绘制近的物体再绘制远的物体，还是先绘制远的物体再绘制近的物体，或者干脆以 混乱的顺序进行绘制，最后的显示结果总是近的物体遮住远的物体。
-然而在你需要实现半透明效果时，发现一切都不是那么美好了。如果你绘制了一个近距离的半透明物体，则它在深度缓冲区内保留了一些信息，使得远处的物体将无法再被绘制出来。虽然半透明的物体仍然半透明，但透过它看到的却不是正确的内容了。
-要 解决以上问题，需要在绘制半透明物体时将深度缓冲区设置为只读，这样一来，虽然半透明物体被绘制上去了，深度缓冲区还保持在原来的状态。如果再有一个物体 出现在半透明物体之后，在不透明物体之前，则它也可以被绘制（因为此时深度缓冲区中记录的是那个不透明物体的深度）。以后再要绘制不透明物体时，只需要再 将深度缓冲区设置为可读可写的形式即可。怎么绘制一个一部分半透明一部分不透明的物体？这个好办，只需要把物体分为两个部分，一部分全是半透明 的，一部分全是不透明的，分别绘制就可以了。
-即使使用了以上技巧，我们仍然不能随心所欲的按照混乱顺序来进行绘制。必须是先绘制不透明的物体，然 后绘制透明的物体。否则，假设背景为蓝色，近处一块红色玻璃，中间一个绿色物体。如果先绘制红色半透明玻璃的话，它先和蓝色背景进行混合，则以后绘制中间 的绿色物体时，想单独与红色玻璃混合已经不能实现了。
-总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
-调用glDepthMask(GL_FALSE);可将深度缓冲区设置为只读形式。调用glDepthMask(GL_TRUE);可将深度缓冲区设置为可读可写形式。</p>
-<blockquote>
-<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="external">glBlendFunc函数官网文档</a></p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。
-假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把
-    
-    </summary>
-    
-      <category term="OpenGL" scheme="http://wodekouwei.com/categories/OpenGL/"/>
-    
-    
-      <category term="OpenGL" scheme="http://wodekouwei.com/tags/OpenGL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>android系统编码MediaCodec</title>
-    <link href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/"/>
-    <id>http://wodekouwei.com/2017/06/25/tips-android-mediacodec/</id>
-    <published>2017-06-25T08:03:24.000Z</published>
-    <updated>2017-06-25T08:20:18.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
-The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>SD (Low quality)</th>
-<th>SD (High quality)</th>
-<th>HD 720p (N/A on all devices)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Video resolution</td>
-<td>176 x 144 px</td>
-<td>480 x 360 px</td>
-<td>1280 x 720 px</td>
-</tr>
-<tr>
-<td>Video frame rate</td>
-<td>12 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-</tr>
-<tr>
-<td>Video bitrate</td>
-<td>56 Kbps</td>
-<td>500 Kbps</td>
-<td>2 Mbps</td>
-</tr>
-<tr>
-<td>Audio codec</td>
-<td>AAC-LC</td>
-<td>AAC-LC</td>
-<td>AAC-LC</td>
-</tr>
-<tr>
-<td>Audio channels</td>
-<td>1 (mono)</td>
-<td>2 (stereo)</td>
-<td>2 (stereo)</td>
-</tr>
-<tr>
-<td>Audio bitrate</td>
-<td>24 Kbps</td>
-<td>128 Kbps</td>
-<td>192 Kbps</td>
-</tr>
-</tbody>
-</table>
-<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>SD (Low quality)</th>
-<th>SD (High quality)</th>
-<th>HD 720p (N/A on all devices)</th>
-<th>HD 1080p (N/A on all devices)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Video resolution</td>
-<td>320 x 180 px</td>
-<td>640 x 360 px</td>
-<td>1280 x 720 px</td>
-<td>1920 x 1080 px</td>
-</tr>
-<tr>
-<td>Video frame rate</td>
-<td>30 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-</tr>
-<tr>
-<td>Video bitrate</td>
-<td>800 Kbps</td>
-<td>2 Mbps</td>
-<td>4 Mbps</td>
-<td>10 Mbps</td>
-</tr>
-</tbody>
-</table>
-<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
-<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
-<p>Each profile specifies the following set of parameters:</p>
-<ul>
-<li>The file output format</li>
-<li>Video codec format</li>
-<li>Video bit rate in bits per second</li>
-<li>Video frame rate in frames per second</li>
-<li>Video frame width and height,</li>
-<li>Audio codec format</li>
-<li>Audio bit rate in bits per second,</li>
-<li>Audio sample rate</li>
-<li>Number of audio channels for recording.</li>
-</ul>
-<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
-<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
-<p>the result is always the same ( a very high frame rate )
-Is the encoder ignoring this property ? how can I control the frame rate ?</p>
-<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
-<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
-<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
-<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
-<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
-<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
-<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;android编码器支持参数&quot;&gt;&lt;a href=&quot;#android编码器支持参数&quot; class=&quot;headerlink&quot; title=&quot;android编码器支持参数&quot;&gt;&lt;/a&gt;android编码器支持参数&lt;/h3&gt;&lt;h4 id=&quot;Supported-Media-F
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>media-storage-and-transfer</title>
-    <link href="http://wodekouwei.com/2017/06/20/media-storage-and-transfer/"/>
-    <id>http://wodekouwei.com/2017/06/20/media-storage-and-transfer/</id>
-    <published>2017-06-20T15:10:09.000Z</published>
-    <updated>2017-06-20T15:10:09.000Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
     
   </entry>
   
