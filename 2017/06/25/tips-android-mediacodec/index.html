@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="android编码器支持参数Supported Media FormatsVideo encoding recommendations The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Ba">
+<meta name="description" content="android编码器局限性1. 颜色格式问题MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色">
 <meta name="keywords" content="多媒体,Android,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="android系统编码MediaCodec">
 <meta property="og:url" content="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="android编码器支持参数Supported Media FormatsVideo encoding recommendations The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Ba">
-<meta property="og:updated_time" content="2017-06-25T08:20:18.000Z">
+<meta property="og:description" content="android编码器局限性1. 颜色格式问题MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色">
+<meta property="og:updated_time" content="2017-09-20T09:29:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android系统编码MediaCodec">
-<meta name="twitter:description" content="android编码器支持参数Supported Media FormatsVideo encoding recommendations The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Ba">
+<meta name="twitter:description" content="android编码器局限性1. 颜色格式问题MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色">
 
 
 
@@ -435,7 +435,42 @@
       
 
       
-        <h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
+        <h3 id="android编码器局限性"><a href="#android编码器局限性" class="headerlink" title="android编码器局限性"></a>android编码器局限性</h3><h4 id="1-颜色格式问题"><a href="#1-颜色格式问题" class="headerlink" title="1. 颜色格式问题"></a>1. 颜色格式问题</h4><p>MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色格式，而对于Android的摄像头在onPreviewFrame输出的YUV帧格式，如果没有配置任何参数的情况下，基本上都是NV21格式，但Google对MediaCodec的API在设计和规范的时候，显得很不厚道，过于贴近Android的HAL层了，导致了NV21格式并不是所有机器的MediaCodec都支持这种格式作为编码器的输入格式！</p>
+<p>因此，在初始化MediaCodec的时候，我们需要通过codecInfo.getCapabilitiesForType来查询机器上的MediaCodec实现具体支持哪些YUV格式作为输入格式，一般来说，起码在4.4+的系统上，这两种格式在大部分机器都有支持：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Plannder</div><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlannder</div></pre></td></tr></table></figure></p>
+<p>两种格式分别是YUV420P和NV21，如果机器上只支持YUV420P格式的情况下，则需要先将摄像头输出的NV21格式先转换成YUV420P，才能送入编码器进行编码，否则最终出来的视频就会花屏，或者颜色出现错乱</p>
+<p>这个算是一个不大不小的坑，基本上用上了MediaCodec进行视频编码都会遇上这个问题</p>
+<h4 id="2-编码器支持特性相当有限"><a href="#2-编码器支持特性相当有限" class="headerlink" title="2. 编码器支持特性相当有限"></a>2. 编码器支持特性相当有限</h4><p>如果使用MediaCodec来编码H264视频流，对于H264格式来说，会有一些针对压缩率以及码率相关的视频质量设置，典型的诸如Profile(baseline, main, high)，Profile Level, Bitrate mode(CBR, CQ, VBR)，合理配置这些参数可以让我们在同等的码率下，获得更高的压缩率，从而提升视频的质量，Android也提供了对应的API进行设置，可以设置到MediaFormat中这些设置项:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MediaFormat.KEY_BITRATE_MODE</div><div class="line">MediaFormat.KEY_PROFILE</div><div class="line">MediaFormat.KEY_LEVEL</div></pre></td></tr></table></figure></p>
+<p>但问题是，对于Profile，Level, Bitrate mode这些设置，在大部分手机上都是不支持的，即使是设置了最终也不会生效，例如设置了Profile为high，最后出来的视频依然还会是Baseline….</p>
+<p>这个问题，在7.0以下的机器几乎是必现的，其中一个可能的原因是，Android在源码层级hardcode了profile的的设置：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//XXXX</div><div class="line">if(h264type.eProfile != OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ALOGW(&quot;Use baseline profile instead of %d for AVC recording&quot;, h264type.eProfile);</div><div class="line">  h264type.eProfile = OMX_VIDEO_AVCProfileBaseline;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Android直到7.0之后才取消了这段地方的Hardcode:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(h264type.eProfile == OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ....</div><div class="line">&#125;else if(h264type.eProfile == OMX_VIDEO_AVCProfileMain</div><div class="line">  || h264type.eProfile == OMX_VIDEO_AVCProfileBaseHigh)</div><div class="line">  .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个问题可以说间接导致了MediaCodec编码出来的视频质量偏低，同等码率下，难以获得跟软编码甚至iOS那样的视频质量。</p>
+<h4 id="3-16位对齐要求"><a href="#3-16位对齐要求" class="headerlink" title="3. 16位对齐要求"></a>3. 16位对齐要求</h4><p>前面说到，MediaCodec这个API在设计的时候，过于贴近HAL层，这在很多Soc的实现上，是直接把传入MediaCodec的buffer，在不经过任何前置处理的情况下就直接送入了Soc中。而在编码h264视频流的时候，由于h264的编码块大小一般是16x16，于是乎在一开始设置视频的宽高的时候，如果设置了一个没有对齐16的大小，例如960x540，在某些cpu上，最终编码出来的视频就会直接花屏！</p>
+<p>很明显这还是因为厂商在实现这个API的时候，对传入的数据缺少校验以及前置处理导致的，目前来看，华为，三星的Soc出现这个问题会比较频繁，其他厂商的一些早期Soc也有这种问题，一般来说解决方法还是在设置视频宽高的时候，统一设置成对齐16位之后的大小就好了。</p>
+<h4 id="4-软编解码介绍"><a href="#4-软编解码介绍" class="headerlink" title="4.软编解码介绍"></a>4.软编解码介绍</h4><p>除了使用MediaCodec进行编码之外，另外一种比较流行的方案就是使用ffmpeg+x264/openh264进行软编码，ffmpeg是用于一些视频帧的预处理。这里主要是使用x264/openh264作为视频的编码器。</p>
+<ol>
+<li>x264基本上被认为是当今市面上最快的商用视频编码器，而且基本上所有h264的特性都支持，通过合理配置各种参数还是能够得到较好的压缩率和编码速度的，限于篇幅，这里不再阐述h264的参数配置，有兴趣可以看下这两篇文章对x264编码参数的调优：</li>
+</ol>
+<ul>
+<li><a href="https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn" target="_blank" rel="external">https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn</a></li>
+<li><a href="http://www.cnblogs.com/wainiwann/p/5647521.html" target="_blank" rel="external">http://www.cnblogs.com/wainiwann/p/5647521.html</a></li>
+</ul>
+<ol>
+<li>openh264(<a href="https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。" target="_blank" rel="external">https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。</a></li>
+</ol>
+<p>但对比起x264，openh264在h264高级特性的支持比较差：</p>
+<ul>
+<li>Profile只支持到baseline, level 5.2</li>
+<li>多线程编码只支持slice based，不支持frame based的多线程编码</li>
+</ul>
+<p>从编码效率上来看，openh264的速度也并不会比x264快，不过其最大的好处，还是能够直接免费使用吧。</p>
+<blockquote>
+<p>参考<a href="https://mp.weixin.qq.com/s/gwjL2OuoLVExbhYtbdpF2g" target="_blank" rel="external">微信Android视频编码爬过的那些坑</a></p>
+</blockquote>
+<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
 The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
 <table>
 <thead>
@@ -705,7 +740,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -716,7 +751,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -727,7 +762,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -821,7 +856,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#android编码器支持参数"><span class="nav-number">1.</span> <span class="nav-text">android编码器支持参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Supported-Media-Formats"><span class="nav-number">1.1.</span> <span class="nav-text">Supported Media Formats</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CamcorderProfile"><span class="nav-number">1.2.</span> <span class="nav-text">CamcorderProfile</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android编码器常见问题"><span class="nav-number">2.</span> <span class="nav-text">Android编码器常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><span class="nav-number">2.1.</span> <span class="nav-text">MediaCodec KEY_FRAME_RATE seems to be ignored</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#android编码器局限性"><span class="nav-number">1.</span> <span class="nav-text">android编码器局限性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-颜色格式问题"><span class="nav-number">1.1.</span> <span class="nav-text">1. 颜色格式问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-编码器支持特性相当有限"><span class="nav-number">1.2.</span> <span class="nav-text">2. 编码器支持特性相当有限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-16位对齐要求"><span class="nav-number">1.3.</span> <span class="nav-text">3. 16位对齐要求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-软编解码介绍"><span class="nav-number">1.4.</span> <span class="nav-text">4.软编解码介绍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#android编码器支持参数"><span class="nav-number">2.</span> <span class="nav-text">android编码器支持参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Supported-Media-Formats"><span class="nav-number">2.1.</span> <span class="nav-text">Supported Media Formats</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CamcorderProfile"><span class="nav-number">2.2.</span> <span class="nav-text">CamcorderProfile</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android编码器常见问题"><span class="nav-number">3.</span> <span class="nav-text">Android编码器常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><span class="nav-number">3.1.</span> <span class="nav-text">MediaCodec KEY_FRAME_RATE seems to be ignored</span></a></li></ol></li></ol></div>
             
 
           </div>

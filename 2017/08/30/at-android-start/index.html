@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="android,autotest,tools," />
+  <meta name="keywords" content="autotest,android,tools," />
 
 
 
@@ -90,16 +90,18 @@
 
 
 <meta name="description" content="了解android测试需要查询android官方文档,android官方培训教程Getting Started with Testing介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确. 两种测试类型在使用Android Studio创建模块时会在src下生成androidTest和test两个用于测试的的目录,对">
-<meta name="keywords" content="android,autotest,tools">
+<meta name="keywords" content="autotest,android,tools">
 <meta property="og:type" content="article">
 <meta property="og:title" content="android自动化测试(一):UiAutomator官方介绍">
 <meta property="og:url" content="http://wodekouwei.com/2017/08/30/at-android-start/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="了解android测试需要查询android官方文档,android官方培训教程Getting Started with Testing介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确. 两种测试类型在使用Android Studio创建模块时会在src下生成androidTest和test两个用于测试的的目录,对">
-<meta property="og:updated_time" content="2017-08-31T02:03:21.000Z">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/at_sum.png">
+<meta property="og:updated_time" content="2017-09-29T04:27:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android自动化测试(一):UiAutomator官方介绍">
 <meta name="twitter:description" content="了解android测试需要查询android官方文档,android官方培训教程Getting Started with Testing介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确. 两种测试类型在使用Android Studio创建模块时会在src下生成androidTest和test两个用于测试的的目录,对">
+<meta name="twitter:image" content="http://images.wodekouwei.com/technology/at_sum.png">
 
 
 
@@ -436,10 +438,20 @@
 
       
         <p>了解android测试需要查询android官方文档,android官方培训教程<a href="https://developer.android.com/training/testing/start/index.html" target="_blank" rel="external">Getting Started with Testing</a>介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确.</p>
-<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型:</p>
+<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型.
+<img src="http://images.wodekouwei.com/technology/at_sum.png" alt="image"></p>
 <h4 id="本地单元测试-Local-unit-tests"><a href="#本地单元测试-Local-unit-tests" class="headerlink" title="本地单元测试(Local unit tests)"></a>本地单元测试(Local unit tests)</h4><p>位于<code>module-name/src/test/java/.</code>下,运行在PC端本地的JVM虚拟机上,并且不能访问Android框架的接口.
 参考<a href="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html" target="_blank" rel="external">Building Local Tests</a></p>
-<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.</p>
+<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.
+参考<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a></p>
+<p>Instrumented unit tests are tests that run on physical devices and emulators, and they can take advantage of the Android framework APIs and supporting APIs, such as the Android Testing Support Library. You should create instrumented unit tests if your tests need access to instrumentation information (such as the target app’s Context) or if they require the real implementation of an Android framework component (such as a Parcelable or SharedPreferences object).</p>
+<p>Using instrumented unit tests also helps to reduce the effort required to write and maintain mock code. You are still free to use a mocking framework, if you choose, to simulate any dependency relationships.</p>
+<p>设备化单元测试分为:</p>
+<ul>
+<li>设备化单元测试(Instrumented Unit Test):<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a>: Build complex unit tests with Android dependencies that cannot be satisfied with mock objects.</li>
+<li>组件集成测试:<a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a>: Create tests to verify that the user interface behaves correctly for user interactions within a single app or for interactions across multiple apps.</li>
+<li>app集成测试:<a href="https://developer.android.com/training/testing/integration-testing/index.html" target="_blank" rel="external">Testing App Component Integrations</a>: Verify the behavior of components that users do not directly interact with, such as a Service or aContent Provider.</li>
+</ul>
 
       
     </div>
@@ -490,9 +502,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/android/" rel="tag"># android</a>
-          
             <a href="/tags/autotest/" rel="tag"># autotest</a>
+          
+            <a href="/tags/android/" rel="tag"># android</a>
           
             <a href="/tags/tools/" rel="tag"># tools</a>
           
@@ -599,7 +611,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -610,7 +622,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -621,7 +633,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
