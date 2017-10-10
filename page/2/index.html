@@ -323,6 +323,367 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/12/tips-media-profile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/12/tips-media-profile/" itemprop="url">
+                  音视频参数之Profile
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-12T12:12:19+08:00">
+                2017-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>前两天发现公司产品 <strong>触发</strong> 有导入从微信等下载的外部小视频时失败的情况, <strong>触发</strong> 导入视频时使用开源库<a href="https://github.com/INDExOS/media-for-mobile" target="_blank" rel="external">media-for-mobile</a>对视频进行重新编码.media-for-mobile使用android系统接口<code>android.media.MediaExtractor</code>对mp4文件解复用,使用android硬件编解码接口<code>android.media.MediaCodec</code>对视频解码-处理-编码操作,最后通过Android系统API<code>android.media.MediaMuxer</code>将视频写成文件.</p>
+<p>反馈的两个有问题视频,一个视频导入时报<code>BufferOverFlowException</code>错误,另一个视频不报错但是导入时进度一直为0%.</p>
+<p>经分析出问题的两个视频的Video profile为High,普通视频为<code>Baseline</code>,报<code>BufferOverFlowException</code>错误的视频的Audio profile为<code>HE-AAC</code>,普通视频的Audio profile为<code>LC</code>.
+详细了解了一下H264 与AAC profile:</p>
+<h4 id="H264各种profile"><a href="#H264各种profile" class="headerlink" title="H264各种profile"></a>H264各种profile</h4><p>作为行业标准，H.264编码体系定义了4种不同的Profile(类)：Baseline(基线类),Main(主要类), Extended(扩展类)和High Profile(高端类)（它们各自下分成许多个层）：</p>
+<ol>
+<li><code>Baseline Profile</code>: 提供I/P帧，仅支持progressive(逐行扫描)和CAVLC；</li>
+<li><code>Extended Profile</code>: 提供I/P/B/SP/SI帧，仅支持progressive(逐行扫描)和CAVLC；</li>
+<li><code>Main Profile:</code> 提供I/P/B帧，支持progressive(逐行扫描)和interlaced(隔行扫描)，提供CAVLC或CABAC；</li>
+<li><code>High Profile</code>: （也就是FRExt）在Main Profile基础上新增：8x8 intra prediction(8x8 帧内预测), custom quant(自定义量化), lossless video coding(无损视频编码), 更多的yuv格式（4:4:4…）；</li>
+</ol>
+<p>H.264在高清中具有最小体积。在同等图像质量下，采用H.264技术压缩后的数据量只有MPEG2的1/8，MPEG4的1/3，相对Xvid、Divx等属于MPEG4编码而言，其体积优势明显，在互联网上，H.264资源处在爆发趋势。而High Profile是H.264解码中的高端类型，拥有最完善的支持程度、最优秀的特性，可以说是高清视频编码中的劳斯莱斯，只有征服了这个优秀的编码，MP4才能将H.264完全掌控，也才能充分享受到高清视频带来的视觉震撼，意义非凡。</p>
+<p>针对当前高清是视频会议行业的主流发展趋势，而目前高清普及的主要阻力之一就是带宽的限制。而High Profile H.264技术在同等视频质量的情况下可节省50%的带宽，为客户节省大量的网络带宽成本。据业内专家介绍，此次H.264 High Profile的推出是视频技术的一个巨大进步，其意义不亚于2003年从H.263向H.264过渡的价值。它将为目前正在推广的高清视频通信应用扫清了令人头疼的网络带宽障碍，不仅如此，这些变化对于包括CIF、标清等品质的视频通信应用也同样适用。</p>
+<p>鉴于High Profile H.264对于视频会议行业的非凡影响，目前已有国内外厂商尝鲜，宣布其旗下产品全面支持该项技术，包括宝利通、华平、华腾网讯。从这一趋势来看，未来视频会议产品全面支持High Profile H.264也经成为不可逆转的潮流，而高清普及也在技术层面更近了一步。</p>
+<blockquote>
+<p>参考:
+<a href="http://blog.csdn.net/qiaoliang328/article/details/10153313" target="_blank" rel="external">H264 各种profile</a></p>
+</blockquote>
+<h4 id="AAC各种profile"><a href="#AAC各种profile" class="headerlink" title="AAC各种profile"></a>AAC各种profile</h4><h5 id="AAC共有9种规格，以适应不同的场合的需要："><a href="#AAC共有9种规格，以适应不同的场合的需要：" class="headerlink" title="AAC共有9种规格，以适应不同的场合的需要："></a>AAC共有9种规格，以适应不同的场合的需要：</h5><ol>
+<li><code>MPEG-2 AAC LC</code>: 低复杂度规格（Low Complexity）–比较简单，没有增益控制，但提高了编码效率，在中等码率的编码效率以及音质方面，都能找到平衡点</li>
+<li><code>MPEG-2 AAC Main</code>: 主规格    </li>
+<li><code>MPEG-2 AAC SSR</code>: 可变采样率规格（Scaleable Sample Rate）</li>
+<li><code>MPEG-4 AAC LC</code>: 低复杂度规格（Low Complexity）——现在的手机比较常见的MP4文件中的音频部份就包括了该规格音频文件</li>
+<li><code>MPEG-4 AAC Main</code>: 主规格   ——包含了除增益控制之外的全部功能，其音质最好</li>
+<li><code>MPEG-4 AAC SSR</code>: 可变采样率规格（Scaleable Sample Rate）</li>
+<li><code>MPEG-4 AAC LTP</code>: 长时期预测规格（Long Term Predicition）</li>
+<li><code>MPEG-4 AAC LD</code>: 低延迟规格（Low Delay）</li>
+<li><code>MPEG-4 AAC HE</code>: 高效率规格（High Efficiency）—–这种规格适合用于低码率编码，有Nero ACC 编码器支持</li>
+</ol>
+<p>14496-3标准，里面定义的profile除了上述的一些规格，还有如Scalable 、 TwinVQ、  CELP、  HVXC等更多其他的profile。</p>
+<p>目前听到用的比较多的应该是LC和HE(适合低码率)。流行的Nero AAC的命令行编码程序就支持LC，HE，HEv2这三种，试用后，用MediaInfo分析了编码后的AAC音频，发现规格显示都是LC，当时就感到奇怪，不是说支持三种规格吗？然后才又查资料发现，原来HE其实就是AAC（LC）+SBR技术，HEv2就是AAC（LC）+SBR+PS技术，难怪用MediaInfo分析后，HE规格的文件即显示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">格式简介:LC</div><div class="line">格式设置,SBR:是</div><div class="line">格式设置,PS:否</div></pre></td></tr></table></figure></p>
+<h5 id="HE与HEv2"><a href="#HE与HEv2" class="headerlink" title="HE与HEv2"></a>HE与HEv2</h5><ul>
+<li><p>HE：“high efficiency”（高效性）。HE-AAC v1（又称AACPlusV1，SBR)用容器的方法加了原AAC（LC）+SBR技术。SBR其实代表的是Spectral Band Replication(频段复制)。简单概括一下，音乐的主要频谱集中在低频段，高频段幅度很小（但很重要，决定了音质），如果对整个频段编码，要么为了保护高频造成低频段编码过细以致文件巨大，要么为了保存了低频的主要成分而失去高频成分以致丧失音质。SBR把频谱切割开来，低频单独编码保存主要成分，高频单独放大编码保存音质，“统筹兼顾”了，在减少文件大小的情况下还保存了音质，完美的化解了一对矛盾</p>
+</li>
+<li><p>HEv2 它用容器的方法包含了HE-AAC v1和PS技术。PS指“parametric stereo”（参数立体声）。这个其实好理解，原来的立体声文件，文件大小是一个声道的两倍。但是两个声道的声音存在某种相似性，根据香农信息熵编码定理，相关性应该被去掉才能减小文件大小。所以PS技术存储了一个声道的全部信息，然后，花很少的字节用参数描述另一个声道和它不同的地方
+这样，HEv1和HEv2用个图简单表示下就是：(图中的AAC即指的是原来的AAC-LC)
+<img src="http://images.wodekouwei.com/media/aac-he.jpg" alt="image">
+由于NERO AAC编码后产生的是经过MP4容器封装后的，而我们的decoder需要处理的是未经封装的AAC流，因此还需要处理从MP4封装格式中extract出AAC流的步骤；哦，这里提到了MP4容器封装，就再把我看到的一些关于MP4容器的心得插入在此也说下：</p>
+</li>
+</ul>
+<p>其实.mp4格式规范是MPEG4 Part 1标准定义的。但是这个格式本身相当通用，并不是只能用来存贮MPEG4视频格式。举个例子，一个.mp4文件中包含的可能是H.263的视频轨及AMR的音频轨。这样它和MPEG4视频压缩算法就半点边都沾不上。但它绝对是一个合法的.mp4文件。从这个意义上讲，.mp4是一个独立的封包格式。也许它的原始设计意图是仅用于MPEG4，但事实上大家觉得它很好用，已经把它扩展成可以包容其它格式了。现在市场上比如某产品号称“支持MP4播放”，到底是什么意思呢？如果它是指可以播放<em>.mp4这种文件，那里面的音频和视频格式它能支持多少种组合呢？没说清楚吧。举个极端的例子，假设一台设备仅支持“视频为未压缩YUV以及不带音频轨的.mp4文件，但它的文件名确实可以是</em>.mp4，是不是也可以在盒子上印上“支持MP4”呢？那么，买回去，复制一个网上下载的.mp4文件（MPEG4视频和AAC音频应该是个比较流行的组合），结果却发现根本不能播放。就算不举这么极端的例子，一般.mp4文件中常见的视频音频格式也有多种，一个产品要做到支持所有的格式是很难的。所以，如果要准确的描述，应该写清楚类似“支持视频格式为MPEG4或H.264/AVC，音频为AMR或AAC的*.mp4文件”。其实更严格一些，还应该写清楚MPEG4支持到哪种profile, AMR是NB还是WB，AAC是LC还是HE等更多细节。当然，这种误导型的说明应该在减少，不过如果有比较确切的格式需求，最好还是先搞清楚这些细节。看到网上还有人说到N73，其实只支持视频为MPEG4 Simple Profile / Advanced Simple Profile及H.263 Profile 0 &amp; 3，音频为AMR-NB/WB或者AAC-LC, HE-AAC的mp4文件。如果你放一个视频格式为H.264/AVC的mp4上去，是无法播放出画面来的。</p>
+<p>在网上找了一些工具，如MP4UI,MP4BOX,Yamb(mp4box的GUI程序),采用它们进行extract操作后发现，原来的SBR和PS等信息咋没有了，都变成LC规格的AAC文件啦。好容易准备的测试流，难道还是不能用？于是一番苦寻发现，可能是SBR和PS等信息在ADTS头中是无法体现的，所以分析ADTS格式头的AAC，就无法判别是否是HE和HEv2啦。但是我总觉得SBR和PS等技术信息在AAC流中应该还是存在的。因为我还在一个国外的论坛上看到这么几句话：There’s no requirement for MP4 with AAC to have SBR indicated in the headers. It’s still correct not to have it marked and have SBR or PS data in the stream anyway. Likewise, decoding a frame and not seeing any SBR or PS info doesn’t mean you can’t find it further up in the stream anyway（我理解就是说SBR OR PS信息不一定在Header中有，但是并不意味着你不能进一步在stream中发现它）。</p>
+<p><strong>HE-AAC的.mp4码流，经过extract出AAC(ADTS)后，44.1KHZ的变成了22.05KHZ。HEv2-AAC的.mp4码流，经过extract出AAC(ADTS)后，不但44.1KHZ的变成了22.05KHZ(一半)，连2channels也变成了1channels</strong>，这个问题更奇怪了，在论坛上找，发现也有人有此问题：“I get 22050Hz, 1 channel for audio that is in fact 44100Hz, 2channels and having both SBR and PS”。</p>
+<p>后来看到MSDN中的AAC Decoder的描述中有这么一小段话：
+The media type gives the sample rate and number of channels prior to the application of spectral band replication (SBR) and parametric stereo (PS) tools, if present. The effect of the SBR tool is to double the decoded sample rate relative to the core AAC-LC sample rate. The effect of the PS tool is to decode stereo from a mono-channel core AAC-LC stream.
+我的理解是AAC的decoder如果支持SBR和PS，会将AAC-HEV1(SBR)中的sample rate提高一倍，而会将AAC-HEV2(SBR+PS)中不仅sample rate提高一倍，单声道也提高至双声道了。结合前面提到的SBR(频段复制)和PS(参数立体声）技术的简单介绍，好像觉得这样是有点儿道理的哦~~
+用IPP example提供的解码工具simple_player简单试了下，对于44.1khz，stereo的HEv2-AAC的.mp4码流，经过extract出22.05KHZ，mono 的AAC(ADTS)后，再使用simple_player进行音频解码测试，解完后，果然发现又恢复了44.1khz和stereo。（但目前也测试了好几种extract出的HE和HEv2的aac码流，有的能将sample rate和channel 又double回来，有的又不能，这个具体原因是不是由于Ipp example提供的解码器的问题还不确定）。</p>
+<p>另外，用simple_player如果直接decoder编码出的经过封装的.mp4格式的AAC音频的话，发现：其它都正常，只AAC-HEv2格式的.mp4音频解码后变成了单声道。难道是解码器中的PS tools没能发挥作用？初步估计应该是IPP 的那个小解码器的问题吧。</p>
+<h5 id="关于ADTS-amp-ADIF"><a href="#关于ADTS-amp-ADIF" class="headerlink" title="关于ADTS&amp;ADIF"></a>关于ADTS&amp;ADIF</h5><p>上面说到了ADTS头格式的AAC。其实，AAC的音频文件格式有以下两种：</p>
+<ul>
+<li><strong>ADIF</strong>：Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不需进行在音频数据流中间开始的解码，即它的解码必须在明确定义的开始处进行。故这种格式常用在磁盘文件中。</li>
+<li><strong>ADTS</strong>：Audio Data Transport Stream 音频数据传输流。这种格式的特征是它是一个有同步字的比特流，解码可以在这个流中任何位置开始。它的特征类似于mp3数据流格式。
+简单说，ADTS可以在任意帧解码，也就是说它每一帧都有头信息。ADIF只有一个统一的头，所以必须得到所有的数据后解码。且这两种的header的格式也是不同的，具体的组织结构在这里就不详说了。</li>
+</ul>
+<blockquote>
+<p>参考:
+<a href="http://blog.csdn.net/axdc_qa_team/article/details/4271043" target="_blank" rel="external">AAC的各种规格</a></p>
+</blockquote>
+<h4 id="问题原因分析"><a href="#问题原因分析" class="headerlink" title="问题原因分析"></a>问题原因分析</h4><p>首先<code>BufferOverFlowException</code>问题,由于音频采用AAC-HE导致MediaExtractor解析出的音频采样率为本身采样率的一半,同时创建出的解码OutputBuffer的大小是编码InputBuffer的2倍,而media-for-mobile开源项目直接将从解码器OutputBuffer取出的数据塞入编码器InputBuffer中,2倍的数据放入一倍的Buffer导致溢出,暂时的解决办法手动指定编码器InputBuffer max-size为一个较大值(10*1024).同时,由于MediaExtractor不能获取正确的audio profile,也无法确认获取到的采样率是否不正确采样率的一半,所以采用ffmpeg接口获取profile,但是ffmpeg调用<code>avcodec_open2</code>获取到的profile为-99,而且采样率依然为正常采样率一半,只有在解码一帧音频后才能得到正确的profile与采样率.</p>
+<p>其次,转码进度不增加的问题,主要是High的H264视频,media-for-mobile使用一个MediaExtractor一次抽取音视频帧,如果是音频则交音频解码器,如果为视频则交视频解码器,解码后将解码帧转交编码器,编码后将数据写入MediaMuxer,将数据写入MediaMuxer的前提是吊用过addTrack,将音视频track加入到Muxer中,而addTrack需要在音视频解码若干帧后产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>,若没有addTrack会导致编码后数据如法写入Muxer,卡死编码器,Baseline视频只需要少量帧就可以产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>,但High视频产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>需要更多的帧,而media-for-mobile中,MediaExtractor首先一直获取到的是音频数据,音频一直解码编码,但是输出的muxer时,videotrack未被添加,所以无法将音频编码器的数据写入muxer,音频解码器被卡死,而mediasource一直被产生的audio数据无法被消费,无法获取到视频数据导致视频<code>INFO_OUTPUT_FORMAT_CHANGED</code>一直无法产生,最终产生死锁,导致audio等待video的<code>INFO_OUTPUT_FORMAT_CHANGED</code>,video等待audio被读完后读到video解码产生<code>INFO_OUTPUT_FORMAT_CHANGED</code>.</p>
+<p>最后将audio和video使用两个<code>MediaExtractor</code>各读取各自内容.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/30/at-android-start/" itemprop="url">
+                  android自动化测试(一):UiAutomator官方介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:43:15+08:00">
+                2017-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/autotest/" itemprop="url" rel="index">
+                    <span itemprop="name">autotest</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>了解android测试需要查询android官方文档,android官方培训教程<a href="https://developer.android.com/training/testing/start/index.html" target="_blank" rel="external">Getting Started with Testing</a>介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确.</p>
+<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型.
+<img src="http://images.wodekouwei.com/technology/at_sum.png" alt="image"></p>
+<h4 id="本地单元测试-Local-unit-tests"><a href="#本地单元测试-Local-unit-tests" class="headerlink" title="本地单元测试(Local unit tests)"></a>本地单元测试(Local unit tests)</h4><p>位于<code>module-name/src/test/java/.</code>下,运行在PC端本地的JVM虚拟机上,并且不能访问Android框架的接口.
+参考<a href="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html" target="_blank" rel="external">Building Local Tests</a></p>
+<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.
+参考<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a></p>
+<p>Instrumented unit tests are tests that run on physical devices and emulators, and they can take advantage of the Android framework APIs and supporting APIs, such as the Android Testing Support Library. You should create instrumented unit tests if your tests need access to instrumentation information (such as the target app’s Context) or if they require the real implementation of an Android framework component (such as a Parcelable or SharedPreferences object).</p>
+<p>Using instrumented unit tests also helps to reduce the effort required to write and maintain mock code. You are still free to use a mocking framework, if you choose, to simulate any dependency relationships.</p>
+<p>设备化单元测试分为:</p>
+<ul>
+<li>设备化单元测试(Instrumented Unit Test):<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a>: Build complex unit tests with Android dependencies that cannot be satisfied with mock objects.</li>
+<li>组件集成测试:<a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a>: Create tests to verify that the user interface behaves correctly for user interactions within a single app or for interactions across multiple apps.</li>
+<li>app集成测试:<a href="https://developer.android.com/training/testing/integration-testing/index.html" target="_blank" rel="external">Testing App Component Integrations</a>: Verify the behavior of components that users do not directly interact with, such as a Service or aContent Provider.</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-uiautomator-official/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2088,358 +2449,6 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/23/webrtc-source-thread/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/23/webrtc-source-thread/" itemprop="url">
-                  Webrtc线程模型
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-23T10:22:18+08:00">
-                2017-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>webrtc的base的 thread，是我见过的封装最帅的c++线程库，根据比qt的还好用,发个例子给你
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"> using namespace webrtc;</div><div class="line">using namespace rtc;</div><div class="line">//std::cout&lt;&lt;&quot;Thread::Current()：&quot; &lt;&lt; Thread::Current()-&gt;GetId();</div><div class="line">//Thread::Current()-&gt;Start(); 不能调用start，因为不是我创建的，他已经开始了</div><div class="line">   //Thread::Current()-&gt;Run(); //阻塞当前线程进入线程循环</div><div class="line"></div><div class="line">Thread * thread = new Thread();</div><div class="line">//MyRunnable run;</div><div class="line">//thread-&gt;Start(&amp;run);//可以带一个Runnable参数运行,运行完就结束，否则运行Thread::Run进入消息循环</div><div class="line">thread-&gt;Start();</div><div class="line">//std::cout &lt;&lt; &quot;Thread::Invoke()：&quot;&lt;&lt; thread-&gt;Invoke&lt;bool&gt;(RTC_FROM_HERE, &amp;task)&lt;&lt; &quot; at &quot; &lt;&lt; Thread::Current()-&gt;GetId() &lt;&lt; std::endl;</div><div class="line">thread-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">auto  handler= new MessageClient;</div><div class="line">//thread-&gt;PostAt(RTC_FROM_HERE, (int64_t)3000,handler);</div><div class="line">//thread-&gt;PostDelayed(RTC_FROM_HERE, (int64_t)5000, handler);</div><div class="line">//thread-&gt;Stop();</div><div class="line"></div><div class="line"></div><div class="line">Thread * thread2 = new Thread();</div><div class="line">thread2-&gt;Start();</div><div class="line">thread2-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">//thread2-&gt;Invoke() 非常有用，在任何地方可以指定我的代码运行在某个线程</div><div class="line"></div><div class="line">//api下的proxy机制，实际上就是设置要执行的线程，然后加锁等待线程执行结果。这是我设计对外接口可以在任何线程调用而不出错的常用方法</div><div class="line"></div><div class="line">//base的asyncinvoker与proxy类似的机制。</div></pre></td></tr></table></figure></p>
-<p>有ios的gdc，android的handler异曲同工</p>
-<p>因为编写复杂稳定的多线程C++项目实在太难，所以一个好的跨平台C++基础库是我最求的目标,目前比较欣赏的项目有：</p>
-<p>Boost:大而全，缺少一些可以直接上手的东西如线程消息队列，智能指针并非线程安全。
-QT core：非常好
-C++11：也需要线程消息队列，线程安全智能指针。
-chromium的base库：太大了
-当我看到webrtc的base时，非常惊讶的发现它正是我想要的,特点：</p>
-<p>小：只有几M
-纯：基于c++标准库和各操作系统sdk
-跨平台
-对智能指针、线程、socket封装非常好。
-不断更新（需要一直跟踪官方代码）
-移植出来单独使用，方案有三：</p>
-<p>把源码拷贝出来用通用的编译工具（makefile，cmake，qmake）管理。（makefile较复杂，cmake简单，qmake最简单）
-把源码拷贝出来用基于自带的gn管理
-在webrtc项目里面编译和合并需要的静态库和pdb</p>
-<p>因为google官方说了：引用计数+引用计数的智能化（scoped_ref_ptr）+弱引用就可以解决问题。
-shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数，和源对象指针。没办法对两个成员同时实现原子操作。
-但unique_ptr是个好东西</p>
-<p>智能指针的使用：</p>
-<ol>
-<li>不用再使用delete。</li>
-<li>尽量使用unique_ptr。</li>
-<li>多个线程读写同一个 shared_ptr 对象，那么需要加锁。</li>
-<li>shared_ptr 和weak_ptr配合解决循环引用的问题。</li>
-</ol>
-<p>weak_ptr必须，oc，swift的ViewControler和控件都是weak关系</p>
-<p>内存管理模型的三种级别：
-1 手动内存管理(c/c++的malloc与free，new与delete)：容易出错。
-2 自动内存管理（oc的arc，c++的智能指针，scoped_ptr）：存在循环引用问题，通过程序员自己管理强弱引用关系解决。
-3 垃圾回收机制（如java,python）：后台GC降低了程序效率，好的程序员仍然好考虑java的强引用[表情]引用/软引用/</p>
-<p>3 线程模型
-1 生产者消费模型（mutex，condition）：最最常用的模型。
-2 线程池模型：解决大量请求分配太多线程的问题。比如一个android和ios的app，http请求会很多很多。
-3 (着重强调）串行模型：ios有GCD(Grand Central Dispatch，global queue是线程池），android有looper， win32有PostMessage，boost有strand
-读写锁：特别只有写才会不安全的情况。
-再结合其他的手段会让程序简洁优美易读：java的handler，oc的delegate和block、swift的闭包，mvc模式 ，c++的function/bind/lambda，python和javascript的function</p>
-<p>而串行模型就成了解决这类多线程问题的首选，就是线程消息模型。
-在android 系统里面，无数这样的例子。</p>
-<h3 id="模块处理线程"><a href="#模块处理线程" class="headerlink" title="模块处理线程"></a>模块处理线程</h3><p>Call构造方法中创建module_process_thread与pacer_thread两个ProcessThread.接着为module_process_thread注册CallStats, ReceiveSideCongestionController, SendSideCongestionController模块,为pacer_thread注册PacedSender, RemoteBitrateEstimator模块.</p>
-<p>Call::CreateVideoSendStream创建VideoSendStream时,将module_process_thread做构造参数传入,调用RegisterProcessThread方法,注册所有的rtc_rtcp模块到module_process_thread线程.同样的为VideoReceiveStream中设置.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/23/tips-androidstudio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/23/tips-androidstudio/" itemprop="url">
-                  AndroidStudio常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-23T08:09:17+08:00">
-                2017-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="如何解决Unsupported-major-minor-version-52-0问题？"><a href="#如何解决Unsupported-major-minor-version-52-0问题？" class="headerlink" title="如何解决Unsupported major.minor version 52.0问题？"></a>如何解决Unsupported major.minor version 52.0问题？</h4><blockquote>
-<p><a href="http://www.jianshu.com/p/5eebd3c609d6" target="_blank" rel="external">http://www.jianshu.com/p/5eebd3c609d6</a></p>
-</blockquote>
-<p>运行./gradlew :PandaAndroidDemo:release出现如下错误：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">FAILURE: Build failed with an exception.</div><div class="line"></div><div class="line">* Where:</div><div class="line">Build file &apos;/Users/shitianci/work/Lab/panda.android/PandaAndroidDemo/build.gradle&apos; line: 1</div><div class="line"></div><div class="line">* What went wrong:</div><div class="line">A problem occurred evaluating project &apos;:PandaAndroidDemo&apos;.</div><div class="line">&gt; java.lang.UnsupportedClassVersionError: com/android/build/gradle/AppPlugin : Unsupported major.minor version 52.0</div><div class="line"></div><div class="line">* Try:</div><div class="line">Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.</div><div class="line"></div><div class="line">BUILD FAILED</div></pre></td></tr></table></figure></p>
-<p>直接点击 run按钮 或者 Build→Generate Build APK 却运行正常。</p>
-<p>这里面有两个问题：</p>
-<p>为什么出现Unsupported major.minor version 52.0？
-为什么gradle命令和android studio按钮运行结果不一样？</p>
-<h5 id="问题一：为什么出现Unsupported-major-minor-version-52-0？"><a href="#问题一：为什么出现Unsupported-major-minor-version-52-0？" class="headerlink" title="问题一：为什么出现Unsupported major.minor version 52.0？"></a>问题一：为什么出现Unsupported major.minor version 52.0？</h5><p>在网上找了一圈，最后在stackoverflow找到了本质原因
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">You get this error because a Java 7 VM tries to load a class compiled for Java 8</div><div class="line"></div><div class="line">Java 8 has the class file version 52.0 but a Java 7 VM can only load class files up to version 51.0</div><div class="line"></div><div class="line">In your case the Java 7 VM is your gradle build and the class is com.android.build.gradle.AppPlugin</div></pre></td></tr></table></figure></p>
-<p>简单来说，就是java的编译环境版本太低，java 8 class file的版本是52，Java 7虚拟机只能支持到51。所以需要升级到java 8 vm才行。</p>
-<h5 id="问题二：为什么gradle命令和android-studio按钮运行结果不一样？"><a href="#问题二：为什么gradle命令和android-studio按钮运行结果不一样？" class="headerlink" title="问题二：为什么gradle命令和android studio按钮运行结果不一样？"></a>问题二：为什么gradle命令和android studio按钮运行结果不一样？</h5><p>从问题1来看，肯定Android Studio按钮调用的是java 8 vm，所以查找一下系统配置，最终在Project Structure找到了如下设置：
-Android Studio 2.2.2使用了自带的JDK环境，其地址为
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
-<p>而gradle命令的执行环境是在gradle.properties配置的，其指向为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/home</div></pre></td></tr></table></figure></p>
-<p>将其修改为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
-<h4 id="INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题"><a href="#INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题" class="headerlink" title="INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题"></a>INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题</h4><p>Android studio
-更新到25后打包问题，打包后的应用安装提示：INSTALL_PARSE_FAILED_NO_CERTIFICATES
-Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能提供更快的应用安装时间和更多针对未授权</p>
-<p>APK 文件更改的保护。 在默认情况下，Android Studio 2.2 和 Android Gradle 2.2 插件会使用 APK</p>
-<p>Signature Scheme v2 和传统签名方案来签署您的应用。</p>
-<p>脏的解决方式：使用v1打包</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2489,7 +2498,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">57</span>
+                <span class="site-state-item-count">59</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

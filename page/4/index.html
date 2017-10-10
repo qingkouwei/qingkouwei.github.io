@@ -323,6 +323,491 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/27/gl-glBlendFunc/" itemprop="url">
+                  OpenGL混色
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T10:44:39+08:00">
+                2017-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。
+假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把将要绘制上去的红色和原来的绿色进行混合，于是得到一种新的颜色，看上去就好像玻璃是半透明的。
+要使用OpenGL的混合功能，只需要调用：<code>glEnable(GL_BLEND);</code>即可。要关闭OpenGL的混合功能，只需要调用：<code>glDisable(GL_BLEND);</code>即可。
+<strong>注意：</strong> 只有在RGBA模式下，才可以使用混合功能，颜色索引模式下是无法使用混合功能的。</p>
+<h3 id="1-源因子和目标因子"><a href="#1-源因子和目标因子" class="headerlink" title="1.源因子和目标因子"></a>1.源因子和目标因子</h3><p>混合需要把原来的颜色和将要画上去的颜色找出来，经过某种方式处理后得到一种新的颜色。这里把将要画上去的颜色称为“源颜色”，把原来的颜色称为“目标颜色”。
+OpenGL 会把源颜色和目标颜色各自取出，并乘以一个系数（源颜色乘以的系数称为“源因子”，目标颜色乘以的系数称为“目标因子”），然后相加，这样就得到了新的颜 色。（也可以不是相加，新版本的OpenGL可以设置运算方式，包括加、减、取两者中较大的、取两者中较小的、逻辑运算等）
+下面用数学公式来表达一下这个运算方式。假设源颜色的四个分量（指红色，绿色，蓝色，alpha值）是(Rs, Gs, Bs,  As)，目标颜色的四个分量是(Rd, Gd, Bd, Ad)，又设源因子为(Sr, Sg, Sb, Sa)，目标因子为(Dr, Dg, Db,  Da)。则混合产生的新颜色可以表示为：
+<code>(Rs*Sr+Rd*Dr, Gs*Sg+Gd*Dg, Bs*Sb+Bd*Db, As*Sa+Ad*Da)</code>
+如果颜色的某一分量超过了1.0，则它会被自动截取为1.0，不需要考虑越界的问题。</p>
+<p>源因子和目标因子是可以通过<code>glBlendFunc</code>函数来进行设置的。glBlendFunc有两个参数，前者表示源因子，后者表示目标因子。这两个参数可以是多种值，下面介绍比较常用的几种。</p>
+<ul>
+<li>GL_ZERO：表示使用0.0作为因子，实际上相当于不使用这种颜色参与混合运算。</li>
+<li>GL_ONE：表示使用1.0作为因子，实际上相当于完全的使用了这种颜色参与混合运算。</li>
+<li>GL_SRC_ALPHA：表示使用源颜色的alpha值来作为因子。</li>
+<li>GL_DST_ALPHA：表示使用目标颜色的alpha值来作为因子。</li>
+<li>GL_ONE_MINUS_SRC_ALPHA：表示用1.0减去源颜色的alpha值来作为因子。</li>
+<li>GL_ONE_MINUS_DST_ALPHA：表示用1.0减去目标颜色的alpha值来作为因子。</li>
+<li>GL_SRC_COLOR: 把源颜色的四个分量分别作为因子的四个分量</li>
+<li>GL_ONE_MINUS_SRC_COLOR</li>
+<li>GL_DST_COLOR</li>
+<li>GL_ONE_MINUS_DST_COLOR
+GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目标因子，GL_DST_COLOR与GL_ONE_MINUS_DST_COLOR在OpenGL 旧版本中只能用于设置源因子。新版本的OpenGL则没有这个限制，并且支持新的GL_CONST_COLOR（设定一种常数颜色，将其四个分量分别作为 因子的四个分量）、GL_ONE_MINUS_CONST_COLOR、GL_CONST_ALPHA、 GL_ONE_MINUS_CONST_ALPHA。另外还有GL_SRC_ALPHA_SATURATE。新版本的OpenGL还允许颜色的alpha 值和RGB值采用不同的混合因子。</li>
+</ul>
+<h3 id="2-模式示例"><a href="#2-模式示例" class="headerlink" title="2.模式示例"></a>2.模式示例</h3><ul>
+<li>如果设置了glBlendFunc(GL_ONE, GL_ZERO);，则表示完全使用源颜色，完全不使用目标颜色，因此画面效果和不使用混合的时候一致（当然效率可能会低一点点）。如果没有设置源因子和目标因子，则默认情况就是这样的设置。</li>
+<li>如果设置了glBlendFunc(GL_ZERO, GL_ONE);，则表示完全不使用源颜色，因此无论你想画什么，最后都不会被画上去了。（但这并不是说这样设置就没有用，有些时候可能有特殊用途）</li>
+<li>如果设置了glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);，则表示源颜色乘以自身的alpha 值，目标颜色乘以1.0减去源颜色的alpha值，这样一来，源颜色的alpha值越大，则产生的新颜色中源颜色所占比例就越大，而目标颜色所占比例则减 小。这种情况下，我们可以简单的将源颜色的alpha值理解为“不透明度”。这也是混合时最常用的方式。</li>
+<li>如果设置了glBlendFunc(GL_ONE, GL_ONE);，则表示完全使用源颜色和目标颜色，最终的颜色实际上就是两种颜色的简单相加。例如红色(1, 0, 0)和绿色(0, 1, 0)相加得到(1, 1, 0)，结果为黄色。
+注意：
+所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。</li>
+</ul>
+<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
+<p>模式二:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
+<p>模式一是传统的alpha通道混合，这种模式下颜色和alpha值是分立的，rgb决定颜色，alpha决定..（英文是决定how solid it is 水平有限找不到准确的中文来表达）
+在数学上表达式是：<code>blend(source, dest) = (source.rgb * source.a) + (dest.rgb * (1 – source.a)).</code>要注意的是这种模式下，透明只跟alpha有关，跟rgb值无关，一个透明的颜色，不透明的颜色有相同的rgb值，只要alpha=0即可。</p>
+<p>模式二是alpha预乘的混合（Premultiplied Alpha Blending），这种模式下rgb与alpha是联系在一起的，数学上的表达式是
+<code>blend(source, dest) = source.rgb + (dest.rgb * (1 – source.a))</code>,在这种模式下，透明的表示是rgb值都为0.</p>
+<h3 id="4-EGLSurface背景透明设置"><a href="#4-EGLSurface背景透明设置" class="headerlink" title="4.EGLSurface背景透明设置"></a>4.EGLSurface背景透明设置</h3><p>在OpenGL绘制中,除了设置混色外,还要设置EGLSurface配置支持Alpha,如果不设置EGL相关的EGLSurface支持透明,就算OpenGL函数中开启混色,绘制完成后仍是有黑色背景.</p>
+<h4 id="4-1GLSurfaceView"><a href="#4-1GLSurfaceView" class="headerlink" title="4.1GLSurfaceView"></a>4.1GLSurfaceView</h4><p>在onSurfaceCreated里，调用GLES20.glClearColor(0f, 0f, 0f, 0f);alpha为0，即透明。</p>
+<p>然后，对surfaceview要作一定处理：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</div><div class="line">TestRenderer renderer = new TestRenderer();</div><div class="line">mGLSurfaceView.setRender(renderer);</div><div class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</div><div class="line">mGLSurfaceView.setZOrderOnTop(true);</div></pre></td></tr></table></figure></p>
+<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">int[] CONFIG_RGBA = &#123;</div><div class="line">          EGL10.EGL_RED_SIZE, 8,</div><div class="line">          EGL10.EGL_GREEN_SIZE, 8,</div><div class="line">          EGL10.EGL_BLUE_SIZE, 8,</div><div class="line">          EGL10.EGL_ALPHA_SIZE, 8,</div><div class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</div><div class="line">          EGL10.EGL_NONE</div><div class="line">  &#125;;</div></pre></td></tr></table></figure></p>
+<h3 id="5-实现三维混合"><a href="#5-实现三维混合" class="headerlink" title="5.实现三维混合"></a>5.实现三维混合</h3><p>在进行三维场景的混合时必须注意的是深度缓冲。</p>
+<p>深度缓冲是这样一段数据，它记录了每一个像素距离观察者有多近。在启用深度缓冲测试的情况下，如果将要绘制的像素比原来的像素更近，则像素将被绘制。否则,像素就会被忽略掉，不进行绘制。这在绘制不透明的物体时非常有用——不管是先绘制近的物体再绘制远的物体，还是先绘制远的物体再绘制近的物体，或者干脆以 混乱的顺序进行绘制，最后的显示结果总是近的物体遮住远的物体。
+然而在你需要实现半透明效果时，发现一切都不是那么美好了。如果你绘制了一个近距离的半透明物体，则它在深度缓冲区内保留了一些信息，使得远处的物体将无法再被绘制出来。虽然半透明的物体仍然半透明，但透过它看到的却不是正确的内容了。
+要 解决以上问题，需要在绘制半透明物体时将深度缓冲区设置为只读，这样一来，虽然半透明物体被绘制上去了，深度缓冲区还保持在原来的状态。如果再有一个物体 出现在半透明物体之后，在不透明物体之前，则它也可以被绘制（因为此时深度缓冲区中记录的是那个不透明物体的深度）。以后再要绘制不透明物体时，只需要再 将深度缓冲区设置为可读可写的形式即可。怎么绘制一个一部分半透明一部分不透明的物体？这个好办，只需要把物体分为两个部分，一部分全是半透明 的，一部分全是不透明的，分别绘制就可以了。
+即使使用了以上技巧，我们仍然不能随心所欲的按照混乱顺序来进行绘制。必须是先绘制不透明的物体，然 后绘制透明的物体。否则，假设背景为蓝色，近处一块红色玻璃，中间一个绿色物体。如果先绘制红色半透明玻璃的话，它先和蓝色背景进行混合，则以后绘制中间 的绿色物体时，想单独与红色玻璃混合已经不能实现了。
+总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
+调用glDepthMask(GL_FALSE);可将深度缓冲区设置为只读形式。调用glDepthMask(GL_TRUE);可将深度缓冲区设置为可读可写形式。</p>
+<blockquote>
+<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="external">glBlendFunc函数官网文档</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/25/tips-android-mediacodec/" itemprop="url">
+                  android系统编码MediaCodec
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T16:03:24+08:00">
+                2017-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="android编码器局限性"><a href="#android编码器局限性" class="headerlink" title="android编码器局限性"></a>android编码器局限性</h3><h4 id="1-颜色格式问题"><a href="#1-颜色格式问题" class="headerlink" title="1. 颜色格式问题"></a>1. 颜色格式问题</h4><p>MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色格式，而对于Android的摄像头在onPreviewFrame输出的YUV帧格式，如果没有配置任何参数的情况下，基本上都是NV21格式，但Google对MediaCodec的API在设计和规范的时候，显得很不厚道，过于贴近Android的HAL层了，导致了NV21格式并不是所有机器的MediaCodec都支持这种格式作为编码器的输入格式！</p>
+<p>因此，在初始化MediaCodec的时候，我们需要通过codecInfo.getCapabilitiesForType来查询机器上的MediaCodec实现具体支持哪些YUV格式作为输入格式，一般来说，起码在4.4+的系统上，这两种格式在大部分机器都有支持：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Plannder</div><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlannder</div></pre></td></tr></table></figure></p>
+<p>两种格式分别是YUV420P和NV21，如果机器上只支持YUV420P格式的情况下，则需要先将摄像头输出的NV21格式先转换成YUV420P，才能送入编码器进行编码，否则最终出来的视频就会花屏，或者颜色出现错乱</p>
+<p>这个算是一个不大不小的坑，基本上用上了MediaCodec进行视频编码都会遇上这个问题</p>
+<h4 id="2-编码器支持特性相当有限"><a href="#2-编码器支持特性相当有限" class="headerlink" title="2. 编码器支持特性相当有限"></a>2. 编码器支持特性相当有限</h4><p>如果使用MediaCodec来编码H264视频流，对于H264格式来说，会有一些针对压缩率以及码率相关的视频质量设置，典型的诸如Profile(baseline, main, high)，Profile Level, Bitrate mode(CBR, CQ, VBR)，合理配置这些参数可以让我们在同等的码率下，获得更高的压缩率，从而提升视频的质量，Android也提供了对应的API进行设置，可以设置到MediaFormat中这些设置项:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MediaFormat.KEY_BITRATE_MODE</div><div class="line">MediaFormat.KEY_PROFILE</div><div class="line">MediaFormat.KEY_LEVEL</div></pre></td></tr></table></figure></p>
+<p>但问题是，对于Profile，Level, Bitrate mode这些设置，在大部分手机上都是不支持的，即使是设置了最终也不会生效，例如设置了Profile为high，最后出来的视频依然还会是Baseline….</p>
+<p>这个问题，在7.0以下的机器几乎是必现的，其中一个可能的原因是，Android在源码层级hardcode了profile的的设置：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//XXXX</div><div class="line">if(h264type.eProfile != OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ALOGW(&quot;Use baseline profile instead of %d for AVC recording&quot;, h264type.eProfile);</div><div class="line">  h264type.eProfile = OMX_VIDEO_AVCProfileBaseline;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Android直到7.0之后才取消了这段地方的Hardcode:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(h264type.eProfile == OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ....</div><div class="line">&#125;else if(h264type.eProfile == OMX_VIDEO_AVCProfileMain</div><div class="line">  || h264type.eProfile == OMX_VIDEO_AVCProfileBaseHigh)</div><div class="line">  .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个问题可以说间接导致了MediaCodec编码出来的视频质量偏低，同等码率下，难以获得跟软编码甚至iOS那样的视频质量。</p>
+<h4 id="3-16位对齐要求"><a href="#3-16位对齐要求" class="headerlink" title="3. 16位对齐要求"></a>3. 16位对齐要求</h4><p>前面说到，MediaCodec这个API在设计的时候，过于贴近HAL层，这在很多Soc的实现上，是直接把传入MediaCodec的buffer，在不经过任何前置处理的情况下就直接送入了Soc中。而在编码h264视频流的时候，由于h264的编码块大小一般是16x16，于是乎在一开始设置视频的宽高的时候，如果设置了一个没有对齐16的大小，例如960x540，在某些cpu上，最终编码出来的视频就会直接花屏！</p>
+<p>很明显这还是因为厂商在实现这个API的时候，对传入的数据缺少校验以及前置处理导致的，目前来看，华为，三星的Soc出现这个问题会比较频繁，其他厂商的一些早期Soc也有这种问题，一般来说解决方法还是在设置视频宽高的时候，统一设置成对齐16位之后的大小就好了。</p>
+<h4 id="4-软编解码介绍"><a href="#4-软编解码介绍" class="headerlink" title="4.软编解码介绍"></a>4.软编解码介绍</h4><p>除了使用MediaCodec进行编码之外，另外一种比较流行的方案就是使用ffmpeg+x264/openh264进行软编码，ffmpeg是用于一些视频帧的预处理。这里主要是使用x264/openh264作为视频的编码器。</p>
+<ol>
+<li>x264基本上被认为是当今市面上最快的商用视频编码器，而且基本上所有h264的特性都支持，通过合理配置各种参数还是能够得到较好的压缩率和编码速度的，限于篇幅，这里不再阐述h264的参数配置，有兴趣可以看下这两篇文章对x264编码参数的调优：</li>
+</ol>
+<ul>
+<li><a href="https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn" target="_blank" rel="external">https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn</a></li>
+<li><a href="http://www.cnblogs.com/wainiwann/p/5647521.html" target="_blank" rel="external">http://www.cnblogs.com/wainiwann/p/5647521.html</a></li>
+</ul>
+<ol>
+<li>openh264(<a href="https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。" target="_blank" rel="external">https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。</a></li>
+</ol>
+<p>但对比起x264，openh264在h264高级特性的支持比较差：</p>
+<ul>
+<li>Profile只支持到baseline, level 5.2</li>
+<li>多线程编码只支持slice based，不支持frame based的多线程编码</li>
+</ul>
+<p>从编码效率上来看，openh264的速度也并不会比x264快，不过其最大的好处，还是能够直接免费使用吧。</p>
+<blockquote>
+<p>参考<a href="https://mp.weixin.qq.com/s/gwjL2OuoLVExbhYtbdpF2g" target="_blank" rel="external">微信Android视频编码爬过的那些坑</a></p>
+</blockquote>
+<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
+The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>176 x 144 px</td>
+<td>480 x 360 px</td>
+<td>1280 x 720 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>12 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>56 Kbps</td>
+<td>500 Kbps</td>
+<td>2 Mbps</td>
+</tr>
+<tr>
+<td>Audio codec</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+</tr>
+<tr>
+<td>Audio channels</td>
+<td>1 (mono)</td>
+<td>2 (stereo)</td>
+<td>2 (stereo)</td>
+</tr>
+<tr>
+<td>Audio bitrate</td>
+<td>24 Kbps</td>
+<td>128 Kbps</td>
+<td>192 Kbps</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+<th>HD 1080p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>320 x 180 px</td>
+<td>640 x 360 px</td>
+<td>1280 x 720 px</td>
+<td>1920 x 1080 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>800 Kbps</td>
+<td>2 Mbps</td>
+<td>4 Mbps</td>
+<td>10 Mbps</td>
+</tr>
+</tbody>
+</table>
+<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
+<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
+<p>Each profile specifies the following set of parameters:</p>
+<ul>
+<li>The file output format</li>
+<li>Video codec format</li>
+<li>Video bit rate in bits per second</li>
+<li>Video frame rate in frames per second</li>
+<li>Video frame width and height,</li>
+<li>Audio codec format</li>
+<li>Audio bit rate in bits per second,</li>
+<li>Audio sample rate</li>
+<li>Number of audio channels for recording.</li>
+</ul>
+<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
+<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
+<p>the result is always the same ( a very high frame rate )
+Is the encoder ignoring this property ? how can I control the frame rate ?</p>
+<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
+<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
+<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
+<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
+<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
+<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
+<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/20/media-storage-and-transfer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1528,352 +2013,6 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/jni-intro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/jni-intro/" itemprop="url">
-                  jni介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:23:23+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-C回调JAVA"><a href="#1-C回调JAVA" class="headerlink" title="1.C回调JAVA"></a>1.C回调JAVA</h3><ol>
-<li><p>c中返回一个字符串</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中返回一个数组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line">  </div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中调用java中类的方法 没有参数 只有返回值String</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/ffmpeg-compile-mac/" itemprop="url">
-                  FFMPEG编译之Mac
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T21:28:32+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
-                    <span itemprop="name">FFMPEG</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
-<ol>
-<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other <code>*</code>nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
-<li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
-<li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
-</ol>
-<h3 id="手动编译FFMPEG"><a href="#手动编译FFMPEG" class="headerlink" title="手动编译FFMPEG"></a>手动编译FFMPEG</h3><h4 id="1-下载FFMPEG源码"><a href="#1-下载FFMPEG源码" class="headerlink" title="1.下载FFMPEG源码"></a>1.下载FFMPEG源码</h4><p>使用<code>git clone https://github.com/FFmpeg/FFmpeg</code>从github下载ffmpeg源码,切换到要使用的目标分支(这里使用release/3.3):<code>git checkout -b r3.3 origin/release/3.3</code>,或者直接从github下载分支<code>release/3.3</code>的压缩包,解压.</p>
-<h4 id="2-准备Xcode"><a href="#2-准备Xcode" class="headerlink" title="2.准备Xcode"></a>2.准备Xcode</h4><p>Starting with Lion 10.7, Xcode is available for free from the Mac App Store and is required to compile anything on your Mac. Make sure you install the Command Line Tools from Preferences &gt; Downloads &gt; Components. Older versions are still available with an AppleID and free Developer account at ​developer.apple.com.</p>
-<h4 id="3-准备HomeBrew工具"><a href="#3-准备HomeBrew工具" class="headerlink" title="3.准备HomeBrew工具"></a>3.准备HomeBrew工具</h4><p>To get ffmpeg for OS X, you first have to install ​Homebrew. If you don’t want to use Homebrew, see the section below.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
-<p>Then:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install automake fdk-aac git lame libass libtool libvorbis libvpx \</div><div class="line">opus sdl shtool texi2html theora wget x264 x265 xvid yasm</div></pre></td></tr></table></figure></p>
-<p>Mac OS X Lion comes with Freetype already installed (older versions may need ‘X11’ selected during installation), but in an atypical location: /usr/X11. Running freetype-config in Terminal can give the locations of the individual folders, like headers, and libraries, so be prepared to add lines like CFLAGS=<code>freetype-config --cflags</code> LDFLAGS=<code>freetype-config --libs</code> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig before ./configure or add them to your $HOME/.profile file.</p>
-<h4 id="4-编译"><a href="#4-编译" class="headerlink" title="4.编译"></a>4.编译</h4><p>Once you have compiled all of the codecs/libraries you want, you can now download the FFmpeg source either with Git or the from release tarball links on the website. Study the output of ./configure –help and make sure you’ve enabled all the features you want, remembering that –enable-nonfree and –enable-gpl will be necessary for some of the dependencies above. A sample command is:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git clone http://source.ffmpeg.org/git/ffmpeg.git ffmpeg</div><div class="line">cd ffmpeg</div><div class="line">./configure  --prefix=/usr/local/ffmpeg --enable-gpl --enable-nonfree --enable-libass \</div><div class="line">--enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \</div><div class="line">--enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid</div><div class="line">make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
-<p><code>--prefix</code>指定编译完成后安装路径,这里指定到<code>/usr/local/ffmpeg</code>,安装完成会在<code>/usr/local/ffmpeg</code>下生成:bin,include,lib,share四个目录</p>
-<h3 id="安装环境介绍"><a href="#安装环境介绍" class="headerlink" title="安装环境介绍"></a>安装环境介绍</h3><p>A package consists of several related files which are installed in several directories. The configure step usually allows the user to specify the so-called install prefix, and is usually specified through the configure option configure –prefix=PREFIX, where PREFIX usually is by default /usr/local. The prefix specifies the common directory where all the components are installed.</p>
-<p>The following directories are usually involved in the installation:</p>
-<ul>
-<li><code>PREFIX/bin</code>: contains the generated binaries (e.g. ffmpeg, ffplay, ffprobe etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/include</code>: contains the library headers (e.g. libavutil/avstring.h, libavcodec/avcodec.h, libavformat/avformat.h etc. in case of FFmpeg) required to compile applications linked against the package libraries</li>
-<li><code>PREFIX/lib</code>: contains the generated libraries (e.g. libavutil, libavcodec, libavformat etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/share</code>: contains various system-independent components; especially documentation files and examples
-By specifying the prefix it is possible to define the installation layout.</li>
-</ul>
-<p>By using a shared prefix like /usr/local/, different packages will be installed in the same directory, so in general it will be more difficult to revert the installation.</p>
-<p>Using a prefix like /opt/PROJECT/, the project will be installed in a dedicated directory, and to remove from the system you can simply remove the /opt/PREFIX path. On the other hand, such installation will require to edit all the environment variables to point to the custom path.</p>
-<h3 id="Environment-variables"><a href="#Environment-variables" class="headerlink" title="Environment variables"></a>Environment variables</h3><p>Several variables defined in the environment affect your package install. In particular, depending on your installation prefix, you may need to update some of these variables in order to make sure that the installed components can be found by the system tools.</p>
-<p>The list of environment variables can be shown through the command env.</p>
-<p>A list of the affected variables follows:</p>
-<ul>
-<li>PATH: defines the list of :-separated paths where the system looks for binaries. For example if you install your package in /usr/local/, you should update the PATH so that it will contain /usr/local/bin. This can be done for example through the command export PATH=/usr/local/bin:$PATH.</li>
-<li>LD_LIBRARY_PATH: contains the :-separated paths where the system looks for libraries. For example if you install your package in /usr/local/, you should update the LD_LIBRARY_PATH so that it will contain /usr/local/lib. This can be done for example through the command export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH. This variable is sometimes deprecated in favor of the use of ldconfig.</li>
-<li>CFLAGS: contains flags used by the C compiler, and usually includes preprocessing directives like -IPREFIX/include or compilation flags. Custom CFLAGS are usually prefixed to the source package compiler flags by the source package build system. Alternatively many build systems allow to specify the configure option -extra-cflags.</li>
-<li>LDFLAGS: these are directives used by the linker, and usually include linking directives like -LPREFIX/lib needed to find libraries installed in custom paths. Custom LDFLAGS are usually prefixed to the source package linker flags by the source package build system. Alternatively, many build systems allow to specify the configure option -extra-ldflags.</li>
-<li>PKG_CONFIG_PATH: contains the :-separated paths used by pkg-config to detect the pkg-config files used by many build systems to detect the custom CFLAGS/LDFLAGS used by a specific library.
-In case you installed a package in a non standard path, you need to update these environment libraries so that system tools will be able to detect the package components. This is especially required when running a configure script for a package relying on other installed libraries/headers/tools.</li>
-</ul>
-<p>Environment variables are usually defined in the profile file, for example .profile defined in the user directory for sh/bash users, and in /etc/profile. This file can be edited to permanently set the custom environment. Alternatively, the variables can be set in a script or in a particular shell session.</p>
-<p>Remember to export the variables to the child process, e.g. using the export command. Read the fine documentation of your shell for more detailed information.</p>
-<h3 id="MAC下的动态链接库"><a href="#MAC下的动态链接库" class="headerlink" title="MAC下的动态链接库"></a>MAC下的动态链接库</h3><h4 id="扩展名"><a href="#扩展名" class="headerlink" title="扩展名"></a>扩展名</h4><p>Windows下.DLL,Linux下.so,Mac OS X下的扩展名是.dylib。
-.dylib是Mach-O格式，也就是Mac OS X下的二进制文件格式。Mac OS X提供了一系列
-工具，用于创建和访问动态链接库。</p>
-<ul>
-<li>编译器/usr/bin/cc，也就是gcc了，Apple改过的。这个主要还是一个壳，去调用其他
-的一些部件。当然同时还有/usr/bin/c++，等等。</li>
-<li>汇编器/usr/bin/as</li>
-<li>链接器/usr/bin/ld</li>
-</ul>
-<h4 id="MAC下创建动态链接库步骤"><a href="#MAC下创建动态链接库步骤" class="headerlink" title="MAC下创建动态链接库步骤:"></a>MAC下创建动态链接库步骤:</h4><ol>
-<li>首先是生成module文件，也就是.o文件。这跟一般的unix没什么区别。例如<code>cc -c a.c b.c</code>,就得到a.o和b.o</li>
-<li>可以用ld来合并.o文件，比如<code>ld -r -o c.o a.o b.o</code></li>
-<li>然后可以用libtool来创建动态链接库:<code>libtool -dynamic -o c.dylib a.o b.o</code>.（ 这里也可以用<code>libtool -static -o c.a a.o b.o</code>就创建静态库）</li>
-</ol>
-<p>如果用gcc直接编译，我记得linux下一般是可以:
-<code>gcc -shared -o c.so a.c b.c</code>
-而在Mac OS X下需要:
-<code>gcc -dynamiclib -o c.dylib a.c b.c</code></p>
-<h4 id="动态链接库的工具"><a href="#动态链接库的工具" class="headerlink" title="动态链接库的工具"></a>动态链接库的工具</h4><p>nm是最常用的，这个用法跟linux下差不多:<code>nm c.dylib</code>,可以看到导出符号表，等等。
-另一个常用的工具是otool，这个是Mac OS X独有的。比如想看看c.dylib的依赖关系<code>otool -L c.dylib</code></p>
-<h3 id="官网方法"><a href="#官网方法" class="headerlink" title="官网方法"></a>官网方法</h3><ul>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
-</ul>
-<h3 id="编译ffmpeg3-3结果没有ffplay"><a href="#编译ffmpeg3-3结果没有ffplay" class="headerlink" title="编译ffmpeg3.3结果没有ffplay"></a>编译ffmpeg3.3结果没有ffplay</h3><p>因为系统没有sdl环境或sdl版本不匹配,ffmpeg3.3需要sdl2</p>
-<p><a href="http://www.libsdl.org/download-2.0.php" target="_blank" rel="external">http://www.libsdl.org/download-2.0.php</a> 下载Source Code SDL2-2.0.5.zip - GPG signed,解压缩,执行命令:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure  </div><div class="line">make  </div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
-<p>进行编译</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1923,7 +2062,7 @@ In case you installed a package in a non standard path, you need to update these
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">57</span>
+                <span class="site-state-item-count">59</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
