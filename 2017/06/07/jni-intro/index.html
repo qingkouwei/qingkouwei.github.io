@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JNI,Android," />
+  <meta name="keywords" content="Android,JNI," />
 
 
 
@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="1.C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.....................    int i = 0;    jintArray array;    array =(*env)-&amp;gt;NewIntArray(env,8);    for(;i&amp;">
-<meta name="keywords" content="JNI,Android">
+<meta name="description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
+<meta name="keywords" content="Android,JNI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jni介绍">
 <meta property="og:url" content="http://wodekouwei.com/2017/06/07/jni-intro/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="1.C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.....................    int i = 0;    jintArray array;    array =(*env)-&amp;gt;NewIntArray(env,8);    for(;i&amp;">
-<meta property="og:updated_time" content="2017-06-07T14:27:53.000Z">
+<meta property="og:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
+<meta property="og:updated_time" content="2017-11-07T01:45:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jni介绍">
-<meta name="twitter:description" content="1.C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.....................    int i = 0;    jintArray array;    array =(*env)-&amp;gt;NewIntArray(env,8);    for(;i&amp;">
+<meta name="twitter:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
 
 
 
@@ -413,12 +413,18 @@
       
 
       
-        <h3 id="1-C回调JAVA"><a href="#1-C回调JAVA" class="headerlink" title="1.C回调JAVA"></a>1.C回调JAVA</h3><ol>
+        <h3 id="NDK技巧"><a href="#NDK技巧" class="headerlink" title="NDK技巧"></a>NDK技巧</h3><ol>
+<li>加快ndk-build编译速度
+NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>测试后编译速度至少可以提高一倍</p>
+<h3 id="C回调JAVA"><a href="#C回调JAVA" class="headerlink" title="C回调JAVA"></a>C回调JAVA</h3><ol>
 <li><p>c中返回一个字符串</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
 </li>
 <li><p>c中返回一个数组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line">  </div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line"></div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
 </li>
 <li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
@@ -427,7 +433,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
 </li>
 <li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
 </ol>
 
       
@@ -479,9 +486,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/JNI/" rel="tag"># JNI</a>
-          
             <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/JNI/" rel="tag"># JNI</a>
           
         </div>
       
@@ -586,7 +593,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -597,7 +604,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -608,7 +615,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">47</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -702,7 +709,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-C回调JAVA"><span class="nav-number">1.</span> <span class="nav-text">1.C回调JAVA</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#NDK技巧"><span class="nav-number">1.</span> <span class="nav-text">NDK技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C回调JAVA"><span class="nav-number">2.</span> <span class="nav-text">C回调JAVA</span></a></li></ol></div>
             
 
           </div>

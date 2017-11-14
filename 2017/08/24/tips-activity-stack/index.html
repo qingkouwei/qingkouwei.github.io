@@ -89,21 +89,21 @@
 
 
 
-<meta name="description" content="问题:实例化launcher activity 这个问题表现:  在package installers 安装界面安装完一个应用后，直接打开app，然后进入了 Activity_1, 此时再通过此activity用startActivity(intent)的方法打开 Activity_2.  然后按home键返回桌面，在桌面点击app图标进入，你觉得应该进入的是 Activity_2 ，实际上却是">
+<meta name="description" content="问题:homeActivity为正常启动模式activity,另一个activity为singleTask Activity.从package installers启动homeaty,再启动另一个activity,桌面,再点击桌面图标进入应用,会重新打开homeaty,而不是另一个activity.但是如果是从桌面首次进入home再进入另一个activity,切换到到桌面回来是在正常的另一个act">
 <meta name="keywords" content="Android,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Activity任务和返回栈">
 <meta property="og:url" content="http://wodekouwei.com/2017/08/24/tips-activity-stack/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="问题:实例化launcher activity 这个问题表现:  在package installers 安装界面安装完一个应用后，直接打开app，然后进入了 Activity_1, 此时再通过此activity用startActivity(intent)的方法打开 Activity_2.  然后按home键返回桌面，在桌面点击app图标进入，你觉得应该进入的是 Activity_2 ，实际上却是">
+<meta property="og:description" content="问题:homeActivity为正常启动模式activity,另一个activity为singleTask Activity.从package installers启动homeaty,再启动另一个activity,桌面,再点击桌面图标进入应用,会重新打开homeaty,而不是另一个activity.但是如果是从桌面首次进入home再进入另一个activity,切换到到桌面回来是在正常的另一个act">
 <meta property="og:image" content="https://developer.android.com/images/fundamentals/diagram_backstack.png">
 <meta property="og:image" content="https://developer.android.com/images/fundamentals/diagram_multitasking.png">
 <meta property="og:image" content="https://developer.android.com/images/fundamentals/diagram_multiple_instances.png">
 <meta property="og:image" content="https://developer.android.com/images/fundamentals/diagram_backstack_singletask_multiactivity.png">
-<meta property="og:updated_time" content="2017-08-23T16:50:39.000Z">
+<meta property="og:updated_time" content="2017-11-14T07:14:19.321Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Activity任务和返回栈">
-<meta name="twitter:description" content="问题:实例化launcher activity 这个问题表现:  在package installers 安装界面安装完一个应用后，直接打开app，然后进入了 Activity_1, 此时再通过此activity用startActivity(intent)的方法打开 Activity_2.  然后按home键返回桌面，在桌面点击app图标进入，你觉得应该进入的是 Activity_2 ，实际上却是">
+<meta name="twitter:description" content="问题:homeActivity为正常启动模式activity,另一个activity为singleTask Activity.从package installers启动homeaty,再启动另一个activity,桌面,再点击桌面图标进入应用,会重新打开homeaty,而不是另一个activity.但是如果是从桌面首次进入home再进入另一个activity,切换到到桌面回来是在正常的另一个act">
 <meta name="twitter:image" content="https://developer.android.com/images/fundamentals/diagram_backstack.png">
 
 
@@ -440,8 +440,10 @@
       
 
       
-        <p>问题:<a href="http://blog.csdn.net/love100628/article/details/43238135" target="_blank" rel="external">实例化launcher activity</a>
-这个问题表现:</p>
+        <p>问题:homeActivity为正常启动模式activity,另一个activity为singleTask Activity.从package installers启动homeaty,再启动另一个activity,桌面,再点击桌面图标进入应用,会重新打开homeaty,而不是另一个activity.但是如果是从桌面首次进入home再进入另一个activity,切换到到桌面回来是在正常的另一个activity.同事发现homeaty, 另一个aty,桌面重新回来的homeaty, taskid相同.</p>
+<p>解决办法是使用application记录front activity.</p>
+<p><a href="http://blog.csdn.net/love100628/article/details/43238135" target="_blank" rel="external">实例化launcher activity</a></p>
+<p>这个问题表现:</p>
 <ol>
 <li><p>在package installers 安装界面安装完一个应用后，直接打开app，然后进入了 Activity_1, 此时再通过此activity用startActivity(intent)的方法打开 Activity_2.</p>
 </li>
@@ -764,7 +766,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -775,7 +777,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -786,7 +788,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">47</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

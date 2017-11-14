@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/07/23/tips-androidstudio/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="如何解决Unsupported major.minor version 52.0问题？ http://www.jianshu.com/p/5eebd3c609d6  运行./gradlew :PandaAndroidDemo:release出现如下错误： 12345678910111213FAILURE: Build failed with an exception.* Where:Build f">
-<meta property="og:updated_time" content="2017-07-24T01:24:17.000Z">
+<meta property="og:updated_time" content="2017-11-02T09:07:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AndroidStudio常见问题">
 <meta name="twitter:description" content="如何解决Unsupported major.minor version 52.0问题？ http://www.jianshu.com/p/5eebd3c609d6  运行./gradlew :PandaAndroidDemo:release出现如下错误： 12345678910111213FAILURE: Build failed with an exception.* Where:Build f">
@@ -460,6 +460,16 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
 <p>APK 文件更改的保护。 在默认情况下，Android Studio 2.2 和 Android Gradle 2.2 插件会使用 APK</p>
 <p>Signature Scheme v2 和传统签名方案来签署您的应用。</p>
 <p>脏的解决方式：使用v1打包</p>
+<h4 id="INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案"><a href="#INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案" class="headerlink" title="INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案"></a>INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案</h4><p>在安装Android应用时出现INSTALL FAILED CONFLICTING PROVIDER问题，是不是感觉很抓狂呢，下面就跟大家分享一下出现这个问题的原因及解决方案。
+<strong>问题原因:</strong>
+在Android中authority要求必须是唯一的，比如你在定义一个provider时需要为它指定一个唯一的authority。如果你在安装一个带有provider的应用时，系统会检查当前已安装应用的authority是否和你要安装应用的authority相同，如果相同则会弹出上述警告，并且安装失败。
+<strong>解决方案</strong>
+在定义provider是，使用软编码的形式，如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;provider</div><div class="line">    android:name=&quot;android.support.v4.content.FileProvider&quot;</div><div class="line">    android:authorities=&quot;$&#123;applicationId&#125;.fileprovider&quot;</div><div class="line">    android:grantUriPermissions=&quot;true&quot;</div><div class="line">    android:exported=&quot;false&quot;&gt;</div><div class="line">    &lt;meta-data</div><div class="line">        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;</div><div class="line">        android:resource=&quot;@xml/file_paths&quot; /&gt;</div><div class="line">&lt;/provider&gt;</div></pre></td></tr></table></figure></p>
+<p>上述代码中通过${applicationId}.fileprovider的形式来指定provider的authorities，所以该provider的authorities会根据applicationId的不同而不同，从而避免了authorities的冲突问题。
+<strong>那么如何使用刚才定义的authorities呢？</strong>
+我们在定义authorities是采用了applicationId+fileprovider的形式，在获取authorities的时候，我们就可以通过包名+fileprovider来获取，代码如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public final static String getFileProviderName(Context context)&#123;</div><div class="line">    return context.getPackageName()+&quot;.fileprovider&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -619,7 +629,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -630,7 +640,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -641,7 +651,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">47</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -735,7 +745,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何解决Unsupported-major-minor-version-52-0问题？"><span class="nav-number">1.</span> <span class="nav-text">如何解决Unsupported major.minor version 52.0问题？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题一：为什么出现Unsupported-major-minor-version-52-0？"><span class="nav-number">1.1.</span> <span class="nav-text">问题一：为什么出现Unsupported major.minor version 52.0？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题二：为什么gradle命令和android-studio按钮运行结果不一样？"><span class="nav-number">1.2.</span> <span class="nav-text">问题二：为什么gradle命令和android studio按钮运行结果不一样？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题"><span class="nav-number">2.</span> <span class="nav-text">INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何解决Unsupported-major-minor-version-52-0问题？"><span class="nav-number">1.</span> <span class="nav-text">如何解决Unsupported major.minor version 52.0问题？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题一：为什么出现Unsupported-major-minor-version-52-0？"><span class="nav-number">1.1.</span> <span class="nav-text">问题一：为什么出现Unsupported major.minor version 52.0？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题二：为什么gradle命令和android-studio按钮运行结果不一样？"><span class="nav-number">1.2.</span> <span class="nav-text">问题二：为什么gradle命令和android studio按钮运行结果不一样？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题"><span class="nav-number">2.</span> <span class="nav-text">INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案"><span class="nav-number">3.</span> <span class="nav-text">INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案</span></a></li></ol></div>
             
 
           </div>
