@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-11-14T07:06:52.512Z</updated>
+  <updated>2017-12-05T04:27:35.137Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,108 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tips-android-arch</title>
+    <link href="http://wodekouwei.com/2017/12/05/tips-android-arch/"/>
+    <id>http://wodekouwei.com/2017/12/05/tips-android-arch/</id>
+    <published>2017-12-05T03:59:48.000Z</published>
+    <updated>2017-12-05T04:27:35.137Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://www.cnblogs.com/zqlxtt/p/6887938.html" target="_blank" rel="external">Android官方架构组件介绍之LifeCycle</a>,Android架构组件一共包括以下几个：</p>
+<ul>
+<li>LifeCycle ： 与Activity和Fragment的生命周期有关</li>
+<li>LiveData ：异步可订阅数据，也是生命周期感知</li>
+<li>ViewModel ：视图数据持有模型，也是生命周期感知</li>
+<li>Room ：SQLite抽象层，用于简化SQLite数据存储</li>
+</ul>
+<p><a href="https://developer.android.com/topic/libraries/architecture/index.html" target="_blank" rel="external">官网</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/zqlxtt/p/6887938.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Android官方架构组件介绍之LifeCycle&lt;/a&gt;,Android架构组件一共包括以下几个：&lt;
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>linux批量操作文件</title>
+    <link href="http://wodekouwei.com/2017/11/30/tips-linux-rename/"/>
+    <id>http://wodekouwei.com/2017/11/30/tips-linux-rename/</id>
+    <published>2017-11-30T10:25:22.778Z</published>
+    <updated>2017-11-30T10:34:25.610Z</updated>
+    
+    <content type="html"><![CDATA[<p>一个批量将mp4文件转成gif文件的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;*.mp4&quot; |sed &apos;s/.mp4$//g&apos;|xargs -i ffmpeg -i &#123;&#125;.mp4 &#123;&#125;.gif</div></pre></td></tr></table></figure>
+<p><code>sed &#39;s/.mp4$//g&#39;</code>使用sed命令将mp4文件名的<code>.mp4</code>全部替换成空.<code>/g</code>是全局替换.s是sed的替换命令,替换格式<code>&#39;s/原文/要替换成的/&#39;</code></p>
+<p>或者:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">for file in $(find . -name &quot;*.mp4&quot; -type f);do ffmpeg -i &quot;$file&quot; &quot;$&#123;file%.*&#125;.gif&quot;;done</div></pre></td></tr></table></figure></p>
+<p>找到所有<code>.mp4</code>文件进行循环,file是mp4文件全名,<code>${file%.*}</code>是剔除从右边最小匹配,即将<code>.mp4</code>去掉</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一个批量将mp4文件转成gif文件的命令&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class
+    
+    </summary>
+    
+      <category term="linux管理" scheme="http://wodekouwei.com/categories/linux%E7%AE%A1%E7%90%86/"/>
+    
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>mac下Core Dump文件的行程与分析</title>
+    <link href="http://wodekouwei.com/2017/11/17/env-mac-debug-c/"/>
+    <id>http://wodekouwei.com/2017/11/17/env-mac-debug-c/</id>
+    <published>2017-11-17T08:31:12.000Z</published>
+    <updated>2017-11-17T08:56:36.978Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="mac下生成core-dump"><a href="#mac下生成core-dump" class="headerlink" title="mac下生成core dump"></a>mac下生成core dump</h4><ol>
+<li>使用<code>ulimit -c</code>查看ulimit设置,显示<code>unlimited</code>表示开启,显示0表示关闭,通过<code>ulimit -c unlimited</code>打开设置;
+但是这个只在当前窗口有效果。如果需要变成系统全局设置。
+就需要去改/etc/profile文件，打开，然后加上<code>ulimit -c unlimited</code>就可以了，这样当产生Crash的时候就会自动产生dump文件。</li>
+<li><p>之后需要配置一下dump产生的规则和路径:<code>sudo sysctl kern.corefile=/cores/core.%N.%P</code>,其中%N表示进程名字，%P表示进程id。Linux还有%S,%T分别表示最后一个信号和时间，在MAC上没找到对应的。(mac默认生成的core dump在<code>/cores/</code>下).</p>
+</li>
+<li><p>最后如何用lldb来查看一个core dump文件<code>lldb -c core.xxx</code>. 在lldb命令下输入<code>bt</code>查看报错代码.</p>
+</li>
+</ol>
+<p>生成太多core文件会占用电脑磁盘,可以关闭全局的core dump生成配置:</p>
+<ol>
+<li>永久关闭，则在/etc/sysctl.conf中加入一行（如果存在，则将其值修改为0），重启后生效：<code>kern.coredump=0</code></li>
+<li>零时关闭，当前生效，重启后失效：<code>sudo sysctl -w kern.coredump=0</code></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;mac下生成core-dump&quot;&gt;&lt;a href=&quot;#mac下生成core-dump&quot; class=&quot;headerlink&quot; title=&quot;mac下生成core dump&quot;&gt;&lt;/a&gt;mac下生成core dump&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;使用&lt;code&gt;ulim
+    
+    </summary>
+    
+      <category term="env" scheme="http://wodekouwei.com/categories/env/"/>
+    
+    
+      <category term="Mac" scheme="http://wodekouwei.com/tags/Mac/"/>
+    
+      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
+    
+      <category term="C" scheme="http://wodekouwei.com/tags/C/"/>
+    
+  </entry>
   
   <entry>
     <title>android兼容性</title>
@@ -431,7 +533,7 @@ Once old service finishes the communication with the UI thread then onTaskRemove
     <link href="http://wodekouwei.com/2017/10/31/l-kotlin/"/>
     <id>http://wodekouwei.com/2017/10/31/l-kotlin/</id>
     <published>2017-10-31T12:13:42.000Z</published>
-    <updated>2017-11-09T07:49:29.000Z</updated>
+    <updated>2017-12-05T03:54:43.043Z</updated>
     
     <content type="html"><![CDATA[<h3 id="字符串比较"><a href="#字符串比较" class="headerlink" title="字符串比较"></a>字符串比较</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var str1 = &quot;chaychan&quot;</div><div class="line">var str2 = &quot;chaychan&quot;</div><div class="line">println(str1 == str2)</div></pre></td></tr></table></figure>
 <p>比较两个字符串，如果两个字符串的内容一致，在Java中使用 str1 == str2 时，是比较两个字符串的地址值，很清楚两个字符串的地址不一样，返回false，但是在kotlin中，则不是如此，比较的只是字符串的内容，而===相当于Java中的==，用来比较引用对象, 上述代码返回的是true。</p>
@@ -448,7 +550,43 @@ Once old service finishes the communication with the UI thread then onTaskRemove
 </li>
 </ol>
 <p>返回结果为true。</p>
-]]></content>
+<h3 id="源码优化分析"><a href="#源码优化分析" class="headerlink" title="源码优化分析"></a>源码优化分析</h3><p><a href="https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-kotlin/" target="_blank" rel="external">源码</a></p>
+<h4 id="1-Lateinit"><a href="#1-Lateinit" class="headerlink" title="1.Lateinit"></a>1.Lateinit</h4><p>在View声明阶段，都会需要使用lateinit来延迟声明变量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class TaskActivity : AppCompatActivity()&#123;</div><div class="line">  private val CURRENT_FILTERING_KEY = &quot;CURRENT_FILTERING_KEY&quot;;</div><div class="line">  private lateinit var drawerLayout : DrawerLayout</div><div class="line">  private lateinit var tasksPresenter:TasksPresenter</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>kotlin中延迟声明还包括lazy的方式
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">val name:String by lazy &#123;&quot;cangwang&quot;&#125;</div><div class="line">lateinit var drawLayout:drawLayout</div></pre></td></tr></table></figure></p>
+<p>区别在于:</p>
+<ol>
+<li>.lazy{}只能用再val类型,lateinit只能用在var类型</li>
+<li>.lateinit不能用在可空的属性上和java的基本类型上<code>lateinit var name:String</code>会报错</li>
+<li>.lateinit可以在任何位置初始化并且可以初始化多次,因为其衔接var变量.而lazy在第一次被调用时就被初始化,其衔接的是val常量,想要被改变只能重新定义</li>
+</ol>
+<h4 id="2-findViewById"><a href="#2-findViewById" class="headerlink" title="2.findViewById"></a>2.findViewById</h4><p>Api26前:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public View findViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Api26之后
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@SuppressWarnings(&quot;TypeParameterUnusedInFormals&quot;)</div><div class="line">@Override</div><div class="line">public &lt;T extends View&gt; T indViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="五个kotlin-Standard-kt里面的函数-apply-with-let-run-also"><a href="#五个kotlin-Standard-kt里面的函数-apply-with-let-run-also" class="headerlink" title="五个kotlin Standard.kt里面的函数:apply,with,let,run,also"></a>五个kotlin Standard.kt里面的函数:apply,with,let,run,also</h4><ol>
+<li>apply作用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">setSupportActionBar(findViewById&lt;Toolbar&gt;(R.id.toolbar))</div><div class="line">supportActionBar?.apply&#123;</div><div class="line">  setDisplayHomeAsUpEnabled(true)</div><div class="line">  setDisplayShowHomeEnabled(true)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在函数内可以通过this指代该对象,返回值为该对象自己</p>
+<ol>
+<li>with函数
+将某对象作为函数的参数,在函数内可以通过this指代该对象.返回值为函数块的最后一行或指定return表达式<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">override fun getView(i:Int,view:View?,viewGroup:ViewGroup):View&#123;</div><div class="line">  val rowView=Vview?:LayoutInflater.from(viewGroup.context).inflate(R.layout.task_item,viewGroup,false)</div><div class="line">  val task = getItem(i)</div><div class="line">  with(rowView.findViewById&lt;TextView&gt;(R.id.title))&#123;</div><div class="line">    text = task.titleForList</div><div class="line">  &#125;</div><div class="line">  with(rowView.findViewById&lt;CheckBox&gt;(R.id.complete))&#123;</div><div class="line">    isChecked=task.isCompleted</div><div class="line">    rowView.setBackgroundDrawable(...)</div><div class="line">    setOnClickListener&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="3-lat函数"><a href="#3-lat函数" class="headerlink" title="3.lat函数"></a>3.lat函数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private fun showMessage(message:String)&#123;</div><div class="line">  view?.let&#123;</div><div class="line">    Snackbar.make(it,message,Snackbar.LENGTH_LONG).show()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将对象作为函数参数,在函数块内可以通过it指代该对象.返回值为函数块的最后一行或指定return表达式</p>
+<h4 id="4-run函数"><a href="#4-run函数" class="headerlink" title="4. run函数"></a>4. run函数</h4><p>其有两种表达式:</p>
+<ul>
+<li>第一种无参数输入</li>
+<li>第二种会将对象本身this给函数调用
+返回值为函数块最后一行,或者指定return表达式</li>
+</ul>
+<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>单例对象是使用Object申明
+Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功能.</p>
+<h3 id="data"><a href="#data" class="headerlink" title="data"></a>data</h3><p>相当于java中定义的数据bean类,其可以直接在属性之后编写get和set方法</p>
+<h3 id="JvmOverloads"><a href="#JvmOverloads" class="headerlink" title="@JvmOverloads"></a><code>@JvmOverloads</code></h3>]]></content>
     
     <summary type="html">
     
@@ -806,9 +944,21 @@ C++中几乎从不需要宏。可以用const和enum定义易于理解的常量�
     <link href="http://wodekouwei.com/2017/10/12/l-c-skill/"/>
     <id>http://wodekouwei.com/2017/10/12/l-c-skill/</id>
     <published>2017-10-12T09:51:08.000Z</published>
-    <updated>2017-10-31T12:14:47.000Z</updated>
+    <updated>2017-11-17T08:48:21.083Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://coolshell.cn/articles/10115.html" target="_blank" rel="external">c语言全局变量那些事</a>
+    <content type="html"><![CDATA[<h3 id="Segmentation-fault段错误调试总结"><a href="#Segmentation-fault段错误调试总结" class="headerlink" title="Segmentation fault段错误调试总结"></a>Segmentation fault段错误调试总结</h3><p>Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。</p>
+<h4 id="方法1：加打印printf。"><a href="#方法1：加打印printf。" class="headerlink" title="方法1：加打印printf。"></a>方法1：加打印printf。</h4><p>这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。</p>
+<h4 id="方法2：gdb调试。"><a href="#方法2：gdb调试。" class="headerlink" title="方法2：gdb调试。"></a>方法2：gdb调试。</h4><p>加gdb调试往往能在Core dump时抓到，甚至能抓到哪一个文件哪个类哪个函数哪一行，甚是精确。要确保GDB能抓到可用信息要做一些准备：</p>
+<ul>
+<li>加-g 参数，这样才会有调试信息。 我想是个程序员就应该知道吧。</li>
+<li>在Makefile 中加上 -fstack-protector 和-fstack-protector-all 信息，确保函数调用栈不丢失，当然只能是一定程度的不丢失，要完成保留住是不太可能的，但起码可以得到栈顶函数。</li>
+</ul>
+<p>有了上面两点对大多数的Segmentation fault都能抓住，但是函数调用栈彻底乱掉或者在动态库so中Core而这个库编译时没有加-g参数，这些情况就gdb就无能为力了。</p>
+<h4 id="方法3：手动获取函数调用栈。"><a href="#方法3：手动获取函数调用栈。" class="headerlink" title="方法3：手动获取函数调用栈。"></a>方法3：手动获取函数调用栈。</h4><p>这种方法其实是借住两个系统函数backtrace和backtrace_symbol来获取函数调用栈的，把这两个函数放在信号处理函数中：当收到 SIGSEG时在信号处理函数中调用这两个函数打印函数调用栈，在没用GDB调试的时候这种方法可以代替gdb的一部分功能，这听起来是不是非常酷啊，来看一看实现吧：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;execinfo.h&gt;</div><div class="line">#include &lt;sys/types.h&gt;</div><div class="line">#include &lt;sys/stat.h&gt;</div><div class="line">#include &lt;fcntl.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line"></div><div class="line">static void SignalHandle(int sig)</div><div class="line">&#123;</div><div class="line">    void *array[20];</div><div class="line">    size_t size;</div><div class="line">    char **strings;</div><div class="line">    int i;</div><div class="line">    size = backtrace(array, 10);</div><div class="line">    strings = backtrace_symbols(array, size);</div><div class="line">    printf(&quot;SIGNAL ocurre %d, stack tarce:\n&quot;, sig);</div><div class="line">    printf(&quot;obtained %d stack frames.\n&quot;, size);</div><div class="line"></div><div class="line">    for (i = 0; i &lt; size; i++)</div><div class="line">        printf(&quot;%s\n&quot;, strings);</div><div class="line"></div><div class="line">    free(strings);</div><div class="line">    printf(&quot;stack trace over!\n&quot;);</div><div class="line">    exit(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char **argv)</div><div class="line">&#123;</div><div class="line">    signal(SIGSEGV, SignalHandle);</div><div class="line">    //...程序主体</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当然这种方法在没有GDB时候会大显身手，经过实验就是有gdb的时候这种方法有时比gdb抓到调用栈要多一层；当然这种方法和用gdb调试一样要加<code>-g</code>和栈保护参数<code>-fstack-protector</code> 和 <code>-fstack-protector-all</code>。其缺点就是抓到的调用栈无效，这是什么意思呢？有时发生core dump,能定位到甚至哪一行，但是那一行根本没有明显的错误；或者追到没有调试信息的动态库里如glibc。当然这些情况大多数调试方法都无能为力，只能依靠程序员的经验了。</p>
+<h4 id="方法4：经验之谈。"><a href="#方法4：经验之谈。" class="headerlink" title="方法4：经验之谈。"></a>方法4：经验之谈。</h4><p>如果我们的程序是多线程的，发生core dump用以上方法均无效，除了仔细排查代码外，还有这么一方法让我们缩小范围。</p>
+<p><a href="https://coolshell.cn/articles/10115.html" target="_blank" rel="external">c语言全局变量那些事</a>
 <a href="https://coolshell.cn/articles/9543.html" target="_blank" rel="external">“C++的数组不支持多态”？</a></p>
 <p><a href="https://coolshell.cn/articles/7886.html" target="_blank" rel="external">代码执行的效率</a></p>
 <p><a href="https://coolshell.cn/articles/5761.html" target="_blank" rel="external">深入理解C语言</a></p>
@@ -824,8 +974,7 @@ C++中几乎从不需要宏。可以用const和enum定义易于理解的常量�
     
     <summary type="html">
     
-      &lt;p&gt;&lt;a href=&quot;https://coolshell.cn/articles/10115.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;c语言全局变量那些事&lt;/a&gt;
-&lt;a href=&quot;https://coolshell.cn/articles/9
+      &lt;h3 id=&quot;Segmentation-fault段错误调试总结&quot;&gt;&lt;a href=&quot;#Segmentation-fault段错误调试总结&quot; class=&quot;headerlink&quot; title=&quot;Segmentation fault段错误调试总结&quot;&gt;&lt;/a&gt;Segmentatio
     
     </summary>
     
@@ -1522,7 +1671,7 @@ vapth使用方法中的&lt; pattern&gt;需要包含“%”字符。“%”的意
 于是，我们可以写出[.c]文件和[.d]文件的依赖关系，并让make自动更新或自成[.d]文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。
 这里，我们给出了一个模式规则来产生[.d]文件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">%.d: %.c</div><div class="line">       @set -e; rm -f $@; \</div><div class="line">        $(CC) -M $(CPPFLAGS) $&lt; &gt; $@.</div><div class="line">; \</div><div class="line">        sed &apos;s,$∗\.o[ :]*,\1.o $@ : ,g&apos; &lt; $@.</div><div class="line">&gt; $@; \</div><div class="line">        rm -f $@.</div></pre></td></tr></table></figure></p>
-<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x201d;&#65292;&#x4e5f;&#x5c31;&#x662f;&#91;&#x2e;&#99;&#x5d;&#25991;&#20214;&#x751f;&#x6210;&#x4f9d;&#x8d56;&#25991;&#20214;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#x8868;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#x2e;&#100;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#26524;&#26377;&#19968;&#x4e2a;&#67;&#25991;&#x4ef6;&#x662f;&#x6e;&#97;&#109;&#x65;&#x2e;&#99;&#xff0c;&#x90a3;&#x4e48;&#x201c;&#37;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#x610f;&#20026;&#19968;&#x4e2a;&#38543;&#x673a;&#x7f16;&#21495;&#65292;&#x7b2c;&#20108;&#34892;&#29983;&#25104;&#x7684;&#x6587;&#20214;&#x6709;&#x53ef;&#x80fd;&#x662f;&#8220;&#110;&#x61;&#x6d;&#101;&#46;&#x64;&#x2e;&#49;&#x32;&#51;&#x34;&#x35;&#x201d;&#xff0c;&#31532;&#19977;&#x884c;&#20351;&#x7528;&#115;&#x65;&#x64;&#x547d;&#x4ee4;&#20570;&#20102;&#x4e00;&#20010;&#x66ff;&#25442;&#65292;&#x5173;&#x4e8e;&#x73;&#101;&#100;&#21629;&#x4ee4;&#30340;&#x7528;&#27861;&#35831;&#21442;&#30475;&#x76f8;&#x5173;&#30340;&#20351;&#29992;&#x6587;&#x6863;&#12290;&#x7b2c;&#22235;&#34892;&#23601;&#x662f;&#x5220;&#38500;&#20020;&#x65f6;&#25991;&#20214;&#x3002;&#10;&#24635;&#32780;&#35328;&#20043;&#xff0c;&#36825;&#x4e2a;&#x6a21;&#24335;&#35201;&#20570;&#30340;&#20107;&#x5c31;&#x662f;&#22312;&#x7f16;&#x8bd1;&#22120;&#29983;&#25104;&#30340;&#x4f9d;&#36182;&#20851;&#x7cfb;&#20013;&#21152;&#x5165;&#x5b;&#46;&#100;&#x5d;&#x6587;&#x4ef6;&#30340;&#x4f9d;&#36182;&#xff0c;&#x5373;&#x628a;&#20381;&#36182;&#x5173;&#x7cfb;&#xff1a;&#10;&#60;&#33;&#45;&#45;&#xfffc;&#x34;&#48;&#x2d;&#45;">&#x201d;&#65292;&#x4e5f;&#x5c31;&#x662f;&#91;&#x2e;&#99;&#x5d;&#25991;&#20214;&#x751f;&#x6210;&#x4f9d;&#x8d56;&#25991;&#20214;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#x8868;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#x2e;&#100;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#26524;&#26377;&#19968;&#x4e2a;&#67;&#25991;&#x4ef6;&#x662f;&#x6e;&#97;&#109;&#x65;&#x2e;&#99;&#xff0c;&#x90a3;&#x4e48;&#x201c;&#37;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#x610f;&#20026;&#19968;&#x4e2a;&#38543;&#x673a;&#x7f16;&#21495;&#65292;&#x7b2c;&#20108;&#34892;&#29983;&#25104;&#x7684;&#x6587;&#20214;&#x6709;&#x53ef;&#x80fd;&#x662f;&#8220;&#110;&#x61;&#x6d;&#101;&#46;&#x64;&#x2e;&#49;&#x32;&#51;&#x34;&#x35;&#x201d;&#xff0c;&#31532;&#19977;&#x884c;&#20351;&#x7528;&#115;&#x65;&#x64;&#x547d;&#x4ee4;&#20570;&#20102;&#x4e00;&#20010;&#x66ff;&#25442;&#65292;&#x5173;&#x4e8e;&#x73;&#101;&#100;&#21629;&#x4ee4;&#30340;&#x7528;&#27861;&#35831;&#21442;&#30475;&#x76f8;&#x5173;&#30340;&#20351;&#29992;&#x6587;&#x6863;&#12290;&#x7b2c;&#22235;&#34892;&#23601;&#x662f;&#x5220;&#38500;&#20020;&#x65f6;&#25991;&#20214;&#x3002;&#10;&#24635;&#32780;&#35328;&#20043;&#xff0c;&#36825;&#x4e2a;&#x6a21;&#24335;&#35201;&#20570;&#30340;&#20107;&#x5c31;&#x662f;&#22312;&#x7f16;&#x8bd1;&#22120;&#29983;&#25104;&#30340;&#x4f9d;&#36182;&#20851;&#x7cfb;&#20013;&#21152;&#x5165;&#x5b;&#46;&#100;&#x5d;&#x6587;&#x4ef6;&#30340;&#x4f9d;&#36182;&#xff0c;&#x5373;&#x628a;&#20381;&#36182;&#x5173;&#x7cfb;&#xff1a;&#10;&#60;&#33;&#45;&#45;&#xfffc;&#x34;&#48;&#x2d;&#45;</a></p>
+<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x201d;&#65292;&#x4e5f;&#23601;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#20381;&#36182;&#25991;&#20214;&#65292;&#x201c;&#36;&#64;&#8221;&#34920;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#46;&#x64;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#x679c;&#26377;&#19968;&#x4e2a;&#67;&#x6587;&#x4ef6;&#x662f;&#110;&#97;&#109;&#x65;&#x2e;&#x63;&#65292;&#x90a3;&#x4e48;&#8220;&#x25;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#x61;&#x6d;&#x65;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#x4e3a;&#x4e00;&#x4e2a;&#x968f;&#x673a;&#x7f16;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#34892;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#33021;&#26159;&#8220;&#110;&#97;&#109;&#x65;&#46;&#100;&#x2e;&#49;&#50;&#51;&#52;&#x35;&#8221;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#100;&#21629;&#20196;&#20570;&#20102;&#19968;&#20010;&#26367;&#25442;&#xff0c;&#20851;&#20110;&#x73;&#101;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#35831;&#x53c2;&#x770b;&#x76f8;&#20851;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#x3002;&#x7b2c;&#x56db;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#25991;&#20214;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#x6a21;&#24335;&#x8981;&#20570;&#x7684;&#x4e8b;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#x5668;&#29983;&#x6210;&#30340;&#x4f9d;&#36182;&#x5173;&#31995;&#20013;&#21152;&#20837;&#91;&#x2e;&#100;&#93;&#x6587;&#x4ef6;&#30340;&#20381;&#36182;&#65292;&#21363;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#65306;&#xa;&#x3c;&#x21;&#x2d;&#45;&#65532;&#x34;&#x30;&#45;&#45;">&#x201d;&#65292;&#x4e5f;&#23601;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#20381;&#36182;&#25991;&#20214;&#65292;&#x201c;&#36;&#64;&#8221;&#34920;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#46;&#x64;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#x679c;&#26377;&#19968;&#x4e2a;&#67;&#x6587;&#x4ef6;&#x662f;&#110;&#97;&#109;&#x65;&#x2e;&#x63;&#65292;&#x90a3;&#x4e48;&#8220;&#x25;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#x61;&#x6d;&#x65;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#x4e3a;&#x4e00;&#x4e2a;&#x968f;&#x673a;&#x7f16;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#34892;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#33021;&#26159;&#8220;&#110;&#97;&#109;&#x65;&#46;&#100;&#x2e;&#49;&#50;&#51;&#52;&#x35;&#8221;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#100;&#21629;&#20196;&#20570;&#20102;&#19968;&#20010;&#26367;&#25442;&#xff0c;&#20851;&#20110;&#x73;&#101;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#35831;&#x53c2;&#x770b;&#x76f8;&#20851;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#x3002;&#x7b2c;&#x56db;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#25991;&#20214;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#x6a21;&#24335;&#x8981;&#20570;&#x7684;&#x4e8b;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#x5668;&#29983;&#x6210;&#30340;&#x4f9d;&#36182;&#x5173;&#31995;&#20013;&#21152;&#20837;&#91;&#x2e;&#100;&#93;&#x6587;&#x4ef6;&#30340;&#20381;&#36182;&#65292;&#21363;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#65306;&#xa;&#x3c;&#x21;&#x2d;&#45;&#65532;&#x34;&#x30;&#45;&#45;</a></p>
 <p>转成：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">main.o main.d : main.c defs.h</div></pre></td></tr></table></figure></p>
 <p>于是，我们的[.d]文件也会自动更新了，并会自动生成了，当然，你还可以在这个[.d]文件中加入的不只是依赖关系，包括生成的命令也可一并加入，让每个[.d]文件都包含一个完赖的规则。一旦我们完成这个工作，接下来，我们就要把这些自动生成的规则放进我们的主Makefile中。我们可以使用Makefile的“include”命令，来引入别的Makefile文件（前面讲过），例如：
@@ -2450,9 +2599,17 @@ ar r lib $?</code></li>
     <link href="http://wodekouwei.com/2017/09/30/tips-makefile/"/>
     <id>http://wodekouwei.com/2017/09/30/tips-makefile/</id>
     <published>2017-09-30T04:22:14.000Z</published>
-    <updated>2017-10-17T07:32:31.000Z</updated>
+    <updated>2017-11-21T09:46:07.642Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
+    <content type="html"><![CDATA[<h3 id="一个自定义模式规则示例"><a href="#一个自定义模式规则示例" class="headerlink" title="一个自定义模式规则示例"></a>一个自定义模式规则示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">CC=gcc</div><div class="line">SRCPATH=src</div><div class="line">OUTPATH=objs</div><div class="line"></div><div class="line">SRCS_TEST_SORT=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/XSort.c\</div><div class="line">	$(SRCPATH)/Test_Sort.c</div><div class="line">#OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</div><div class="line">OBJS_TEST_SORT=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_SORT))</div><div class="line">EXERC_TEST_SORT=TestSort</div><div class="line"></div><div class="line">SRCS_TEST_LIST=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/alist.c\</div><div class="line">	$(SRCPATH)/llist.c\</div><div class="line">	$(SRCPATH)/sllist.c\</div><div class="line">	$(SRCPATH)/linkedlist.c\</div><div class="line">	$(SRCPATH)/Test_List.c\</div><div class="line">	$(SRCPATH)/polynomial.c</div><div class="line"></div><div class="line">#OBJS_TEST_LIST=$(SRCS_TEST_LIST:.c=.o)</div><div class="line">OBJS_TEST_LIST=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_LIST))</div><div class="line">EXERC_TEST_LIST=TestList</div><div class="line"></div><div class="line">start:$(OBJS_TEST_SORT) $(OBJS_TEST_LIST)</div><div class="line">	$(CC) -o $(EXERC_TEST_SORT) $(OBJS_TEST_SORT)</div><div class="line">	$(CC) -o $(EXERC_TEST_LIST) $(OBJS_TEST_LIST)</div><div class="line">	@echo ---------------SUCCESS----------------</div><div class="line">$(OUTPATH)/%.o:src/%.c</div><div class="line">	$(CC) -g -fstack-protector -fstack-protector-all -o $@ -c $&lt;</div><div class="line">clean:</div><div class="line">	rm -rf $(OBJS_TEST_SORT) $(EXERC_TEST_SORT)</div><div class="line">	rm -rf $(OBJS_TEST_LIST) $(EXEC_TEST_LIST)</div></pre></td></tr></table></figure>
+<ol>
+<li>使用VPATH设置搜索路径<code>VPATH = path1:path2:...</code>,make 会自动找到指定文件的目录并添加到文件上</li>
+<li>可以指定文件输入/输出路径,<code>OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</code>使用源文件集合推到编译输出文件名,当源文件增加路径后,如<code>src/Common.c</code>后,输出路径也变为<code>src/Common.o</code>,不是需要的<code>bin/Common.o</code>,使用函数<code>patsubst</code>替换输出文件集合中文件路径.</li>
+<li>使用模式匹配<code>%.o:%.c</code>替换后缀规则<code>.c.o:</code></li>
+<li>patsubst ( patten substitude,匹配替换的缩写)函数。它需要3个参数——第一个是一个需要匹配的式样，第二个表示用什么来替换它，第三个是一个需要处理由空格分隔的序列。我们将两个函数合起来用：<code>objects := $(patsubst %.c,%.o,$(wildcard *.c))</code>会被处理为: <code>objects := a.o b.o</code>同理： <code>executables := $(patsubst %.c,%,$(wildcard *.c))</code>会被处理为： <code>executables := a b</code>.<code>%o：</code>所有以“.o”结尾的目标，也就是如Common.o alist.o等,依赖模式<code>“%.c”</code>：取模式<code>“%.o”</code>的<code>%</code>Common alist，并为其加上<code>.c</code>后缀，即<code>Common.c</code>，<code>alist.c</code></li>
+<li><code>$&lt;：</code>表示所有依赖目标集，也就是<code>Common.c alist.c</code>,<code>$@：</code>表示目标集，也就是<code>Common.o alist.o</code>.命令前加<code>@</code>，表示在终端中不打印，如<code>@mkdir -p ./bin</code></li>
+</ol>
+<h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
  一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">main.o: main.h stack.h maze.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
 <p> 就相当于：
@@ -2506,7 +2663,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;makefile之隐含规则和模式规则&quot;&gt;&lt;a href=&quot;#makefile之隐含规则和模式规则&quot; class=&quot;headerlink&quot; title=&quot;makefile之隐含规则和模式规则&quot;&gt;&lt;/a&gt;makefile之隐含规则和模式规则&lt;/h3&gt;&lt;p&gt;Makefi
+      &lt;h3 id=&quot;一个自定义模式规则示例&quot;&gt;&lt;a href=&quot;#一个自定义模式规则示例&quot; class=&quot;headerlink&quot; title=&quot;一个自定义模式规则示例&quot;&gt;&lt;/a&gt;一个自定义模式规则示例&lt;/h3&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;tabl
     
     </summary>
     
@@ -2549,7 +2706,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
     <link href="http://wodekouwei.com/2017/09/29/opencv-core/"/>
     <id>http://wodekouwei.com/2017/09/29/opencv-core/</id>
     <published>2017-09-29T10:09:42.000Z</published>
-    <updated>2017-11-10T07:45:38.000Z</updated>
+    <updated>2017-11-20T06:41:35.774Z</updated>
     
     <content type="html"><![CDATA[<h3 id="mat"><a href="#mat" class="headerlink" title="mat"></a>mat</h3><p>Mat替代lplImage</p>
 <h4 id="创建和清理mat空间"><a href="#创建和清理mat空间" class="headerlink" title="创建和清理mat空间"></a>创建和清理mat空间</h4><ul>
@@ -2584,6 +2741,97 @@ auto it = mr.begin<vec3b>();
 auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
 </ul>
 <h3 id="ROI感兴趣区域"><a href="#ROI感兴趣区域" class="headerlink" title="ROI感兴趣区域"></a>ROI感兴趣区域</h3><p>cv::Rect rect(100, 100, 300, 300);</p>
+<h3 id="像素格式和灰度图"><a href="#像素格式和灰度图" class="headerlink" title="像素格式和灰度图"></a>像素格式和灰度图</h3><p>RGB, YUV, GRAY</p>
+<p>cvtColor(src, img, COLOR_BGR2GRAY);//源图像,目标凸显,转换方式,利用多线程等方式提高效率</p>
+<p>自己实现转换:
+Gray = (R<em>30 + G</em>59 + B*11 + 50)/100</p>
+<h3 id="二值化和阈值"><a href="#二值化和阈值" class="headerlink" title="二值化和阈值"></a>二值化和阈值</h3><ul>
+<li>THRESH_BINARY 二进制阈值化</li>
+<li>THRESH_BINARY_INV 反二进制阈值化</li>
+</ul>
+<h3 id="改变图片的对比度和亮度"><a href="#改变图片的对比度和亮度" class="headerlink" title="改变图片的对比度和亮度"></a>改变图片的对比度和亮度</h3><p>g(i,j) = a*f(i,j) + b
+a 1.0~3.0(对比) b 0~100(亮度)
+saturate_cast<uchar>防止移除函数</uchar></p>
+<h3 id="图像尺寸调整"><a href="#图像尺寸调整" class="headerlink" title="图像尺寸调整"></a>图像尺寸调整</h3><ul>
+<li><p>INTER_NEAREST 近邻算法(最快)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">int sx, sy = 0;//原图对应的坐标</div><div class="line">float fy = float(src.rows)/out.rows;</div><div class="line">float fx = float(src.cols)/out.cols;</div><div class="line">for(int y = 0; y&lt; out.rows;y++)&#123;</div><div class="line">  sy = fy*y + 0.5;//+0.5四舍五入</div><div class="line">  for(int x = 0; x &lt; out.cols;x++)&#123;</div><div class="line">    sx = fx*x + 0.5;</div><div class="line">    out.at&lt;Vec3b&gt;(y,x) = src.at&lt;Vec3b&gt;(sy, sx);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>CV_INTER_LINEAR 双线程差值(缺省使用)</p>
+</li>
+</ul>
+<p>滤波:
+输入图像中像素的小领域来产生输出图像的方法,在信号处理中,这种方法称为滤波(filtering).其中,最常用的是线性滤波:输出像素是输入领域像素的加权和.</p>
+<p>双线性内插值:
+是由源图像位置在它附近的2*2区域4个邻近像素的值通过加权平均计算得出的.
+低通滤波性质,使高频分量受损,图像轮廓可能会有一点模糊.</p>
+<h3 id="图像金字塔"><a href="#图像金字塔" class="headerlink" title="图像金字塔"></a>图像金字塔</h3><p>高斯金字塔(Gaussian pyramid):用来向下采样</p>
+<ul>
+<li>获取G(i+1)将G(i)与高斯内核卷积</li>
+<li>将所有偶数行和列去除
+-</li>
+</ul>
+<p>拉普拉斯金字塔(Laplacian pyramid):用来从金字塔底层图像重建上层未采样图像</p>
+<ul>
+<li>用来从金字塔底层图像重建上层未采样图像</li>
+<li>首先,将图像扩大两杯,新增以0填充</li>
+<li>高斯内核(乘以4)与放大后的图像卷积</li>
+</ul>
+<h3 id="两幅图像混合-blending"><a href="#两幅图像混合-blending" class="headerlink" title="两幅图像混合(blending)"></a>两幅图像混合(blending)</h3><ul>
+<li><code>dst = src1*a + src2*(1-a) + gamma</code>//gamma增益</li>
+<li>a=[0~1]</li>
+<li>画面叠化(cross-dissolve)效果</li>
+<li><code>addWeighted(src1, a, src2, 1-a, 0.0, dst);</code>//两幅图像大小需一致</li>
+</ul>
+<h3 id="图像旋转和镜像"><a href="#图像旋转和镜像" class="headerlink" title="图像旋转和镜像"></a>图像旋转和镜像</h3><ul>
+<li><p>cv::rotate(src, dst, type);</p>
+<ul>
+<li>ROTATE_180</li>
+<li>ROTATE_90_CLOCKWISE</li>
+<li>ROTATE_90_COUNTERCLOCKWISE</li>
+</ul>
+</li>
+<li><p>cv::flip(src,dst, type);//镜像type 0(x), 1(y), -1</p>
+</li>
+</ul>
+<p>###通过ROI图像合并</p>
+<h3 id="打开摄像头接口说明和源码分析"><a href="#打开摄像头接口说明和源码分析" class="headerlink" title="打开摄像头接口说明和源码分析"></a>打开摄像头接口说明和源码分析</h3><ul>
+<li>VideoCapture</li>
+<li>bool open(int index)</li>
+<li>VideoCapture cap(index)</li>
+<li>open(int cameraNum, int apiPrefrence)</li>
+</ul>
+<h3 id="打开视频流文件"><a href="#打开视频流文件" class="headerlink" title="打开视频流文件"></a>打开视频流文件</h3><ul>
+<li>bool open(const String &amp;filename)</li>
+<li>VideoCapture cap(const String &amp;file)</li>
+<li>bool open(const String &amp;filename, int apiPrefrence)</li>
+</ul>
+<ul>
+<li>关闭和空间释放</li>
+<li>~VideoCapture</li>
+<li>release</li>
+</ul>
+<h3 id="读取一帧视频"><a href="#读取一帧视频" class="headerlink" title="读取一帧视频"></a>读取一帧视频</h3><p>read(OutputArray image);</p>
+<ul>
+<li>bool grab() 读取并解码</li>
+<li>virtual bool retrieve(OUtputArray , intflag= 0):图像色彩转换</li>
+<li>vc&gt;&gt;mat</li>
+</ul>
+<h3 id="获取视频-相机属性"><a href="#获取视频-相机属性" class="headerlink" title="获取视频,相机属性"></a>获取视频,相机属性</h3><ul>
+<li>CAP_PROP_FPS帧率</li>
+<li>CAP_PROP_FRAME_COUNT 总帧数</li>
+<li>CAP_PROP_POS_FRAMES 播放帧的位置</li>
+<li>CAP_PROP_FRAME_WIDTH HEIGHT</li>
+</ul>
+<h3 id="VideoWriter"><a href="#VideoWriter" class="headerlink" title="VideoWriter"></a>VideoWriter</h3><ul>
+<li><p>open(const String &amp;filename, int fourcc, //VideoWrite::fourcc(‘H’, ‘2’, ‘6’, ‘4’)
+double fps, Size frameSize,bool isColor=true)</p>
+<p>release</p>
+<ul>
+<li>void write(const Mat&amp;)</li>
+<li>cvVideoWriter_FFMPEG::writeFrame</li>
+</ul>
+</li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -2605,7 +2853,7 @@ auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
     <link href="http://wodekouwei.com/2017/09/29/opencv-env/"/>
     <id>http://wodekouwei.com/2017/09/29/opencv-env/</id>
     <published>2017-09-29T09:50:52.000Z</published>
-    <updated>2017-09-29T10:09:15.000Z</updated>
+    <updated>2017-11-20T06:43:41.408Z</updated>
     
     <content type="html"><![CDATA[<p>从github下载opencv最新源码<a href="https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`" target="_blank" rel="external">https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`</a>.</p>
 <h3 id="Ubuntu环境下编译"><a href="#Ubuntu环境下编译" class="headerlink" title="Ubuntu环境下编译"></a>Ubuntu环境下编译</h3><p>安装依赖库:
@@ -2622,6 +2870,10 @@ auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
 <p>完成以上步骤后按理应该是能成功的，但是运行时发现会出现如下的错误。
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">Expected in: /usr/local/lib/libjpeg.8.dylib</div><div class="line">in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
 <p>针对以上问题,在项目-运行配置中,增加变量<code>DYLD_LIBRARY_PATH</code>值为<code>/Application/QT5.7.0/5.7/clang_64/lib:/usr/local/lib</code></p>
+<h3 id="qt-opencv常见问题"><a href="#qt-opencv常见问题" class="headerlink" title="qt+opencv常见问题"></a>qt+opencv常见问题</h3><p>在Mac上运行以上代码时，提示以下错误：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">  Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">  Expected in: /usr/local/lib/libJPEG.dylib</div><div class="line"> in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
+<p>解决办法是将“”目录下的对应动态链接库文件创建软连接到“/usr/local/lib”目录下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ pwd</div><div class="line">/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources</div><div class="line">$ sudo ln -sf libJPEG.dylib /usr/local/lib/libJPEG.dylib</div><div class="line">$ sudo ln -sf libPng.dylib /usr/local/lib/libPng.dylib</div><div class="line">$ sudo ln -sf libTIFF.dylib /usr/local/lib/libTIFF.dylib</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
@@ -2660,141 +2912,6 @@ auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
       <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
     
       <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于QT QAudioOutput push模式问题</title>
-    <link href="http://wodekouwei.com/2017/09/13/tips-qt-audiooutput/"/>
-    <id>http://wodekouwei.com/2017/09/13/tips-qt-audiooutput/</id>
-    <published>2017-09-13T03:52:14.000Z</published>
-    <updated>2017-09-13T04:08:34.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>在MAC上基于QT和ffmpeg实现最简单播放器,在完成声音播放模块后导致无法正常播放,QAudioOutput start后state仍是idel,将QAudioOutput buffer写满后就不能继续写数据了,导致播放被卡死.</p>
-<p>QAudioOutput创建代码:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">QAudioFormat fmt;</div><div class="line">fmt.setSampleRate(this-&gt;sampleRate);</div><div class="line">fmt.setSampleSize(this-&gt;sampleSize);</div><div class="line">fmt.setChannelCount(this-&gt;channel);</div><div class="line">fmt.setCodec(&quot;audio/pcm&quot;);</div><div class="line">fmt.setByteOrder(QAudioFormat::LittleEndian);</div><div class="line">fmt.setSampleType(QAudioFormat::UnSignedInt);</div><div class="line">QAudioDeviceInfo info = QAudioDeviceInfo::defaultOutputDevice();</div><div class="line">printf(&quot;deviceName:%s\n&quot;,qPrintable(info.deviceName()));</div><div class="line">if (!info.isFormatSupported(fmt)) &#123;</div><div class="line">    printf(&quot;default format not supported try to use nearest\n&quot;);</div><div class="line">    fmt = info.nearestFormat(fmt);</div><div class="line">&#125;</div><div class="line">output = new QAudioOutput(fmt);</div><div class="line">//connect(output, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));</div><div class="line">io = output-&gt;start();</div><div class="line">printf(&quot;io:%p\n&quot;, io);</div><div class="line">//printf(&quot;state:%s&quot;,output-&gt;state());</div><div class="line">QAudio::State stat = output-&gt;state();</div></pre></td></tr></table></figure></p>
-<p>在stackoverflow <a href="https://stackoverflow.com/questions/15651407/qt-qaudiooutput-push-mode" target="_blank" rel="external">Qt QAudioOutput push mode</a>看到别人的问题和解释,发现是setSampleType引起的,代码在window上可以正常跑,只是在mac上失败.</p>
-<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>I’ve got a question about using QAudioOutput to directly write samples at a specific sample rate to the sound output device. I’m writing an emulator that emualates sound chips on a per-frame basis, and then gets a buffer containing a frame’s worth of audio samples, which I would like to write to the audio output. Currently, to test my audio output routine, I allocate a huge (5 minute) buffer to put random numbers into, like so:</p>
-<p>Header:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">uint16_t *audio_outputBuffer;</div><div class="line">uint32_t audio_bytesRemainingToRead;</div><div class="line">QAudioOutput *audio_outputStream;</div><div class="line">QIODevice *audio_outputDevice;</div></pre></td></tr></table></figure></p>
-<p>Implementation:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">audio_outputBuffer = (uint16_t *) malloc((96000 * 4) * 300);</div><div class="line">int i = 0;</div><div class="line"></div><div class="line">uint16_t *tempAudioBuffer = audio_outputBuffer;</div><div class="line">for(i = 0; i &lt; ((96000 * 4) * 150); i++) &#123;</div><div class="line">    *tempAudioBuffer = (uint16_t) rand() &amp; 0xFFFF;</div><div class="line">    tempAudioBuffer++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">audio_bytesRemainingToRead = (96000 * 4) * 300;</div></pre></td></tr></table></figure></p>
-<p>Next, I set up my audio device with some basic parameters:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// Set up the format</div><div class="line">QAudioFormat format;</div><div class="line">format.setFrequency(96000); // Usually this is specified through an UI option</div><div class="line">format.setChannels(2);</div><div class="line">format.setSampleSize(16);</div><div class="line">format.setCodec(&quot;audio/pcm&quot;);</div><div class="line">format.setByteOrder(QAudioFormat::LittleEndian);</div><div class="line">format.setSampleType(QAudioFormat::UnSignedInt);</div><div class="line"></div><div class="line">// There&apos;s code here to notify the user of inability to match the format and choose an action, which is omitted for clarity</div><div class="line"></div><div class="line">// Create audio output stream, set up signals</div><div class="line">audio_outputStream = new QAudioOutput(format, this);</div><div class="line"></div><div class="line">connect(audio_outputStream, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audio_stateChanged(QAudio::State)));</div><div class="line"></div><div class="line">audio_outputDevice = audio_outputStream-&gt;start();</div></pre></td></tr></table></figure></p>
-<p>Then, in my timer tick routine, which is called by a QTimer at 60 FPS, I do the following code to write a ‘chunk’ of audio data to the QAudioOutput’s buffer:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(audio_outputDevice-&gt;isOpen() &amp;&amp; audio_outputStream-&gt;state() != QAudio::StoppedState) &#123;</div><div class="line">    qint64 bytesOfAudioWrittenToDevice = audio_outputDevice-&gt;write((char *) audio_outputBuffer, audio_outputStream-&gt;periodSize());</div><div class="line">    audio_bytesRemainingToRead -= bytesOfAudioWrittenToDevice;</div><div class="line">    qDebug() &lt;&lt; &quot;Wrote&quot; &lt;&lt; bytesOfAudioWrittenToDevice &lt;&lt; &quot;bytes of audio to output device. Remaining bytes to read:&quot; &lt;&lt; audio_bytesRemainingToRead;</div><div class="line">    qDebug() &lt;&lt; &quot;Free bytes in audio output:&quot; &lt;&lt; audio_outputStream-&gt;bytesFree();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Once I start the audio output process, I get the following output on the console:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Current audio state: 3 Error: 0</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115197952</div><div class="line">Free bytes in audio output: 6144</div><div class="line">Current audio state: 0 Error: 0</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115195904</div><div class="line">Free bytes in audio output: 4096</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115193856</div><div class="line">Free bytes in audio output: 2048</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115191808</div><div class="line">Free bytes in audio output: 0 (This and the above line is repeated forever)</div></pre></td></tr></table></figure></p>
-<p>To me, it looks like QAudioOutput isn’t flushing it’s internal buffer to the sound card, which goes along with the entire “no sound coming out of my computer” thing.</p>
-<p>What would cause this issue, and how could I fix it?</p>
-<p>(By the way, I’m compiling my code against Qt 4.8.1, on Mac OS X 10.7.4.)</p>
-<p>Thanks for any answers.</p>
-<h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><p>Upfront just wanna point out: This is not a Qt bug. Why? The answer is that in the WAV spec’, 8-bit samples are always unsigned, whereas 16-bit samples are always signed. Any other combination does not work. This is device related, the framework can not do anything about it.</p>
-<p>So this will not work because you have set 16 bit sample size and unsigned integer format. And yes, the solution is: you have to set the sample type to signed for 16-bit resolution:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format.setSampleType(QAudioFormat::SignedInt);</div></pre></td></tr></table></figure></p>
-<p>Inversely for 8-bit samples you would have to put:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format.setSampleType(QAudioFormat:UnsignedInt);</div></pre></td></tr></table></figure></p>
-<p>Also this very similar question (same problem but with 8-bit) shows you that it is not a particular problem of using signed or unsigned samples in Qt, but that it is the combination of samples size and type that matters (for the audio device, not for Qt ;) QAudioOutput in Qt5 is not producing any sound</p>
-<p>IMHO the fact that Qt does not take care of handling these cases by forcing the correct format is a flaw but not a lack in functionnality.</p>
-<p>You can learn more about this in the notes section of this page: <a href="https://ccrma.stanford.edu/courses/422/projects/WaveFormat/" target="_blank" rel="external">https://ccrma.stanford.edu/courses/422/projects/WaveFormat/</a></p>
-<p>I’ve figured this out — apparently Qt has issues with UNSIGNED samples. If you set the sample type to signed, everything works fine, regardless of platform.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;在MAC上基于QT和ffmpeg实现最简单播放器,在完成声音播放模块后导致无法正常播放,QAudioOutput start后state仍是idel,将QAudioOutput buffer写满后就不能继续写数据了,导致播放被卡死.&lt;/p&gt;
-&lt;p&gt;QAudioOutp
-    
-    </summary>
-    
-      <category term="QT" scheme="http://wodekouwei.com/categories/QT/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-      <category term="QT" scheme="http://wodekouwei.com/tags/QT/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>FFMPEG api使用流程</title>
-    <link href="http://wodekouwei.com/2017/09/13/ffmpeg-arch/"/>
-    <id>http://wodekouwei.com/2017/09/13/ffmpeg-arch/</id>
-    <published>2017-09-13T02:04:15.000Z</published>
-    <updated>2017-09-13T04:17:16.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>ffmpeg接口使用流程比较固定:</p>
-<ol>
-<li><code>av_register_all()</code>:注册所有模块</li>
-<li><code>int ret = avformat_open_input(&amp;ic, ofn, 0, 0);</code>:获取AVFormatContext ic(ofn为输入文件地址)</li>
-<li><code>for(i = 0; i &lt; ic-&gt;nb_streams; i++)</code>:遍历AVFormatContext中所有stream,分别找到Audio与Video对应的AVCodecContext;</li>
-<li><code>AVCodec *codec = avcodec_find_decoder(enc-&gt;codec_id);</code>:根据AVCodecContext中codec_id获取到AVCodec;</li>
-<li><code>avcodec_open2(enc, codec,NULL)</code>:打开AVCodec;</li>
-<li>接下来分配AVPacket与AVFrame</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;ffmpeg接口使用流程比较固定:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code&gt;av_register_all()&lt;/code&gt;:注册所有模块&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;int ret = avformat_open_input(&amp;amp;ic, ofn, 0, 0);&lt;/
-    
-    </summary>
-    
-      <category term="FFMPEG" scheme="http://wodekouwei.com/categories/FFMPEG/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-      <category term="FFMPEG" scheme="http://wodekouwei.com/tags/FFMPEG/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>FFMPEG编解码</title>
-    <link href="http://wodekouwei.com/2017/09/13/ffmpeg-codec/"/>
-    <id>http://wodekouwei.com/2017/09/13/ffmpeg-codec/</id>
-    <published>2017-09-13T02:03:37.000Z</published>
-    <updated>2017-09-13T03:47:45.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h3><p>ffmpeg3版本的解码接口做了调整,之前的视频解码接口<code>avcodec_decode_video2</code>和音频解码接口<code>avcodec_decode_audio4</code>被设置为deprecated,对这两个接口做了合并,使用同一的接口.并且将音视频解码步骤分成了两步,第一步<code>avcodec_send_packet</code>,第二步<code>avcodec_receive_frame</code>,</p>
-<h4 id="旧版本avcodec-decode-video2"><a href="#旧版本avcodec-decode-video2" class="headerlink" title="旧版本avcodec_decode_video2"></a>旧版本<code>avcodec_decode_video2</code></h4><h4 id="旧版本avcodec-decode-audio4"><a href="#旧版本avcodec-decode-audio4" class="headerlink" title="旧版本avcodec_decode_audio4"></a>旧版本<code>avcodec_decode_audio4</code></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">int got_picture;</div><div class="line">            ret = avcodec_decode_audio4(enc, pcm,&amp;got_picture, pkt);</div><div class="line">            if ( ret &lt; 0 ) &#123;</div><div class="line">                char buf[1024] = &#123;0&#125;;</div><div class="line">                av_strerror(err, buf, sizeof(buf));</div><div class="line">                printf(buf);</div><div class="line">                printf(&quot;avcodec_decode_audio4 failed:%d&quot; ,got_picture);</div><div class="line">                av_packet_unref(pkt);</div><div class="line">                av_frame_free(&amp;pcm);</div><div class="line">                if(ic) avformat_close_input(&amp;ic);</div><div class="line">                return -1;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<p>将AVPacket的pkt解码成AVFrame的pcm</p>
-<h4 id="新版本avcodec-send-packet"><a href="#新版本avcodec-send-packet" class="headerlink" title="新版本avcodec_send_packet"></a>新版本<code>avcodec_send_packet</code></h4><h5 id="接口源码"><a href="#接口源码" class="headerlink" title="接口源码:"></a>接口源码:</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Supply raw packet data as input to a decoder.</div><div class="line"> *</div><div class="line"> * Internally, this call will copy relevant AVCodecContext fields, which can</div><div class="line"> * influence decoding per-packet, and apply them when the packet is actually</div><div class="line"> * decoded. (For example AVCodecContext.skip_frame, which might direct the</div><div class="line"> * decoder to drop the frame contained by the packet sent with this function.)</div><div class="line"> *</div><div class="line"> * @warning The input buffer, avpkt-&gt;data must be AV_INPUT_BUFFER_PADDING_SIZE</div><div class="line"> *          larger than the actual read bytes because some optimized bitstream</div><div class="line"> *          readers read 32 or 64 bits at once and could read over the end.</div><div class="line"> *</div><div class="line"> * @warning Do not mix this API with the legacy API (like avcodec_decode_video2())</div><div class="line"> *          on the same AVCodecContext. It will return unexpected results now</div><div class="line"> *          or in future libavcodec versions.</div><div class="line"> *</div><div class="line"> * @note The AVCodecContext MUST have been opened with @ref avcodec_open2()</div><div class="line"> *       before packets may be fed to the decoder.</div><div class="line"> *</div><div class="line"> * @param avctx codec context</div><div class="line"> * @param[in] avpkt The input AVPacket. Usually, this will be a single video</div><div class="line"> *                  frame, or several complete audio frames.</div><div class="line"> *                  Ownership of the packet remains with the caller, and the</div><div class="line"> *                  decoder will not write to the packet. The decoder may create</div><div class="line"> *                  a reference to the packet data (or copy it if the packet is</div><div class="line"> *                  not reference-counted).</div><div class="line"> *                  Unlike with older APIs, the packet is always fully consumed,</div><div class="line"> *                  and if it contains multiple frames (e.g. some audio codecs),</div><div class="line"> *                  will require you to call avcodec_receive_frame() multiple</div><div class="line"> *                  times afterwards before you can send a new packet.</div><div class="line"> *                  It can be NULL (or an AVPacket with data set to NULL and</div><div class="line"> *                  size set to 0); in this case, it is considered a flush</div><div class="line"> *                  packet, which signals the end of the stream. Sending the</div><div class="line"> *                  first flush packet will return success. Subsequent ones are</div><div class="line"> *                  unnecessary and will return AVERROR_EOF. If the decoder</div><div class="line"> *                  still has frames buffered, it will return them after sending</div><div class="line"> *                  a flush packet.</div><div class="line"> *</div><div class="line"> * @return 0 on success, otherwise negative error code:</div><div class="line"> *      AVERROR(EAGAIN):   input is not accepted right now - the packet must be</div><div class="line"> *                         resent after trying to read output</div><div class="line"> *      AVERROR_EOF:       the decoder has been flushed, and no new packets can</div><div class="line"> *                         be sent to it (also returned if more than 1 flush</div><div class="line"> *                         packet is sent)</div><div class="line"> *      AVERROR(EINVAL):   codec not opened, it is an encoder, or requires flush</div><div class="line"> *      AVERROR(ENOMEM):   failed to add packet to internal queue, or similar</div><div class="line"> *      other errors: legitimate decoding errors</div><div class="line"> */</div><div class="line">int avcodec_send_packet(AVCodecContext *avctx, const AVPacket *avpkt);</div></pre></td></tr></table></figure>
-<h5 id="参数分析"><a href="#参数分析" class="headerlink" title="参数分析"></a>参数分析</h5><ul>
-<li><code>AVCodecContext *avctx</code>：第一个参数与旧的接口一致，是视频解码的上下文，包含解码器。</li>
-<li><code>const AVPacket *avpkt</code>： 编码的音视频帧数据</li>
-</ul>
-<p>为什么要传递空的avpkt
-这里有一个说明是可以传递NULL，什么情况下需要传递NULL，你平时看一些视频播放器，播放经常会少最后几帧，很多情况就是因为没有处理好缓冲帧的问题，ffmpeg内部会缓冲几帧，要想取出来就需要传递空的AVPacket进去。</p>
-<h4 id="新版本avcodec-receive-frame"><a href="#新版本avcodec-receive-frame" class="headerlink" title="新版本avcodec_receive_frame"></a>新版本<code>avcodec_receive_frame</code></h4><h5 id="接口源码-1"><a href="#接口源码-1" class="headerlink" title="接口源码"></a>接口源码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Return decoded output data from a decoder.</div><div class="line"> *</div><div class="line"> * @param avctx codec context</div><div class="line"> * @param frame This will be set to a reference-counted video or audio</div><div class="line"> *              frame (depending on the decoder type) allocated by the</div><div class="line"> *              decoder. Note that the function will always call</div><div class="line"> *              av_frame_unref(frame) before doing anything else.</div><div class="line"> *</div><div class="line"> * @return</div><div class="line"> *      0:                 success, a frame was returned</div><div class="line"> *      AVERROR(EAGAIN):   output is not available right now - user must try</div><div class="line"> *                         to send new input</div><div class="line"> *      AVERROR_EOF:       the decoder has been fully flushed, and there will be</div><div class="line"> *                         no more output frames</div><div class="line"> *      AVERROR(EINVAL):   codec not opened, or it is an encoder</div><div class="line"> *      other negative values: legitimate decoding errors</div><div class="line"> */</div><div class="line">int avcodec_receive_frame(AVCodecContext *avctx, AVFrame *frame);</div></pre></td></tr></table></figure>
-<h5 id="参数分析-1"><a href="#参数分析-1" class="headerlink" title="参数分析"></a>参数分析</h5><ul>
-<li><code>AVCodecContext *avctx</code>：第一个参数视频解码的上下文，与上面接口一致。</li>
-<li><code>AVFrame *frame</code>：解码后的视频帧数据。</li>
-</ul>
-<h5 id="空间申请和释放问题"><a href="#空间申请和释放问题" class="headerlink" title="空间申请和释放问题"></a>空间申请和释放问题</h5><p>解码后图像空间由函数内部申请，你所做的只需要分配 AVFrame 对象空间，如果你每次调用avcodec_receive_frame传递同一个对象，接口内部会判断空间是否已经分配，如果没有分配会在函数内部分配。
-avcodec_send_packet和avcodec_receive_frame调用关系并不一定是一对一的，比如一些音频数据一个AVPacket中包含了1秒钟的音频，调用一次avcodec_send_packet之后，可能需要调用25次 avcodec_receive_frame才能获取全部的解码音频数据，所以要做如下处理：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">int re = avcodec_send_packet(codec, pkt);</div><div class="line">if (re != 0)</div><div class="line">&#123;</div><div class="line">    return;</div><div class="line">&#125;</div><div class="line">while( avcodec_receive_frame(codec, frame) == 0)</div><div class="line">&#123;</div><div class="line">    //读取到一帧音频或者视频</div><div class="line">    //处理解码后音视频 frame</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>参考
-<a href="http://ffmpeg.org/doxygen/trunk/group__lavc__encdec.html" target="_blank" rel="external">send/receive encoding and decoding API overview</a></p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;解码&quot;&gt;&lt;a href=&quot;#解码&quot; class=&quot;headerlink&quot; title=&quot;解码&quot;&gt;&lt;/a&gt;解码&lt;/h3&gt;&lt;p&gt;ffmpeg3版本的解码接口做了调整,之前的视频解码接口&lt;code&gt;avcodec_decode_video2&lt;/code&gt;和音频解码接口&lt;
-    
-    </summary>
-    
-      <category term="FFMPEG" scheme="http://wodekouwei.com/categories/FFMPEG/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-      <category term="FFMPEG" scheme="http://wodekouwei.com/tags/FFMPEG/"/>
     
   </entry>
   

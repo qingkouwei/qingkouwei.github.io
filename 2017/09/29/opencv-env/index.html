@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/09/29/opencv-env/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="从github下载opencv最新源码https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`. Ubuntu环境下编译安装依赖库: 123456789sudo apt-get install build-essentialsudo apt-get install cmake git libg">
-<meta property="og:updated_time" content="2017-09-29T10:09:15.000Z">
+<meta property="og:updated_time" content="2017-11-20T06:43:41.408Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="opencv开发环境搭建">
 <meta name="twitter:description" content="从github下载opencv最新源码https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`. Ubuntu环境下编译安装依赖库: 123456789sudo apt-get install build-essentialsudo apt-get install cmake git libg">
@@ -450,6 +450,10 @@
 <p>完成以上步骤后按理应该是能成功的，但是运行时发现会出现如下的错误。
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">Expected in: /usr/local/lib/libjpeg.8.dylib</div><div class="line">in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
 <p>针对以上问题,在项目-运行配置中,增加变量<code>DYLD_LIBRARY_PATH</code>值为<code>/Application/QT5.7.0/5.7/clang_64/lib:/usr/local/lib</code></p>
+<h3 id="qt-opencv常见问题"><a href="#qt-opencv常见问题" class="headerlink" title="qt+opencv常见问题"></a>qt+opencv常见问题</h3><p>在Mac上运行以上代码时，提示以下错误：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">  Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">  Expected in: /usr/local/lib/libJPEG.dylib</div><div class="line"> in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
+<p>解决办法是将“”目录下的对应动态链接库文件创建软连接到“/usr/local/lib”目录下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ pwd</div><div class="line">/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources</div><div class="line">$ sudo ln -sf libJPEG.dylib /usr/local/lib/libJPEG.dylib</div><div class="line">$ sudo ln -sf libPng.dylib /usr/local/lib/libPng.dylib</div><div class="line">$ sudo ln -sf libTIFF.dylib /usr/local/lib/libTIFF.dylib</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -605,7 +609,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">70</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -616,7 +620,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -721,7 +725,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu环境下编译"><span class="nav-number">1.</span> <span class="nav-text">Ubuntu环境下编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac环境下编译"><span class="nav-number">2.</span> <span class="nav-text">Mac环境下编译</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置QT环境"><span class="nav-number">2.1.</span> <span class="nav-text">配置QT环境</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu环境下编译"><span class="nav-number">1.</span> <span class="nav-text">Ubuntu环境下编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac环境下编译"><span class="nav-number">2.</span> <span class="nav-text">Mac环境下编译</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置QT环境"><span class="nav-number">2.1.</span> <span class="nav-text">配置QT环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qt-opencv常见问题"><span class="nav-number">3.</span> <span class="nav-text">qt+opencv常见问题</span></a></li></ol></div>
             
 
           </div>

@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="makefile之隐含规则和模式规则Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。  一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：  1234main.o: main.h stack.h maze.h  main.o: main.c           gcc-c main.c  就相当于：  12mai">
+<meta name="description" content="一个自定义模式规则示例1234567891011121314151617181920212223242526272829303132CC=gccSRCPATH=srcOUTPATH=objsSRCS_TEST_SORT=$(SRCPATH)/Common.c \	$(SRCPATH)/XSort.c\	$(SRCPATH)/Test_Sort.c#OBJS_TEST_SORT=$(SRCS_TES">
 <meta name="keywords" content="makefile">
 <meta property="og:type" content="article">
 <meta property="og:title" content="makefile语法">
 <meta property="og:url" content="http://wodekouwei.com/2017/09/30/tips-makefile/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="makefile之隐含规则和模式规则Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。  一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：  1234main.o: main.h stack.h maze.h  main.o: main.c           gcc-c main.c  就相当于：  12mai">
-<meta property="og:updated_time" content="2017-10-17T07:32:31.000Z">
+<meta property="og:description" content="一个自定义模式规则示例1234567891011121314151617181920212223242526272829303132CC=gccSRCPATH=srcOUTPATH=objsSRCS_TEST_SORT=$(SRCPATH)/Common.c \	$(SRCPATH)/XSort.c\	$(SRCPATH)/Test_Sort.c#OBJS_TEST_SORT=$(SRCS_TES">
+<meta property="og:updated_time" content="2017-11-21T09:46:07.642Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="makefile语法">
-<meta name="twitter:description" content="makefile之隐含规则和模式规则Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。  一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：  1234main.o: main.h stack.h maze.h  main.o: main.c           gcc-c main.c  就相当于：  12mai">
+<meta name="twitter:description" content="一个自定义模式规则示例1234567891011121314151617181920212223242526272829303132CC=gccSRCPATH=srcOUTPATH=objsSRCS_TEST_SORT=$(SRCPATH)/Common.c \	$(SRCPATH)/XSort.c\	$(SRCPATH)/Test_Sort.c#OBJS_TEST_SORT=$(SRCS_TES">
 
 
 
@@ -435,7 +435,15 @@
       
 
       
-        <h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
+        <h3 id="一个自定义模式规则示例"><a href="#一个自定义模式规则示例" class="headerlink" title="一个自定义模式规则示例"></a>一个自定义模式规则示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">CC=gcc</div><div class="line">SRCPATH=src</div><div class="line">OUTPATH=objs</div><div class="line"></div><div class="line">SRCS_TEST_SORT=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/XSort.c\</div><div class="line">	$(SRCPATH)/Test_Sort.c</div><div class="line">#OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</div><div class="line">OBJS_TEST_SORT=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_SORT))</div><div class="line">EXERC_TEST_SORT=TestSort</div><div class="line"></div><div class="line">SRCS_TEST_LIST=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/alist.c\</div><div class="line">	$(SRCPATH)/llist.c\</div><div class="line">	$(SRCPATH)/sllist.c\</div><div class="line">	$(SRCPATH)/linkedlist.c\</div><div class="line">	$(SRCPATH)/Test_List.c\</div><div class="line">	$(SRCPATH)/polynomial.c</div><div class="line"></div><div class="line">#OBJS_TEST_LIST=$(SRCS_TEST_LIST:.c=.o)</div><div class="line">OBJS_TEST_LIST=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_LIST))</div><div class="line">EXERC_TEST_LIST=TestList</div><div class="line"></div><div class="line">start:$(OBJS_TEST_SORT) $(OBJS_TEST_LIST)</div><div class="line">	$(CC) -o $(EXERC_TEST_SORT) $(OBJS_TEST_SORT)</div><div class="line">	$(CC) -o $(EXERC_TEST_LIST) $(OBJS_TEST_LIST)</div><div class="line">	@echo ---------------SUCCESS----------------</div><div class="line">$(OUTPATH)/%.o:src/%.c</div><div class="line">	$(CC) -g -fstack-protector -fstack-protector-all -o $@ -c $&lt;</div><div class="line">clean:</div><div class="line">	rm -rf $(OBJS_TEST_SORT) $(EXERC_TEST_SORT)</div><div class="line">	rm -rf $(OBJS_TEST_LIST) $(EXEC_TEST_LIST)</div></pre></td></tr></table></figure>
+<ol>
+<li>使用VPATH设置搜索路径<code>VPATH = path1:path2:...</code>,make 会自动找到指定文件的目录并添加到文件上</li>
+<li>可以指定文件输入/输出路径,<code>OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</code>使用源文件集合推到编译输出文件名,当源文件增加路径后,如<code>src/Common.c</code>后,输出路径也变为<code>src/Common.o</code>,不是需要的<code>bin/Common.o</code>,使用函数<code>patsubst</code>替换输出文件集合中文件路径.</li>
+<li>使用模式匹配<code>%.o:%.c</code>替换后缀规则<code>.c.o:</code></li>
+<li>patsubst ( patten substitude,匹配替换的缩写)函数。它需要3个参数——第一个是一个需要匹配的式样，第二个表示用什么来替换它，第三个是一个需要处理由空格分隔的序列。我们将两个函数合起来用：<code>objects := $(patsubst %.c,%.o,$(wildcard *.c))</code>会被处理为: <code>objects := a.o b.o</code>同理： <code>executables := $(patsubst %.c,%,$(wildcard *.c))</code>会被处理为： <code>executables := a b</code>.<code>%o：</code>所有以“.o”结尾的目标，也就是如Common.o alist.o等,依赖模式<code>“%.c”</code>：取模式<code>“%.o”</code>的<code>%</code>Common alist，并为其加上<code>.c</code>后缀，即<code>Common.c</code>，<code>alist.c</code></li>
+<li><code>$&lt;：</code>表示所有依赖目标集，也就是<code>Common.c alist.c</code>,<code>$@：</code>表示目标集，也就是<code>Common.o alist.o</code>.命令前加<code>@</code>，表示在终端中不打印，如<code>@mkdir -p ./bin</code></li>
+</ol>
+<h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
  一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">main.o: main.h stack.h maze.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
 <p> 就相当于：
@@ -640,7 +648,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">70</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -651,7 +659,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -756,7 +764,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#makefile之隐含规则和模式规则"><span class="nav-number">1.</span> <span class="nav-text">makefile之隐含规则和模式规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux-Makefile与shell脚本区别"><span class="nav-number">2.</span> <span class="nav-text">Linux Makefile与shell脚本区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。"><span class="nav-number">2.1.</span> <span class="nav-text">1. shell中所有引用以$打头的变量其后要加{},而在Makefile中的变量是以$打头的后加()。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。"><span class="nav-number">2.2.</span> <span class="nav-text">2. Makefile中所有以$打头的单词都会被解释成Makefile中的变量。</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一个自定义模式规则示例"><span class="nav-number">1.</span> <span class="nav-text">一个自定义模式规则示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#makefile之隐含规则和模式规则"><span class="nav-number">2.</span> <span class="nav-text">makefile之隐含规则和模式规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux-Makefile与shell脚本区别"><span class="nav-number">3.</span> <span class="nav-text">Linux Makefile与shell脚本区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。"><span class="nav-number">3.1.</span> <span class="nav-text">1. shell中所有引用以$打头的变量其后要加{},而在Makefile中的变量是以$打头的后加()。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。"><span class="nav-number">3.2.</span> <span class="nav-text">2. Makefile中所有以$打头的单词都会被解释成Makefile中的变量。</span></a></li></ol></li></ol></div>
             
 
           </div>

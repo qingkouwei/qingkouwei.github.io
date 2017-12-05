@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="c语言全局变量那些事 “C++的数组不支持多态”？ 代码执行的效率 深入理解C语言 对象的消息模型 读书笔记：对线程模型的批评 C语言的谜题 C语言函数实现的另类方法 谁说C语言很简单？ C语言下的错误处理的问题 C语言结构体里的成员数组和指针 C技巧：结构体参数转成不定参数">
+<meta name="description" content="Segmentation fault段错误调试总结Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。 方法1：加打印printf。这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。 方法2">
 <meta name="keywords" content="language,C">
 <meta property="og:type" content="article">
 <meta property="og:title" content="l-c-skill">
 <meta property="og:url" content="http://wodekouwei.com/2017/10/12/l-c-skill/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="c语言全局变量那些事 “C++的数组不支持多态”？ 代码执行的效率 深入理解C语言 对象的消息模型 读书笔记：对线程模型的批评 C语言的谜题 C语言函数实现的另类方法 谁说C语言很简单？ C语言下的错误处理的问题 C语言结构体里的成员数组和指针 C技巧：结构体参数转成不定参数">
-<meta property="og:updated_time" content="2017-10-31T12:14:47.000Z">
+<meta property="og:description" content="Segmentation fault段错误调试总结Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。 方法1：加打印printf。这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。 方法2">
+<meta property="og:updated_time" content="2017-11-17T08:48:21.083Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="l-c-skill">
-<meta name="twitter:description" content="c语言全局变量那些事 “C++的数组不支持多态”？ 代码执行的效率 深入理解C语言 对象的消息模型 读书笔记：对线程模型的批评 C语言的谜题 C语言函数实现的另类方法 谁说C语言很简单？ C语言下的错误处理的问题 C语言结构体里的成员数组和指针 C技巧：结构体参数转成不定参数">
+<meta name="twitter:description" content="Segmentation fault段错误调试总结Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。 方法1：加打印printf。这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。 方法2">
 
 
 
@@ -435,7 +435,19 @@
       
 
       
-        <p><a href="https://coolshell.cn/articles/10115.html" target="_blank" rel="external">c语言全局变量那些事</a>
+        <h3 id="Segmentation-fault段错误调试总结"><a href="#Segmentation-fault段错误调试总结" class="headerlink" title="Segmentation fault段错误调试总结"></a>Segmentation fault段错误调试总结</h3><p>Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。</p>
+<h4 id="方法1：加打印printf。"><a href="#方法1：加打印printf。" class="headerlink" title="方法1：加打印printf。"></a>方法1：加打印printf。</h4><p>这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。</p>
+<h4 id="方法2：gdb调试。"><a href="#方法2：gdb调试。" class="headerlink" title="方法2：gdb调试。"></a>方法2：gdb调试。</h4><p>加gdb调试往往能在Core dump时抓到，甚至能抓到哪一个文件哪个类哪个函数哪一行，甚是精确。要确保GDB能抓到可用信息要做一些准备：</p>
+<ul>
+<li>加-g 参数，这样才会有调试信息。 我想是个程序员就应该知道吧。</li>
+<li>在Makefile 中加上 -fstack-protector 和-fstack-protector-all 信息，确保函数调用栈不丢失，当然只能是一定程度的不丢失，要完成保留住是不太可能的，但起码可以得到栈顶函数。</li>
+</ul>
+<p>有了上面两点对大多数的Segmentation fault都能抓住，但是函数调用栈彻底乱掉或者在动态库so中Core而这个库编译时没有加-g参数，这些情况就gdb就无能为力了。</p>
+<h4 id="方法3：手动获取函数调用栈。"><a href="#方法3：手动获取函数调用栈。" class="headerlink" title="方法3：手动获取函数调用栈。"></a>方法3：手动获取函数调用栈。</h4><p>这种方法其实是借住两个系统函数backtrace和backtrace_symbol来获取函数调用栈的，把这两个函数放在信号处理函数中：当收到 SIGSEG时在信号处理函数中调用这两个函数打印函数调用栈，在没用GDB调试的时候这种方法可以代替gdb的一部分功能，这听起来是不是非常酷啊，来看一看实现吧：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;execinfo.h&gt;</div><div class="line">#include &lt;sys/types.h&gt;</div><div class="line">#include &lt;sys/stat.h&gt;</div><div class="line">#include &lt;fcntl.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line"></div><div class="line">static void SignalHandle(int sig)</div><div class="line">&#123;</div><div class="line">    void *array[20];</div><div class="line">    size_t size;</div><div class="line">    char **strings;</div><div class="line">    int i;</div><div class="line">    size = backtrace(array, 10);</div><div class="line">    strings = backtrace_symbols(array, size);</div><div class="line">    printf(&quot;SIGNAL ocurre %d, stack tarce:\n&quot;, sig);</div><div class="line">    printf(&quot;obtained %d stack frames.\n&quot;, size);</div><div class="line"></div><div class="line">    for (i = 0; i &lt; size; i++)</div><div class="line">        printf(&quot;%s\n&quot;, strings);</div><div class="line"></div><div class="line">    free(strings);</div><div class="line">    printf(&quot;stack trace over!\n&quot;);</div><div class="line">    exit(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char **argv)</div><div class="line">&#123;</div><div class="line">    signal(SIGSEGV, SignalHandle);</div><div class="line">    //...程序主体</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当然这种方法在没有GDB时候会大显身手，经过实验就是有gdb的时候这种方法有时比gdb抓到调用栈要多一层；当然这种方法和用gdb调试一样要加<code>-g</code>和栈保护参数<code>-fstack-protector</code> 和 <code>-fstack-protector-all</code>。其缺点就是抓到的调用栈无效，这是什么意思呢？有时发生core dump,能定位到甚至哪一行，但是那一行根本没有明显的错误；或者追到没有调试信息的动态库里如glibc。当然这些情况大多数调试方法都无能为力，只能依靠程序员的经验了。</p>
+<h4 id="方法4：经验之谈。"><a href="#方法4：经验之谈。" class="headerlink" title="方法4：经验之谈。"></a>方法4：经验之谈。</h4><p>如果我们的程序是多线程的，发生core dump用以上方法均无效，除了仔细排查代码外，还有这么一方法让我们缩小范围。</p>
+<p><a href="https://coolshell.cn/articles/10115.html" target="_blank" rel="external">c语言全局变量那些事</a>
 <a href="https://coolshell.cn/articles/9543.html" target="_blank" rel="external">“C++的数组不支持多态”？</a></p>
 <p><a href="https://coolshell.cn/articles/7886.html" target="_blank" rel="external">代码执行的效率</a></p>
 <p><a href="https://coolshell.cn/articles/5761.html" target="_blank" rel="external">深入理解C语言</a></p>
@@ -579,8 +591,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -595,7 +616,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">70</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -606,7 +627,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -701,6 +722,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Segmentation-fault段错误调试总结"><span class="nav-number">1.</span> <span class="nav-text">Segmentation fault段错误调试总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法1：加打印printf。"><span class="nav-number">1.1.</span> <span class="nav-text">方法1：加打印printf。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法2：gdb调试。"><span class="nav-number">1.2.</span> <span class="nav-text">方法2：gdb调试。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法3：手动获取函数调用栈。"><span class="nav-number">1.3.</span> <span class="nav-text">方法3：手动获取函数调用栈。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法4：经验之谈。"><span class="nav-number">1.4.</span> <span class="nav-text">方法4：经验之谈。</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

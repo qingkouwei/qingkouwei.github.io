@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/10/31/l-kotlin/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="字符串比较123var str1 = &amp;quot;chaychan&amp;quot;var str2 = &amp;quot;chaychan&amp;quot;println(str1 == str2) 比较两个字符串，如果两个字符串的内容一致，在Java中使用 str1 == str2 时，是比较两个字符串的地址值，很清楚两个字符串的地址不一样，返回false，但是在kotlin中，则不是如此，比较的只是字符串的内">
-<meta property="og:updated_time" content="2017-11-09T07:49:29.000Z">
+<meta property="og:updated_time" content="2017-12-05T03:54:43.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin语法">
 <meta name="twitter:description" content="字符串比较123var str1 = &amp;quot;chaychan&amp;quot;var str2 = &amp;quot;chaychan&amp;quot;println(str1 == str2) 比较两个字符串，如果两个字符串的内容一致，在Java中使用 str1 == str2 时，是比较两个字符串的地址值，很清楚两个字符串的地址不一样，返回false，但是在kotlin中，则不是如此，比较的只是字符串的内">
@@ -450,7 +450,43 @@
 </li>
 </ol>
 <p>返回结果为true。</p>
-
+<h3 id="源码优化分析"><a href="#源码优化分析" class="headerlink" title="源码优化分析"></a>源码优化分析</h3><p><a href="https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-kotlin/" target="_blank" rel="external">源码</a></p>
+<h4 id="1-Lateinit"><a href="#1-Lateinit" class="headerlink" title="1.Lateinit"></a>1.Lateinit</h4><p>在View声明阶段，都会需要使用lateinit来延迟声明变量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class TaskActivity : AppCompatActivity()&#123;</div><div class="line">  private val CURRENT_FILTERING_KEY = &quot;CURRENT_FILTERING_KEY&quot;;</div><div class="line">  private lateinit var drawerLayout : DrawerLayout</div><div class="line">  private lateinit var tasksPresenter:TasksPresenter</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>kotlin中延迟声明还包括lazy的方式
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">val name:String by lazy &#123;&quot;cangwang&quot;&#125;</div><div class="line">lateinit var drawLayout:drawLayout</div></pre></td></tr></table></figure></p>
+<p>区别在于:</p>
+<ol>
+<li>.lazy{}只能用再val类型,lateinit只能用在var类型</li>
+<li>.lateinit不能用在可空的属性上和java的基本类型上<code>lateinit var name:String</code>会报错</li>
+<li>.lateinit可以在任何位置初始化并且可以初始化多次,因为其衔接var变量.而lazy在第一次被调用时就被初始化,其衔接的是val常量,想要被改变只能重新定义</li>
+</ol>
+<h4 id="2-findViewById"><a href="#2-findViewById" class="headerlink" title="2.findViewById"></a>2.findViewById</h4><p>Api26前:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public View findViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Api26之后
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@SuppressWarnings(&quot;TypeParameterUnusedInFormals&quot;)</div><div class="line">@Override</div><div class="line">public &lt;T extends View&gt; T indViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="五个kotlin-Standard-kt里面的函数-apply-with-let-run-also"><a href="#五个kotlin-Standard-kt里面的函数-apply-with-let-run-also" class="headerlink" title="五个kotlin Standard.kt里面的函数:apply,with,let,run,also"></a>五个kotlin Standard.kt里面的函数:apply,with,let,run,also</h4><ol>
+<li>apply作用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">setSupportActionBar(findViewById&lt;Toolbar&gt;(R.id.toolbar))</div><div class="line">supportActionBar?.apply&#123;</div><div class="line">  setDisplayHomeAsUpEnabled(true)</div><div class="line">  setDisplayShowHomeEnabled(true)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在函数内可以通过this指代该对象,返回值为该对象自己</p>
+<ol>
+<li>with函数
+将某对象作为函数的参数,在函数内可以通过this指代该对象.返回值为函数块的最后一行或指定return表达式<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">override fun getView(i:Int,view:View?,viewGroup:ViewGroup):View&#123;</div><div class="line">  val rowView=Vview?:LayoutInflater.from(viewGroup.context).inflate(R.layout.task_item,viewGroup,false)</div><div class="line">  val task = getItem(i)</div><div class="line">  with(rowView.findViewById&lt;TextView&gt;(R.id.title))&#123;</div><div class="line">    text = task.titleForList</div><div class="line">  &#125;</div><div class="line">  with(rowView.findViewById&lt;CheckBox&gt;(R.id.complete))&#123;</div><div class="line">    isChecked=task.isCompleted</div><div class="line">    rowView.setBackgroundDrawable(...)</div><div class="line">    setOnClickListener&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="3-lat函数"><a href="#3-lat函数" class="headerlink" title="3.lat函数"></a>3.lat函数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private fun showMessage(message:String)&#123;</div><div class="line">  view?.let&#123;</div><div class="line">    Snackbar.make(it,message,Snackbar.LENGTH_LONG).show()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将对象作为函数参数,在函数块内可以通过it指代该对象.返回值为函数块的最后一行或指定return表达式</p>
+<h4 id="4-run函数"><a href="#4-run函数" class="headerlink" title="4. run函数"></a>4. run函数</h4><p>其有两种表达式:</p>
+<ul>
+<li>第一种无参数输入</li>
+<li>第二种会将对象本身this给函数调用
+返回值为函数块最后一行,或者指定return表达式</li>
+</ul>
+<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>单例对象是使用Object申明
+Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功能.</p>
+<h3 id="data"><a href="#data" class="headerlink" title="data"></a>data</h3><p>相当于java中定义的数据bean类,其可以直接在属性之后编写get和set方法</p>
+<h3 id="JvmOverloads"><a href="#JvmOverloads" class="headerlink" title="@JvmOverloads"></a><code>@JvmOverloads</code></h3>
       
     </div>
 
@@ -607,7 +643,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">70</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -618,7 +654,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -723,7 +759,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串比较"><span class="nav-number">1.</span> <span class="nav-text">字符串比较</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串比较"><span class="nav-number">1.</span> <span class="nav-text">字符串比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码优化分析"><span class="nav-number">2.</span> <span class="nav-text">源码优化分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Lateinit"><span class="nav-number">2.1.</span> <span class="nav-text">1.Lateinit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-findViewById"><span class="nav-number">2.2.</span> <span class="nav-text">2.findViewById</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五个kotlin-Standard-kt里面的函数-apply-with-let-run-also"><span class="nav-number">2.3.</span> <span class="nav-text">五个kotlin Standard.kt里面的函数:apply,with,let,run,also</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-lat函数"><span class="nav-number">2.4.</span> <span class="nav-text">3.lat函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-run函数"><span class="nav-number">2.5.</span> <span class="nav-text">4. run函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object"><span class="nav-number">3.</span> <span class="nav-text">Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data"><span class="nav-number">4.</span> <span class="nav-text">data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JvmOverloads"><span class="nav-number">5.</span> <span class="nav-text">@JvmOverloads</span></a></li></ol></div>
             
 
           </div>
