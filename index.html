@@ -323,6 +323,315 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/05/tips-android-review/" itemprop="url">
+                  (转)总结Android开发中必备的代码Review清单
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T14:11:25+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
+<p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
+<h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
+<li>页面退出时，是否完成必要的清理操作<ol>
+<li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
+<li>是否取消了还没完成的请求；</li>
+<li>在页面里注册的监听，是否反注册；</li>
+<li>假如自己用到观察者模式，是否反注册；</li>
+<li>假如用了RxJava的话，是否解除订阅；</li>
+</ol>
+</li>
+<li><p>数据库的游标是否已经关闭
+这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
+所以数据库的操作需要加上同步代码块
+详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
+</li>
+<li><p>打开过的文件流是否关闭</p>
+</li>
+<li><p>Android 3.0以下的版本，使用完的Bitmap是否调用recycle()，否则会一直占用内存
+而Android 3.0及以上的版本不需要调用recycle()，因为这些版本的Bitmap全部放到虚拟机的堆内存中，让GC自动回收。</p>
+</li>
+<li><p>WebView使用完是否调用了其destory()函数</p>
+</li>
+</ol>
+<h3 id="是否能进一步优化自己的代码"><a href="#是否能进一步优化自己的代码" class="headerlink" title="是否能进一步优化自己的代码"></a>是否能进一步优化自己的代码</h3><ol>
+<li><p>保存在内存中的图片，是否做过压缩处理再保存在内存里
+否则可能由于图片质量太高，导致OOM</p>
+</li>
+<li><p>Intent传递的数据太大，会导致页面跳转过慢。太大的数据可以通过持久化的形式传递，例如读写文件</p>
+</li>
+<li><p>频繁地操作同一个文件或者执行同一个数据库操作，是否考虑把它用静态变量或者局部变量的形式缓存在内存里。用空间换时间</p>
+</li>
+<li><p>放在主页面的控件，是否可以考虑用ViewStub来优化启动速度</p>
+</li>
+</ol>
+<h3 id="要小心第三方包"><a href="#要小心第三方包" class="headerlink" title="要小心第三方包"></a>要小心第三方包</h3><ol>
+<li><p>build.gradle远程依赖第三方包时，版本号建议写死，不要使用+号
+避免由于新版本的第三方包引入了新的问题</p>
+</li>
+<li><p>导入第三方工程时，记得把编码转换成自己工程当前是用的编码</p>
+</li>
+<li><p>调用第三方的包或者JDK的方法时，要跳进他们的源码，看要不要加 try-catch
+否则可能会导致自己应用的崩溃</p>
+</li>
+<li><p>使用第三方包时，是否加上其混淆规则
+若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
+</li>
+<li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
+<li><p>系统的、自己写的，注册和反注册的方法，是否成对出现</p>
+</li>
+<li><p>在生命周期的回调里，创建和销毁的代码是否对应起来
+比如：onCreate()里面创建了Adapter，那么对应Adapter的退出处理操作(比如清空Image缓存)，一般就要写在onDestory()，而不能写在onDestoryView()。</p>
+</li>
+</ol>
+<p>类似的生命周期对应的代码有：
+onStart()、onStop();
+onCreate()、onDestory();
+onResume()、onPause();
+onCreateView()、onDestoryView()</p>
+<ol>
+<li>若ListView的item复用了，对Item里View的操作是否成对出现
+比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
+<h3 id="防内存泄漏"><a href="#防内存泄漏" class="headerlink" title="防内存泄漏"></a>防内存泄漏</h3><ol>
+<li><p>内部类，比如Handler、Listener、Callback是否是成static class
+因为非静态内部类会持有外部类的引用。</p>
+</li>
+<li><p>假如子线程持有了Activity，要用弱引用来持有
+比如Request的Activity就应该用弱引用的形式，防止内存泄漏。</p>
+</li>
+<li><p>要求传入Activity作为参数的函数，是否可以改用getApplicationContext()来作为参数</p>
+</li>
+</ol>
+<h3 id="Handler相关"><a href="#Handler相关" class="headerlink" title="Handler相关"></a>Handler相关</h3><ol>
+<li>使用View.post()是否会有问题
+因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
+</ol>
+<p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
+<ol>
+<li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
+如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><p>多思考某些情况下，某变量是否会为空
+而且在函数体内，处理参数前，必须加上判空语句</p>
+</li>
+<li><p>回调函数是否处理好
+回调函数很容易出问题。比如网络请求的回调，需要判断此时的Aciivity等是否还存在，再进行调用。因为异步操作回来，Activity可能就消失不存在了。
+而且还要对一些可能被回收的变量进行判空。</p>
+</li>
+<li><p>修改数据库后，是否把数据库的版本号+1</p>
+</li>
+<li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
+<ol>
+<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
+可能导致的问题：</p>
+<ul>
+<li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
+<li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
+</ul>
+<ol>
+<li><p>除数是否做了非0判断</p>
+</li>
+<li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
+</li>
+</ol>
+<h3 id="功能完成后，自测时的检查点"><a href="#功能完成后，自测时的检查点" class="headerlink" title="功能完成后，自测时的检查点"></a>功能完成后，自测时的检查点</h3><ol>
+<li>思考某些情况下，某个变量是否会造成空指针问题</li>
+<li>把手机横屏，检查布局是否有Bug</li>
+<li>在不同分辨率的机型上，检查布局是否有Bug</li>
+<li>切换到英文等外文字体下，检查外文是否能完整显示</li>
+<li>从低版本升级上来，会不会有问题,比如可能会出现数据库不兼容的问题</li>
+<li>按下Home再返回是否正常</li>
+<li>熄灭屏幕再打开是否正常</li>
+<li>切换成其它应用再切换回来会怎样</li>
+<li>利用手机的开发者选项中的 “调试GPU过度绘制” ，“GPU呈现模式分析” 和 “显示FPS和功耗” 功能，看自己的新功能是否会导致过度绘制、是否会掉帧</li>
+<li>测试看是否影响启动速度<code>adb shell am start -W 包名/Activity</code></li>
+<li>对比看APK大小是否有增大</li>
+<li>跑1小时Monkey，测试其稳定性</li>
+</ol>
+<blockquote>
+<p>转自:
+<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
+</blockquote>
+<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
+<p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
+<h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
+<h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
+<li>强烈建议先跑30分钟Monkey测试</li>
+<li>使用eclipse的ddms找到对应的进程，触发一次gc后，dump出里面的内存快照hprof文件以分析当前应用内存的堆有什么东西</li>
+<li>使用Android SDK 里的platform-tools文件夹的 hprof-conv工具，对刚才 hprof 文件进行转换，以至于 后面MAT工具能正常打开</li>
+<li>使用MAT打开hprof文件，进入Histogram。输入自己猜测可能泄漏的Activity（项目中Activity不多时，可每个Activity都重复以下3、4、5步骤）</li>
+<li>键该其中一项，打开菜单选择list objects -&gt;with incoming refs将列出该类的实例</li>
+<li>右健Path to GC Roots–&gt;exclue all phantom/weak/soft etc. reference，找出这个实例GC后，还会存在什么对象的引用关系。</li>
+</ul>
+<h3 id="常见导致内存泄漏的几个点"><a href="#常见导致内存泄漏的几个点" class="headerlink" title="常见导致内存泄漏的几个点"></a>常见导致内存泄漏的几个点</h3><h4 id="生命周期的原因"><a href="#生命周期的原因" class="headerlink" title="生命周期的原因"></a>生命周期的原因</h4><p>比如：Activity中关联了一个生命周期超过Activity的Thread，这个Thread 若持有该Activity的引用，就会导致内存泄漏。</p>
+<h4 id="内部类的原因"><a href="#内部类的原因" class="headerlink" title="内部类的原因"></a>内部类的原因</h4><p>因为内部类会隐式地持有外部类的引用，若内部类不被释放，外部类也是无法释放。常见的有内部的Listener、Callback、Handler等导致。</p>
+<p>情景1：若外部类应该释放的时候，内部类还在执行里面的函数，会导致外部类无法释放。</p>
+<p>情景2：若一个异步操作，会回调内部类的Listener、Callback、Handler。当外部类应该释放的时候，但是这个异步操作还存在，而这个异步操作类又持有了Listener、Callback、Handler，导致外部类无法被释放。PS：这个原因也属于生命周期的原因。</p>
+<h4 id="静态变量的原因"><a href="#静态变量的原因" class="headerlink" title="静态变量的原因"></a>静态变量的原因</h4><p>单例类里包含Activity</p>
+<p>静态变量的类里引用到Activity</p>
+<h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
+<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
+<ol>
+<li>使用静态内部类 + weakReference
+静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
+<h4 id="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><a href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期" class="headerlink" title="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"></a>单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</h4><h4 id="对象的注册与反注册要成对出现"><a href="#对象的注册与反注册要成对出现" class="headerlink" title="对象的注册与反注册要成对出现"></a>对象的注册与反注册要成对出现</h4><h4 id="不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><a href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存" class="headerlink" title="不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存"></a>不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</h4><h4 id="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><a href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View" class="headerlink" title="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"></a>因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-arch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1959,181 +2268,6 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tool-as3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/31/tool-as3/" itemprop="url">
-                  tool-as3
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T19:47:42+08:00">
-                2017-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="AndroidStudio3-0新特性"><a href="#AndroidStudio3-0新特性" class="headerlink" title="AndroidStudio3.0新特性"></a>AndroidStudio3.0新特性</h3><h4 id="支持Java8语言"><a href="#支持Java8语言" class="headerlink" title="支持Java8语言"></a>支持Java8语言</h4><p>由于AS3.0默认支持Java8语言，所以我们就可以移除build.gradle里面的jackOptions了
-<del>jackOptions { true }</del></p>
-<p>然后可以在build.gradle配置为Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">  ...</div><div class="line">  compileOptions &#123;</div><div class="line">    sourceCompatibility JavaVersion.VERSION_1_8</div><div class="line">    targetCompatibility JavaVersion.VERSION_1_8</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果对Java8的一些特性存在问题,我们也可以在gradle.properties里面禁用Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.enableDesugar=false</div></pre></td></tr></table></figure></p>
-<h4 id="配置产品渠道"><a href="#配置产品渠道" class="headerlink" title="配置产品渠道"></a>配置产品渠道</h4><p>AS3.0以前我们常用productFlavors配置不同的渠道包，比如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        dev&#123;</div><div class="line">            applicationIdSuffix &quot;.dev&quot;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>AS3.0得新增flavorDimensions的配置，主要有以下 12 个构建变体：
-构建变体：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minApi24, minApi23, minApi21][Demo, Full][Debug, Release]</div></pre></td></tr></table></figure></p>
-<p>对应 APK：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app-[minApi24, minApi23, minApi21]-[demo, full]-[debug, release].apk</div></pre></td></tr></table></figure></p>
-<p>比如这里创建一个构建方式
-首先得在defaultConfig通过flavorDimensions配置构建变体，如下
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">       ...</div><div class="line">        flavorDimensions &quot;debug&quot;,&quot;release&quot;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>然后productFlavors的配置就可以如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        demo &#123;</div><div class="line">            dimension &quot;debug&quot;</div><div class="line">            applicationIdSuffix &quot;.demo&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            dimension &quot;release&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h4 id="改进的Android插件"><a href="#改进的Android插件" class="headerlink" title="改进的Android插件"></a>改进的Android插件</h4><ul>
-<li>优化了多 module 的项目并行编译运行更详细Task的展示
-构建变体的从属管理，比如上文的Flavors Dimensions配置新 api ，implementation依赖（替代compile ），compileOnly（替代provided）和runtimeOnly（替代 apk）</li>
-<li>通过增量编译 优化多dex的app构建速度</li>
-<li>优化了AAPT2增量资源化处理。如果要启用AAPT2,在gradle.properties文件添加代码：<code>android.enableAapt2=true</code></li>
-<li>支持java8语言</li>
-<li>增加测试工具，可通过dependencies依赖使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies&#123;</div><div class="line">        androidTestUtil“com.linkedin.testbutler：测试管家应用：1.3.0@apk”</div><div class="line">        ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="常见出错总结"><a href="#常见出错总结" class="headerlink" title="常见出错总结"></a>常见出错总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Cause: getMainOutputFile is no longer supported.  Use getOutputFileName if you need to determine the file name of the output.</div></pre></td></tr></table></figure>
-<p>或
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Not valid.</div></pre></td></tr></table></figure></p>
-<p>主要是AndResGuard1.2.3版本还没有兼容AS3.0
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:All flavors must now belong to a named flavor dimension. The flavor &apos;prod&apos; is not assigned to a flavor dimension. Learn more at https://d.android.com/r/tools/flavorDimensions-missing-error-message.html</div></pre></td></tr></table></figure></p>
-<p>AS3.0需要通过flavorDimensions来配置产品渠道，详细看上文。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2183,7 +2317,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">75</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

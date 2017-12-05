@@ -323,6 +323,311 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/29/opencv-env/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/29/opencv-env/" itemprop="url">
+                  opencv开发环境搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-29T17:50:52+08:00">
+                2017-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/opencv/" itemprop="url" rel="index">
+                    <span itemprop="name">opencv</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>从github下载opencv最新源码<a href="https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`" target="_blank" rel="external">https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`</a>.</p>
+<h3 id="Ubuntu环境下编译"><a href="#Ubuntu环境下编译" class="headerlink" title="Ubuntu环境下编译"></a>Ubuntu环境下编译</h3><p>安装依赖库:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install build-essential</div><div class="line"></div><div class="line">sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</div><div class="line"></div><div class="line">sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</div><div class="line"></div><div class="line">git clone https://github.com/opencv/opencv.git</div><div class="line"></div><div class="line">sudo apt-get install cmake-gui</div></pre></td></tr></table></figure></p>
+<h3 id="Mac环境下编译"><a href="#Mac环境下编译" class="headerlink" title="Mac环境下编译"></a>Mac环境下编译</h3><p>进入源码路径,新建一个release的文件夹,并进入,执行:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cmake -G &quot;Unix Makefiles&quot; ..</div><div class="line">make</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>编译完成后会在release生成lib目录,lib下存放所有编译成的动态库,可能与ubuntu下编译结果不同,ubuntu下编译只生成<code>libopencv_world.so</code>一个动态库,而mac下会生成<code>opencv_core opencv_highgui opencv_imgproc opencv_ml opencv_objdetect opencv_photo opencv_video opencv_dnn opencv_imgcodecs opencv_shape</code>等多个动态库.执行<code>make install</code>后会将头文件拷贝到<code>/usr/local/include/</code>下,将动态库拷贝到<code>/usr/local/lib/</code>下,将jar包等其他文件拷贝到<code>/usr/local/share/OpenCV/</code>下,makefile脚本加入动态链接库:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">testopencv:main.cpp</div><div class="line">	g++ $+ -o $@ -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_video -lopencv_dnn -lopencv_imgcodecs -lopencv_shape</div></pre></td></tr></table></figure></p>
+<p><code>main.cpp</code>下输入下面测试代码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;opencv2/core.hpp&gt;</div><div class="line">#include &lt;opencv2/imgcodecs.hpp&gt;</div><div class="line">#include &lt;opencv2/highgui.hpp&gt;</div><div class="line">using namespace cv;</div><div class="line">int main(int argc, char *argv[])</div><div class="line">&#123;</div><div class="line">	Mat image = imread(&quot;1.png&quot;);</div><div class="line">	namedWindow(&quot;img&quot;);</div><div class="line">	imshow(&quot;img&quot;, image);</div><div class="line">	waitKey(0);</div><div class="line">	return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在生成的执行文件同目录下放入名字为<code>1.png</code>的图片.</p>
+<h4 id="配置QT环境"><a href="#配置QT环境" class="headerlink" title="配置QT环境"></a>配置QT环境</h4><p>在新建的QT工程中的.pro文件中添加如下配置代码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">INCLUDEPATH += /usr/local/include</div><div class="line">INCLUDEPATH += /usr/local/include/opencv</div><div class="line">INCLUDEPATH += /usr/local/include/opencv2</div><div class="line">LIBS += -L/usr/local/lib \</div><div class="line"> -lopencv_core \</div><div class="line"> -lopencv_highgui \</div><div class="line"> -lopencv_imgproc \</div></pre></td></tr></table></figure></p>
+<p>完成以上步骤后按理应该是能成功的，但是运行时发现会出现如下的错误。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">Expected in: /usr/local/lib/libjpeg.8.dylib</div><div class="line">in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
+<p>针对以上问题,在项目-运行配置中,增加变量<code>DYLD_LIBRARY_PATH</code>值为<code>/Application/QT5.7.0/5.7/clang_64/lib:/usr/local/lib</code></p>
+<h3 id="qt-opencv常见问题"><a href="#qt-opencv常见问题" class="headerlink" title="qt+opencv常见问题"></a>qt+opencv常见问题</h3><p>在Mac上运行以上代码时，提示以下错误：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">  Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">  Expected in: /usr/local/lib/libJPEG.dylib</div><div class="line"> in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
+<p>解决办法是将“”目录下的对应动态链接库文件创建软连接到“/usr/local/lib”目录下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ pwd</div><div class="line">/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources</div><div class="line">$ sudo ln -sf libJPEG.dylib /usr/local/lib/libJPEG.dylib</div><div class="line">$ sudo ln -sf libPng.dylib /usr/local/lib/libPng.dylib</div><div class="line">$ sudo ln -sf libTIFF.dylib /usr/local/lib/libTIFF.dylib</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/27/tips-android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/27/tips-android/" itemprop="url">
+                  tips-android
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-27T10:41:33+08:00">
+                2017-09-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="1-使用Glide库提取视频帧"><a href="#1-使用Glide库提取视频帧" class="headerlink" title="1.使用Glide库提取视频帧"></a>1.使用Glide库提取视频帧</h6><p>图片加载框架Glide就可以做到获取本地视频的缩略图(不能获取网络视频文件):
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">String filePath = &quot;/storage/emulated/0/Pictures/example_video.mp4&quot;;</div><div class="line">Glide  </div><div class="line">    .with( context )</div><div class="line">    .load( Uri.fromFile( new File( filePath ) ) )</div><div class="line">    .into( imageViewGifAsBitmap );</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/tips-qt-audiooutput/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1929,388 +2234,6 @@ android {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/29/at-android-adb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/29/at-android-adb/" itemprop="url">
-                  android自动化测试之(N):adb工具
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-29T14:43:09+08:00">
-                2017-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Android手机自动化测试过程离不开adb工具,介绍几个常用的adb命令.</p>
-<h3 id="1-adb-forward"><a href="#1-adb-forward" class="headerlink" title="1. adb forward"></a>1. <code>adb forward</code></h3><p>命令示例:
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb forward tcp:8000 tcp:9000</div></pre></td></tr></table></figure></p>
-<p>作用:
-把PC端8000端口的数据, 转发到Android端的9000端口上,PC端的8000端口会被 adb
-监听, 这个时候我们只需要往8000端口写数据, 这个数据就会发送到手机端的9000端口上.</p>
-<h3 id="2-adb-connect"><a href="#2-adb-connect" class="headerlink" title="2. adb connect"></a>2. <code>adb connect</code></h3><p>命令示例:
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb connect + IP</div></pre></td></tr></table></figure></p>
-<p>作用:
-通过无线网络在PC端adb连接手机端</p>
-<p>注意:</p>
-<ol>
-<li>要链接的IP ，必须和自己的PC的网络在同一个局域网内，adb 不能跨局域网链接设备</li>
-<li>如果通过usb链接Android设备，通过adb devices 可以看见设备列表，但是使用不了，可以参考下面的命令说明手机端的服务未开启,需要连接usb开启手机服务,默认端口5555:<code>adb tcpip 5555</code>,开启后拔掉usb通过<code>adb connect 192.168.0.101:5555</code>即可连接</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/24/tips-recyclerview-selectable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/24/tips-recyclerview-selectable/" itemprop="url">
-                  RecyclerView实现单选列表
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T00:49:31+08:00">
-                2017-08-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>常规方法：
-在Javabean里增加一个boolean isSelected字段，
-并在Adapter里根据这个字段的值设置“CheckBox”的选中状态。
-在每次选中一个新优惠券时，改变数据源里的isSelected字段，
-并notifyDataSetChanged()刷新整个列表。
-这样实现起来很简单，代码量也很少，唯一不足的地方就是性能有损耗，不是最优雅。
-So作为一个有追求 今天比较闲 的程序员，我决心分享一波优雅方案。</p>
-<p>本文会列举分析一下在ListView和RecyclerView中, 列表实现单选的几种方案，并推荐采用定向刷新 部分绑定的方案，因为更高效and优雅</p>
-<h3 id="1常规方案"><a href="#1常规方案" class="headerlink" title="1常规方案:"></a>1常规方案:</h3><p>常规方案 请光速阅读，直接上码：
-Bean结构：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class TestBean extends SelectedBean &#123;</div><div class="line">    private String name;</div><div class="line">    public TestBean(String name,boolean isSelected) &#123;</div><div class="line">        this.name = name;</div><div class="line">        setSelected(isSelected);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>我项目里有好多单选需求，懒得写isSelected字段，所以弄了个父类供子类继承。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class SelectedBean &#123;</div><div class="line">    private boolean isSelected;</div><div class="line">    public boolean isSelected() &#123;</div><div class="line">        return isSelected;</div><div class="line">    &#125;</div><div class="line">    public void setSelected(boolean selected) &#123;</div><div class="line">        isSelected = selected;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Acitivity 和Adapter其他方法都是最普通的不再赘述。
-Adapter的onBindViewHolder()如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">Log.d(&quot;TAG&quot;, &quot;onBindViewHolder() called with: holder = [&quot; + holder + &quot;], position = [&quot; + position + &quot;]&quot;);</div><div class="line">        holder.ivSelect.setSelected(mDatas.get(position).isSelected());//“CheckBox”</div><div class="line">        holder.tvCoupon.setText(mDatas.get(position).getName());//TextView</div><div class="line">        holder.ivSelect.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View view) &#123;</div><div class="line">                //实现单选，第一种方法，十分简单， Lv Rv通用,因为它们都有notifyDataSetChanged()方法</div><div class="line">                // 每次点击时，先将所有的selected设为false，并且将当前点击的item 设为true， 刷新整个视图</div><div class="line">                for (TestBean data : mDatas) &#123;</div><div class="line">                    data.setSelected(false);</div><div class="line">                &#125;</div><div class="line">                mDatas.get(position).setSelected(true);</div><div class="line">                notifyDataSetChanged();</div><div class="line"></div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">ViewHolder：</div><div class="line"></div><div class="line">    public static class CouponVH extends RecyclerView.ViewHolder &#123;</div><div class="line">        private ImageView ivSelect;</div><div class="line">        private TextView tvCoupon;</div><div class="line"></div><div class="line">        public CouponVH(View itemView) &#123;</div><div class="line">            super(itemView);</div><div class="line">            ivSelect = (ImageView) itemView.findViewById(R.id.ivSelect);</div><div class="line">            tvCoupon = (TextView) itemView.findViewById(R.id.tvCoupon);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>方案优点：简单粗暴</li>
-<li>方案缺点：
-其实需要修改的Item只有两项：
-一个当前处于选中状态的Item-&gt;普通状态
-再将当前手指点击的这个Item-&gt;选中状态
-但采用普通方案，则会刷新整个一屏可见的Item，重走他们的getView()/onBindViewHolder()方法。
-其实一个屏幕一般最多可见10+个Item，遍历一遍也无伤大雅。
-但咱们还是要有追求优雅的心，所以我们继续往下看。</li>
-</ul>
-<h3 id="2-利用Rv的notifyItemChanged-定向刷新"><a href="#2-利用Rv的notifyItemChanged-定向刷新" class="headerlink" title="2 利用Rv的notifyItemChanged()定向刷新:"></a>2 利用Rv的notifyItemChanged()定向刷新:</h3><p>本方案可以中速阅读</p>
-<ol>
-<li><p>本方案需要在Adapter里新增一个字段：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private int mSelectedPos = -1;//实现单选  方法二，变量保存当前选中的position</div></pre></td></tr></table></figure>
-</li>
-<li><p>在设置数据集时(构造函数，setData()方法等：)，初始化 mSelectedPos 的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//实现单选方法二： 设置数据集时，找到默认选中的pos</div><div class="line">for (int i = 0; i &lt; mDatas.size(); i++) &#123;</div><div class="line">    if (mDatas.get(i).isSelected()) &#123;</div><div class="line">        mSelectedPos = i;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>onClick里代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//实现单选方法二： notifyItemChanged() 定向刷新两个视图</div><div class="line">//如果勾选的不是已经勾选状态的Item</div><div class="line">if (mSelectedPos!=position)&#123;</div><div class="line">    //先取消上个item的勾选状态</div><div class="line">    mDatas.get(mSelectedPos).setSelected(false);</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">    //设置新Item的勾选状态</div><div class="line">    mSelectedPos = position;</div><div class="line">    mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>本方案由于调用了notifyItemChanged()，所以还会伴有“白光一闪”的动画。</p>
-<ul>
-<li><p>方案优点：
-本方案，较优雅了，不会重走一屏可见的Item的getView()/onBindViewHolder()方法，
-但仍然会重走需要修改的两个Item的getView()/onBindViewHolder()方法，</p>
-</li>
-<li><p>方案缺点：
-我们实际上需要修改的，只是里面“CheckBox”的值，
-按照在DiffUtil一文学习到的姿势，术语应该是“Partial bind “，
-（安利时间,没听过DiffUtil和Partial bind的 戳-&gt;：【Android】详解7.0带来的新工具类：DiffUtil）
-我们需要的只是部分绑定。</p>
-</li>
-</ul>
-<p>一个疑点：
-使用方法2 在第一次选中其他Item时，切换selected状态时，
-查看log，并不是只重走了新旧Item的onBindViewHolder()方法，还走了两个根本不在屏幕范围里的Item的onBindViewHolder()方法，
-如，本例中 在还有item 0-3 在屏幕里，默认勾选item1，我选中item0后，log显示postion 4,5,0,1 依次执行了onBindViewHolder()方法。
-但是再次切换其他Item时， 会符合预期：只走需要修改的两个Item的getView()/onBindViewHolder()方法。
-原因未知，有朋友知道烦请告知，多谢。</p>
-<h3 id="3-Rv-实现部分绑定（推荐）"><a href="#3-Rv-实现部分绑定（推荐）" class="headerlink" title="3 Rv 实现部分绑定（推荐）:"></a>3 Rv 实现部分绑定（推荐）:</h3><p>利用RecyclerView的 findViewHolderForLayoutPosition()方法，获取某个postion的ViewHolder，按照源码里这个方法的注释，它可能返回null。所以我们需要注意判空，（空即在屏幕不可见）。
-与方法2只有onClick里的代码不一样，核心还是利用mSelectedPos 字段搞事情。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//实现单选方法三： RecyclerView另一种定向刷新方法：不会有白光一闪动画 也不会重复onBindVIewHolder</div><div class="line">CouponVH couponVH = (CouponVH) mRv.findViewHolderForLayoutPosition(mSelectedPos);</div><div class="line">if (couponVH != null) &#123;//还在屏幕里</div><div class="line">    couponVH.ivSelect.setSelected(false);</div><div class="line">&#125;else &#123;</div><div class="line">    //add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，</div><div class="line">    //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">&#125;</div><div class="line">mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据</div><div class="line">//设置新Item的勾选状态</div><div class="line">mSelectedPos = position;</div><div class="line">mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">holder.ivSelect.setSelected(true);</div></pre></td></tr></table></figure></p>
-<ul>
-<li>方案优点：
-定向刷新两个Item，只修改必要的部分，不会重走onBindViewHolder()，属于手动部分绑定。代码量也适中，不多。</li>
-<li>方案缺点：
-没有白光一闪动画？？？（如果这算缺点）</li>
-</ul>
-<h3 id="4-Rv-利用payloads实现部分绑定-不推荐"><a href="#4-Rv-利用payloads实现部分绑定-不推荐" class="headerlink" title="4 Rv 利用payloads实现部分绑定(不推荐):"></a>4 Rv 利用payloads实现部分绑定(不推荐):</h3><p>本方案属于开拓思维，是在方案2的基础上，利用payloads和notifyItemChanged(int position, Object payload)搞事情。
-不知道payloads是什么的，看不懂此方案的，我又要安利：（戳-&gt;：【Android】详解7.0带来的新工具类：DiffUtil）
-onClick代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//实现单选方法四：</div><div class="line">if (mSelectedPos != position) &#123;</div><div class="line">    //先取消上个item的勾选状态</div><div class="line">    mDatas.get(mSelectedPos).setSelected(false);</div><div class="line">    //传递一个payload</div><div class="line">    Bundle payloadOld = new Bundle();</div><div class="line">    payloadOld.putBoolean(&quot;KEY_BOOLEAN&quot;, false);</div><div class="line">    notifyItemChanged(mSelectedPos, payloadOld);</div><div class="line">    //设置新Item的勾选状态</div><div class="line">    mSelectedPos = position;</div><div class="line">    mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">    Bundle payloadNew = new Bundle();</div><div class="line">    payloadNew.putBoolean(&quot;KEY_BOOLEAN&quot;, true);</div><div class="line">    notifyItemChanged(mSelectedPos, payloadNew);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>需要重写三参数的onBindViewHolder() 方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onBindViewHolder(CouponVH holder, int position, List&lt;Object&gt; payloads) &#123;</div><div class="line">    if (payloads.isEmpty()) &#123;</div><div class="line">        onBindViewHolder(holder, position);</div><div class="line">    &#125; else &#123;</div><div class="line">        Bundle payload = (Bundle) payloads.get(0);</div><div class="line">        if (payload.containsKey(&quot;KEY_BOOLEAN&quot;)) &#123;</div><div class="line">            boolean aBoolean = payload.getBoolean(&quot;KEY_BOOLEAN&quot;);</div><div class="line">            holder.ivSelect.setSelected(aBoolean);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>方案优点：
-同方法3</p>
-</li>
-<li><p>方案缺点：
-代码量多，实现效果和方法三一样，仅做开拓思维用，所以选择方法三。</p>
-</li>
-</ul>
-<p>作者：张旭童
-链接：<a href="http://www.jianshu.com/p/1ac13f74da63" target="_blank" rel="external">http://www.jianshu.com/p/1ac13f74da63</a>
-來源：简书</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2360,7 +2283,7 @@ onClick代码如下：
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">75</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

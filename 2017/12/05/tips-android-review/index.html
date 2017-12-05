@@ -1,0 +1,1195 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,tips," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
+<meta name="keywords" content="Android,tips">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(转)总结Android开发中必备的代码Review清单">
+<meta property="og:url" content="http://wodekouwei.com/2017/12/05/tips-android-review/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
+<meta property="og:updated_time" content="2017-12-05T06:50:12.694Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="(转)总结Android开发中必备的代码Review清单">
+<meta name="twitter:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2017/12/05/tips-android-review/"/>
+
+
+
+
+
+  <title> (转)总结Android开发中必备的代码Review清单 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                (转)总结Android开发中必备的代码Review清单
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T14:11:25+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/12/05/tips-android-review/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
+<p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
+<h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
+<li>页面退出时，是否完成必要的清理操作<ol>
+<li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
+<li>是否取消了还没完成的请求；</li>
+<li>在页面里注册的监听，是否反注册；</li>
+<li>假如自己用到观察者模式，是否反注册；</li>
+<li>假如用了RxJava的话，是否解除订阅；</li>
+</ol>
+</li>
+<li><p>数据库的游标是否已经关闭
+这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
+所以数据库的操作需要加上同步代码块
+详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
+</li>
+<li><p>打开过的文件流是否关闭</p>
+</li>
+<li><p>Android 3.0以下的版本，使用完的Bitmap是否调用recycle()，否则会一直占用内存
+而Android 3.0及以上的版本不需要调用recycle()，因为这些版本的Bitmap全部放到虚拟机的堆内存中，让GC自动回收。</p>
+</li>
+<li><p>WebView使用完是否调用了其destory()函数</p>
+</li>
+</ol>
+<h3 id="是否能进一步优化自己的代码"><a href="#是否能进一步优化自己的代码" class="headerlink" title="是否能进一步优化自己的代码"></a>是否能进一步优化自己的代码</h3><ol>
+<li><p>保存在内存中的图片，是否做过压缩处理再保存在内存里
+否则可能由于图片质量太高，导致OOM</p>
+</li>
+<li><p>Intent传递的数据太大，会导致页面跳转过慢。太大的数据可以通过持久化的形式传递，例如读写文件</p>
+</li>
+<li><p>频繁地操作同一个文件或者执行同一个数据库操作，是否考虑把它用静态变量或者局部变量的形式缓存在内存里。用空间换时间</p>
+</li>
+<li><p>放在主页面的控件，是否可以考虑用ViewStub来优化启动速度</p>
+</li>
+</ol>
+<h3 id="要小心第三方包"><a href="#要小心第三方包" class="headerlink" title="要小心第三方包"></a>要小心第三方包</h3><ol>
+<li><p>build.gradle远程依赖第三方包时，版本号建议写死，不要使用+号
+避免由于新版本的第三方包引入了新的问题</p>
+</li>
+<li><p>导入第三方工程时，记得把编码转换成自己工程当前是用的编码</p>
+</li>
+<li><p>调用第三方的包或者JDK的方法时，要跳进他们的源码，看要不要加 try-catch
+否则可能会导致自己应用的崩溃</p>
+</li>
+<li><p>使用第三方包时，是否加上其混淆规则
+若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
+</li>
+<li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
+<li><p>系统的、自己写的，注册和反注册的方法，是否成对出现</p>
+</li>
+<li><p>在生命周期的回调里，创建和销毁的代码是否对应起来
+比如：onCreate()里面创建了Adapter，那么对应Adapter的退出处理操作(比如清空Image缓存)，一般就要写在onDestory()，而不能写在onDestoryView()。</p>
+</li>
+</ol>
+<p>类似的生命周期对应的代码有：
+onStart()、onStop();
+onCreate()、onDestory();
+onResume()、onPause();
+onCreateView()、onDestoryView()</p>
+<ol>
+<li>若ListView的item复用了，对Item里View的操作是否成对出现
+比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
+<h3 id="防内存泄漏"><a href="#防内存泄漏" class="headerlink" title="防内存泄漏"></a>防内存泄漏</h3><ol>
+<li><p>内部类，比如Handler、Listener、Callback是否是成static class
+因为非静态内部类会持有外部类的引用。</p>
+</li>
+<li><p>假如子线程持有了Activity，要用弱引用来持有
+比如Request的Activity就应该用弱引用的形式，防止内存泄漏。</p>
+</li>
+<li><p>要求传入Activity作为参数的函数，是否可以改用getApplicationContext()来作为参数</p>
+</li>
+</ol>
+<h3 id="Handler相关"><a href="#Handler相关" class="headerlink" title="Handler相关"></a>Handler相关</h3><ol>
+<li>使用View.post()是否会有问题
+因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
+</ol>
+<p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
+<ol>
+<li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
+如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><p>多思考某些情况下，某变量是否会为空
+而且在函数体内，处理参数前，必须加上判空语句</p>
+</li>
+<li><p>回调函数是否处理好
+回调函数很容易出问题。比如网络请求的回调，需要判断此时的Aciivity等是否还存在，再进行调用。因为异步操作回来，Activity可能就消失不存在了。
+而且还要对一些可能被回收的变量进行判空。</p>
+</li>
+<li><p>修改数据库后，是否把数据库的版本号+1</p>
+</li>
+<li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
+<ol>
+<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
+可能导致的问题：</p>
+<ul>
+<li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
+<li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
+</ul>
+<ol>
+<li><p>除数是否做了非0判断</p>
+</li>
+<li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
+</li>
+</ol>
+<h3 id="功能完成后，自测时的检查点"><a href="#功能完成后，自测时的检查点" class="headerlink" title="功能完成后，自测时的检查点"></a>功能完成后，自测时的检查点</h3><ol>
+<li>思考某些情况下，某个变量是否会造成空指针问题</li>
+<li>把手机横屏，检查布局是否有Bug</li>
+<li>在不同分辨率的机型上，检查布局是否有Bug</li>
+<li>切换到英文等外文字体下，检查外文是否能完整显示</li>
+<li>从低版本升级上来，会不会有问题,比如可能会出现数据库不兼容的问题</li>
+<li>按下Home再返回是否正常</li>
+<li>熄灭屏幕再打开是否正常</li>
+<li>切换成其它应用再切换回来会怎样</li>
+<li>利用手机的开发者选项中的 “调试GPU过度绘制” ，“GPU呈现模式分析” 和 “显示FPS和功耗” 功能，看自己的新功能是否会导致过度绘制、是否会掉帧</li>
+<li>测试看是否影响启动速度<code>adb shell am start -W 包名/Activity</code></li>
+<li>对比看APK大小是否有增大</li>
+<li>跑1小时Monkey，测试其稳定性</li>
+</ol>
+<blockquote>
+<p>转自:
+<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
+</blockquote>
+<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
+<p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
+<h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
+<h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
+<li>强烈建议先跑30分钟Monkey测试</li>
+<li>使用eclipse的ddms找到对应的进程，触发一次gc后，dump出里面的内存快照hprof文件以分析当前应用内存的堆有什么东西</li>
+<li>使用Android SDK 里的platform-tools文件夹的 hprof-conv工具，对刚才 hprof 文件进行转换，以至于 后面MAT工具能正常打开</li>
+<li>使用MAT打开hprof文件，进入Histogram。输入自己猜测可能泄漏的Activity（项目中Activity不多时，可每个Activity都重复以下3、4、5步骤）</li>
+<li>键该其中一项，打开菜单选择list objects -&gt;with incoming refs将列出该类的实例</li>
+<li>右健Path to GC Roots–&gt;exclue all phantom/weak/soft etc. reference，找出这个实例GC后，还会存在什么对象的引用关系。</li>
+</ul>
+<h3 id="常见导致内存泄漏的几个点"><a href="#常见导致内存泄漏的几个点" class="headerlink" title="常见导致内存泄漏的几个点"></a>常见导致内存泄漏的几个点</h3><h4 id="生命周期的原因"><a href="#生命周期的原因" class="headerlink" title="生命周期的原因"></a>生命周期的原因</h4><p>比如：Activity中关联了一个生命周期超过Activity的Thread，这个Thread 若持有该Activity的引用，就会导致内存泄漏。</p>
+<h4 id="内部类的原因"><a href="#内部类的原因" class="headerlink" title="内部类的原因"></a>内部类的原因</h4><p>因为内部类会隐式地持有外部类的引用，若内部类不被释放，外部类也是无法释放。常见的有内部的Listener、Callback、Handler等导致。</p>
+<p>情景1：若外部类应该释放的时候，内部类还在执行里面的函数，会导致外部类无法释放。</p>
+<p>情景2：若一个异步操作，会回调内部类的Listener、Callback、Handler。当外部类应该释放的时候，但是这个异步操作还存在，而这个异步操作类又持有了Listener、Callback、Handler，导致外部类无法被释放。PS：这个原因也属于生命周期的原因。</p>
+<h4 id="静态变量的原因"><a href="#静态变量的原因" class="headerlink" title="静态变量的原因"></a>静态变量的原因</h4><p>单例类里包含Activity</p>
+<p>静态变量的类里引用到Activity</p>
+<h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
+<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
+<ol>
+<li>使用静态内部类 + weakReference
+静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
+<h4 id="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><a href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期" class="headerlink" title="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"></a>单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</h4><h4 id="对象的注册与反注册要成对出现"><a href="#对象的注册与反注册要成对出现" class="headerlink" title="对象的注册与反注册要成对出现"></a>对象的注册与反注册要成对出现</h4><h4 id="不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><a href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存" class="headerlink" title="不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存"></a>不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</h4><h4 id="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><a href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View" class="headerlink" title="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"></a>因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</h4>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/05/tips-android-arch/" rel="next" title="tips-android-arch">
+                <i class="fa fa-chevron-left"></i> tips-android-arch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理操作"><span class="nav-number">2.</span> <span class="nav-text">清理操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是否能进一步优化自己的代码"><span class="nav-number">3.</span> <span class="nav-text">是否能进一步优化自己的代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要小心第三方包"><span class="nav-number">4.</span> <span class="nav-text">要小心第三方包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意要成对出现的地方"><span class="nav-number">5.</span> <span class="nav-text">注意要成对出现的地方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防内存泄漏"><span class="nav-number">6.</span> <span class="nav-text">防内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler相关"><span class="nav-number">7.</span> <span class="nav-text">Handler相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">8.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能完成后，自测时的检查点"><span class="nav-number">9.</span> <span class="nav-text">功能完成后，自测时的检查点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充-总结工作中的Android内存泄漏问题"><span class="nav-number"></span> <span class="nav-text">补充:总结工作中的Android内存泄漏问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单判断是否有内存泄漏"><span class="nav-number">1.</span> <span class="nav-text">简单判断是否有内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位内存泄漏"><span class="nav-number">2.</span> <span class="nav-text">定位内存泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用Leak-Canary"><span class="nav-number">2.1.</span> <span class="nav-text">1.使用Leak Canary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用DDMS导出hprof，并用MAT工具进行分析"><span class="nav-number">2.2.</span> <span class="nav-text">2.使用DDMS导出hprof，并用MAT工具进行分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见导致内存泄漏的几个点"><span class="nav-number">3.</span> <span class="nav-text">常见导致内存泄漏的几个点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生命周期的原因"><span class="nav-number">3.1.</span> <span class="nav-text">生命周期的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部类的原因"><span class="nav-number">3.2.</span> <span class="nav-text">内部类的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#静态变量的原因"><span class="nav-number">3.3.</span> <span class="nav-text">静态变量的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注册与反注册、打开与关闭没成对出现的原因"><span class="nav-number">3.4.</span> <span class="nav-text">注册与反注册、打开与关闭没成对出现的原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法"><span class="nav-number">4.</span> <span class="nav-text">解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决内部类的问题（以Handler作为例子）"><span class="nav-number">4.1.</span> <span class="nav-text">解决内部类的问题（以Handler作为例子）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><span class="nav-number">4.2.</span> <span class="nav-text">单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的注册与反注册要成对出现"><span class="nav-number">4.3.</span> <span class="nav-text">对象的注册与反注册要成对出现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><span class="nav-number">4.4.</span> <span class="nav-text">不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><span class="nav-number">4.5.</span> <span class="nav-text">因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

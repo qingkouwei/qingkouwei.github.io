@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-12-05T04:27:35.137Z</updated>
+  <updated>2017-12-05T06:50:12.694Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -16,11 +16,202 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>(转)总结Android开发中必备的代码Review清单</title>
+    <link href="http://wodekouwei.com/2017/12/05/tips-android-review/"/>
+    <id>http://wodekouwei.com/2017/12/05/tips-android-review/</id>
+    <published>2017-12-05T06:11:25.000Z</published>
+    <updated>2017-12-05T06:50:12.694Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
+<p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
+<h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
+<li>页面退出时，是否完成必要的清理操作<ol>
+<li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
+<li>是否取消了还没完成的请求；</li>
+<li>在页面里注册的监听，是否反注册；</li>
+<li>假如自己用到观察者模式，是否反注册；</li>
+<li>假如用了RxJava的话，是否解除订阅；</li>
+</ol>
+</li>
+<li><p>数据库的游标是否已经关闭
+这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
+所以数据库的操作需要加上同步代码块
+详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
+</li>
+<li><p>打开过的文件流是否关闭</p>
+</li>
+<li><p>Android 3.0以下的版本，使用完的Bitmap是否调用recycle()，否则会一直占用内存
+而Android 3.0及以上的版本不需要调用recycle()，因为这些版本的Bitmap全部放到虚拟机的堆内存中，让GC自动回收。</p>
+</li>
+<li><p>WebView使用完是否调用了其destory()函数</p>
+</li>
+</ol>
+<h3 id="是否能进一步优化自己的代码"><a href="#是否能进一步优化自己的代码" class="headerlink" title="是否能进一步优化自己的代码"></a>是否能进一步优化自己的代码</h3><ol>
+<li><p>保存在内存中的图片，是否做过压缩处理再保存在内存里
+否则可能由于图片质量太高，导致OOM</p>
+</li>
+<li><p>Intent传递的数据太大，会导致页面跳转过慢。太大的数据可以通过持久化的形式传递，例如读写文件</p>
+</li>
+<li><p>频繁地操作同一个文件或者执行同一个数据库操作，是否考虑把它用静态变量或者局部变量的形式缓存在内存里。用空间换时间</p>
+</li>
+<li><p>放在主页面的控件，是否可以考虑用ViewStub来优化启动速度</p>
+</li>
+</ol>
+<h3 id="要小心第三方包"><a href="#要小心第三方包" class="headerlink" title="要小心第三方包"></a>要小心第三方包</h3><ol>
+<li><p>build.gradle远程依赖第三方包时，版本号建议写死，不要使用+号
+避免由于新版本的第三方包引入了新的问题</p>
+</li>
+<li><p>导入第三方工程时，记得把编码转换成自己工程当前是用的编码</p>
+</li>
+<li><p>调用第三方的包或者JDK的方法时，要跳进他们的源码，看要不要加 try-catch
+否则可能会导致自己应用的崩溃</p>
+</li>
+<li><p>使用第三方包时，是否加上其混淆规则
+若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
+</li>
+<li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
+<li><p>系统的、自己写的，注册和反注册的方法，是否成对出现</p>
+</li>
+<li><p>在生命周期的回调里，创建和销毁的代码是否对应起来
+比如：onCreate()里面创建了Adapter，那么对应Adapter的退出处理操作(比如清空Image缓存)，一般就要写在onDestory()，而不能写在onDestoryView()。</p>
+</li>
+</ol>
+<p>类似的生命周期对应的代码有：
+onStart()、onStop();
+onCreate()、onDestory();
+onResume()、onPause();
+onCreateView()、onDestoryView()</p>
+<ol>
+<li>若ListView的item复用了，对Item里View的操作是否成对出现
+比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
+<h3 id="防内存泄漏"><a href="#防内存泄漏" class="headerlink" title="防内存泄漏"></a>防内存泄漏</h3><ol>
+<li><p>内部类，比如Handler、Listener、Callback是否是成static class
+因为非静态内部类会持有外部类的引用。</p>
+</li>
+<li><p>假如子线程持有了Activity，要用弱引用来持有
+比如Request的Activity就应该用弱引用的形式，防止内存泄漏。</p>
+</li>
+<li><p>要求传入Activity作为参数的函数，是否可以改用getApplicationContext()来作为参数</p>
+</li>
+</ol>
+<h3 id="Handler相关"><a href="#Handler相关" class="headerlink" title="Handler相关"></a>Handler相关</h3><ol>
+<li>使用View.post()是否会有问题
+因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
+</ol>
+<p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
+<ol>
+<li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
+如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><p>多思考某些情况下，某变量是否会为空
+而且在函数体内，处理参数前，必须加上判空语句</p>
+</li>
+<li><p>回调函数是否处理好
+回调函数很容易出问题。比如网络请求的回调，需要判断此时的Aciivity等是否还存在，再进行调用。因为异步操作回来，Activity可能就消失不存在了。
+而且还要对一些可能被回收的变量进行判空。</p>
+</li>
+<li><p>修改数据库后，是否把数据库的版本号+1</p>
+</li>
+<li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
+<ol>
+<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
+可能导致的问题：</p>
+<ul>
+<li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
+<li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
+</ul>
+<ol>
+<li><p>除数是否做了非0判断</p>
+</li>
+<li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
+</li>
+</ol>
+<h3 id="功能完成后，自测时的检查点"><a href="#功能完成后，自测时的检查点" class="headerlink" title="功能完成后，自测时的检查点"></a>功能完成后，自测时的检查点</h3><ol>
+<li>思考某些情况下，某个变量是否会造成空指针问题</li>
+<li>把手机横屏，检查布局是否有Bug</li>
+<li>在不同分辨率的机型上，检查布局是否有Bug</li>
+<li>切换到英文等外文字体下，检查外文是否能完整显示</li>
+<li>从低版本升级上来，会不会有问题,比如可能会出现数据库不兼容的问题</li>
+<li>按下Home再返回是否正常</li>
+<li>熄灭屏幕再打开是否正常</li>
+<li>切换成其它应用再切换回来会怎样</li>
+<li>利用手机的开发者选项中的 “调试GPU过度绘制” ，“GPU呈现模式分析” 和 “显示FPS和功耗” 功能，看自己的新功能是否会导致过度绘制、是否会掉帧</li>
+<li>测试看是否影响启动速度<code>adb shell am start -W 包名/Activity</code></li>
+<li>对比看APK大小是否有增大</li>
+<li>跑1小时Monkey，测试其稳定性</li>
+</ol>
+<blockquote>
+<p>转自:
+<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
+</blockquote>
+<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
+<p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
+<h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
+<h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
+<li>强烈建议先跑30分钟Monkey测试</li>
+<li>使用eclipse的ddms找到对应的进程，触发一次gc后，dump出里面的内存快照hprof文件以分析当前应用内存的堆有什么东西</li>
+<li>使用Android SDK 里的platform-tools文件夹的 hprof-conv工具，对刚才 hprof 文件进行转换，以至于 后面MAT工具能正常打开</li>
+<li>使用MAT打开hprof文件，进入Histogram。输入自己猜测可能泄漏的Activity（项目中Activity不多时，可每个Activity都重复以下3、4、5步骤）</li>
+<li>键该其中一项，打开菜单选择list objects -&gt;with incoming refs将列出该类的实例</li>
+<li>右健Path to GC Roots–&gt;exclue all phantom/weak/soft etc. reference，找出这个实例GC后，还会存在什么对象的引用关系。</li>
+</ul>
+<h3 id="常见导致内存泄漏的几个点"><a href="#常见导致内存泄漏的几个点" class="headerlink" title="常见导致内存泄漏的几个点"></a>常见导致内存泄漏的几个点</h3><h4 id="生命周期的原因"><a href="#生命周期的原因" class="headerlink" title="生命周期的原因"></a>生命周期的原因</h4><p>比如：Activity中关联了一个生命周期超过Activity的Thread，这个Thread 若持有该Activity的引用，就会导致内存泄漏。</p>
+<h4 id="内部类的原因"><a href="#内部类的原因" class="headerlink" title="内部类的原因"></a>内部类的原因</h4><p>因为内部类会隐式地持有外部类的引用，若内部类不被释放，外部类也是无法释放。常见的有内部的Listener、Callback、Handler等导致。</p>
+<p>情景1：若外部类应该释放的时候，内部类还在执行里面的函数，会导致外部类无法释放。</p>
+<p>情景2：若一个异步操作，会回调内部类的Listener、Callback、Handler。当外部类应该释放的时候，但是这个异步操作还存在，而这个异步操作类又持有了Listener、Callback、Handler，导致外部类无法被释放。PS：这个原因也属于生命周期的原因。</p>
+<h4 id="静态变量的原因"><a href="#静态变量的原因" class="headerlink" title="静态变量的原因"></a>静态变量的原因</h4><p>单例类里包含Activity</p>
+<p>静态变量的类里引用到Activity</p>
+<h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
+<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
+<ol>
+<li>使用静态内部类 + weakReference
+静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
+<h4 id="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><a href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期" class="headerlink" title="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"></a>单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</h4><h4 id="对象的注册与反注册要成对出现"><a href="#对象的注册与反注册要成对出现" class="headerlink" title="对象的注册与反注册要成对出现"></a>对象的注册与反注册要成对出现</h4><h4 id="不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><a href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存" class="headerlink" title="不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存"></a>不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</h4><h4 id="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><a href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View" class="headerlink" title="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"></a>因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</h4>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
     <title>tips-android-arch</title>
     <link href="http://wodekouwei.com/2017/12/05/tips-android-arch/"/>
     <id>http://wodekouwei.com/2017/12/05/tips-android-arch/</id>
     <published>2017-12-05T03:59:48.000Z</published>
-    <updated>2017-12-05T04:27:35.137Z</updated>
+    <updated>2017-12-05T06:49:26.312Z</updated>
     
     <content type="html"><![CDATA[<p><a href="http://www.cnblogs.com/zqlxtt/p/6887938.html" target="_blank" rel="external">Android官方架构组件介绍之LifeCycle</a>,Android架构组件一共包括以下几个：</p>
 <ul>
@@ -600,6 +791,73 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
       <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
     
       <category term="kotlin" scheme="http://wodekouwei.com/tags/kotlin/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>(转)转使用C语言实现&quot;泛型&quot;链表</title>
+    <link href="http://wodekouwei.com/2017/10/31/l-c-dllist/"/>
+    <id>http://wodekouwei.com/2017/10/31/l-c-dllist/</id>
+    <published>2017-10-31T12:13:42.000Z</published>
+    <updated>2017-12-05T06:49:51.509Z</updated>
+    
+    <content type="html"><![CDATA[<p>看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。</p>
+<h3 id="一、所用的链表类型的选择"><a href="#一、所用的链表类型的选择" class="headerlink" title="一、所用的链表类型的选择"></a>一、所用的链表类型的选择</h3><p>我们知道，链表也有非常多的类型，包括单链表、单循环链表、双链表、双向循环链表等。在我的设计中，我的链表使用的类型是双向循环链表，并带一个不保存真实数据的头结点。其原因如下：
+1）单链表由于不能从后继定位到前驱，在操作时较为不方便
+2）双链表虽然能方便找到前驱，但是如果总是在其尾部插入或删除结点，为了定位的方便和操作的统一（所有的删除和插入操作，都跟在中间插入删除结点的操作一样），还要为其增加一个尾结点，并且程序还要保存一个指向这个尾结点的指针，并管理这个指针，从而增加程序的复杂性。而使用带头结点的循环双向链表，就能方便的定位（其上一个元素为链表的最后一个元素，其下一个元素为链表的第0个元素），并使所有的插入和删除的操作统一，因为头结点也是尾结点。注：结点的下标从0开始，头结点不算入下标值。
+3）接口的使用与C++中stl中list和泛型算法的使用大致相同。</p>
+<h3 id="二、list类型的定义"><a href="#二、list类型的定义" class="headerlink" title="二、list类型的定义"></a>二、list类型的定义</h3><p>为了让大家一睹为快，下面就给出这个用C语言实现的“泛型”的定义，再来说明，我这样设计的原因及要点，其定义如下：
+其定义在文件list_v2.c中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    void* data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;  </div><div class="line"></div><div class="line">struct list  </div><div class="line">&#123;  </div><div class="line">    struct node *head;//头指针，指向头结点  </div><div class="line">    int data_size;//链表对应的数据所占内存的大小  </div><div class="line">    int length;//链表list的长度  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其声明在文件list_v2.h中
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </div><div class="line"></div><div class="line"></div><div class="line">//定义结点指针Node*为List类型的迭代器  </div><div class="line">typedef struct node* Iterator;  </div><div class="line"></div><div class="line"></div><div class="line">//List类型的定义  </div><div class="line">typedef struct list* List;  </div><div class="line"></div><div class="line"></div><div class="line">//初始化链表,数据域所占内存的大小由data_size给出  </div><div class="line">int InitList(List *list, int data_size);  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表list的末尾  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Append(List list, void *data,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表的迭代器it_before的前面  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Insert(List list, void *data, Iterator it_before,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </div><div class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </div><div class="line">                      List B, Iterator it_b_before);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list中迭代器it指向的结点  </div><div class="line">int Remove(List list, Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的第0个结点，下标从0开始  </div><div class="line">int RemoveFirst(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的最后一个结点  </div><div class="line">int RemoveLast(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//返回list中第index个数据的指针  </div><div class="line">void* At(List list, int index);  </div><div class="line"></div><div class="line"></div><div class="line">//在begin和end之间查找符合condition的第一个元素，  </div><div class="line">//比较函数由condition指向,比较的值由data指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </div><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </div><div class="line">                       int (*condition)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找list中第一个与data相等的元素的下标，  </div><div class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </div><div class="line">int IndexOf(List list, void *data,  </div><div class="line">            int (*equal)(const void*,const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最小值，比较函数由less指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMin(Iterator begin, Iterator end,  </div><div class="line">                int (*less)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最大值，比较函数由large指向  </div><div class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMax(Iterator begin, Iterator end,  </div><div class="line">                int (*large)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//获取list的长度  </div><div class="line">int GetLength(List list);  </div><div class="line">//若list为空链表，则返回1，否则返回0  </div><div class="line">int IsEmpty(List list);  </div><div class="line">//销毁list  </div><div class="line">void DestroyList(List *list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的首迭代器  </div><div class="line">Iterator Begin(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </div><div class="line">Iterator End(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </div><div class="line">Iterator Next(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </div><div class="line">Iterator Last(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//通过迭代器it获得数据，相当于*p  </div><div class="line">void* GetData(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetNext(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetLast(Iterator it);</div></pre></td></tr></table></figure></p>
+<h3 id="三、如何实现隐藏链表的成员变量（即封装）"><a href="#三、如何实现隐藏链表的成员变量（即封装）" class="headerlink" title="三、如何实现隐藏链表的成员变量（即封装）"></a>三、如何实现隐藏链表的成员变量（即封装）</h3><p>首先，我们为什么需要封装呢？我觉得封装主要有三大好处。</p>
+<ol>
+<li>隔离变化，在程序中需要封装的通常是程序中最容易发生变化的地方，例如成员变量等，我们可以把它们封装起来，从而让它们的变化不会影响到系统的其他部分，也就是说，封装的是变化。</li>
+<li>降低复杂度，因为我们把一个对象是如何实现的等细节封装起来，只留给用户一个最小依赖的接口，从而让系统变量简单明了，在一定程度降低了系统的复杂性，方便了用户的使用。</li>
+<li>让用户只能按照我们设计好的接口来操作一个对象或类型，而不能自己直接对一个对象进行操作，从而减少了用户的误操作，提高了系统的稳定性。</li>
+</ol>
+<p>在面向对象的设计中，如果我们想要隐藏一个类的成员变量，我们可以把这些成员变量声明为私有的，而在C语言中，我们可以怎么实现呢？其实其实现是很简单的，我们在C语言中，当我们要使用一个自己定义的类型或函数时，我们会把声明它的头文件包含（include）过来，只要我们在文件中只声明其类型是一个结构体，而把它的实现写在.c文件中即可。</p>
+<p>在本例子中，我把<code>struct list</code>和<code>struct node</code>定义在.c文件中，而在头文件中，只声明其指针类型，即<code>typedef struct node* Iterator</code>和<code>typedef struct list* List;</code>当我们要使用该类型时，只需要在所在的文件中，include该头文件即可。因为在编译时，编译器只要知道List和Iterator是一个指针类型就能知道其所占的内存大小，也就能为其分配内存，所以能够编译成功。而又因为该头文件中并没有该类型（struct list和struct node）的定义，所以我们在使用该类型时，只能通过我们提供的接口来操作对象。例如，我们并不能使用<code>List list; list-&gt;data</code>等等的操作，而只能通过已定义的接口GetData来获得。</p>
+<p>###四、如何实现泛型
+泛型，第一时间想起的可能是模板，但是在C语言中却没有这个东西。但是C语言中却有一个可以指向任何类型，在使用时，再根据具体的指针类型进行类型转换的指针类型，它就是<code>void*</code>。</p>
+<p>为什么void<em>可以指向任何类型的数据？这还得从C语言对于数据类型的处理方式来说明。在C语言中，我们使用<code>malloc</code>等函数来申请内存，而从内存的角度来看，数据是没有类型的，它们都是一串的0或1，而程序则根据不同的类型来解释这个内存单元中的数据的意义，例如对于内存中的数据，<code>FFFFFFFF</code>，如果它是一个有符号整型数据，它代表的是<code>-1</code>，而如果它是一个无符号整型数据，它代表的则是<code>2^32-1</code>。进一步说，如果你用一个<code>int</code>的指针变量p指向该内存，则</em>p就是-1，如果你用<code>unsigned int</code>的指针<code>p</code>指向该内存，则<code>*p = 2^32-1</code>。</p>
+<p>而我们使用<code>malloc</code>等函数时，也只需要说明申请的内存的大小即可，也不用说明申请的内存空间所存放的数据的类型，例如，我们申请一块内存空间来存放一个整型数据，则只需要<code>malloc(sizeof(int))</code>，即可，当然你完全可以把它当作一个具有4个单位的char数组来使用。所以我们可以使用void指针来指向我们申请的内存，申请内存的大小由链表中的成员data_size定义，它也是真正的data所占的内存大小。</p>
+<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Iterator Insert(List list, void *data, Iterator it_before,</div><div class="line">                void (*assign)(void*, const void*));</div></pre></td></tr></table></figure></p>
+<p>从上面的解说中，我们可以看到链表中的成员data_size指示了链表中的数据所占的内存大小，那我们们就可以使用函数memcpy把data指向的数据复制到新建的结点的data所指向的内存即可。为什么还需要一个函数指针assign，来指向一个定义数据之间如何赋值的函数呢？其实这和面向对象语言中常说到的深复制和浅复制有关。</p>
+<p>注：memcpy函数的原型为：<code>void * memcpy ( void * destination, const void * source, size_t num );</code></p>
+<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct student  </div><div class="line">&#123;  </div><div class="line">    char *name;  </div><div class="line">    char *no;  </div><div class="line">    int age;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>学生的姓名和学号都是能过动态分配内存而来的，并由student结构体中的name和no指针指向，那么当我们使用memcpy时，只能复制其指针，而不能复制其指向的数据，这样在很多情况下都会带来一定的问题。这个跟在C++中什么时候需要自己定义复制构造函数的情况类似。因为这种情况下，默认的复制构造函数并不能满足我们的需要，只能自己定义复制构造函数。</p>
+<p>所以在插入一个结点时，需要assign函数指针的原理与C++中自己定义复制构造函数的原理一样。它用于定义如何根据一个已有的对象生成一个该对象的拷贝对象。当然，可能在大多数的情况下，我们需要用到的数据类型都没有包含指针，所以在Insert函数的实现中，其实我也是有用到memcpy函数的，就是当assign为NULL时，就使用memcpy函数进行数据对象间的赋值，它其实就相当于C++中的默认复制构造函数或默认赋值操作函数。assign为NULL表示使用默认的逐位复制方式，即浅复制。</p>
+<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    DataType data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;</div></pre></td></tr></table></figure></p>
+<p>然后，当需要使用整型的链表时，就把DataType用typedef为int。其实这样做的一个最大的缺陷就是一个程序中只能存在着一个数据类型的链表，例如，如果我需要一个int型的链表和一个float型的链表，那么该把DataType定义为int呢还是float呢？所以这种看似可行的方式，其实只是虚有其表，在现象中是行不能的，虽然不少的数据结构的书都是这样实现的，但是它却没有什么实用价值。</p>
+<p>而其本质的原因是把结点的数据域的数据类型与某一种特定的数据类型DataType绑定在一起，从而让链表不能独立地变化。</p>
+<h3 id="七、为什么只把结点的指针定义为Iterator"><a href="#七、为什么只把结点的指针定义为Iterator" class="headerlink" title="七、为什么只把结点的指针定义为Iterator"></a>七、为什么只把结点的指针定义为Iterator</h3><p>在C++中iterator是一个类，为什么在这里，我只把结点的指针声明为一个Iterator呢？其实受STL的影响，我在一开始时，也是把Iterator实现为一个结构体，它只有一个数据成员，就是一个指向Node的指针。但在后来的实践中，发现其实并没有必要。在C++中为什么把iterator定义为一个类，是为了重载*，-&gt;等运行符，让iterator使用起来跟普通的指针一样。但是在C语言中，并没有重载运行符的做法，所以直接把Ierator声明为一个Node的指针最为方便、直接和好用，所有的比较运算都可以直接进行，而无需要借助函数。而把它声明为一个结构体反而麻烦、累赘。</p>
+<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
+<p>而是
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
+<p>们可以试想一下，这个链表的为char链表，链表的元素为ABCBCBC，我们要在链表中找出所有的B，如果查找算法是使用第一种定义的话，它只能找出第一个B，而后面的两个B就无能为力了，而第二种定义，则可以通过循环改变其始末迭代器来在不同的序列段间查找目标字符B的位置。</p>
+<blockquote>
+<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="external">使用C语言实现“泛型”链表</a></p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表
+    
+    </summary>
+    
+      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
+    
+    
+      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
+    
+      <category term="C" scheme="http://wodekouwei.com/tags/C/"/>
     
   </entry>
   
@@ -1671,7 +1929,7 @@ vapth使用方法中的&lt; pattern&gt;需要包含“%”字符。“%”的意
 于是，我们可以写出[.c]文件和[.d]文件的依赖关系，并让make自动更新或自成[.d]文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。
 这里，我们给出了一个模式规则来产生[.d]文件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">%.d: %.c</div><div class="line">       @set -e; rm -f $@; \</div><div class="line">        $(CC) -M $(CPPFLAGS) $&lt; &gt; $@.</div><div class="line">; \</div><div class="line">        sed &apos;s,$∗\.o[ :]*,\1.o $@ : ,g&apos; &lt; $@.</div><div class="line">&gt; $@; \</div><div class="line">        rm -f $@.</div></pre></td></tr></table></figure></p>
-<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x201d;&#65292;&#x4e5f;&#23601;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#20381;&#36182;&#25991;&#20214;&#65292;&#x201c;&#36;&#64;&#8221;&#34920;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#46;&#x64;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#x679c;&#26377;&#19968;&#x4e2a;&#67;&#x6587;&#x4ef6;&#x662f;&#110;&#97;&#109;&#x65;&#x2e;&#x63;&#65292;&#x90a3;&#x4e48;&#8220;&#x25;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#x61;&#x6d;&#x65;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#x4e3a;&#x4e00;&#x4e2a;&#x968f;&#x673a;&#x7f16;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#34892;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#33021;&#26159;&#8220;&#110;&#97;&#109;&#x65;&#46;&#100;&#x2e;&#49;&#50;&#51;&#52;&#x35;&#8221;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#100;&#21629;&#20196;&#20570;&#20102;&#19968;&#20010;&#26367;&#25442;&#xff0c;&#20851;&#20110;&#x73;&#101;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#35831;&#x53c2;&#x770b;&#x76f8;&#20851;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#x3002;&#x7b2c;&#x56db;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#25991;&#20214;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#x6a21;&#24335;&#x8981;&#20570;&#x7684;&#x4e8b;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#x5668;&#29983;&#x6210;&#30340;&#x4f9d;&#36182;&#x5173;&#31995;&#20013;&#21152;&#20837;&#91;&#x2e;&#100;&#93;&#x6587;&#x4ef6;&#30340;&#20381;&#36182;&#65292;&#21363;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#65306;&#xa;&#x3c;&#x21;&#x2d;&#45;&#65532;&#x34;&#x30;&#45;&#45;">&#x201d;&#65292;&#x4e5f;&#23601;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#20381;&#36182;&#25991;&#20214;&#65292;&#x201c;&#36;&#64;&#8221;&#34920;&#31034;&#x6a21;&#x5f0f;&#8220;&#37;&#46;&#x64;&#x201d;&#25991;&#x4ef6;&#xff0c;&#x5982;&#x679c;&#26377;&#19968;&#x4e2a;&#67;&#x6587;&#x4ef6;&#x662f;&#110;&#97;&#109;&#x65;&#x2e;&#x63;&#65292;&#x90a3;&#x4e48;&#8220;&#x25;&#x201d;&#x5c31;&#x662f;&#x201c;&#x6e;&#x61;&#x6d;&#x65;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#x4e3a;&#x4e00;&#x4e2a;&#x968f;&#x673a;&#x7f16;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#34892;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#33021;&#26159;&#8220;&#110;&#97;&#109;&#x65;&#46;&#100;&#x2e;&#49;&#50;&#51;&#52;&#x35;&#8221;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#100;&#21629;&#20196;&#20570;&#20102;&#19968;&#20010;&#26367;&#25442;&#xff0c;&#20851;&#20110;&#x73;&#101;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#35831;&#x53c2;&#x770b;&#x76f8;&#20851;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#x3002;&#x7b2c;&#x56db;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#25991;&#20214;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#x6a21;&#24335;&#x8981;&#20570;&#x7684;&#x4e8b;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#x5668;&#29983;&#x6210;&#30340;&#x4f9d;&#36182;&#x5173;&#31995;&#20013;&#21152;&#20837;&#91;&#x2e;&#100;&#93;&#x6587;&#x4ef6;&#30340;&#20381;&#36182;&#65292;&#21363;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#65306;&#xa;&#x3c;&#x21;&#x2d;&#45;&#65532;&#x34;&#x30;&#45;&#45;</a></p>
+<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#8221;&#65292;&#x4e5f;&#23601;&#26159;&#91;&#x2e;&#x63;&#93;&#x6587;&#20214;&#29983;&#25104;&#x4f9d;&#x8d56;&#x6587;&#20214;&#xff0c;&#8220;&#36;&#64;&#8221;&#x8868;&#31034;&#27169;&#x5f0f;&#8220;&#37;&#46;&#100;&#8221;&#25991;&#20214;&#65292;&#x5982;&#26524;&#x6709;&#x4e00;&#20010;&#x43;&#x6587;&#20214;&#x662f;&#x6e;&#97;&#109;&#101;&#x2e;&#x63;&#xff0c;&#37027;&#20040;&#x201c;&#37;&#8221;&#23601;&#x662f;&#8220;&#x6e;&#x61;&#x6d;&#101;&#8221;&#xff0c;&#x201c;&#xa;&#8221;&#24847;&#20026;&#19968;&#20010;&#x968f;&#x673a;&#32534;&#x53f7;&#65292;&#x7b2c;&#x4e8c;&#34892;&#x751f;&#x6210;&#30340;&#25991;&#20214;&#26377;&#x53ef;&#x80fd;&#26159;&#8220;&#x6e;&#97;&#109;&#101;&#46;&#x64;&#x2e;&#49;&#x32;&#51;&#x34;&#x35;&#x201d;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#x64;&#21629;&#x4ee4;&#20570;&#20102;&#x4e00;&#x4e2a;&#x66ff;&#25442;&#65292;&#20851;&#x4e8e;&#x73;&#101;&#x64;&#x547d;&#x4ee4;&#30340;&#29992;&#27861;&#35831;&#x53c2;&#x770b;&#30456;&#x5173;&#x7684;&#20351;&#29992;&#x6587;&#26723;&#12290;&#31532;&#x56db;&#34892;&#x5c31;&#26159;&#x5220;&#38500;&#x4e34;&#26102;&#x6587;&#20214;&#12290;&#10;&#x603b;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#x4e2a;&#x6a21;&#x5f0f;&#x8981;&#x505a;&#30340;&#20107;&#x5c31;&#26159;&#22312;&#32534;&#x8bd1;&#22120;&#29983;&#25104;&#30340;&#x4f9d;&#36182;&#x5173;&#x7cfb;&#20013;&#21152;&#x5165;&#x5b;&#x2e;&#x64;&#93;&#25991;&#20214;&#30340;&#x4f9d;&#x8d56;&#xff0c;&#21363;&#x628a;&#x4f9d;&#36182;&#20851;&#31995;&#xff1a;&#xa;&#x3c;&#x21;&#45;&#45;&#65532;&#52;&#48;&#x2d;&#45;">&#8221;&#65292;&#x4e5f;&#23601;&#26159;&#91;&#x2e;&#x63;&#93;&#x6587;&#20214;&#29983;&#25104;&#x4f9d;&#x8d56;&#x6587;&#20214;&#xff0c;&#8220;&#36;&#64;&#8221;&#x8868;&#31034;&#27169;&#x5f0f;&#8220;&#37;&#46;&#100;&#8221;&#25991;&#20214;&#65292;&#x5982;&#26524;&#x6709;&#x4e00;&#20010;&#x43;&#x6587;&#20214;&#x662f;&#x6e;&#97;&#109;&#101;&#x2e;&#x63;&#xff0c;&#37027;&#20040;&#x201c;&#37;&#8221;&#23601;&#x662f;&#8220;&#x6e;&#x61;&#x6d;&#101;&#8221;&#xff0c;&#x201c;&#xa;&#8221;&#24847;&#20026;&#19968;&#20010;&#x968f;&#x673a;&#32534;&#x53f7;&#65292;&#x7b2c;&#x4e8c;&#34892;&#x751f;&#x6210;&#30340;&#25991;&#20214;&#26377;&#x53ef;&#x80fd;&#26159;&#8220;&#x6e;&#97;&#109;&#101;&#46;&#x64;&#x2e;&#49;&#x32;&#51;&#x34;&#x35;&#x201d;&#65292;&#x7b2c;&#19977;&#x884c;&#x4f7f;&#x7528;&#x73;&#x65;&#x64;&#21629;&#x4ee4;&#20570;&#20102;&#x4e00;&#x4e2a;&#x66ff;&#25442;&#65292;&#20851;&#x4e8e;&#x73;&#101;&#x64;&#x547d;&#x4ee4;&#30340;&#29992;&#27861;&#35831;&#x53c2;&#x770b;&#30456;&#x5173;&#x7684;&#20351;&#29992;&#x6587;&#26723;&#12290;&#31532;&#x56db;&#34892;&#x5c31;&#26159;&#x5220;&#38500;&#x4e34;&#26102;&#x6587;&#20214;&#12290;&#10;&#x603b;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#x4e2a;&#x6a21;&#x5f0f;&#x8981;&#x505a;&#30340;&#20107;&#x5c31;&#26159;&#22312;&#32534;&#x8bd1;&#22120;&#29983;&#25104;&#30340;&#x4f9d;&#36182;&#x5173;&#x7cfb;&#20013;&#21152;&#x5165;&#x5b;&#x2e;&#x64;&#93;&#25991;&#20214;&#30340;&#x4f9d;&#x8d56;&#xff0c;&#21363;&#x628a;&#x4f9d;&#36182;&#20851;&#31995;&#xff1a;&#xa;&#x3c;&#x21;&#45;&#45;&#65532;&#52;&#48;&#x2d;&#45;</a></p>
 <p>转成：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">main.o main.d : main.c defs.h</div></pre></td></tr></table></figure></p>
 <p>于是，我们的[.d]文件也会自动更新了，并会自动生成了，当然，你还可以在这个[.d]文件中加入的不只是依赖关系，包括生成的命令也可一并加入，让每个[.d]文件都包含一个完赖的规则。一旦我们完成这个工作，接下来，我们就要把这些自动生成的规则放进我们的主Makefile中。我们可以使用Makefile的“include”命令，来引入别的Makefile文件（前面讲过），例如：
@@ -2845,73 +3103,6 @@ double fps, Size frameSize,bool isColor=true)</p>
     
     
       <category term="opencv" scheme="http://wodekouwei.com/tags/opencv/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>opencv开发环境搭建</title>
-    <link href="http://wodekouwei.com/2017/09/29/opencv-env/"/>
-    <id>http://wodekouwei.com/2017/09/29/opencv-env/</id>
-    <published>2017-09-29T09:50:52.000Z</published>
-    <updated>2017-11-20T06:43:41.408Z</updated>
-    
-    <content type="html"><![CDATA[<p>从github下载opencv最新源码<a href="https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`" target="_blank" rel="external">https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`</a>.</p>
-<h3 id="Ubuntu环境下编译"><a href="#Ubuntu环境下编译" class="headerlink" title="Ubuntu环境下编译"></a>Ubuntu环境下编译</h3><p>安装依赖库:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install build-essential</div><div class="line"></div><div class="line">sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</div><div class="line"></div><div class="line">sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</div><div class="line"></div><div class="line">git clone https://github.com/opencv/opencv.git</div><div class="line"></div><div class="line">sudo apt-get install cmake-gui</div></pre></td></tr></table></figure></p>
-<h3 id="Mac环境下编译"><a href="#Mac环境下编译" class="headerlink" title="Mac环境下编译"></a>Mac环境下编译</h3><p>进入源码路径,新建一个release的文件夹,并进入,执行:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cmake -G &quot;Unix Makefiles&quot; ..</div><div class="line">make</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
-<p>编译完成后会在release生成lib目录,lib下存放所有编译成的动态库,可能与ubuntu下编译结果不同,ubuntu下编译只生成<code>libopencv_world.so</code>一个动态库,而mac下会生成<code>opencv_core opencv_highgui opencv_imgproc opencv_ml opencv_objdetect opencv_photo opencv_video opencv_dnn opencv_imgcodecs opencv_shape</code>等多个动态库.执行<code>make install</code>后会将头文件拷贝到<code>/usr/local/include/</code>下,将动态库拷贝到<code>/usr/local/lib/</code>下,将jar包等其他文件拷贝到<code>/usr/local/share/OpenCV/</code>下,makefile脚本加入动态链接库:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">testopencv:main.cpp</div><div class="line">	g++ $+ -o $@ -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_video -lopencv_dnn -lopencv_imgcodecs -lopencv_shape</div></pre></td></tr></table></figure></p>
-<p><code>main.cpp</code>下输入下面测试代码:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;opencv2/core.hpp&gt;</div><div class="line">#include &lt;opencv2/imgcodecs.hpp&gt;</div><div class="line">#include &lt;opencv2/highgui.hpp&gt;</div><div class="line">using namespace cv;</div><div class="line">int main(int argc, char *argv[])</div><div class="line">&#123;</div><div class="line">	Mat image = imread(&quot;1.png&quot;);</div><div class="line">	namedWindow(&quot;img&quot;);</div><div class="line">	imshow(&quot;img&quot;, image);</div><div class="line">	waitKey(0);</div><div class="line">	return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在生成的执行文件同目录下放入名字为<code>1.png</code>的图片.</p>
-<h4 id="配置QT环境"><a href="#配置QT环境" class="headerlink" title="配置QT环境"></a>配置QT环境</h4><p>在新建的QT工程中的.pro文件中添加如下配置代码:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">INCLUDEPATH += /usr/local/include</div><div class="line">INCLUDEPATH += /usr/local/include/opencv</div><div class="line">INCLUDEPATH += /usr/local/include/opencv2</div><div class="line">LIBS += -L/usr/local/lib \</div><div class="line"> -lopencv_core \</div><div class="line"> -lopencv_highgui \</div><div class="line"> -lopencv_imgproc \</div></pre></td></tr></table></figure></p>
-<p>完成以上步骤后按理应该是能成功的，但是运行时发现会出现如下的错误。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">Expected in: /usr/local/lib/libjpeg.8.dylib</div><div class="line">in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
-<p>针对以上问题,在项目-运行配置中,增加变量<code>DYLD_LIBRARY_PATH</code>值为<code>/Application/QT5.7.0/5.7/clang_64/lib:/usr/local/lib</code></p>
-<h3 id="qt-opencv常见问题"><a href="#qt-opencv常见问题" class="headerlink" title="qt+opencv常见问题"></a>qt+opencv常见问题</h3><p>在Mac上运行以上代码时，提示以下错误：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dyld: Symbol not found: __cg_jpeg_resync_to_restart</div><div class="line">  Referenced from: /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div><div class="line">  Expected in: /usr/local/lib/libJPEG.dylib</div><div class="line"> in /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO</div></pre></td></tr></table></figure></p>
-<p>解决办法是将“”目录下的对应动态链接库文件创建软连接到“/usr/local/lib”目录下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ pwd</div><div class="line">/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources</div><div class="line">$ sudo ln -sf libJPEG.dylib /usr/local/lib/libJPEG.dylib</div><div class="line">$ sudo ln -sf libPng.dylib /usr/local/lib/libPng.dylib</div><div class="line">$ sudo ln -sf libTIFF.dylib /usr/local/lib/libTIFF.dylib</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;从github下载opencv最新源码&lt;a href=&quot;https://github.com/opencv/opencv,目前最新是`5e93c8202363a13fc72df30f8c14069c5ab66e42`&quot; target=&quot;_blank&quot; rel=&quot;exter
-    
-    </summary>
-    
-      <category term="opencv" scheme="http://wodekouwei.com/categories/opencv/"/>
-    
-    
-      <category term="opencv" scheme="http://wodekouwei.com/tags/opencv/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>tips-android</title>
-    <link href="http://wodekouwei.com/2017/09/27/tips-android/"/>
-    <id>http://wodekouwei.com/2017/09/27/tips-android/</id>
-    <published>2017-09-27T02:41:33.000Z</published>
-    <updated>2017-09-27T02:44:01.000Z</updated>
-    
-    <content type="html"><![CDATA[<h6 id="1-使用Glide库提取视频帧"><a href="#1-使用Glide库提取视频帧" class="headerlink" title="1.使用Glide库提取视频帧"></a>1.使用Glide库提取视频帧</h6><p>图片加载框架Glide就可以做到获取本地视频的缩略图(不能获取网络视频文件):
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">String filePath = &quot;/storage/emulated/0/Pictures/example_video.mp4&quot;;</div><div class="line">Glide  </div><div class="line">    .with( context )</div><div class="line">    .load( Uri.fromFile( new File( filePath ) ) )</div><div class="line">    .into( imageViewGifAsBitmap );</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h6 id=&quot;1-使用Glide库提取视频帧&quot;&gt;&lt;a href=&quot;#1-使用Glide库提取视频帧&quot; class=&quot;headerlink&quot; title=&quot;1.使用Glide库提取视频帧&quot;&gt;&lt;/a&gt;1.使用Glide库提取视频帧&lt;/h6&gt;&lt;p&gt;图片加载框架Glide就可以做到获取
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
     
   </entry>
   
