@@ -323,6 +323,415 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/30/tips-shell-language/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/30/tips-shell-language/" itemprop="url">
+                  shell开发使用小技巧
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T11:54:47+08:00">
+                2017-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/language/" itemprop="url" rel="index">
+                    <span itemprop="name">language</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="写脚本修改数据库中表的某一字段值"><a href="#写脚本修改数据库中表的某一字段值" class="headerlink" title="写脚本修改数据库中表的某一字段值"></a>写脚本修改数据库中表的某一字段值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">##########################################################</div><div class="line">#修改表TBL_BAT_TASK_CTL的USE_FLAG字段，启动或停止贷记卡销卡的批处理</div><div class="line">#useage：执行脚本时加-n参数就是关闭批处理</div><div class="line">#    执行脚本时加-y参数就是打开批处理</div><div class="line">##########################################################</div><div class="line"></div><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">if test &quot;$1&quot; = &quot;-n&quot;</div><div class="line">then</div><div class="line">    db2 connect to $DBLINK</div><div class="line">    db2 &quot;update TBL_BAT_TASK_CTL set USE_FLAG=&apos;N&apos; where BAT_ID=&apos;0024&apos; or BAT_ID=&apos;0025&apos;&quot;</div><div class="line">    db2 terminate</div><div class="line">#   exit 0</div><div class="line">fi</div><div class="line"></div><div class="line">if test &quot;$1&quot; = &quot;-y&quot;</div><div class="line">then</div><div class="line">    db2 connect to $DBLINK</div><div class="line">    db2 &quot;update TBL_BAT_TASK_CTL set USE_FLAG=&apos;Y&apos; where BAT_ID=&apos;0024&apos; or BAT_ID=&apos;0025&apos;&quot;</div><div class="line">    db2 terminate</div><div class="line">fi</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/29/opencv-core/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/29/opencv-core/" itemprop="url">
+                  opencv核心类型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-29T18:09:42+08:00">
+                2017-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/opencv/" itemprop="url" rel="index">
+                    <span itemprop="name">opencv</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="mat"><a href="#mat" class="headerlink" title="mat"></a>mat</h3><p>Mat替代lplImage</p>
+<h4 id="创建和清理mat空间"><a href="#创建和清理mat空间" class="headerlink" title="创建和清理mat空间"></a>创建和清理mat空间</h4><ul>
+<li>Mat mat(3000, 4000, CV_8UC3);//3000行,4000列数组,数组里存放3个unsigned char类型的数据</li>
+<li>mat.create(rows, cols, CV_8UC1);//行数,列数,如果mat已经有空间,create时会自动清理已有空间</li>
+<li>release或者析构:引用计数为1时释放</li>
+</ul>
+<blockquote>
+<p>处理类型一定要用unsigned char而不是char</p>
+</blockquote>
+<h4 id="3-3RGB图像存放方式-连续"><a href="#3-3RGB图像存放方式-连续" class="headerlink" title="3*3RGB图像存放方式(连续)"></a>3*3RGB图像存放方式(连续)</h4><p><img src="http://" alt="image"></p>
+<h5 id="isContinuous"><a href="#isContinuous" class="headerlink" title="isContinuous"></a>isContinuous</h5><ul>
+<li>判断存储空间是否连续</li>
+<li>通过step记录</li>
+</ul>
+<h4 id="直接地址访问连续空间"><a href="#直接地址访问连续空间" class="headerlink" title="直接地址访问连续空间"></a>直接地址访问连续空间</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">int size = mat.rows*mat.cols*mat.elemSize();</div><div class="line">for(int i = 0; i&lt; size; i+3)//3是因为RGB</div><div class="line">&#123;</div><div class="line">  mat.data[i] = 0; //B</div><div class="line">  mat.data[i+1] = 0; //G</div><div class="line">  mat.data[i+2] = 0; //R</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>//优化编码后效率高13ms (4000*3000)</p>
+<h4 id="直接地址访问不连续空间"><a href="#直接地址访问不连续空间" class="headerlink" title="直接地址访问不连续空间"></a>直接地址访问不连续空间</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">for(int i = 0; i &lt; mat.row; i++)</div><div class="line">&#123;</div><div class="line">  for(int j = 0; j &lt; mat.cols; j++)</div><div class="line">  &#123;</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3] = 255;//B</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3 + 1] = 255;//G</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3 + 2] = 1;//R</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="通过ptr接口遍历Mat-模板函数"><a href="#通过ptr接口遍历Mat-模板函数" class="headerlink" title="通过ptr接口遍历Mat(模板函数)"></a>通过ptr接口遍历Mat(模板函数)</h4><ul>
+<li>性能基本等同与地址访问</li>
+<li>mat.ptr<vec3b>(row);//返回的指针</vec3b></li>
+<li>mat.ptr<vec3b>(row, col);</vec3b></li>
+</ul>
+<h4 id="通过at接口遍历Mat-模板函数"><a href="#通过at接口遍历Mat-模板函数" class="headerlink" title="通过at接口遍历Mat(模板函数)"></a>通过at接口遍历Mat(模板函数)</h4><ul>
+<li>接口最简单的遍历方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mat.at&lt;Vec3b&gt;(row, col)[0] = 255;</div><div class="line">mat.at&lt;Vec3b&gt;(row, col)[1] = 0;</div><div class="line">mat.at&lt;Vec3b&gt;(row, col)[2] = 0;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>at可以使用try{} catch(…/cv::Exception &amp;ex){}捕获异常</p>
+<h4 id="通过迭代器遍历Mat"><a href="#通过迭代器遍历Mat" class="headerlink" title="通过迭代器遍历Mat"></a>通过迭代器遍历Mat</h4><ul>
+<li>可以不用管mat的行列
+auto it = mr.begin<vec3b>();
+auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
+</ul>
+<h3 id="ROI感兴趣区域"><a href="#ROI感兴趣区域" class="headerlink" title="ROI感兴趣区域"></a>ROI感兴趣区域</h3><p>cv::Rect rect(100, 100, 300, 300);</p>
+<h3 id="像素格式和灰度图"><a href="#像素格式和灰度图" class="headerlink" title="像素格式和灰度图"></a>像素格式和灰度图</h3><p>RGB, YUV, GRAY</p>
+<p>cvtColor(src, img, COLOR_BGR2GRAY);//源图像,目标凸显,转换方式,利用多线程等方式提高效率</p>
+<p>自己实现转换:
+Gray = (R<em>30 + G</em>59 + B*11 + 50)/100</p>
+<h3 id="二值化和阈值"><a href="#二值化和阈值" class="headerlink" title="二值化和阈值"></a>二值化和阈值</h3><ul>
+<li>THRESH_BINARY 二进制阈值化</li>
+<li>THRESH_BINARY_INV 反二进制阈值化</li>
+</ul>
+<h3 id="改变图片的对比度和亮度"><a href="#改变图片的对比度和亮度" class="headerlink" title="改变图片的对比度和亮度"></a>改变图片的对比度和亮度</h3><p>g(i,j) = a*f(i,j) + b
+a 1.0~3.0(对比) b 0~100(亮度)
+saturate_cast<uchar>防止移除函数</uchar></p>
+<h3 id="图像尺寸调整"><a href="#图像尺寸调整" class="headerlink" title="图像尺寸调整"></a>图像尺寸调整</h3><ul>
+<li><p>INTER_NEAREST 近邻算法(最快)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">int sx, sy = 0;//原图对应的坐标</div><div class="line">float fy = float(src.rows)/out.rows;</div><div class="line">float fx = float(src.cols)/out.cols;</div><div class="line">for(int y = 0; y&lt; out.rows;y++)&#123;</div><div class="line">  sy = fy*y + 0.5;//+0.5四舍五入</div><div class="line">  for(int x = 0; x &lt; out.cols;x++)&#123;</div><div class="line">    sx = fx*x + 0.5;</div><div class="line">    out.at&lt;Vec3b&gt;(y,x) = src.at&lt;Vec3b&gt;(sy, sx);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>CV_INTER_LINEAR 双线程差值(缺省使用)</p>
+</li>
+</ul>
+<p>滤波:
+输入图像中像素的小领域来产生输出图像的方法,在信号处理中,这种方法称为滤波(filtering).其中,最常用的是线性滤波:输出像素是输入领域像素的加权和.</p>
+<p>双线性内插值:
+是由源图像位置在它附近的2*2区域4个邻近像素的值通过加权平均计算得出的.
+低通滤波性质,使高频分量受损,图像轮廓可能会有一点模糊.</p>
+<h3 id="图像金字塔"><a href="#图像金字塔" class="headerlink" title="图像金字塔"></a>图像金字塔</h3><p>高斯金字塔(Gaussian pyramid):用来向下采样</p>
+<ul>
+<li>获取G(i+1)将G(i)与高斯内核卷积</li>
+<li>将所有偶数行和列去除
+-</li>
+</ul>
+<p>拉普拉斯金字塔(Laplacian pyramid):用来从金字塔底层图像重建上层未采样图像</p>
+<ul>
+<li>用来从金字塔底层图像重建上层未采样图像</li>
+<li>首先,将图像扩大两杯,新增以0填充</li>
+<li>高斯内核(乘以4)与放大后的图像卷积</li>
+</ul>
+<h3 id="两幅图像混合-blending"><a href="#两幅图像混合-blending" class="headerlink" title="两幅图像混合(blending)"></a>两幅图像混合(blending)</h3><ul>
+<li><code>dst = src1*a + src2*(1-a) + gamma</code>//gamma增益</li>
+<li>a=[0~1]</li>
+<li>画面叠化(cross-dissolve)效果</li>
+<li><code>addWeighted(src1, a, src2, 1-a, 0.0, dst);</code>//两幅图像大小需一致</li>
+</ul>
+<h3 id="图像旋转和镜像"><a href="#图像旋转和镜像" class="headerlink" title="图像旋转和镜像"></a>图像旋转和镜像</h3><ul>
+<li><p>cv::rotate(src, dst, type);</p>
+<ul>
+<li>ROTATE_180</li>
+<li>ROTATE_90_CLOCKWISE</li>
+<li>ROTATE_90_COUNTERCLOCKWISE</li>
+</ul>
+</li>
+<li><p>cv::flip(src,dst, type);//镜像type 0(x), 1(y), -1</p>
+</li>
+</ul>
+<p>###通过ROI图像合并</p>
+<h3 id="打开摄像头接口说明和源码分析"><a href="#打开摄像头接口说明和源码分析" class="headerlink" title="打开摄像头接口说明和源码分析"></a>打开摄像头接口说明和源码分析</h3><ul>
+<li>VideoCapture</li>
+<li>bool open(int index)</li>
+<li>VideoCapture cap(index)</li>
+<li>open(int cameraNum, int apiPrefrence)</li>
+</ul>
+<h3 id="打开视频流文件"><a href="#打开视频流文件" class="headerlink" title="打开视频流文件"></a>打开视频流文件</h3><ul>
+<li>bool open(const String &amp;filename)</li>
+<li>VideoCapture cap(const String &amp;file)</li>
+<li>bool open(const String &amp;filename, int apiPrefrence)</li>
+</ul>
+<ul>
+<li>关闭和空间释放</li>
+<li>~VideoCapture</li>
+<li>release</li>
+</ul>
+<h3 id="读取一帧视频"><a href="#读取一帧视频" class="headerlink" title="读取一帧视频"></a>读取一帧视频</h3><p>read(OutputArray image);</p>
+<ul>
+<li>bool grab() 读取并解码</li>
+<li>virtual bool retrieve(OUtputArray , intflag= 0):图像色彩转换</li>
+<li>vc&gt;&gt;mat</li>
+</ul>
+<h3 id="获取视频-相机属性"><a href="#获取视频-相机属性" class="headerlink" title="获取视频,相机属性"></a>获取视频,相机属性</h3><ul>
+<li>CAP_PROP_FPS帧率</li>
+<li>CAP_PROP_FRAME_COUNT 总帧数</li>
+<li>CAP_PROP_POS_FRAMES 播放帧的位置</li>
+<li>CAP_PROP_FRAME_WIDTH HEIGHT</li>
+</ul>
+<h3 id="VideoWriter"><a href="#VideoWriter" class="headerlink" title="VideoWriter"></a>VideoWriter</h3><ul>
+<li><p>open(const String &amp;filename, int fourcc, //VideoWrite::fourcc(‘H’, ‘2’, ‘6’, ‘4’)
+double fps, Size frameSize,bool isColor=true)</p>
+<p>release</p>
+<ul>
+<li>void write(const Mat&amp;)</li>
+<li>cvVideoWriter_FFMPEG::writeFrame</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/29/opencv-env/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1613,627 +2022,6 @@ The media type gives the sample rate and number of channels prior to the applica
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-uiautomator-official/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/30/at-android-uiautomator-official/" itemprop="url">
-                  android自动化测试(N):UiAutomator官方介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T15:58:35+08:00">
-                2017-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Automating-User-Interface-Tests"><a href="#Automating-User-Interface-Tests" class="headerlink" title="Automating User Interface Tests"></a><a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a></h3><p>User interface (UI) testing lets you ensure that your app meets its functional requirements and achieves a high standard of quality such that it is more likely to be successfully adopted by users.</p>
-<p>One approach to UI testing is to simply have a human tester perform a set of user operations on the target app and verify that it is behaving correctly. However, this manual approach can be time-consuming, tedious, and error-prone. A more efficient approach is to write your UI tests such that user actions are performed in an automated way. The automated approach allows you to run your tests quickly and reliably in a repeatable manner.</p>
-<blockquote>
-<p>Note: It is strongly encouraged that you use Android Studio for building your test apps, because it provides project setup, library inclusion, and packaging conveniences. This class assumes you are using Android Studio.</p>
-</blockquote>
-<p>To automate UI tests with Android Studio, you implement your test code in a separate Android test folder (src/androidTest/java). The Android Plug-in for Gradle builds a test app based on your test code, then loads the test app on the same device as the target app. In your test code, you can use UI testing frameworks to simulate user interactions on the target app, in order to perform testing tasks that cover specific usage scenarios.</p>
-<p>For testing Android apps, you typically create these types of automated UI tests:</p>
-<ul>
-<li>UI tests that span a single app: This type of test verifies that the target app behaves as expected when a user performs a specific action or enters a specific input in its activities. It allows you to check that the target app returns the correct UI output in response to user interactions in the app’s activities. UI testing frameworks like Espresso allow you to programmatically simulate user actions and test complex intra-app user interactions.</li>
-<li>UI tests that span multiple apps: This type of test verifies the correct behavior of interactions between different user apps or between user apps and system apps. For example, you might want to test that your camera app shares images correctly with a 3rd-party social media app, or with the default Android Photos app. UI testing frameworks that support cross-app interactions, such as UI Automator, allow you to create tests for such scenarios.
-The lessons in this class teach you how to use the tools and APIs in the Android Testing Support Library to build these types of automated tests. Before you begin building tests using these APIs, you must install the Android Testing Support Library, as described in Downloading the Android Testing Support Library.</li>
-</ul>
-<h3 id="UI-Testing"><a href="#UI-Testing" class="headerlink" title="UI Testing"></a><a href="https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html" target="_blank" rel="external">UI Testing</a></h3><p>In addition to unit testing the individual components that make up your Android application (such as activities, services, and content providers), it is also important that you test the behavior of your application’s user interface (UI) when it is running on a device. UI testing ensures that your application returns the correct UI output in response to a sequence of user actions on a device, such as entering keyboard input or pressing toolbars, menus, dialogs, images, and other UI controls.</p>
-<p>Functional or black-box UI testing does not require testers to know the internal implementation details of the app, only its expected output when a user performs a specific action or enters a specific input. This approach allows for better separation of development and testing roles in your organization.</p>
-<p>One common approach to UI testing is to run tests manually and verify that the app is behaving as expected. However, this approach can be time-consuming, tedious, and error-prone. A more efficient and reliable approach is to automate the UI testing with a software testing framework. Automated testing involves creating programs to perform testing tasks (test cases) to cover specific usage scenarios, and then using the testing framework to run the test cases automatically and in a repeatable manner.</p>
-<h4 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h4><p>he Android SDK provides the following tools to support automated, functional UI testing on your application:</p>
-<ul>
-<li>uiautomatorviewer - A GUI tool to scan and analyze the UI components of an Android application.</li>
-<li><p>uiautomator - A Java library containing APIs to create customized functional UI tests, and an execution engine to automate and run the tests.
-To use these tools, you must have the following versions of the Android development tools installed:</p>
-</li>
-<li><p>Android SDK Tools, Revision 21 or higher</p>
-</li>
-<li>Android SDK Platform, API 16 or higher</li>
-</ul>
-<p><strong>Workflow for the the uiautomator testing framework</strong>
-Here’s a short overview of the steps required to automate UI testing:</p>
-<ol>
-<li>Prepare to test by installing the app on a test device, analyzing the app’s UI components, and ensuring that your application is accessible by the test automation framework.</li>
-<li>Create automated tests to simulate specific user interactions on your application.</li>
-<li>Compile your test cases into a JAR file and install it on your test device along with your app.</li>
-<li>Run the tests and view the test results.</li>
-<li>Correct any bugs or defects discovered in testing.</li>
-</ol>
-<h4 id="Analyzing-Your-Application’s-UI"><a href="#Analyzing-Your-Application’s-UI" class="headerlink" title="Analyzing Your Application’s UI"></a>Analyzing Your Application’s UI</h4><p>Before you start writing your test cases, it’s helpful to familiarize yourself with the UI components (including the views and controls) of the targeted application. You can use the uiautomatorviewer tool to take a snapshot of the foreground UI screen on any Android device that is connected to your development machine. The uiautomatorviewer tool provides a convenient visual interface to inspect the layout hierarchy and view the properties of the individual UI components that are displayed on the test device. Using this information, you can later create uiautomator tests with selector objects that target specific UI components to test.</p>
-<p>To analyze the UI components of the application that you want to test:</p>
-<ol>
-<li>Connect your Android device to your development machine.</li>
-<li>Open a terminal window and navigate to <android-sdk>/tools/.</android-sdk></li>
-<li><p>Run the tool with this command:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ uiautomatorviewer</div></pre></td></tr></table></figure>
-</li>
-<li><p>To capture a screen for analysis, click the Device Screenshot button in the GUI of the uiautomatorviewer tool.</p>
-<blockquote>
-<p>Note: If you have more than one device connected, specify the device for screen capture by setting the ANDROID_SERIAL environment variable:</p>
-</blockquote>
-</li>
-</ol>
-<p>a. Find the serial numbers for your connected devices by running this command:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ adb devices</div><div class="line">```  </div><div class="line">b. Set the ANDROID_SERIAL environment variable to select the device to test:</div></pre></td></tr></table></figure></p>
-<p>#In Windows:
-set ANDROID_SERIAL=<device serial="" number=""></device></p>
-<p>#In UNIX:
-export ANDROID_SERIAL=<device serial="" number="">
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">If you are connected to only a single device, you do not need to set the ANDROID_SERIAL environment variable.</div><div class="line"></div><div class="line">5. View the UI properties for your application:</div><div class="line">- Hover over the snapshot in the left-hand panel to see the UI components identified by the uiautomatorviewer tool. You can view the component’s properties listed in the lower right-hand panel, and the layout hierarchy in the upper right-hand panel.</div><div class="line">- Optionally, click on the Toggle NAF Nodes button to see UI components that are not accessible to the uiautomator testing framework. Only limited information may be available for these components.</div><div class="line"></div><div class="line">#### Preparing to Test</div><div class="line">Before using the uiautomator testing framework, complete these pre-flight tasks:</div><div class="line"></div><div class="line">##### Load the application to a device</div><div class="line"></div><div class="line">If you are reading this document, chances are that the Android application that you want to test has not been published yet. If you have a copy of the APK file, you can install the APK onto a test device by using the adb tool. To learn how to install an APK file using the adb tool, see the [adb](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/adb.html#move) documentation.</div><div class="line"></div><div class="line">##### Identify the application’s UI components</div><div class="line"></div><div class="line">Before writing your `uiautomator` tests, first identify the UI components in the application that you want to test. Typically, good candidates for testing are UI components that are visible and that users can interact with. The UI components should also have visible text labels, `android:contentDescription` values, or both.</div><div class="line"></div><div class="line">You can inspect the visible screen objects in an application conveniently by using the `uiautomatorviewer` tool. For more information about how to analyze an application screen with this tool, see the section [Analyzing Your Application’s UI](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html#uianalaysis). For more information about the common types of UI components provided by Android, see [User Interface](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/index.html).</div><div class="line"></div><div class="line">##### Ensure that the application is accessible</div><div class="line"></div><div class="line">This step is required because the `uiautomator` tool depends on the accessibility features of the Android framework to execute your functional UI tests. You should include these minimum optimizations to support the `uiautomator` tool:</div><div class="line">- Use the `android:contentDescription` attribute to label the `ImageButton`, `ImageView`, `CheckBox` and other user interface controls.</div><div class="line">- Provide an `android:hint` attribute instead of a content description for `EditText` fields</div><div class="line">- Associate an `android:hint` attribute with any graphical icons used by controls that provide feedback to the user (for example, status or state information).</div><div class="line">- Make sure that all the user interface elements are accessible with a directional controller, such as a trackball or D-pad.</div><div class="line">- Use the `uiautomatorviewer` tool to ensure that the UI component is accessible to the testing framework. You can also test the application by turning on accessibility services like TalkBack and Explore by Touch, and try using your application using only directional controls.</div><div class="line"></div><div class="line">For more information about implementing and testing accessibility, see [Making Applications Accessible](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/accessibility/apps.html).</div><div class="line"></div><div class="line">&gt; Note: To identify the non-accessible components in the UI, click on the Toggle NAF Nodes option in the `uiautomatorviewer` tool.</div><div class="line"></div><div class="line">Generally, Android application developers get accessibility support for free, courtesy of the `View` and `ViewGroup` classes. However, some applications use custom view components to provide a richer user experience. Such custom components won&apos;t get the accessibility support that is provided by the standard Android UI components. If this applies to your application, ensure that the application developer exposes the custom drawn UI components to Android accessibility services, by implementing the `AccessibilityNodeProvider` class. For more information about making custom view components accessible, see [Making Applications Accessible](https://stuff.mit.edu/afs/sipb/project/android/docs/guide/topics/ui/accessibility/apps.html#custom-views).</div><div class="line"></div><div class="line">##### Configure your development environment</div><div class="line">If you&apos;re developing in Eclipse, the Android SDK provides additional tools that help you write test cases using `uiautomator` and buiild your JAR file. In order to set up Eclipse to assist you, you need to create a project that includes the `uiautomator` client library, along with the Android SDK library. To configure Eclipse:</div><div class="line"></div><div class="line">1. Create a new Java project in Eclipse, and give your project a name that is relevant to the tests you’re about to create (for example, &quot;MyAppNameTests&quot;). In the project, you will create the test cases that are specific to the application that you want to test.</div><div class="line">2. From the Project Explorer, right-click on the new project that you created, then select Properties &gt; Java Build Path, and do the following:</div><div class="line">    - Click Add Library &gt; JUnit then select JUnit3 to add JUnit support.</div><div class="line">    - Click Add External JARs... and navigate to the SDK directory. Under the platforms directory, select the latest SDK version and add both the uiautomator.jar and android.jar files.</div><div class="line">If you did not configure Eclipse as your development environment, make sure that the `uiautomator.jar` and `android.jar` files from the `&lt;android-sdk&gt;/platforms/&lt;sdk&gt;` directory are in your Java class path.</div><div class="line"></div><div class="line">Once you have completed these prerequisite tasks, you&apos;re almost ready to start creating your `uiautomator` tests.</div><div class="line"></div><div class="line">#### Creating uiautomator Tests</div><div class="line">To build a test that runs in the `uiautomator` framework, create a test case that extends the `UiAutomatorTestCase` class. In Eclipse, the test case file goes under the `src` directory in your project. Later, you will build the test case as a JAR file, then copy this file to the test device. The test JAR file is not an APK file and resides separately from the application that you want to test on the device.</div><div class="line"></div><div class="line">Because the `UiAutomatorTestCase` class extends `junit.framework.TestCase`, you can use the `JUnit` Assert class to test that UI components in the app return the expected results. To learn more about JUnit, you can read the documentation on the `junit.org` home page.</div><div class="line"></div><div class="line">The first thing your test case should do is access the device that contains the target app. It’s also good practice to start the test from the Home screen of the device. From the Home screen (or some other starting location you’ve chosen in the target app), you can use the classes provided by the `uiautomator` API to simulate user actions and to test specific UI components. For an example of how to put together a `uiautomator` test case, see the sample test case.</div><div class="line"></div><div class="line">##### uiautomator API</div><div class="line">The `uiautomator` API is bundled in the `uiautomator.jar` file under the `&lt;android-sdk&gt;/platforms/` directory. The API includes these key classes that allow you to capture and manipulate UI components on the target app:</div><div class="line">- [UiDevice](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiDevice.html)</div><div class="line">Represents the device state. In your tests, you can call methods on the UiDevice instance to check for the state of various properties, such as current orientation or display size. Your tests also can use the UiDevice instance to perform device level actions, such as forcing the device into a specific rotation, pressing the d-pad hardware button, or pressing the Home and Menu buttons.</div><div class="line">To get an instance of UiDevice and simulate a Home button press:</div></pre></td></tr></table></figure></device></p>
-<p>getUiDevice().pressHome();
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- [UiSelector](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiSelector.html)</div><div class="line">Represents a search criteria to query and get a handle on specific elements in the currently displayed UI. If more than one matching element is found, the first matching element in the layout hierarchy is returned as the target UiObject. When constructing a UiSelector, you can chain together multiple properties to refine your search. If no matching UI element is found, a `UiAutomatorObjectNotFoundException` is thrown. You can use the childSelector() method to nest multiple UiSelector instances. For example, the following code example shows how to specify a search to find the first ListView in the currently displayed UI, then search within that ListView to find a UI element with the text property Apps.</div></pre></td></tr></table></figure></p>
-<p>UiObject appItem = new UiObject(new UiSelector()
-   .className(“android.widget.ListView”).instance(1)
-   .childSelector(new UiSelector().text(“Apps”)));
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">- [UiObject](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiObject.html)</div><div class="line">Represents a UI element. To create a UiObject instance, use a UiSelector that describes how to search for, or select, the UI element.</div><div class="line">The following code example shows how to construct UiObject instances that represent a Cancel button and a OK button in your application.</div></pre></td></tr></table></figure></p>
-<p>UiObject cancelButton = new UiObject(new UiSelector().text(“Cancel”));
-UiObject okButton = new UiObject(new UiSelector().text(“OK”));
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">You can reuse the UiObject instances that you have created in other parts of your app testing, as needed. Note that the `uiautomator` test framework searches the current display for a match every time your test uses a UiObject instance to click on a UI element or query a property.</div><div class="line">In the following code example, the `uiautomator` test framework searches for a UI element with the text property OK. If a match is found and if the element is enabled, the framework simulates a user click action on the element.</div></pre></td></tr></table></figure></p>
-<p>if(okButton.exists() &amp;&amp; okButton.isEnabled())
-{
-  okButton.click();
-}
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">You can also restrict the search to find only elements of a specific class. For example, to find matches of the Button class:</div></pre></td></tr></table></figure></p>
-<p>UiObject cancelButton = new UiObject(new UiSelector().text(“Cancel”)
-   .className(“android.widget.Button”));
-UiObject okButton = new UiObject(new UiSelector().text(“OK”)
-   .className(“android.widget.Button”));
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- [UiCollection](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiCollection.html)</div><div class="line">Represents a collection of items, for example songs in a music album or a list of emails in an inbox. Similar to a UiObject, you construct a UiCollection instance by specifying a UiSelector. The UiSelector for a UiCollection should search for a UI element that is a container or wrapper of other child UI elements (such as a layout view that contains child UI elements). For example, the following code snippet shows how to construct a UiCollection to represent a video album that is displayed within a FrameLayout:</div></pre></td></tr></table></figure></p>
-<p>UiCollection videos = new UiCollection(new UiSelector()
-   .className(“android.widget.FrameLayout”));
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">If the videos are listed within a LinearLayout view, and you want to to retrieve the number of videos in this collection:</div></pre></td></tr></table></figure></p>
-<p>int count = videos.getChildCount(new UiSelector()
-   .className(“android.widget.LinearLayout”));
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">If you want to find a specific video that is labeled with the text element Cute Baby Laughing from the collection and simulate a user-click on the video:</div></pre></td></tr></table></figure></p>
-<p>UiObject video = videos.getChildByText(new UiSelector()
-   .className(“android.widget.LinearLayout”), “Cute Baby Laughing”);
-video.click();
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Similarly, you can simulate other user actions on the UI object. For example, if you want to simulate selecting a checkbox that is associated with the video:</div></pre></td></tr></table></figure></p>
-<p>UiObject checkBox = video.getChild(new UiSelector()
-   .className(“android.widget.Checkbox”));
-if(!checkBox.isSelected()) checkbox.click();
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- [UiScrollable](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/UiScrollable.html)</div><div class="line">Represents a scrollable collection of UI elements. You can use the UiScrollable class to simulate vertical or horizontal scrolling across a display. This technique is helpful when a UI element is positioned off-screen and you need to scroll to bring it into view.</div><div class="line">For example, the following code shows how to simulate scrolling down the Settings menu and clicking on an About tablet option:</div></pre></td></tr></table></figure></p>
-<p>UiScrollable settingsItem = new UiScrollable(new UiSelector()
-   .className(“android.widget.ListView”));
-UiObject about = settingsItem.getChildByText(new UiSelector()
-   .className(“android.widget.LinearLayout”), “About  tablet”);
-about.click()
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">For more information about these APIs, see the uiautomator reference.</div><div class="line"></div><div class="line">##### A sample uiautomator test case</div><div class="line">The following code example shows a simple test case which simulates a user bringing up the Settings app in a stock Android device. The test case mimics all the steps that a user would typically take to perform this task, including opening the Home screen, launching the All Apps screen, scrolling to the Settings app icon, and clicking on the icon to enter the Settings app.</div></pre></td></tr></table></figure></p>
-<p>package com.uia.example.my;</p>
-<p>// Import the uiautomator libraries
-import com.android.uiautomator.core.UiObject;
-import com.android.uiautomator.core.UiObjectNotFoundException;
-import com.android.uiautomator.core.UiScrollable;
-import com.android.uiautomator.core.UiSelector;
-import com.android.uiautomator.testrunner.UiAutomatorTestCase;</p>
-<p>public class LaunchSettings extends UiAutomatorTestCase {   </p>
-<p>   public void testDemo() throws UiObjectNotFoundException {   </p>
-<pre><code>// Simulate a short press on the HOME button.
-getUiDevice().pressHome();
-
-// We’re now in the home screen. Next, we want to simulate
-// a user bringing up the All Apps screen.
-// If you use the uiautomatorviewer tool to capture a snapshot
-// of the Home screen, notice that the All Apps button’s
-// content-description property has the value “Apps”.  We can
-// use this property to create a UiSelector to find the button.
-UiObject allAppsButton = new UiObject(new UiSelector()
-   .description(&quot;Apps&quot;));
-
-// Simulate a click to bring up the All Apps screen.
-allAppsButton.clickAndWaitForNewWindow();
-
-// In the All Apps screen, the Settings app is located in
-// the Apps tab. To simulate the user bringing up the Apps tab,
-// we create a UiSelector to find a tab with the text
-// label “Apps”.
-UiObject appsTab = new UiObject(new UiSelector()
-   .text(&quot;Apps&quot;));
-
-// Simulate a click to enter the Apps tab.
-appsTab.click();
-
-// Next, in the apps tabs, we can simulate a user swiping until
-// they come to the Settings app icon.  Since the container view
-// is scrollable, we can use a UiScrollable object.
-UiScrollable appViews = new UiScrollable(new UiSelector()
-   .scrollable(true));
-
-// Set the swiping mode to horizontal (the default is vertical)
-appViews.setAsHorizontalList();
-
-// Create a UiSelector to find the Settings app and simulate      
-// a user click to launch the app.
-UiObject settingsApp = appViews.getChildByText(new UiSelector()
-   .className(android.widget.TextView.class.getName()),
-   &quot;Settings&quot;);
-settingsApp.clickAndWaitForNewWindow();
-
-// Validate that the package name is the expected one
-UiObject settingsValidation = new UiObject(new UiSelector()
-   .packageName(&quot;com.android.settings&quot;));
-assertTrue(&quot;Unable to detect Settings&quot;,
-   settingsValidation.exists());   
-</code></pre><p>  }<br>}
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#### Building and Deploying Your uiautomator Tests</div><div class="line">1. Once you have coded your test, follow these steps to build and deploy your test JAR to your target Android test device:</div><div class="line">Create the required build configuration files to build the output JAR. To generate the build configuration files, open a terminal and run the following command:</div></pre></td></tr></table></figure></p>
-<p><android-sdk>/tools/android create uitest-project -n <name> -t 1 -p <path></path>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">The &lt;name&gt; is the name of the project that contains your uiautomator test source files, and the &lt;path&gt; is the path to the corresponding project directory.</div><div class="line">2. From the command line, set the ANDROID_HOME variable:</div><div class="line">- In Windows:`set ANDROID_HOME=&lt;path_to_your_sdk&gt;`</div><div class="line">- In UNIX:`export ANDROID_HOME=&lt;path_to_your_sdk&gt;`</div><div class="line">3. Go to the project directory where your build.xml file is located and build your test JAR.</div></pre></td></tr></table></figure></name></android-sdk></p>
-<p>ant build
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">4. Deploy your generated test JAR file to the test device by using the adb push command:</div></pre></td></tr></table></figure></p>
-<p>adb push <path_to_output_jar> /data/local/tmp/
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Here’s an example:</div></pre></td></tr></table></figure></path_to_output_jar></p>
-<p>adb push ~/dev/workspace/LaunchSettings/bin/LaunchSettings.jar /data/local/tmp/
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#### Running uiautomator Tests</div><div class="line">Here’s an example of how to run a test that is implemented in the `LaunchSettings.jar` file. The tests are bundled in the `com.uia.example.my` package:</div></pre></td></tr></table></figure></p>
-<p>adb shell uiautomator runtest LaunchSettings.jar -c com.uia.example.my.LaunchSettings
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">To learn more about the syntax, subcommands, and options for uiautomator, see the [uiautomator](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/index.html) reference.</div><div class="line"></div><div class="line">#### Best Practices</div><div class="line">Here are some best practices for functional UI testing with the uiautomator framework:</div><div class="line"></div><div class="line">- Ensure that you validate the same UI functions on your application across the various types of devices that your application might run on (for example, devices with different screen densities).</div><div class="line">- You should also test your UI against common scenarios such as in-coming phone calls, network interruptions, and user-initiated switching to other applications on the device.</div><div class="line"></div><div class="line">### [uiautomator tools](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/help/uiautomator/index.html)</div><div class="line">The uiautomator testing framework lets you test your user interface (UI) efficiently by creating automated functional UI testcases that can be run against your app on one or more devices.</div><div class="line"></div><div class="line">For more information on testing with the uiautomator framework, see [UI Testing](https://stuff.mit.edu/afs/sipb/project/android/docs/tools/testing/testing_ui.html).</div><div class="line"></div><div class="line">#### Syntax</div><div class="line">To run your testcases on the target device, you can use the `adb shell` command to invoke the `uiautomator` tool. The syntax is:</div></pre></td></tr></table></figure></p>
-<p>adb shell uiautomator runtest <jar> -c <test_class_or_method> [options]
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Here’s an example:</div></pre></td></tr></table></figure></test_class_or_method></jar></p>
-<p>adb shell uiautomator runtest LaunchSettings.jar -c com.uia.example.my.LaunchSettings
-```</p>
-<h4 id="Command-line-Options"><a href="#Command-line-Options" class="headerlink" title="Command-line Options"></a>Command-line Options</h4><p>The following table describes the subcommands and options for uiautomator.
-Table 1. Command-line options for uiautomator</p>
-<table>
-<thead>
-<tr>
-<th>Subcommand</th>
-<th>Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>runtest</td>
-<td><code>&lt;jar&gt;</code></td>
-<td>Required. The <jar> argument is the name of one or more JAR files that you deployed to the target device which contain your uiautomator testcases. You can list more than one JAR file by using a space as a separator.</jar></td>
-</tr>
-<tr>
-<td></td>
-<td><code>-c &lt;test_class_or_method&gt;</code></td>
-<td>Required. The <test_class_or_method> argument is a list of one or more specific test classes or test methods from the JARs that you want uiautomator to run.Each class or method must be fully qualified with the package name, in one of these formats: package_name.class_name package_name.class_name#method_name You can list multiple classes or methods by using a space as a separator.</test_class_or_method></td>
-</tr>
-<tr>
-<td></td>
-<td>–nohup</td>
-<td>Runs the test to completion on the device even if its parent process is terminated (for example, if the device is disconnected).</td>
-</tr>
-<tr>
-<td></td>
-<td>-e</td>
-<td><name> <value></value></name></td>
-<td>Specify other name-value pairs to be passed to test classes. May be repeated.Note: The -e options cannot be combined; you must prefix each option with a separate -e flag.</td>
-</tr>
-<tr>
-<td></td>
-<td>-e debug [true</td>
-<td>false]</td>
-<td>Wait for debugger to connect before starting.</td>
-</tr>
-<tr>
-<td></td>
-<td>dump    [file]</td>
-<td>Generate an XML file with a dump of the current UI hierarchy. If a filepath is not specified, by default, the generated dump file is stored on the device in this location <code>/storage/sdcard0/window_dump.xml</code>.</td>
-</tr>
-<tr>
-<td>events</td>
-<td></td>
-<td>Prints out accessibility events to the console until the connection to the device is terminated</td>
-</tr>
-</tbody>
-</table>
-<h3 id="UiAutomation-api"><a href="#UiAutomation-api" class="headerlink" title="UiAutomation api"></a><a href="https://developer.android.com/reference/android/app/UiAutomation.html" target="_blank" rel="external">UiAutomation api</a></h3><p>Class for interacting with the device’s UI by simulation user actions and introspection of the screen content. It relies on the platform accessibility APIs to introspect the screen and to perform some actions on the remote view tree. It also allows injecting of arbitrary raw input events simulating user interaction with keyboards and touch devices. One can think of a UiAutomation as a special type of AccessibilityService which does not provide hooks for the service life cycle and exposes other APIs that are useful for UI test automation.
-这是一个通过模拟用户操作来与设备用户界面交互以及获取屏幕内容的类。它依赖于平台的辅助功能APIs来在远程的控件树上获取屏幕内容以及执行一些操作。同时它也允许通过注入原生事件(译者注:指的就是InputEvent. KeyEvent也是继承于InputEvent的，所以说它是原生事件)来模拟用户的按键和触屏操作。我们可以认为UiAutomation就是一个特殊类型的AccessibilityService,其既不会为控制服务的生命周期而提供钩子函数，也不会暴露任何其他可以直接用于用户界面测试自动化的APIs.</p>
-<p>The APIs exposed by this class are low-level to maximize flexibility when developing UI test automation tools and libraries. Generally, a UiAutomation client should be using a higher-level library or implement high-level functions. For example, performing a tap on the screen requires construction and injecting of a touch down and up events which have to be delivered to the system by a call to injectInputEvent(InputEvent, boolean).
-这个类暴露出来的APIs是很低层的，目的就是为了在开发用户界面测试自动化框架和库时提供最大的弹性。总的来说，一个UiAutomation客户端应该使用一些（基于UiAutomation的)更高层次的库或者实现更高层次的方法。比如，模拟一个用户在屏幕上的点击事件需要构造并注入一个按下和一个弹起事件，然后必须调用UiAutomation的一个injectInputEvent(InputEvent, boolean)的调用来发送给操作系统。</p>
-<p>The APIs exposed by this class operate across applications enabling a client to write tests that cover use cases spanning over multiple applications. For example, going to the settings application to change a setting and then interacting with another application whose behavior depends on that setting.
-这个类暴露出来的APIs可以跨应用，这样用户就可以编写可以跨越多个应用的测试用例脚本了。比如，打开系统的设置应用去修改一些设置然后再与另外一个依赖于该设置的应用进行交互（译者注：这个在instrumentation这个框架可以做不到的）</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-support-library/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/30/at-android-support-library/" itemprop="url">
-                  android自动化测试之(N):测试支持库
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T10:14:05+08:00">
-                2017-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p><a href="https://developer.android.com/topic/libraries/testing-support-library/index.html#setup" target="_blank" rel="external">Android官方文档-测试支持库</a></p>
-</blockquote>
-<p>Android 测试支持库提供了大量用于测试 Android 应用的框架。此库提供了一组 API，让您可以为应用快速构建何运行测试代码，包括 JUnit 4 和功能性用户界面 (UI) 测试。您可以从 <a href="https://developer.android.com/tools/studio/index.html" target="_blank" rel="external">Android Studio IDE</a> 或命令行运行使用这些 API 创建的测试。</p>
-<p>Android 测试支持库通过 Android SDK 管理器提供。如需了解详细信息，请参阅<a href="https://developer.android.com/topic/libraries/testing-support-library/index.html#setup" target="_blank" rel="external">测试支持库设置</a></p>
-<p>本页介绍了 Android 测试支持库提供了哪些工具、如何在测试环境中使用这些工具，以及库版本的相关信息。</p>
-<h3 id="测试支持库功能"><a href="#测试支持库功能" class="headerlink" title="测试支持库功能"></a>测试支持库功能</h3><p>Android 测试支持库包括以下自动化测试工具：</p>
-<ul>
-<li>AndroidJUnitRunner：适用于 Android 且与 JUnit 4 兼容的测试运行器</li>
-<li>Espresso：UI 测试框架；适合应用中的功能性 UI 测试</li>
-<li>UI Automator：UI 测试框架；适合跨系统和已安装应用的跨应用功能性 UI 测试</li>
-</ul>
-<h4 id="AndroidJUnitRunner"><a href="#AndroidJUnitRunner" class="headerlink" title="AndroidJUnitRunner"></a>AndroidJUnitRunner</h4><p>AndroidJUnitRunner 类是一个 <a href="http://junit.org/" target="_blank" rel="external">JUnit</a> 测试运行器，可让您在 Android 设备上运行 JUnit 3 或 JUnit 4 样式测试类，包括使用 Espresso 和 UI Automator 测试框架的设备。测试运行器可以将测试软件包和要测试的应用加载到设备、运行测试并报告测试结果。此类将替换 <a href="https://developer.android.com/reference/android/test/InstrumentationTestRunner.html" target="_blank" rel="external">InstrumentationTestRunner</a> 类，后者仅支持 JUnit 3 测试。</p>
-<p>此测试运行器的主要功能包括：</p>
-<ul>
-<li>JUnit 支持</li>
-<li>访问仪器信息</li>
-<li>测试筛选</li>
-<li>测试分片
-要求 Android 2.2（API 级别 8）或更高版本。</li>
-</ul>
-<h5 id="JUnit-支持"><a href="#JUnit-支持" class="headerlink" title="JUnit 支持"></a>JUnit 支持</h5><p>测试运行器与 JUnit 3 和 JUnit 4（最高版本为 JUnit 4.10）测试兼容。不过，请勿在同一软件包中混用 JUnit 3 和 JUnit 4 测试代码，因为这可能会导致意外结果。如果要创建一个 JUnit 4 仪器测试类以在设备或模拟器上运行，则测试类必须以 <code>@RunWith(AndroidJUnit4.class)</code> 注解作为前缀。</p>
-<p>以下代码段显示了如何编写 JUnit 4 仪器测试来验证 CalculatorActivity 类中的 add 操作是否正常工作。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">import android.support.test.runner.AndroidJUnit4;</div><div class="line">import android.support.test.runner.AndroidJUnitRunner;</div><div class="line">import android.test.ActivityInstrumentationTestCase2;</div><div class="line"></div><div class="line">@RunWith(AndroidJUnit4.class)</div><div class="line">public class CalculatorInstrumentationTest</div><div class="line">        extends ActivityInstrumentationTestCase2&lt;CalculatorActivity&gt; &#123;</div><div class="line"></div><div class="line">    @Before</div><div class="line">    public void setUp() throws Exception &#123;</div><div class="line">        super.setUp();</div><div class="line"></div><div class="line">        // Injecting the Instrumentation instance is required</div><div class="line">        // for your test to run with AndroidJUnitRunner.</div><div class="line">        injectInstrumentation(InstrumentationRegistry.getInstrumentation());</div><div class="line">        mActivity = getActivity();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void typeOperandsAndPerformAddOperation() &#123;</div><div class="line">        // Call the CalculatorActivity add() method and pass in some operand values, then</div><div class="line">        // check that the expected value is returned.</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @After</div><div class="line">    public void tearDown() throws Exception &#123;</div><div class="line">        super.tearDown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="访问仪器信息"><a href="#访问仪器信息" class="headerlink" title="访问仪器信息"></a>访问仪器信息</h5><p>您可以使用 <a href="https://developer.android.com/reference/android/support/test/InstrumentationRegistry.html" target="_blank" rel="external">InstrumentationRegistry</a> 类访问与测试运行相关的信息。此类包括 <a href="https://developer.android.com/reference/android/app/Instrumentation.html" target="_blank" rel="external">Instrumentation</a> 对象、目标应用 Context 对象、测试应用 Context 对象，以及传递到测试中的命令行参数。使用 UI Automator 框架编写测试或编写依赖于 Instrumentation 或 Context 对象的测试时，此数据非常有用。</p>
-<h5 id="测试筛选"><a href="#测试筛选" class="headerlink" title="测试筛选"></a>测试筛选</h5><p>在 JUnit 4.x 测试中，您可以使用注解对测试运行进行配置。此功能可将向测试中添加样板文件和条件代码的需求降至最低。除了 JUnit 4 支持的标准注解外，测试运行器还支持 Android 特定的注解，包括：</p>
-<ul>
-<li><code>@RequiresDevice</code>：指定测试仅在物理设备而不在模拟器上运行。</li>
-<li><code>@SdkSupress</code>：禁止在低于给定级别的 Android API 级别上运行测试。例如，要禁止在低于 18 的所有 API 级别上运行测试，请使用注解 - - @SDKSupress(minSdkVersion=18)。</li>
-<li><code>@SmallTest</code>、<code>@MediumTest</code> 和 <code>@LargeTest</code>：指定测试的运行时长以及运行频率。<h5 id="测试分片"><a href="#测试分片" class="headerlink" title="测试分片"></a>测试分片</h5>测试运行器支持将单一测试套件拆分成多个碎片，因此您可以将属于同一碎片的测试作为一个组在同一 Instrumentation 实例下运行。每个分片由一个索引号进行标识。运行测试时，使用 -e numShards 选项指定要创建的独立分片数量，并使用 -e shardIndex 选项指定要运行哪个分片。</li>
-</ul>
-<p>例如，要将测试套件拆分成 10 个分片，且仅运行第二个碎片中的测试，请使用以下命令：</p>
-<p><code>adb shell am instrument -w -e numShards 10 -e shardIndex 2</code>
-要详细了解如何使用此测试运行器，请参阅 <a href="https://developer.android.com/reference/android/support/test/package-summary.html" target="_blank" rel="external">API 参考</a>。</p>
-<h4 id="Espresso"><a href="#Espresso" class="headerlink" title="Espresso"></a>Espresso</h4><p>Espresso 测试框架提供了一组 API 来构建 UI 测试，用于测试应用中的用户流。利用这些 API，您可以编写简洁、运行可靠的自动化 UI 测试。Espresso 非常适合编写白盒自动化测试，其中测试代码将利用所测试应用的实现代码详情。</p>
-<p>Espresso 测试框架的主要功能包括：</p>
-<ul>
-<li>灵活的 API，用于目标应用中的视图和适配器匹配。如需了解详细信息，请参阅视图匹配。</li>
-<li>一组丰富的操作 API，用于自动化 UI 交互。如需了解详细信息，请参阅操作 API。</li>
-<li>UI 线程同步，用于提升测试可靠性。如需了解详细信息，请参阅 UI 线程同步。
-要求 Android 2.2（API 级别 8）或更高版本。</li>
-</ul>
-<h5 id="视图匹配"><a href="#视图匹配" class="headerlink" title="视图匹配"></a>视图匹配</h5><p>利用 Espresso.onView() 方法，您可以访问目标应用中的 UI 组件并与之交互。此方法接受 Matcher 参数并搜索视图层次结构，以找到符合给定条件的相应 View 实例。您可以通过指定以下条件来优化搜索：</p>
-<ul>
-<li>视图的类名称</li>
-<li>视图的内容描述</li>
-<li>视图的 R.id</li>
-<li>在视图中显示的文本
-例如，要找到 ID 值为 my_button 的按钮，可以指定如下匹配器：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">onView(withId(R.id.my_button));</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>如果搜索成功，onView() 方法将返回一个引用，让您可以执行用户操作并基于目标视图对断言进行测试。</p>
-<h5 id="适配器匹配"><a href="#适配器匹配" class="headerlink" title="适配器匹配"></a>适配器匹配</h5><p>在 AdapterView 布局中，布局在运行时由子视图动态填充。如果目标视图位于某个布局内部，而该布局是从 AdapterView（例如 ListView 或 GridView）派生出的子类，则 onView() 方法可能无法工作，因为只有布局视图的子集会加载到当前视图层次结构中。</p>
-<p>因此，请使用 Espresso.onData() 方法访问目标视图元素。Espresso.onData() 方法将返回一个引用，让您可以执行用户操作并根据 AdapterView 中的元素对断言进行测试。</p>
-<h5 id="操作-API"><a href="#操作-API" class="headerlink" title="操作 API"></a>操作 API</h5><p>通常情况下，您可以通过根据应用的用户界面执行某些用户交互来测试应用。借助 ViewActions API，您可以轻松地实现这些操作的自动化。您可以执行多种 UI 交互，例如：</p>
-<ul>
-<li>视图点击</li>
-<li>滑动</li>
-<li>按下按键和按钮</li>
-<li>键入文本</li>
-<li>打开链接
-例如，要模拟输入字符串值并按下按钮以提交该值，您可以像下面一样编写自动化测试脚本。ViewInteraction.perform() 和 DataInteraction.perform() 方法采用一个或多个 ViewAction 参数，并以提供的顺序运行操作。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// Type text into an EditText view, then close the soft keyboard</div><div class="line">onView(withId(R.id.editTextUserInput))</div><div class="line">    .perform(typeText(STRING_TO_BE_TYPED), closeSoftKeyboard());</div><div class="line"></div><div class="line">// Press the button to submit the text change</div><div class="line">onView(withId(R.id.changeTextBt)).perform(click());</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h5 id="UI-线程同步"><a href="#UI-线程同步" class="headerlink" title="UI 线程同步"></a>UI 线程同步</h5><p>由于计时问题，Android 设备上的测试可能随机失败。此测试问题称为测试不稳定。在 Espresso 之前，解决方法是在测试中插入足够长的休眠或超时期或添加代码，以便重试失败的操作。Espresso 测试框架可以处理 Instrumentation 与 UI 线程之间的同步；这就消除了对之前的计时解决方法的需求，并确保测试操作与断言更可靠地运行。</p>
-<p>要详细了解如何使用 Espresso，请参阅 <a href="https://developer.android.com/reference/android/support/test/package-summary.html" target="_blank" rel="external">API 参考</a>和<a href="https://developer.android.com/training/testing/ui-testing/espresso-testing.html" target="_blank" rel="external">测试单个应用的 UI </a>培训。</p>
-<h4 id="UI-Automator"><a href="#UI-Automator" class="headerlink" title="UI Automator"></a>UI Automator</h4><p>UI Automator 测试框架提供了一组 API 来构建 UI 测试，用于在用户应用和系统应用中执行交互。利用 UI Automator API，您可以执行在测试设备中打开“设置”菜单或应用启动器等操作。UI Automator 测试框架非常适合编写黑盒自动化测试，其中的测试代码不依赖于目标应用的内部实现详情。</p>
-<p>UI Automator 测试框架的主要功能包括：</p>
-<ul>
-<li>用于检查布局层次结构的查看器。如需了解详细信息，请参阅 UI Automator 查看器。</li>
-<li>在目标设备上检索状态信息并执行操作的 API。如需了解详细信息，请参阅访问设备状态。</li>
-<li>支持跨应用 UI 测试的 API。如需了解详细信息，请参阅 UI Automator API。
-要求 Android 4.3（API 级别 18）或更高版本。</li>
-</ul>
-<h5 id="UI-Automator-查看器"><a href="#UI-Automator-查看器" class="headerlink" title="UI Automator 查看器"></a>UI Automator 查看器</h5><p>uiautomatorviewer 工具提供了一个方便的 GUI，可以扫描和分析 Android 设备上当前显示的 UI 组件。您可以使用此工具检查布局层次结构，并查看在设备前台显示的 UI 组件属性。利用此信息，您可以使用 UI Automator（例如，通过创建与特定可见属性匹配的 UI 选择器）创建控制更加精确的测试。</p>
-<p>uiautomatorviewer 工具位于 <code>&lt;android-sdk&gt;/tools/</code>目录中。</p>
-<h5 id="访问设备状态"><a href="#访问设备状态" class="headerlink" title="访问设备状态"></a>访问设备状态</h5><p>UI Automator 测试框架提供了一个 UiDevice 类，用于在目标应用运行的设备上访问和执行操作。您可以调用其方法来访问设备属性，如当前屏幕方向或显示尺寸。UiDevice 类还可用于执行以下操作：</p>
-<ul>
-<li>更改设备旋转</li>
-<li>按 D-pad 按钮</li>
-<li>按“返回”、“主屏幕”或“菜单”按钮</li>
-<li>打开通知栏</li>
-<li>对当前窗口进行屏幕截图
-例如，要模拟按下“主屏幕”按钮，请调用 <code>UiDevice.pressHome()</code> 方法。</li>
-</ul>
-<h5 id="UI-Automator-API"><a href="#UI-Automator-API" class="headerlink" title="UI Automator API"></a>UI Automator API</h5><p>利用 UI Automator API，您可以编写稳健可靠的测试，而无需了解目标应用的实现详情。您可以使用这些 API 在多个应用中捕获和操作 UI 组件：</p>
-<ul>
-<li><a href="https://developer.android.com/reference/android/support/test/uiautomator/UiCollection.html" target="_blank" rel="external">UiCollection</a>：枚举容器的 UI 元素以便计算子元素个数，或者通过可见的文本或内容描述属性来指代子元素。</li>
-<li><a href="https://developer.android.com/reference/android/support/test/uiautomator/UiObject.html" target="_blank" rel="external">UiObject</a>：表示设备上可见的 UI 元素。</li>
-<li><a href="https://developer.android.com/reference/android/support/test/uiautomator/UiScrollable.html" target="_blank" rel="external">UiScrollable</a>：为在可滚动 UI 容器中搜索项目提供支持。</li>
-<li><a href="https://developer.android.com/reference/android/support/test/uiautomator/UiSelector.html" target="_blank" rel="external">UiSelector</a>：表示在设备上查询一个或多个目标 UI 元素。</li>
-<li><a href="https://developer.android.com/reference/android/support/test/uiautomator/Configurator.html" target="_blank" rel="external">Configurator</a>：允许您设置运行 UI Automator 测试所需的关键参数。
-例如，以下代码显示了如何编写可在设备中调用默认应用启动器的测试脚本：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// Initialize UiDevice instance</div><div class="line">mDevice = UiDevice.getInstance(getInstrumentation());</div><div class="line"></div><div class="line">// Perform a short press on the HOME button</div><div class="line">mDevice.pressHome();</div><div class="line"></div><div class="line">// Bring up the default launcher by searching for</div><div class="line">// a UI component that matches the content-description for the launcher button</div><div class="line">UiObject allAppsButton = mDevice</div><div class="line">        .findObject(new UiSelector().description(&quot;Apps&quot;));</div><div class="line"></div><div class="line">// Perform a click on the button to bring up the launcher</div><div class="line">allAppsButton.clickAndWaitForNewWindow();</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>要详细了解如何使用 UI Automator，请参阅 <a href="https://developer.android.com/reference/android/support/test/package-summary.html" target="_blank" rel="external">API 参考</a>和<a href="https://developer.android.com/training/testing/ui-testing/uiautomator-testing.html" target="_blank" rel="external">测试多个应用的 UI </a>培训。</p>
-<h3 id="测试支持库设置"><a href="#测试支持库设置" class="headerlink" title="测试支持库设置"></a>测试支持库设置</h3><p>Android 测试支持库软件包在最新版本的 Android 支持存储库中提供，后者可作为辅助组件通过 Android SDK 管理器下载。</p>
-<p>要通过 SDK 管理器下载 Android 支持存储库，请执行以下操作：</p>
-<ul>
-<li>启动 Android SDK 管理器。</li>
-<li>在 SDK 管理器窗口中，滚动到 Packages 列表末尾，找到 Extras 文件夹并展开（如有必要）以显示其内容。</li>
-<li>选择 Android Support Repository 项。</li>
-<li>点击 Install packages… 按钮。</li>
-</ul>
-<p>下载后，此工具会将支持存储库文件安装到您现有的 Android SDK 目录中。库文件位于 SDK 的以下子目录中：<code>&lt;sdk&gt;/extras/android/m2repository</code> 目录。</p>
-<p>Android 测试支持库的类位于 <code>android.support.test</code> 软件包中。</p>
-<p>要在 Gradle 项目中使用 Android 测试支持库，请在 build.gradle 文件中添加这些依赖关系：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">  androidTestCompile &apos;com.android.support.test:runner:0.4&apos;</div><div class="line">  // Set this dependency to use JUnit 4 rules</div><div class="line">  androidTestCompile &apos;com.android.support.test:rules:0.4&apos;</div><div class="line">  // Set this dependency to build and run Espresso tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.espresso:espresso-core:2.2.1&apos;</div><div class="line">  // Set this dependency to build and run UI Automator tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.uiautomator:uiautomator-v18:2.1.2&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>要将 AndroidJUnitRunner 设置为 Gradle 项目中的默认测试仪器运行器，请在 build.gradle 文件中指定此依赖关系：</p>
-<p>``
-android {
-    defaultConfig {
-        testInstrumentationRunner “android.support.test.runner.AndroidJUnitRunner”
-    }
-}
-```</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2283,7 +2071,7 @@ android {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-count">77</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2017-12-05T06:50:12.694Z</updated>
+  <updated>2017-12-20T10:41:10.142Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,692 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>FLV格式解析</title>
+    <link href="http://wodekouwei.com/2017/12/20/m-f-flv/"/>
+    <id>http://wodekouwei.com/2017/12/20/m-f-flv/</id>
+    <published>2017-12-20T06:49:06.000Z</published>
+    <updated>2017-12-20T10:41:10.142Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>FLV（Flash Video）是现在非常流行的流媒体格式，由于其视频文件体积轻巧、封装播放简单等特点，使其很适合在网络上进行应用，目前主流的视频网站无一例外地使用了FLV格式。另外由于当前浏览器与Flash Player紧密的结合，使得网页播放FLV视频轻而易举，也是FLV流行的原因之一。</p>
+<p>FLV是流媒体封装格式，我们可以将其数据看为二进制字节流。总体上看，FLV包括文件头（File Header）和文件体（File Body）两部分，其中文件体由一系列的Tag及Tag Size对组成。
+<img src="http://images.wodekouwei.com/M/F/flv-struct.jpg" alt="flv-struct"></p>
+<h3 id="FLV格式解析"><a href="#FLV格式解析" class="headerlink" title="FLV格式解析"></a>FLV格式解析</h3><p>先来一张图，这是《科比退役演讲》下载）的一个FLV视频。我使用的是UltraEdit的二进制查看工具。
+<img src="http://images.wodekouwei.com/M/F/flv1.png" alt="flv-head"></p>
+<h4 id="header"><a href="#header" class="headerlink" title="header"></a>header</h4><p>头部分由一下几部分组成
+Signature(3 Byte)+Version(1 Byte)+Flags(1 Bypte)+DataOffset(4 Byte)</p>
+<ul>
+<li>signature 占3个字节 固定FLV三个字符作为标示。一般发现前三个字符为FLV时就认为他是flv文件。图中0x46 0x4C 0x56,代表FLV</li>
+<li>Version 占1个字节 标示FLV的版本号。这里我们看到是1</li>
+<li>Flags 占1个字节 内容标示。第0位和第2位,分别表示 video 与 audio 存在的情况.(1表示存在,0表示不存在)。截图看到是0x05，也就是00000101，代表既有视频，也有音频。</li>
+<li>DataOffset 4个字节 表示FLV的header长度。这里可以看到固定是9</li>
+</ul>
+<h4 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h4><p>FLV的body部分是一系列的back-pointers+tag构成的</p>
+<ul>
+<li>back-pointers固定4个字节,表示前一个tag的size</li>
+<li><p>tag分三种类型:video,audio,scripts.</p>
+<h5 id="tag组成"><a href="#tag组成" class="headerlink" title="tag组成"></a>tag组成</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tag type+tag data size+Timestamp+TimestampExtended+stream id+ tag data</div></pre></td></tr></table></figure>
+</li>
+<li><p>type 1个字节。8为Audio,9为Video,18为scripts</p>
+</li>
+<li>tag data size 3个字节。表示tag data的长度。从streamd id 后算起。</li>
+<li>Timestreamp 3个字节。时间戳</li>
+<li>TimestampExtended 1个字节。时间戳扩展字段</li>
+<li>stream id 3个字节。总是0</li>
+<li>tag data 数据部分</li>
+</ul>
+<p>图上第一个tag:</p>
+<ul>
+<li>type=0x12=18,表示是一个scripts,FLV中,header后的第一个tag是script tag,script tag内容是amf格式数据,包含两个amf.</li>
+<li>size=0x00 0x01 0x74 = 372</li>
+<li>timpestreamp = 0x00 0x00 0x00</li>
+<li>TimestampExtended=0x00</li>
+<li>streamid=0x00 0x00 0x00</li>
+<li>tag data部分:
+<img src="http://images.wodekouwei.com/M/F/flv2.png" alt="FLV-TAG"></li>
+</ul>
+<h5 id="tag的划分"><a href="#tag的划分" class="headerlink" title="tag的划分"></a>tag的划分</h5><p>图中红色部分是我标出”(“与”)”前后的的两个back-pointers，都是4个字节。而括号中间就是第一个TAG。那是怎么计算的呢？我们就以这个做个示例。</p>
+<ul>
+<li>首先第一个back-pointers是0x00000000，那是因为后面是第一个TAG。所以他为0。</li>
+<li>然后根据我们我们前面格式获取到size是0x00 0x01 0x74 = 372。也就是说从stream id后面再加上372个字节就到了第一个TAG的末尾，我们数一下。tag header有11个字节。那么到第一个TAG，总共有372+11=383=0x17f。</li>
+<li>接下来我们找到0x17f的地址，从工具上很容易找到，正好就是后括号”)”的前面。红0x00 0x00 0x01 0x7F=372，这代表的是上一个TAG的大小。</li>
+<li>最后我们计算一下，上一个TAG数据部分是372个字节，前面type、stream id等字段占了11个字节。正好是匹配的。
+上面我们已经知道了怎么取划分每个TAG。接下来我们就看TAG的具体内容:</li>
+</ul>
+<h5 id="ag的内容"><a href="#ag的内容" class="headerlink" title="ag的内容"></a>ag的内容</h5><p>前面已经提到tag分3种。我们一个个看</p>
+<h6 id="script"><a href="#script" class="headerlink" title="script"></a>script</h6><p>脚本Tag一般只有一个，是flv的第一个Tag，用于存放flv的信息，比如duration、audiodatarate、creator、width等。
+首先介绍下脚本的数据类型。所有数据都是以数据类型+（数据长度）+数据的格式出现的，数据类型占1byte，数据长度看数据类型是否存在，后面才是数据。</p>
+<p>一般来说，该Tag Data结构包含两个AMF包。AMF（Action Message Format）是Adobe设计的一种通用数据封装格式，在Adobe的很多产品中应用，简单来说，AMF将不同类型的数据用统一的格式来描述。第一个AMF包封装字符串类型数据，用来装入一个“onMetaData”标志，这个标志与Adobe的一些API调用有，在此不细述。第二个AMF包封装一个数组类型(srs返回为object类型)，这个数组中包含了音视频信息项的名称和值。具体说明如下</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Number type</td>
+<td>8 Bypte Double</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Boolean type</td>
+<td>1 Bypte bool</td>
+</tr>
+<tr>
+<td>2</td>
+<td>String type</td>
+<td>后面2个字节为长度</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Object type</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>MovieClip type</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Null type</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Undefined type</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Reference type</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>ECMA array type</td>
+<td>数组,类似Map</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Strict array type</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Date type</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Long string type</td>
+<td>后面4个字节为长度</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://images.wodekouwei.com/M/F/flv3.png" alt="FLV-script-1.png">
+上图为第一个AMF包</p>
+<ul>
+<li>type=0x02对应String</li>
+<li>size=0A=10</li>
+<li>value=onMetaData 正好是10个字节。</li>
+</ul>
+<p><img src="http://images.wodekouwei.com/M/F/flv4.png" alt="FLV_script-2.png">
+上图为第二个AMF</p>
+<ul>
+<li>type=0x08 对应ECMA array type。</li>
+</ul>
+<blockquote>
+<p>表示数组，类似Map。后面4个字节为数组的个数。然后是键值对，第一个为键，2个字节为长度。后面跟具体的内容。接着3个字节表示值的类型，然后根据类型判断长度。
+上图我们可以判断，总共有13个键值对。
+第一个长度为8个字节是duration。值类型是0x004073，第一个字节是00，所以是double，8个字节。
+第二个长度5个字节是width。值也是double类型，8个字节。
+依次解析下去…</p>
+</blockquote>
+<h6 id="Audio"><a href="#Audio" class="headerlink" title="Audio"></a>Audio</h6><p><img src="http://images.wodekouwei.com/M/F/flv5.png" alt="flv-audio1">
+<img src="http://images.wodekouwei.com/M/F/flv6.png" alt="flv-audio2">
+<img src="http://images.wodekouwei.com/M/F/flv7.png" alt="flv-audio3">
+<img src="http://images.wodekouwei.com/M/F/flv8.png" alt="flv-audio4">
+视频中第二个tag为音频tag</p>
+<p>stream-id之后:</p>
+<ul>
+<li>前4位为音频格式</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Linear PCM, platform endian</td>
+</tr>
+<tr>
+<td>1</td>
+<td>ADPCM</td>
+</tr>
+<tr>
+<td>2</td>
+<td>MP3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Linear PCM, little endian</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nellymoser 16-kHz mono</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Nellymoser 8-kHz mono</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Nellymoser</td>
+</tr>
+<tr>
+<td>7</td>
+<td>G.711 A-law logarithmic PCM</td>
+</tr>
+<tr>
+<td>8</td>
+<td>G.711 mu-law logarithmic PCM</td>
+</tr>
+<tr>
+<td>9</td>
+<td>reserved</td>
+</tr>
+<tr>
+<td>10</td>
+<td>AAC</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Speex</td>
+</tr>
+<tr>
+<td>14</td>
+<td>MP3 8-Khz</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Device-specific sound</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>接着2位为采样率(对于AAC总是3)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>5.5-kHz</td>
+</tr>
+<tr>
+<td>1</td>
+<td>11-kHz</td>
+</tr>
+<tr>
+<td>2</td>
+<td>22-kHz</td>
+</tr>
+<tr>
+<td>3</td>
+<td>44-kHz</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>接着1位为采样的长度(压缩过的音视频都是16bit)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>snd8Bit</td>
+</tr>
+<tr>
+<td>1</td>
+<td>snd16Bit</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>接着1位为音频类型(对于AAC总是1)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>sndMono</td>
+</tr>
+<tr>
+<td>1</td>
+<td>sndStereo</td>
+</tr>
+</tbody>
+</table>
+<h6 id="video"><a href="#video" class="headerlink" title="video"></a>video</h6><p>由于kobe视频音频编码是pcm,查找视频tag太难,使用&lt;&lt;东风破&gt;&gt; mv视频
+<img src="http://images.wodekouwei.com/M/F/flv9.png" alt="flv-video1"></p>
+<ul>
+<li>type=0x09=9。这里应该是一个video。</li>
+<li>size=0x000030=48。长度为48。</li>
+<li>timestreamp=0x000000。</li>
+<li>TimestampExtended =0x00。</li>
+<li>stream id =0x000000</li>
+</ul>
+<p>我们看到数据部分：
+视频信息+数据
+视频信息，1个字节。</p>
+<blockquote>
+<p>StreamId之后的数据就表示是VideoTagHeader,如果是avc,VideoTagHeader会多出4个字节的信息就是AVCPacketType和CompositionTime</p>
+</blockquote>
+<ul>
+<li>前4位为帧类型Frame Type</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>keyframe (for AVC, a seekable frame) 关键帧</td>
+</tr>
+<tr>
+<td>2</td>
+<td>inter frame (for AVC, a non-seekable frame)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>disposable inter frame (H.263 only)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>generated keyframe (reserved for server use only)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>video info/command frame</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>后4位为编码ID (CodecID)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>JPEG (currently unused)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Sorenson H.263</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Screen video</td>
+</tr>
+<tr>
+<td>4</td>
+<td>On2 VP6</td>
+</tr>
+<tr>
+<td>5</td>
+<td>On2 VP6 with alpha channel</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Screen video version 2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>AVC</td>
+</tr>
+</tbody>
+</table>
+<p>特殊情况
+视频的格式(CodecID)是AVC（H.264）的话，VideoTagHeader会多出4个字节的信息，AVCPacketType 和CompositionTime。</p>
+<ul>
+<li>AVCPacketType 占1个字节</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>AVCDecoderConfigurationRecord(AVC sequence header)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>AVC NALU</td>
+</tr>
+<tr>
+<td>2</td>
+<td>AVC end of sequence (lower level NALU sequence ender is not required or supported)</td>
+</tr>
+</tbody>
+</table>
+<p>AVCDecoderConfigurationRecord.包含着是H.264解码相关比较重要的sps和pps信息，再给AVC解码器送数据流之前一定要把sps和pps信息送出，否则的话解码器不能正常解码。而且在解码器stop之后再次start之前，如seek、快进快退状态切换等，都需要重新送一遍sps和pps的信息.AVCDecoderConfigurationRecord在FLV文件中一般情况也是出现1次，也就是第一个video tag.</p>
+<ul>
+<li>CompositionTime 占3个字节</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AVCPacketType ==1</td>
+<td>Composition time offset</td>
+</tr>
+<tr>
+<td>AVCPacketType !=1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>再看到第二个video tag
+<img src="http://images.wodekouwei.com/M/F/flv10.png" alt="flv-video"></p>
+<p>我们看到 AVCPacketType =1，而后面三个字节为000043。这是一个视频帧数据。
+解析到的数据完全符合上面的理论。</p>
+<p>sps pps
+前面我们提到第一个video 一般存放的是sps和pps。这里我们具体解析下sps和pps内容。先看下存储的格）：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x01+sps[1]+sps[2]+sps[3]+0xFF+0xE1+sps size+sps+01+pps size+pps</div></pre></td></tr></table></figure></p>
+<p>sps[1]=0x64
+sps[2]=00
+sps[3]=0D
+sps size=0x001B=27
+跳过27个字节后，是0x01
+pps size=0x0005=118
+跳过5个字节，就到了back-pointers。</p>
+<p>视频帧数据
+解析出sps和pps tag后，后面的video tag就是真正的视频数据内容了
+<img src="http://images.wodekouwei.com/M/F/flv11.png" alt="flv-video3">
+这是第二个video tag其实和之前图一样，只是我圈出来关键信息。先看下格式
+frametype=0x17=00010111
+AVCPacketType =1
+Composition Time=0x000043
+后面就是NALU DATA</p>
+<blockquote>
+<p>引用:
+<a href="http://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="external">flv格式详解+实例剖析</a>
+<a href="http://blog.csdn.net/bsplover/article/details/7426511" target="_blank" rel="external">FLV视频封装格式详解</a>
+<a href="https://blog.evanxia.com/2017/07/1378" target="_blank" rel="external">【总结】FLV（AAC/AVC）学习笔记</a>
+<a href="http://blog.csdn.net/yeyumin89/article/details/7932368" target="_blank" rel="external">将h.264视频流封装成flv格式文件（一.flv格式）</a>
+<a href="http://blog.csdn.net/yeyumin89/article/details/7932431" target="_blank" rel="external">将h.264视频流封装成flv格式文件（二.开始动手）</a>
+<a href="http://blog.csdn.net/yeyumin89/article/details/7932585" target="_blank" rel="external">RTMP协议中的AMF数据</a>
+<a href="http://blog.csdn.net/yeyumin89/article/details/8011362" target="_blank" rel="external">rtmp协议简单解析以及用其发送h264的flv文件</a>
+<a href="https://chensi.moe/blog/2015/11/20/flv-format/" target="_blank" rel="external">FLV 文件格式解析</a>
+<a href="http://www.cnblogs.com/lihaiping/p/5285166.html" target="_blank" rel="external">(原)从mp4,flv文件中解析出h264和aac,送解码器解码失败</a>:,avc1与H264区别在这里其实有人遇到了和我一样的问题：<a href="http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data" target="_blank" rel="external">http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data</a>
+<a href="https://gitee.com/leixiaohua1020/simplest_mediadata_test" target="_blank" rel="external">simplest_mediadata_test</a>
+<a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
+<a href="https://github.com/gezhaoyou/RtmpMindmap" target="_blank" rel="external">RtmpMindmap</a></p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h3&gt;&lt;p&gt;FLV（Flash Video）是现在非常流行的流媒体格式，由于其视频文件体积轻巧、封装播放简单等特点，使其很适合在网络上进行应用，目前主流
+    
+    </summary>
+    
+      <category term="音视频封装" scheme="http://wodekouwei.com/categories/%E9%9F%B3%E8%A7%86%E9%A2%91%E5%B0%81%E8%A3%85/"/>
+    
+    
+      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
+    
+      <category term="音视频" scheme="http://wodekouwei.com/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
+    
+      <category term="format" scheme="http://wodekouwei.com/tags/format/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android APK动态更新技术</title>
+    <link href="http://wodekouwei.com/2017/12/05/tips-android-pluggable/"/>
+    <id>http://wodekouwei.com/2017/12/05/tips-android-pluggable/</id>
+    <published>2017-12-05T09:15:57.000Z</published>
+    <updated>2017-12-05T10:33:58.311Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
+下面简单介绍一下：
+|更新方式|签名|
+|—|—|
+|增量更新|旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）
+合并成为新版本Apk（v2.0）安装。|
+|插件式开发|给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。|
+|热修复|通过NDK底层去修复，也是C/C++的技术。|
+|RN|通过JS脚本去修复APK。|
+|静默安装|需要root权限，适配不同手机ROM很麻烦。|</p>
+<h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
+与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
+<h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
+<li>APP检测最新版本：把当前版本告诉服务端，服务端进行判断。
+如果有新版本，服务端需要对当前版本的APK与最新版本的APK进行一次差分，产生patch差分文件。（或者新版本的APK上传到服务端的时候就已经差分好了）</li>
+<li>APP在后台下载差分文件，进行文件的MD5校验，在本地进行合并（跟本地的data目录下面的APK文件合并），合并出最新的APK之后，提示用户安装。</li>
+<li>增量更新的最终目的：省流量地更新宿主APK。</li>
+</ol>
+<p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
+注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
+<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
+<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
+<p>根据提示需要传入4个参数：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
+<p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
+<p>写一个Java测试类生成差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意:</p>
+<ul>
+<li>test_new.apk、test_old.apk 要先放在目标目录</li>
+<li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
+</ul>
+<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>代码v1.0差分包合并核心代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
+<blockquote>
+<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
+作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
+</blockquote>
+<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>主流插件之间对比
+|特性|    DynamicLoadApk|    DynamicAPK|    Small|    DroidPlugin|    VirtualAPK|RePlugin|
+|—|—|—|—|—|—|—|
+|支持四大组件|    只支持Activity|    只支持Activity|    只支持Activity|    全支持|    全支持|全支持|
+|组件无需在宿主manifest中预注册|    √|    ×|    √|    √|    √|√|
+|插件可以依赖宿主|    √|    √    |√    |×    |√|√|
+|支持PendingIntent|    ×|    ×|    ×    |√    |√|√|
+|Android特性支持|    大部分|    大部分|    大部分|    几乎全部|    几乎全部|几乎全部|
+|兼容性适配|    一般|    一般|    中等|    高|    高|高|
+|插件构建|    无|    部署aapt|    Gradle插件|    无|    Gradle插件|Gradle插件|
+|源码|<code>https://github.com/singwhatiwanna/dynamic-load-apk</code>|<code>https://github.com/CtripMobile/DynamicAPK</code>||<code>https://github.com/DroidPluginTeam/DroidPlugin</code>|<code>https://github.com/didi/VirtualAPK</code>|<code>https://github.com/Qihoo360/RePlugin</code>|
+|开发者|singwhatiwanna|CtripMobile||Lody|滴滴|360|</p>
+<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supported components</td>
+<td>Activity, Service, Receiver and Provider</td>
+</tr>
+<tr>
+<td>Manually register components in AndroidManifest.xml</td>
+<td>No need</td>
+</tr>
+<tr>
+<td>Access host app classes and resources</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>PendingIntent</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Supported Android features</td>
+<td>Almost all features</td>
+</tr>
+<tr>
+<td>Compatibility</td>
+<td>Almost all devices</td>
+</tr>
+<tr>
+<td>Building system</td>
+<td>Gradle plugin</td>
+</tr>
+<tr>
+<td>Supported Android versions</td>
+<td>API Level 15+</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
+<h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
+<li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
+<li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
+<li>去除插件包对宿主的引用 构建时通过Gradle插件去除插件对宿主的代码以及资源的引用<h5 id="2-2-3-2四大组件的实现原理"><a href="#2-2-3-2四大组件的实现原理" class="headerlink" title="2.2.3.2四大组件的实现原理"></a>2.2.3.2四大组件的实现原理</h5></li>
+<li>Activity 采用宿主manifest中占坑的方式来绕过系统校验，然后再加载真正的activity；</li>
+<li>Service 动态代理AMS，拦截service相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作；</li>
+<li>Receiver 将插件中静态注册的receiver重新注册一遍；</li>
+<li>ContentProvider 动态代理IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</li>
+</ul>
+<h4 id="2-3RePlugin"><a href="#2-3RePlugin" class="headerlink" title="2.3RePlugin"></a>2.3RePlugin</h4><h5 id="2-3-1特性"><a href="#2-3-1特性" class="headerlink" title="2.3.1特性"></a>2.3.1特性</h5><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>组件</td>
+<td>四大组件（含静态Receiver）</td>
+</tr>
+<tr>
+<td>升级无需改主程序Manifest</td>
+<td>完美支持</td>
+</tr>
+<tr>
+<td>Android特性</td>
+<td>支持近乎所有（包括SO库等）</td>
+</tr>
+<tr>
+<td>TaskAffinity &amp; 多进程</td>
+<td>支持（坑位方案）</td>
+</tr>
+<tr>
+<td>插件类型</td>
+<td>支持自带插件（自识别）、外置插件</td>
+</tr>
+<tr>
+<td>插件间耦合</td>
+<td>支持Binder、Class Loader、资源等</td>
+</tr>
+<tr>
+<td>进程间通讯</td>
+<td>支持同步、异步、Binder、广播等</td>
+</tr>
+<tr>
+<td>自定义Theme &amp; AppComat</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>DataBinding</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>安全校验</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>资源方案</td>
+<td>独立资源 + Context传递（相对稳定）</td>
+</tr>
+<tr>
+<td>Android 版本</td>
+<td>API Level 9+ （2.3及以上）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
+下面简单介绍一下：
+|更新方式|签名|
+|—|—|
+|增量
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
   
   <entry>
     <title>(转)总结Android开发中必备的代码Review清单</title>
@@ -207,11 +893,11 @@ onCreateView()、onDestoryView()</p>
   </entry>
   
   <entry>
-    <title>tips-android-arch</title>
+    <title>android架构</title>
     <link href="http://wodekouwei.com/2017/12/05/tips-android-arch/"/>
     <id>http://wodekouwei.com/2017/12/05/tips-android-arch/</id>
     <published>2017-12-05T03:59:48.000Z</published>
-    <updated>2017-12-05T06:49:26.312Z</updated>
+    <updated>2017-12-05T06:52:09.888Z</updated>
     
     <content type="html"><![CDATA[<p><a href="http://www.cnblogs.com/zqlxtt/p/6887938.html" target="_blank" rel="external">Android官方架构组件介绍之LifeCycle</a>,Android架构组件一共包括以下几个：</p>
 <ul>
@@ -1929,7 +2615,7 @@ vapth使用方法中的&lt; pattern&gt;需要包含“%”字符。“%”的意
 于是，我们可以写出[.c]文件和[.d]文件的依赖关系，并让make自动更新或自成[.d]文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。
 这里，我们给出了一个模式规则来产生[.d]文件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">%.d: %.c</div><div class="line">       @set -e; rm -f $@; \</div><div class="line">        $(CC) -M $(CPPFLAGS) $&lt; &gt; $@.</div><div class="line">; \</div><div class="line">        sed &apos;s,$∗\.o[ :]*,\1.o $@ : ,g&apos; &lt; $@.</div><div class="line">&gt; $@; \</div><div class="line">        rm -f $@.</div></pre></td></tr></table></figure></p>
-<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#x3a;&#8221;&#xff0c;&#20063;&#x5c31;&#26159;&#91;&#46;&#99;&#x5d;&#x6587;&#20214;&#29983;&#25104;&#20381;&#36182;&#25991;&#x4ef6;&#65292;&#8220;&#x24;&#x40;&#x201d;&#34920;&#31034;&#x6a21;&#x5f0f;&#x201c;&#x25;&#x2e;&#100;&#8221;&#x6587;&#x4ef6;&#xff0c;&#22914;&#26524;&#26377;&#x4e00;&#20010;&#x43;&#25991;&#x4ef6;&#x662f;&#110;&#x61;&#109;&#x65;&#46;&#99;&#xff0c;&#37027;&#x4e48;&#x201c;&#37;&#8221;&#23601;&#26159;&#x201c;&#110;&#x61;&#x6d;&#101;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#24847;&#20026;&#x4e00;&#20010;&#x968f;&#x673a;&#x7f16;&#x53f7;&#xff0c;&#31532;&#20108;&#x884c;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#x80fd;&#26159;&#8220;&#x6e;&#x61;&#109;&#x65;&#46;&#100;&#46;&#x31;&#50;&#51;&#x34;&#53;&#x201d;&#xff0c;&#x7b2c;&#x4e09;&#x884c;&#20351;&#x7528;&#x73;&#101;&#100;&#21629;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#x66ff;&#25442;&#65292;&#x5173;&#x4e8e;&#x73;&#x65;&#x64;&#x547d;&#x4ee4;&#x7684;&#x7528;&#x6cd5;&#x8bf7;&#x53c2;&#30475;&#30456;&#x5173;&#x7684;&#x4f7f;&#29992;&#25991;&#x6863;&#12290;&#31532;&#x56db;&#x884c;&#23601;&#x662f;&#21024;&#38500;&#x4e34;&#x65f6;&#25991;&#x4ef6;&#12290;&#10;&#24635;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#20010;&#27169;&#x5f0f;&#x8981;&#x505a;&#30340;&#x4e8b;&#x5c31;&#x662f;&#x5728;&#32534;&#x8bd1;&#x5668;&#x751f;&#25104;&#30340;&#x4f9d;&#36182;&#20851;&#31995;&#20013;&#21152;&#20837;&#x5b;&#46;&#100;&#x5d;&#25991;&#x4ef6;&#x7684;&#x4f9d;&#x8d56;&#xff0c;&#21363;&#x628a;&#20381;&#x8d56;&#x5173;&#31995;&#65306;&#xa;&#60;&#x21;&#45;&#45;&#65532;&#52;&#x30;&#45;&#45;">&#8221;&#xff0c;&#20063;&#x5c31;&#26159;&#91;&#46;&#99;&#x5d;&#x6587;&#20214;&#29983;&#25104;&#20381;&#36182;&#25991;&#x4ef6;&#65292;&#8220;&#x24;&#x40;&#x201d;&#34920;&#31034;&#x6a21;&#x5f0f;&#x201c;&#x25;&#x2e;&#100;&#8221;&#x6587;&#x4ef6;&#xff0c;&#22914;&#26524;&#26377;&#x4e00;&#20010;&#x43;&#25991;&#x4ef6;&#x662f;&#110;&#x61;&#109;&#x65;&#46;&#99;&#xff0c;&#37027;&#x4e48;&#x201c;&#37;&#8221;&#23601;&#26159;&#x201c;&#110;&#x61;&#x6d;&#101;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#24847;&#20026;&#x4e00;&#20010;&#x968f;&#x673a;&#x7f16;&#x53f7;&#xff0c;&#31532;&#20108;&#x884c;&#29983;&#25104;&#30340;&#25991;&#20214;&#x6709;&#x53ef;&#x80fd;&#26159;&#8220;&#x6e;&#x61;&#109;&#x65;&#46;&#100;&#46;&#x31;&#50;&#51;&#x34;&#53;&#x201d;&#xff0c;&#x7b2c;&#x4e09;&#x884c;&#20351;&#x7528;&#x73;&#101;&#100;&#21629;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#x66ff;&#25442;&#65292;&#x5173;&#x4e8e;&#x73;&#x65;&#x64;&#x547d;&#x4ee4;&#x7684;&#x7528;&#x6cd5;&#x8bf7;&#x53c2;&#30475;&#30456;&#x5173;&#x7684;&#x4f7f;&#29992;&#25991;&#x6863;&#12290;&#31532;&#x56db;&#x884c;&#23601;&#x662f;&#21024;&#38500;&#x4e34;&#x65f6;&#25991;&#x4ef6;&#12290;&#10;&#24635;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#20010;&#27169;&#x5f0f;&#x8981;&#x505a;&#30340;&#x4e8b;&#x5c31;&#x662f;&#x5728;&#32534;&#x8bd1;&#x5668;&#x751f;&#25104;&#30340;&#x4f9d;&#36182;&#20851;&#31995;&#20013;&#21152;&#20837;&#x5b;&#46;&#100;&#x5d;&#25991;&#x4ef6;&#x7684;&#x4f9d;&#x8d56;&#xff0c;&#21363;&#x628a;&#20381;&#x8d56;&#x5173;&#31995;&#65306;&#xa;&#60;&#x21;&#45;&#45;&#65532;&#52;&#x30;&#45;&#45;</a></p>
+<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#x201d;&#65292;&#x4e5f;&#x5c31;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#x4f9d;&#x8d56;&#x6587;&#x4ef6;&#xff0c;&#8220;&#x24;&#64;&#x201d;&#x8868;&#x793a;&#x6a21;&#x5f0f;&#8220;&#37;&#x2e;&#x64;&#x201d;&#x6587;&#x4ef6;&#65292;&#22914;&#26524;&#x6709;&#19968;&#x4e2a;&#x43;&#25991;&#x4ef6;&#26159;&#x6e;&#97;&#109;&#x65;&#46;&#99;&#65292;&#37027;&#20040;&#8220;&#37;&#x201d;&#x5c31;&#x662f;&#8220;&#x6e;&#x61;&#x6d;&#x65;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#x610f;&#20026;&#x4e00;&#20010;&#38543;&#26426;&#32534;&#21495;&#xff0c;&#31532;&#x4e8c;&#x884c;&#x751f;&#25104;&#x7684;&#25991;&#x4ef6;&#26377;&#21487;&#x80fd;&#26159;&#x201c;&#x6e;&#97;&#x6d;&#101;&#46;&#x64;&#x2e;&#x31;&#x32;&#51;&#x34;&#53;&#8221;&#65292;&#x7b2c;&#x4e09;&#34892;&#x4f7f;&#x7528;&#x73;&#101;&#x64;&#x547d;&#x4ee4;&#x505a;&#x4e86;&#19968;&#20010;&#26367;&#x6362;&#xff0c;&#x5173;&#x4e8e;&#115;&#101;&#100;&#21629;&#20196;&#x7684;&#x7528;&#x6cd5;&#35831;&#x53c2;&#30475;&#x76f8;&#x5173;&#x7684;&#20351;&#29992;&#25991;&#26723;&#x3002;&#x7b2c;&#22235;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#x6587;&#x4ef6;&#12290;&#10;&#24635;&#32780;&#x8a00;&#20043;&#xff0c;&#36825;&#20010;&#27169;&#x5f0f;&#35201;&#x505a;&#30340;&#x4e8b;&#x5c31;&#26159;&#x5728;&#x7f16;&#35793;&#x5668;&#29983;&#25104;&#30340;&#20381;&#36182;&#x5173;&#x7cfb;&#20013;&#x52a0;&#20837;&#91;&#46;&#100;&#x5d;&#25991;&#x4ef6;&#x7684;&#20381;&#x8d56;&#65292;&#x5373;&#25226;&#20381;&#x8d56;&#20851;&#x7cfb;&#xff1a;&#xa;&#60;&#33;&#45;&#x2d;&#xfffc;&#x34;&#x30;&#45;&#45;">&#x201d;&#65292;&#x4e5f;&#x5c31;&#x662f;&#91;&#x2e;&#99;&#x5d;&#x6587;&#20214;&#x751f;&#x6210;&#x4f9d;&#x8d56;&#x6587;&#x4ef6;&#xff0c;&#8220;&#x24;&#64;&#x201d;&#x8868;&#x793a;&#x6a21;&#x5f0f;&#8220;&#37;&#x2e;&#x64;&#x201d;&#x6587;&#x4ef6;&#65292;&#22914;&#26524;&#x6709;&#19968;&#x4e2a;&#x43;&#25991;&#x4ef6;&#26159;&#x6e;&#97;&#109;&#x65;&#46;&#99;&#65292;&#37027;&#20040;&#8220;&#37;&#x201d;&#x5c31;&#x662f;&#8220;&#x6e;&#x61;&#x6d;&#x65;&#x201d;&#xff0c;&#x201c;&#10;&#8221;&#x610f;&#20026;&#x4e00;&#20010;&#38543;&#26426;&#32534;&#21495;&#xff0c;&#31532;&#x4e8c;&#x884c;&#x751f;&#25104;&#x7684;&#25991;&#x4ef6;&#26377;&#21487;&#x80fd;&#26159;&#x201c;&#x6e;&#97;&#x6d;&#101;&#46;&#x64;&#x2e;&#x31;&#x32;&#51;&#x34;&#53;&#8221;&#65292;&#x7b2c;&#x4e09;&#34892;&#x4f7f;&#x7528;&#x73;&#101;&#x64;&#x547d;&#x4ee4;&#x505a;&#x4e86;&#19968;&#20010;&#26367;&#x6362;&#xff0c;&#x5173;&#x4e8e;&#115;&#101;&#100;&#21629;&#20196;&#x7684;&#x7528;&#x6cd5;&#35831;&#x53c2;&#30475;&#x76f8;&#x5173;&#x7684;&#20351;&#29992;&#25991;&#26723;&#x3002;&#x7b2c;&#22235;&#34892;&#23601;&#26159;&#21024;&#x9664;&#x4e34;&#x65f6;&#x6587;&#x4ef6;&#12290;&#10;&#24635;&#32780;&#x8a00;&#20043;&#xff0c;&#36825;&#20010;&#27169;&#x5f0f;&#35201;&#x505a;&#30340;&#x4e8b;&#x5c31;&#26159;&#x5728;&#x7f16;&#35793;&#x5668;&#29983;&#25104;&#30340;&#20381;&#36182;&#x5173;&#x7cfb;&#20013;&#x52a0;&#20837;&#91;&#46;&#100;&#x5d;&#25991;&#x4ef6;&#x7684;&#20381;&#x8d56;&#65292;&#x5373;&#25226;&#20381;&#x8d56;&#20851;&#x7cfb;&#xff1a;&#xa;&#60;&#33;&#45;&#x2d;&#xfffc;&#x34;&#x30;&#45;&#45;</a></p>
 <p>转成：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">main.o main.d : main.c defs.h</div></pre></td></tr></table></figure></p>
 <p>于是，我们的[.d]文件也会自动更新了，并会自动生成了，当然，你还可以在这个[.d]文件中加入的不只是依赖关系，包括生成的命令也可一并加入，让每个[.d]文件都包含一个完赖的规则。一旦我们完成这个工作，接下来，我们就要把这些自动生成的规则放进我们的主Makefile中。我们可以使用Makefile的“include”命令，来引入别的Makefile文件（前面讲过），例如：
@@ -2929,180 +3615,6 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
     
     
       <category term="makefile" scheme="http://wodekouwei.com/tags/makefile/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>shell开发使用小技巧</title>
-    <link href="http://wodekouwei.com/2017/09/30/tips-shell-language/"/>
-    <id>http://wodekouwei.com/2017/09/30/tips-shell-language/</id>
-    <published>2017-09-30T03:54:47.000Z</published>
-    <updated>2017-09-30T04:22:36.000Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="写脚本修改数据库中表的某一字段值"><a href="#写脚本修改数据库中表的某一字段值" class="headerlink" title="写脚本修改数据库中表的某一字段值"></a>写脚本修改数据库中表的某一字段值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">##########################################################</div><div class="line">#修改表TBL_BAT_TASK_CTL的USE_FLAG字段，启动或停止贷记卡销卡的批处理</div><div class="line">#useage：执行脚本时加-n参数就是关闭批处理</div><div class="line">#    执行脚本时加-y参数就是打开批处理</div><div class="line">##########################################################</div><div class="line"></div><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">if test &quot;$1&quot; = &quot;-n&quot;</div><div class="line">then</div><div class="line">    db2 connect to $DBLINK</div><div class="line">    db2 &quot;update TBL_BAT_TASK_CTL set USE_FLAG=&apos;N&apos; where BAT_ID=&apos;0024&apos; or BAT_ID=&apos;0025&apos;&quot;</div><div class="line">    db2 terminate</div><div class="line">#   exit 0</div><div class="line">fi</div><div class="line"></div><div class="line">if test &quot;$1&quot; = &quot;-y&quot;</div><div class="line">then</div><div class="line">    db2 connect to $DBLINK</div><div class="line">    db2 &quot;update TBL_BAT_TASK_CTL set USE_FLAG=&apos;Y&apos; where BAT_ID=&apos;0024&apos; or BAT_ID=&apos;0025&apos;&quot;</div><div class="line">    db2 terminate</div><div class="line">fi</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;写脚本修改数据库中表的某一字段值&quot;&gt;&lt;a href=&quot;#写脚本修改数据库中表的某一字段值&quot; class=&quot;headerlink&quot; title=&quot;写脚本修改数据库中表的某一字段值&quot;&gt;&lt;/a&gt;写脚本修改数据库中表的某一字段值&lt;/h4&gt;&lt;figure class=&quot;hi
-    
-    </summary>
-    
-      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
-    
-    
-      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-      <category term="shell" scheme="http://wodekouwei.com/tags/shell/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>opencv核心类型</title>
-    <link href="http://wodekouwei.com/2017/09/29/opencv-core/"/>
-    <id>http://wodekouwei.com/2017/09/29/opencv-core/</id>
-    <published>2017-09-29T10:09:42.000Z</published>
-    <updated>2017-11-20T06:41:35.774Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="mat"><a href="#mat" class="headerlink" title="mat"></a>mat</h3><p>Mat替代lplImage</p>
-<h4 id="创建和清理mat空间"><a href="#创建和清理mat空间" class="headerlink" title="创建和清理mat空间"></a>创建和清理mat空间</h4><ul>
-<li>Mat mat(3000, 4000, CV_8UC3);//3000行,4000列数组,数组里存放3个unsigned char类型的数据</li>
-<li>mat.create(rows, cols, CV_8UC1);//行数,列数,如果mat已经有空间,create时会自动清理已有空间</li>
-<li>release或者析构:引用计数为1时释放</li>
-</ul>
-<blockquote>
-<p>处理类型一定要用unsigned char而不是char</p>
-</blockquote>
-<h4 id="3-3RGB图像存放方式-连续"><a href="#3-3RGB图像存放方式-连续" class="headerlink" title="3*3RGB图像存放方式(连续)"></a>3*3RGB图像存放方式(连续)</h4><p><img src="http://" alt="image"></p>
-<h5 id="isContinuous"><a href="#isContinuous" class="headerlink" title="isContinuous"></a>isContinuous</h5><ul>
-<li>判断存储空间是否连续</li>
-<li>通过step记录</li>
-</ul>
-<h4 id="直接地址访问连续空间"><a href="#直接地址访问连续空间" class="headerlink" title="直接地址访问连续空间"></a>直接地址访问连续空间</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">int size = mat.rows*mat.cols*mat.elemSize();</div><div class="line">for(int i = 0; i&lt; size; i+3)//3是因为RGB</div><div class="line">&#123;</div><div class="line">  mat.data[i] = 0; //B</div><div class="line">  mat.data[i+1] = 0; //G</div><div class="line">  mat.data[i+2] = 0; //R</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>//优化编码后效率高13ms (4000*3000)</p>
-<h4 id="直接地址访问不连续空间"><a href="#直接地址访问不连续空间" class="headerlink" title="直接地址访问不连续空间"></a>直接地址访问不连续空间</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">for(int i = 0; i &lt; mat.row; i++)</div><div class="line">&#123;</div><div class="line">  for(int j = 0; j &lt; mat.cols; j++)</div><div class="line">  &#123;</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3] = 255;//B</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3 + 1] = 255;//G</div><div class="line">    (&amp;mat.data[i*mat.step])[j*3 + 2] = 1;//R</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="通过ptr接口遍历Mat-模板函数"><a href="#通过ptr接口遍历Mat-模板函数" class="headerlink" title="通过ptr接口遍历Mat(模板函数)"></a>通过ptr接口遍历Mat(模板函数)</h4><ul>
-<li>性能基本等同与地址访问</li>
-<li>mat.ptr<vec3b>(row);//返回的指针</vec3b></li>
-<li>mat.ptr<vec3b>(row, col);</vec3b></li>
-</ul>
-<h4 id="通过at接口遍历Mat-模板函数"><a href="#通过at接口遍历Mat-模板函数" class="headerlink" title="通过at接口遍历Mat(模板函数)"></a>通过at接口遍历Mat(模板函数)</h4><ul>
-<li>接口最简单的遍历方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mat.at&lt;Vec3b&gt;(row, col)[0] = 255;</div><div class="line">mat.at&lt;Vec3b&gt;(row, col)[1] = 0;</div><div class="line">mat.at&lt;Vec3b&gt;(row, col)[2] = 0;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>at可以使用try{} catch(…/cv::Exception &amp;ex){}捕获异常</p>
-<h4 id="通过迭代器遍历Mat"><a href="#通过迭代器遍历Mat" class="headerlink" title="通过迭代器遍历Mat"></a>通过迭代器遍历Mat</h4><ul>
-<li>可以不用管mat的行列
-auto it = mr.begin<vec3b>();
-auto it_end = mr.end<vec3b>();</vec3b></vec3b></li>
-</ul>
-<h3 id="ROI感兴趣区域"><a href="#ROI感兴趣区域" class="headerlink" title="ROI感兴趣区域"></a>ROI感兴趣区域</h3><p>cv::Rect rect(100, 100, 300, 300);</p>
-<h3 id="像素格式和灰度图"><a href="#像素格式和灰度图" class="headerlink" title="像素格式和灰度图"></a>像素格式和灰度图</h3><p>RGB, YUV, GRAY</p>
-<p>cvtColor(src, img, COLOR_BGR2GRAY);//源图像,目标凸显,转换方式,利用多线程等方式提高效率</p>
-<p>自己实现转换:
-Gray = (R<em>30 + G</em>59 + B*11 + 50)/100</p>
-<h3 id="二值化和阈值"><a href="#二值化和阈值" class="headerlink" title="二值化和阈值"></a>二值化和阈值</h3><ul>
-<li>THRESH_BINARY 二进制阈值化</li>
-<li>THRESH_BINARY_INV 反二进制阈值化</li>
-</ul>
-<h3 id="改变图片的对比度和亮度"><a href="#改变图片的对比度和亮度" class="headerlink" title="改变图片的对比度和亮度"></a>改变图片的对比度和亮度</h3><p>g(i,j) = a*f(i,j) + b
-a 1.0~3.0(对比) b 0~100(亮度)
-saturate_cast<uchar>防止移除函数</uchar></p>
-<h3 id="图像尺寸调整"><a href="#图像尺寸调整" class="headerlink" title="图像尺寸调整"></a>图像尺寸调整</h3><ul>
-<li><p>INTER_NEAREST 近邻算法(最快)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">int sx, sy = 0;//原图对应的坐标</div><div class="line">float fy = float(src.rows)/out.rows;</div><div class="line">float fx = float(src.cols)/out.cols;</div><div class="line">for(int y = 0; y&lt; out.rows;y++)&#123;</div><div class="line">  sy = fy*y + 0.5;//+0.5四舍五入</div><div class="line">  for(int x = 0; x &lt; out.cols;x++)&#123;</div><div class="line">    sx = fx*x + 0.5;</div><div class="line">    out.at&lt;Vec3b&gt;(y,x) = src.at&lt;Vec3b&gt;(sy, sx);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>CV_INTER_LINEAR 双线程差值(缺省使用)</p>
-</li>
-</ul>
-<p>滤波:
-输入图像中像素的小领域来产生输出图像的方法,在信号处理中,这种方法称为滤波(filtering).其中,最常用的是线性滤波:输出像素是输入领域像素的加权和.</p>
-<p>双线性内插值:
-是由源图像位置在它附近的2*2区域4个邻近像素的值通过加权平均计算得出的.
-低通滤波性质,使高频分量受损,图像轮廓可能会有一点模糊.</p>
-<h3 id="图像金字塔"><a href="#图像金字塔" class="headerlink" title="图像金字塔"></a>图像金字塔</h3><p>高斯金字塔(Gaussian pyramid):用来向下采样</p>
-<ul>
-<li>获取G(i+1)将G(i)与高斯内核卷积</li>
-<li>将所有偶数行和列去除
--</li>
-</ul>
-<p>拉普拉斯金字塔(Laplacian pyramid):用来从金字塔底层图像重建上层未采样图像</p>
-<ul>
-<li>用来从金字塔底层图像重建上层未采样图像</li>
-<li>首先,将图像扩大两杯,新增以0填充</li>
-<li>高斯内核(乘以4)与放大后的图像卷积</li>
-</ul>
-<h3 id="两幅图像混合-blending"><a href="#两幅图像混合-blending" class="headerlink" title="两幅图像混合(blending)"></a>两幅图像混合(blending)</h3><ul>
-<li><code>dst = src1*a + src2*(1-a) + gamma</code>//gamma增益</li>
-<li>a=[0~1]</li>
-<li>画面叠化(cross-dissolve)效果</li>
-<li><code>addWeighted(src1, a, src2, 1-a, 0.0, dst);</code>//两幅图像大小需一致</li>
-</ul>
-<h3 id="图像旋转和镜像"><a href="#图像旋转和镜像" class="headerlink" title="图像旋转和镜像"></a>图像旋转和镜像</h3><ul>
-<li><p>cv::rotate(src, dst, type);</p>
-<ul>
-<li>ROTATE_180</li>
-<li>ROTATE_90_CLOCKWISE</li>
-<li>ROTATE_90_COUNTERCLOCKWISE</li>
-</ul>
-</li>
-<li><p>cv::flip(src,dst, type);//镜像type 0(x), 1(y), -1</p>
-</li>
-</ul>
-<p>###通过ROI图像合并</p>
-<h3 id="打开摄像头接口说明和源码分析"><a href="#打开摄像头接口说明和源码分析" class="headerlink" title="打开摄像头接口说明和源码分析"></a>打开摄像头接口说明和源码分析</h3><ul>
-<li>VideoCapture</li>
-<li>bool open(int index)</li>
-<li>VideoCapture cap(index)</li>
-<li>open(int cameraNum, int apiPrefrence)</li>
-</ul>
-<h3 id="打开视频流文件"><a href="#打开视频流文件" class="headerlink" title="打开视频流文件"></a>打开视频流文件</h3><ul>
-<li>bool open(const String &amp;filename)</li>
-<li>VideoCapture cap(const String &amp;file)</li>
-<li>bool open(const String &amp;filename, int apiPrefrence)</li>
-</ul>
-<ul>
-<li>关闭和空间释放</li>
-<li>~VideoCapture</li>
-<li>release</li>
-</ul>
-<h3 id="读取一帧视频"><a href="#读取一帧视频" class="headerlink" title="读取一帧视频"></a>读取一帧视频</h3><p>read(OutputArray image);</p>
-<ul>
-<li>bool grab() 读取并解码</li>
-<li>virtual bool retrieve(OUtputArray , intflag= 0):图像色彩转换</li>
-<li>vc&gt;&gt;mat</li>
-</ul>
-<h3 id="获取视频-相机属性"><a href="#获取视频-相机属性" class="headerlink" title="获取视频,相机属性"></a>获取视频,相机属性</h3><ul>
-<li>CAP_PROP_FPS帧率</li>
-<li>CAP_PROP_FRAME_COUNT 总帧数</li>
-<li>CAP_PROP_POS_FRAMES 播放帧的位置</li>
-<li>CAP_PROP_FRAME_WIDTH HEIGHT</li>
-</ul>
-<h3 id="VideoWriter"><a href="#VideoWriter" class="headerlink" title="VideoWriter"></a>VideoWriter</h3><ul>
-<li><p>open(const String &amp;filename, int fourcc, //VideoWrite::fourcc(‘H’, ‘2’, ‘6’, ‘4’)
-double fps, Size frameSize,bool isColor=true)</p>
-<p>release</p>
-<ul>
-<li>void write(const Mat&amp;)</li>
-<li>cvVideoWriter_FFMPEG::writeFrame</li>
-</ul>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;mat&quot;&gt;&lt;a href=&quot;#mat&quot; class=&quot;headerlink&quot; title=&quot;mat&quot;&gt;&lt;/a&gt;mat&lt;/h3&gt;&lt;p&gt;Mat替代lplImage&lt;/p&gt;
-&lt;h4 id=&quot;创建和清理mat空间&quot;&gt;&lt;a href=&quot;#创建和清理mat空间&quot; class=
-    
-    </summary>
-    
-      <category term="opencv" scheme="http://wodekouwei.com/categories/opencv/"/>
-    
-    
-      <category term="opencv" scheme="http://wodekouwei.com/tags/opencv/"/>
     
   </entry>
   
