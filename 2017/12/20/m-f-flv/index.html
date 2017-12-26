@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://images.wodekouwei.com/M/F/flv9.png">
 <meta property="og:image" content="http://images.wodekouwei.com/M/F/flv10.png">
 <meta property="og:image" content="http://images.wodekouwei.com/M/F/flv11.png">
-<meta property="og:updated_time" content="2017-12-20T10:41:10.142Z">
+<meta property="og:updated_time" content="2017-12-26T03:30:48.512Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FLV格式解析">
 <meta name="twitter:description" content="简介FLV（Flash Video）是现在非常流行的流媒体格式，由于其视频文件体积轻巧、封装播放简单等特点，使其很适合在网络上进行应用，目前主流的视频网站无一例外地使用了FLV格式。另外由于当前浏览器与Flash Player紧密的结合，使得网页播放FLV视频轻而易举，也是FLV流行的原因之一。 FLV是流媒体封装格式，我们可以将其数据看为二进制字节流。总体上看，FLV包括文件头（File Hea">
@@ -493,7 +493,7 @@ Signature(3 Byte)+Version(1 Byte)+Flags(1 Bypte)+DataOffset(4 Byte)</p>
 <li>最后我们计算一下，上一个TAG数据部分是372个字节，前面type、stream id等字段占了11个字节。正好是匹配的。
 上面我们已经知道了怎么取划分每个TAG。接下来我们就看TAG的具体内容:</li>
 </ul>
-<h5 id="ag的内容"><a href="#ag的内容" class="headerlink" title="ag的内容"></a>ag的内容</h5><p>前面已经提到tag分3种。我们一个个看</p>
+<h5 id="tag的内容"><a href="#tag的内容" class="headerlink" title="tag的内容"></a>tag的内容</h5><p>前面已经提到tag分3种。我们一个个看</p>
 <h6 id="script"><a href="#script" class="headerlink" title="script"></a>script</h6><p>脚本Tag一般只有一个，是flv的第一个Tag，用于存放flv的信息，比如duration、audiodatarate、creator、width等。
 首先介绍下脚本的数据类型。所有数据都是以数据类型+（数据长度）+数据的格式出现的，数据类型占1byte，数据长度看数据类型是否存在，后面才是数据。</p>
 <p>一般来说，该Tag Data结构包含两个AMF包。AMF（Action Message Format）是Adobe设计的一种通用数据封装格式，在Adobe的很多产品中应用，简单来说，AMF将不同类型的数据用统一的格式来描述。第一个AMF包封装字符串类型数据，用来装入一个“onMetaData”标志，这个标志与Adobe的一些API调用有，在此不细述。第二个AMF包封装一个数组类型(srs返回为object类型)，这个数组中包含了音视频信息项的名称和值。具体说明如下</p>
@@ -881,9 +881,9 @@ Signature(3 Byte)+Version(1 Byte)+Flags(1 Bypte)+DataOffset(4 Byte)</p>
 <p>sps[1]=0x64
 sps[2]=00
 sps[3]=0D
-sps size=0x001B=27
+sps size=0x001B=27(占两个字节)
 跳过27个字节后，是0x01
-pps size=0x0005=118
+pps size=0x0005=118(占两个字节)
 跳过5个字节，就到了back-pointers。</p>
 <p>视频帧数据
 解析出sps和pps tag后，后面的video tag就是真正的视频数据内容了
@@ -895,17 +895,17 @@ Composition Time=0x000043
 后面就是NALU DATA</p>
 <blockquote>
 <p>引用:
-<a href="http://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="external">flv格式详解+实例剖析</a>
-<a href="http://blog.csdn.net/bsplover/article/details/7426511" target="_blank" rel="external">FLV视频封装格式详解</a>
-<a href="https://blog.evanxia.com/2017/07/1378" target="_blank" rel="external">【总结】FLV（AAC/AVC）学习笔记</a>
-<a href="http://blog.csdn.net/yeyumin89/article/details/7932368" target="_blank" rel="external">将h.264视频流封装成flv格式文件（一.flv格式）</a>
-<a href="http://blog.csdn.net/yeyumin89/article/details/7932431" target="_blank" rel="external">将h.264视频流封装成flv格式文件（二.开始动手）</a>
-<a href="http://blog.csdn.net/yeyumin89/article/details/7932585" target="_blank" rel="external">RTMP协议中的AMF数据</a>
-<a href="http://blog.csdn.net/yeyumin89/article/details/8011362" target="_blank" rel="external">rtmp协议简单解析以及用其发送h264的flv文件</a>
-<a href="https://chensi.moe/blog/2015/11/20/flv-format/" target="_blank" rel="external">FLV 文件格式解析</a>
-<a href="http://www.cnblogs.com/lihaiping/p/5285166.html" target="_blank" rel="external">(原)从mp4,flv文件中解析出h264和aac,送解码器解码失败</a>:,avc1与H264区别在这里其实有人遇到了和我一样的问题：<a href="http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data" target="_blank" rel="external">http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data</a>
-<a href="https://gitee.com/leixiaohua1020/simplest_mediadata_test" target="_blank" rel="external">simplest_mediadata_test</a>
-<a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
+<a href="http://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="external">flv格式详解+实例剖析</a></p>
+<p><a href="http://blog.csdn.net/bsplover/article/details/7426511" target="_blank" rel="external">FLV视频封装格式详解</a></p>
+<p><a href="https://blog.evanxia.com/2017/07/1378" target="_blank" rel="external">【总结】FLV（AAC/AVC）学习笔记</a></p>
+<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932368" target="_blank" rel="external">将h.264视频流封装成flv格式文件（一.flv格式）</a></p>
+<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932431" target="_blank" rel="external">将h.264视频流封装成flv格式文件（二.开始动手）</a></p>
+<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932585" target="_blank" rel="external">RTMP协议中的AMF数据</a></p>
+<p><a href="http://blog.csdn.net/yeyumin89/article/details/8011362" target="_blank" rel="external">rtmp协议简单解析以及用其发送h264的flv文件</a></p>
+<p><a href="https://chensi.moe/blog/2015/11/20/flv-format/" target="_blank" rel="external">FLV 文件格式解析</a></p>
+<p><a href="http://www.cnblogs.com/lihaiping/p/5285166.html" target="_blank" rel="external">(原)从mp4,flv文件中解析出h264和aac,送解码器解码失败</a>:,avc1与H264区别在这里其实有人遇到了和我一样的问题：<a href="http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data" target="_blank" rel="external">http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data</a></p>
+<p><a href="https://gitee.com/leixiaohua1020/simplest_mediadata_test" target="_blank" rel="external">simplest_mediadata_test</a></p>
+<p><a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
 <a href="https://github.com/gezhaoyou/RtmpMindmap" target="_blank" rel="external">RtmpMindmap</a></p>
 </blockquote>
 
@@ -1179,7 +1179,7 @@ Composition Time=0x000043
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FLV格式解析"><span class="nav-number">2.</span> <span class="nav-text">FLV格式解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#header"><span class="nav-number">2.1.</span> <span class="nav-text">header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Body"><span class="nav-number">2.2.</span> <span class="nav-text">Body</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tag组成"><span class="nav-number">2.2.1.</span> <span class="nav-text">tag组成</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#tag的划分"><span class="nav-number">2.2.2.</span> <span class="nav-text">tag的划分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ag的内容"><span class="nav-number">2.2.3.</span> <span class="nav-text">ag的内容</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#script"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">script</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Audio"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">Audio</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#video"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">video</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FLV格式解析"><span class="nav-number">2.</span> <span class="nav-text">FLV格式解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#header"><span class="nav-number">2.1.</span> <span class="nav-text">header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Body"><span class="nav-number">2.2.</span> <span class="nav-text">Body</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tag组成"><span class="nav-number">2.2.1.</span> <span class="nav-text">tag组成</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#tag的划分"><span class="nav-number">2.2.2.</span> <span class="nav-text">tag的划分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#tag的内容"><span class="nav-number">2.2.3.</span> <span class="nav-text">tag的内容</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#script"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">script</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Audio"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">Audio</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#video"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">video</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
