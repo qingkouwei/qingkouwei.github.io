@@ -323,6 +323,376 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/jni-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/07/jni-intro/" itemprop="url">
+                  jni介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:23:23+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="NDK技巧"><a href="#NDK技巧" class="headerlink" title="NDK技巧"></a>NDK技巧</h3><ol>
+<li>加快ndk-build编译速度
+NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>测试后编译速度至少可以提高一倍</p>
+<h3 id="native崩溃分析"><a href="#native崩溃分析" class="headerlink" title="native崩溃分析"></a>native崩溃分析</h3><h4 id="定位crash错误位置"><a href="#定位crash错误位置" class="headerlink" title="定位crash错误位置"></a>定位crash错误位置</h4><p>首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息.
+在DEBUG信息里找到backtrace, 这段就是系统给出的造成崩溃的信息, 但仅仅给出了是哪个函数, 而没有准确给出是那一行代码造成的崩溃.
+记下#00 pc 00013122(红框3)这个信息, 这个信息就是用来定位崩溃代码的地址
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Build fingerprint: &apos;Huawei/H60-L03/hwH60:5.1.1/HDH60-L03/C01B535:user/release-keys&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Revision: &apos;0&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: ABI: &apos;arm&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: pid: 6189, tid: 6762, name: Thread-4510  &gt;&gt;&gt; com.wodekouwei.demo &lt;&lt;&lt;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 0x428d738d</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r0 428d737d  r1 b86eae00  r2 00000001  r3 00000000</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r4 b8836580  r5 b88365c0  r6 b8836580  r7 9e4e0d48</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r8 b8836588  r9 b8836588  sl b6da8871  fp 9e4e0dd0</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     ip a1ca2c90  sp 9e4e0cc0  lr a1c358c7  pc a1c35b4c  cpsr 200f0030</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG: backtrace:</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #00 pc 000ccb4c  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #01 pc 000cc8c3  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so (oar_player_gl_thread+214)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #02 pc 0001688f  /system/lib/libc.so (__pthread_start(void*)+30)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #03 pc 000148a3  /system/lib/libc.so (__start_thread+6)</div><div class="line">12-27 10:45:42.005 3655-3655/? E/Thermal-daemon: [ap] temp_new :34  temp_old :33</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:3001] from screen [on:0 period:-1780713098] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  L2ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:1] from screen [on:0 period:-1780713097] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.390 5083-5397/? E/WifiStateMachine: fetchRssiLinkSpeedAndFrequencyNative rssi=-49 linkspeed=26 SSID=&quot;wonxing-H3C&quot;</div></pre></td></tr></table></figure></p>
+<p>想要准确定位崩溃代码的地址的话我们就需要用到ndk工具包里的adrr2line这个工具了
+首先先找到这个工具, linux系统这个工具在如下位置
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/gavinandre/Documents/Android/android-sdk-linux/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line</div></pre></td></tr></table></figure></p>
+<p>在该目录下做个软链接后就能在任何目录使用这个命令了
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s arm-linux-androideabi-addr2line /usr/local/bin/addr2line</div></pre></td></tr></table></figure></p>
+<p>找到造成崩溃的so文件地址, 在app目录下搜索so文件
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;liboarp-lib.so&quot;                                                                                           ✘</div><div class="line">./app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/cmake/debug/obj/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/intermediate-jars/debug/jni/armeabi-v7a/liboarp-lib.so</div></pre></td></tr></table></figure></p>
+<p>可以看到android studio编译后生成了许多so文件, 以我的经验正确的so文件一般是这个文件:<code>./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</code>
+然后就可以使用addrline命令了, 格式是a<code>ddr2line -e 文件位置 崩溃地址</code>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">addr2line -e ./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so 000ccb4c</div></pre></td></tr></table></figure></p>
+<p>如果so文件正确的话会打印如下信息,oar_player_gl_thread.c就是崩溃的cpp文件, 152, 然后检查下定位出来的位置是否在DEBUG信息里给出的函数里
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">oar_player_gl_thread.c:152</div></pre></td></tr></table></figure></p>
+<p>如果so文件错误的话会打印问号或者一个不对的位置, 这时就要换so文件多尝试了</p>
+<h3 id="C回调JAVA"><a href="#C回调JAVA" class="headerlink" title="C回调JAVA"></a>C回调JAVA</h3><ol>
+<li><p>c中返回一个字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中返回一个数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line"></div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
+</li>
+<li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/07/ffmpeg-compile-mac/" itemprop="url">
+                  FFMPEG编译之Mac
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T21:28:32+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
+                    <span itemprop="name">FFMPEG</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
+<ol>
+<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other <code>*</code>nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
+<li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
+<li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
+</ol>
+<h3 id="手动编译FFMPEG"><a href="#手动编译FFMPEG" class="headerlink" title="手动编译FFMPEG"></a>手动编译FFMPEG</h3><h4 id="1-下载FFMPEG源码"><a href="#1-下载FFMPEG源码" class="headerlink" title="1.下载FFMPEG源码"></a>1.下载FFMPEG源码</h4><p>使用<code>git clone https://github.com/FFmpeg/FFmpeg</code>从github下载ffmpeg源码,切换到要使用的目标分支(这里使用release/3.3):<code>git checkout -b r3.3 origin/release/3.3</code>,或者直接从github下载分支<code>release/3.3</code>的压缩包,解压.</p>
+<h4 id="2-准备Xcode"><a href="#2-准备Xcode" class="headerlink" title="2.准备Xcode"></a>2.准备Xcode</h4><p>Starting with Lion 10.7, Xcode is available for free from the Mac App Store and is required to compile anything on your Mac. Make sure you install the Command Line Tools from Preferences &gt; Downloads &gt; Components. Older versions are still available with an AppleID and free Developer account at ​developer.apple.com.</p>
+<h4 id="3-准备HomeBrew工具"><a href="#3-准备HomeBrew工具" class="headerlink" title="3.准备HomeBrew工具"></a>3.准备HomeBrew工具</h4><p>To get ffmpeg for OS X, you first have to install ​Homebrew. If you don’t want to use Homebrew, see the section below.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
+<p>Then:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install automake fdk-aac git lame libass libtool libvorbis libvpx \</div><div class="line">opus sdl shtool texi2html theora wget x264 x265 xvid yasm</div></pre></td></tr></table></figure></p>
+<p>Mac OS X Lion comes with Freetype already installed (older versions may need ‘X11’ selected during installation), but in an atypical location: /usr/X11. Running freetype-config in Terminal can give the locations of the individual folders, like headers, and libraries, so be prepared to add lines like CFLAGS=<code>freetype-config --cflags</code> LDFLAGS=<code>freetype-config --libs</code> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig before ./configure or add them to your $HOME/.profile file.</p>
+<h4 id="4-编译"><a href="#4-编译" class="headerlink" title="4.编译"></a>4.编译</h4><p>Once you have compiled all of the codecs/libraries you want, you can now download the FFmpeg source either with Git or the from release tarball links on the website. Study the output of ./configure –help and make sure you’ve enabled all the features you want, remembering that –enable-nonfree and –enable-gpl will be necessary for some of the dependencies above. A sample command is:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git clone http://source.ffmpeg.org/git/ffmpeg.git ffmpeg</div><div class="line">cd ffmpeg</div><div class="line">./configure  --prefix=/usr/local/ffmpeg --enable-gpl --enable-nonfree --enable-libass \</div><div class="line">--enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \</div><div class="line">--enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid</div><div class="line">make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
+<p><code>--prefix</code>指定编译完成后安装路径,这里指定到<code>/usr/local/ffmpeg</code>,安装完成会在<code>/usr/local/ffmpeg</code>下生成:bin,include,lib,share四个目录</p>
+<h3 id="安装环境介绍"><a href="#安装环境介绍" class="headerlink" title="安装环境介绍"></a>安装环境介绍</h3><p>A package consists of several related files which are installed in several directories. The configure step usually allows the user to specify the so-called install prefix, and is usually specified through the configure option configure –prefix=PREFIX, where PREFIX usually is by default /usr/local. The prefix specifies the common directory where all the components are installed.</p>
+<p>The following directories are usually involved in the installation:</p>
+<ul>
+<li><code>PREFIX/bin</code>: contains the generated binaries (e.g. ffmpeg, ffplay, ffprobe etc. in the case of FFmpeg)</li>
+<li><code>PREFIX/include</code>: contains the library headers (e.g. libavutil/avstring.h, libavcodec/avcodec.h, libavformat/avformat.h etc. in case of FFmpeg) required to compile applications linked against the package libraries</li>
+<li><code>PREFIX/lib</code>: contains the generated libraries (e.g. libavutil, libavcodec, libavformat etc. in the case of FFmpeg)</li>
+<li><code>PREFIX/share</code>: contains various system-independent components; especially documentation files and examples
+By specifying the prefix it is possible to define the installation layout.</li>
+</ul>
+<p>By using a shared prefix like /usr/local/, different packages will be installed in the same directory, so in general it will be more difficult to revert the installation.</p>
+<p>Using a prefix like /opt/PROJECT/, the project will be installed in a dedicated directory, and to remove from the system you can simply remove the /opt/PREFIX path. On the other hand, such installation will require to edit all the environment variables to point to the custom path.</p>
+<h3 id="Environment-variables"><a href="#Environment-variables" class="headerlink" title="Environment variables"></a>Environment variables</h3><p>Several variables defined in the environment affect your package install. In particular, depending on your installation prefix, you may need to update some of these variables in order to make sure that the installed components can be found by the system tools.</p>
+<p>The list of environment variables can be shown through the command env.</p>
+<p>A list of the affected variables follows:</p>
+<ul>
+<li>PATH: defines the list of :-separated paths where the system looks for binaries. For example if you install your package in /usr/local/, you should update the PATH so that it will contain /usr/local/bin. This can be done for example through the command export PATH=/usr/local/bin:$PATH.</li>
+<li>LD_LIBRARY_PATH: contains the :-separated paths where the system looks for libraries. For example if you install your package in /usr/local/, you should update the LD_LIBRARY_PATH so that it will contain /usr/local/lib. This can be done for example through the command export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH. This variable is sometimes deprecated in favor of the use of ldconfig.</li>
+<li>CFLAGS: contains flags used by the C compiler, and usually includes preprocessing directives like -IPREFIX/include or compilation flags. Custom CFLAGS are usually prefixed to the source package compiler flags by the source package build system. Alternatively many build systems allow to specify the configure option -extra-cflags.</li>
+<li>LDFLAGS: these are directives used by the linker, and usually include linking directives like -LPREFIX/lib needed to find libraries installed in custom paths. Custom LDFLAGS are usually prefixed to the source package linker flags by the source package build system. Alternatively, many build systems allow to specify the configure option -extra-ldflags.</li>
+<li>PKG_CONFIG_PATH: contains the :-separated paths used by pkg-config to detect the pkg-config files used by many build systems to detect the custom CFLAGS/LDFLAGS used by a specific library.
+In case you installed a package in a non standard path, you need to update these environment libraries so that system tools will be able to detect the package components. This is especially required when running a configure script for a package relying on other installed libraries/headers/tools.</li>
+</ul>
+<p>Environment variables are usually defined in the profile file, for example .profile defined in the user directory for sh/bash users, and in /etc/profile. This file can be edited to permanently set the custom environment. Alternatively, the variables can be set in a script or in a particular shell session.</p>
+<p>Remember to export the variables to the child process, e.g. using the export command. Read the fine documentation of your shell for more detailed information.</p>
+<h3 id="MAC下的动态链接库"><a href="#MAC下的动态链接库" class="headerlink" title="MAC下的动态链接库"></a>MAC下的动态链接库</h3><h4 id="扩展名"><a href="#扩展名" class="headerlink" title="扩展名"></a>扩展名</h4><p>Windows下.DLL,Linux下.so,Mac OS X下的扩展名是.dylib。
+.dylib是Mach-O格式，也就是Mac OS X下的二进制文件格式。Mac OS X提供了一系列
+工具，用于创建和访问动态链接库。</p>
+<ul>
+<li>编译器/usr/bin/cc，也就是gcc了，Apple改过的。这个主要还是一个壳，去调用其他
+的一些部件。当然同时还有/usr/bin/c++，等等。</li>
+<li>汇编器/usr/bin/as</li>
+<li>链接器/usr/bin/ld</li>
+</ul>
+<h4 id="MAC下创建动态链接库步骤"><a href="#MAC下创建动态链接库步骤" class="headerlink" title="MAC下创建动态链接库步骤:"></a>MAC下创建动态链接库步骤:</h4><ol>
+<li>首先是生成module文件，也就是.o文件。这跟一般的unix没什么区别。例如<code>cc -c a.c b.c</code>,就得到a.o和b.o</li>
+<li>可以用ld来合并.o文件，比如<code>ld -r -o c.o a.o b.o</code></li>
+<li>然后可以用libtool来创建动态链接库:<code>libtool -dynamic -o c.dylib a.o b.o</code>.（ 这里也可以用<code>libtool -static -o c.a a.o b.o</code>就创建静态库）</li>
+</ol>
+<p>如果用gcc直接编译，我记得linux下一般是可以:
+<code>gcc -shared -o c.so a.c b.c</code>
+而在Mac OS X下需要:
+<code>gcc -dynamiclib -o c.dylib a.c b.c</code></p>
+<h4 id="动态链接库的工具"><a href="#动态链接库的工具" class="headerlink" title="动态链接库的工具"></a>动态链接库的工具</h4><p>nm是最常用的，这个用法跟linux下差不多:<code>nm c.dylib</code>,可以看到导出符号表，等等。
+另一个常用的工具是otool，这个是Mac OS X独有的。比如想看看c.dylib的依赖关系<code>otool -L c.dylib</code></p>
+<h3 id="官网方法"><a href="#官网方法" class="headerlink" title="官网方法"></a>官网方法</h3><ul>
+<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
+<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
+</ul>
+<h3 id="编译ffmpeg3-3结果没有ffplay"><a href="#编译ffmpeg3-3结果没有ffplay" class="headerlink" title="编译ffmpeg3.3结果没有ffplay"></a>编译ffmpeg3.3结果没有ffplay</h3><p>因为系统没有sdl环境或sdl版本不匹配,ffmpeg3.3需要sdl2</p>
+<p><a href="http://www.libsdl.org/download-2.0.php" target="_blank" rel="external">http://www.libsdl.org/download-2.0.php</a> 下载Source Code SDL2-2.0.5.zip - GPG signed,解压缩,执行命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure  </div><div class="line">make  </div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>进行编译</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/03/gl-fbo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1994,361 +2364,6 @@ hook在DEPS中的写法，一般是：
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-signalling/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/27/webrtc-signalling/" itemprop="url">
-                  webrtc之信令交互流程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T14:47:28+08:00">
-                2017-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>无论是使用前端JS的WebRTC API接口，还是在WebRTC源码上构建自己的对聊框架，都需要遵循以下执行流程：
-<img src="http://images.wodekouwei.com/protocol/webrtc_signalling.png" alt="image"></p>
-<p>上述序列中，WebRTC并不提供Stun服务器和Signal服务器，服务器端需要自己实现。Stun服务器可以用google提供的实现stun协议的测试服务器（stun:stun.l.google.com:19302），Signal服务器则完全需要自己实现了，它需要在ClientA和ClientB之间传送彼此的SDP信息和candidate信息，ClientA和ClientB通过这些信息建立P2P连接来传送音视频数据。 stun/turn、relay服务器的实现在WebRTC源码中都有示例。</p>
-<p>上述序列中，标注的场景是ClientA向ClientB发起对聊请求，调用描述如下：</p>
-<ol>
-<li>ClientA首先创建PeerConnection对象，然后打开本地音视频设备，将音视频数据封装成MediaStream添加到PeerConnection中。</li>
-<li>ClientA调用PeerConnection的CreateOffer方法创建一个用于offer的SDP对象，SDP对象中保存当前音视频的相关参数。ClientA通过PeerConnection的SetLocalDescription方法将该SDP对象保存起来，并通过Signal服务器发送给ClientB。</li>
-<li>ClientB接收到ClientA发送过的offer SDP对象，通过PeerConnection的SetRemoteDescription方法将其保存起来，并调用PeerConnection的CreateAnswer方法创建一个应答的SDP对象，通过PeerConnection的SetLocalDescription的方法保存该应答SDP对象并将它通过Signal服务器发送给ClientA。</li>
-<li>ClientA接收到ClientB发送过来的应答SDP对象，将其通过PeerConnection的SetRemoteDescription方法保存起来。</li>
-<li>在SDP信息的offer/answer流程中，ClientA和ClientB已经根据SDP信息创建好相应的音频Channel和视频Channel并开启Candidate数据的收集，Candidate数据可以简单地理解成Client端的IP地址信息（本地IP地址、公网IP地址、Relay服务端分配的地址）。</li>
-<li>当ClientA收集到Candidate信息后，PeerConnection会通过OnIceCandidate接口给ClientA发送通知，ClientA将收到的Candidate信息通过Signal服务器发送给ClientB，ClientB通过PeerConnection的AddIceCandidate方法保存起来。同样的操作ClientB对ClientA再来一次。</li>
-<li>这样ClientA和ClientB就已经建立了音视频传输的P2P通道，ClientB接收到ClientA传送过来的音视频流，会通过PeerConnection的OnAddStream回调接口返回一个标识ClientA端音视频流的MediaStream对象，在ClientB端渲染出来即可。同样操作也适应ClientB到ClientA的音视频流的传输。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/25/server-git/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/25/server-git/" itemprop="url">
-                  git服务搭建
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T16:36:53+08:00">
-                2017-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="纯git-server"><a href="#纯git-server" class="headerlink" title="纯git server"></a>纯git server</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><p>环境:ubuntu16.0.4</p>
-<ol>
-<li>安装Git-Core:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装openssh-server和openssh-client:<code>sudo apt-get install openssh-server openssh-client</code></li>
-<li>安装python tool:<code>sudo apt-get install python-setuptools</code></li>
-<li>安装gitosis:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/res0nat0r/gitosis.git</div><div class="line"></div><div class="line">cd gitosis/</div><div class="line"></div><div class="line">sudo python setup.py install</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="添加管理账号"><a href="#添加管理账号" class="headerlink" title="添加管理账号"></a>添加管理账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo adduser \</div><div class="line">    --system \</div><div class="line">    --shell /bin/sh \</div><div class="line">    --gecos &apos;git version control&apos; \</div><div class="line">    --group \</div><div class="line">    --disabled-password \</div><div class="line">    --home /home/git \</div><div class="line">    git</div></pre></td></tr></table></figure>
-<p>如果已有git账户,可以替换成gitmanager</p>
-<h4 id="创建链接映射"><a href="#创建链接映射" class="headerlink" title="创建链接映射"></a>创建链接映射</h4><p>由于gitosis默认状态下会将仓库放在用户的repositories目录下，例如gitmanager用户的仓库地址默认在
-/home/gitmanager/repositories/目录下，这里我们需要创建一个链接映射。让他指向我们前面创建的专门用于存放项目的仓库目录/home/gitrepository。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /home/gitrepository /home/gitmanager/repositories</div></pre></td></tr></table></figure></p>
-<h4 id="初始化管理用户"><a href="#初始化管理用户" class="headerlink" title="初始化管理用户"></a>初始化管理用户</h4><ol>
-<li><p>拷贝管理用户公钥到<code>/tmp/</code>下,如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub gitmanager@192.168.0.68:/tmp/</div></pre></td></tr></table></figure>
-</li>
-<li><p>使用拷贝来的公钥初始化gitosis:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H -u gitmanager gitosis-init &lt; /tmp/id_ras.pub</div><div class="line">sudo chmod 755 /home/gitmanager/repositories/gitosis-admin.git/hooks/post-update</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="配置账号"><a href="#配置账号" class="headerlink" title="配置账号"></a>配置账号</h4><ol>
-<li>验证ssh<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ssh gitmanager@192.168.0.68</div><div class="line">TY allocation request failed on channel 0</div><div class="line">ERROR:gitosis.serve.main:Need SSH_ORIGINAL_COMMAND in environment.</div><div class="line">  Connection to gitserver closed.</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>说明 Gitosis 认出了该用户的身份，但由于没有运行任何 Git 命令，所以它切断了连接。</p>
-<ol>
-<li>克隆gitosis管理仓库:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone gitmanager@192.168.0.68:gitosis-admin.git</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这会得到一个名为 gitosis-admin 的工作目录，主要由两部分组成：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./gitosis.conf</div><div class="line">./keydir</div></pre></td></tr></table></figure></p>
-<p>gitosis.conf 文件是用来设置用户、仓库和权限的控制文件。keydir 目录则是保存所有具有访问权限用户公钥的地方— 每人一个。在 keydir 里的文件名（比如上面的 qingkouwei.pub） 会自动从使用 gitosis-init 脚本导入的公钥尾部的描述中获取该名字。</p>
-<p>看一下 gitosis.conf 文件的内容，它应该只包含与刚刚克隆的 gitosis-admin 相关的信息：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[gitosis]</div><div class="line"></div><div class="line">[group gitosis-admin]</div><div class="line">members = qingkouwei</div><div class="line">writable = gitosis-admin</div></pre></td></tr></table></figure></p>
-<p>要创建项目demo,在里面加入:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>要为demo项目添加用户user1:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
-<p>并将用户user1的公钥计入到keydir,并且公钥名.pub和members里面的名字对应.
-要添加对demo项目只读的用户:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div><div class="line"></div><div class="line">[group demo]</div><div class="line">members = user2</div><div class="line">readonly = demo</div></pre></td></tr></table></figure></p>
-<p>修改完配置文件和keydir,使用git push到gitosis-admin服务器.即可直接<code>git add remote add suervename gitmanager@192.168.0.68:demo.git</code>,然后直接将本地目录推送到demo仓库,不需要再服务器手动创建demo仓库,gitosis会帮忙自动创建.</p>
-<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
-<li><code>ERROR:gitosis.serve.main:Repository read access denied</code>
-原因:
-gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub</li>
-</ol>
-<p>解决方法:
-使keydir的名称与gitosis中members所指的名称一致。 改为members = foo 或 公密名称改为foo@bar.pub</p>
-<ol>
-<li>clone时报does not appear to be a git repository</li>
-</ol>
-<p>原因:
-clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
-<blockquote>
-<p>参考:<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis</a></p>
-</blockquote>
-<h3 id="gitlab服务搭建"><a href="#gitlab服务搭建" class="headerlink" title="gitlab服务搭建"></a>gitlab服务搭建</h3>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2398,7 +2413,7 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2409,7 +2424,7 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2420,7 +2435,7 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-count">50</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2521,7 +2536,7 @@ clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

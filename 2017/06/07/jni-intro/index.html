@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
+<meta name="description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 native崩溃分析定位crash错误位置首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息. 在">
 <meta name="keywords" content="Android,JNI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jni介绍">
 <meta property="og:url" content="http://wodekouwei.com/2017/06/07/jni-intro/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
-<meta property="og:updated_time" content="2017-11-07T01:45:35.000Z">
+<meta property="og:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 native崩溃分析定位crash错误位置首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息. 在">
+<meta property="og:updated_time" content="2017-12-27T02:52:19.946Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jni介绍">
-<meta name="twitter:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 C回调JAVA c中返回一个字符串 1（*env）-&amp;gt;NewStringUTF(env,&amp;quot;Huazi 华仔&amp;quot;);  c中返回一个数组 12345678910.............">
+<meta name="twitter:description" content="NDK技巧 加快ndk-build编译速度 NDK编译时加上-j参数,如:1ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行   测试后编译速度至少可以提高一倍 native崩溃分析定位crash错误位置首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息. 在">
 
 
 
@@ -419,6 +419,23 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
 </li>
 </ol>
 <p>测试后编译速度至少可以提高一倍</p>
+<h3 id="native崩溃分析"><a href="#native崩溃分析" class="headerlink" title="native崩溃分析"></a>native崩溃分析</h3><h4 id="定位crash错误位置"><a href="#定位crash错误位置" class="headerlink" title="定位crash错误位置"></a>定位crash错误位置</h4><p>首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息.
+在DEBUG信息里找到backtrace, 这段就是系统给出的造成崩溃的信息, 但仅仅给出了是哪个函数, 而没有准确给出是那一行代码造成的崩溃.
+记下#00 pc 00013122(红框3)这个信息, 这个信息就是用来定位崩溃代码的地址
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Build fingerprint: &apos;Huawei/H60-L03/hwH60:5.1.1/HDH60-L03/C01B535:user/release-keys&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Revision: &apos;0&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: ABI: &apos;arm&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: pid: 6189, tid: 6762, name: Thread-4510  &gt;&gt;&gt; com.wodekouwei.demo &lt;&lt;&lt;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 0x428d738d</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r0 428d737d  r1 b86eae00  r2 00000001  r3 00000000</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r4 b8836580  r5 b88365c0  r6 b8836580  r7 9e4e0d48</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r8 b8836588  r9 b8836588  sl b6da8871  fp 9e4e0dd0</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     ip a1ca2c90  sp 9e4e0cc0  lr a1c358c7  pc a1c35b4c  cpsr 200f0030</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG: backtrace:</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #00 pc 000ccb4c  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #01 pc 000cc8c3  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so (oar_player_gl_thread+214)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #02 pc 0001688f  /system/lib/libc.so (__pthread_start(void*)+30)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #03 pc 000148a3  /system/lib/libc.so (__start_thread+6)</div><div class="line">12-27 10:45:42.005 3655-3655/? E/Thermal-daemon: [ap] temp_new :34  temp_old :33</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:3001] from screen [on:0 period:-1780713098] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  L2ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:1] from screen [on:0 period:-1780713097] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.390 5083-5397/? E/WifiStateMachine: fetchRssiLinkSpeedAndFrequencyNative rssi=-49 linkspeed=26 SSID=&quot;wonxing-H3C&quot;</div></pre></td></tr></table></figure></p>
+<p>想要准确定位崩溃代码的地址的话我们就需要用到ndk工具包里的adrr2line这个工具了
+首先先找到这个工具, linux系统这个工具在如下位置
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/gavinandre/Documents/Android/android-sdk-linux/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line</div></pre></td></tr></table></figure></p>
+<p>在该目录下做个软链接后就能在任何目录使用这个命令了
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s arm-linux-androideabi-addr2line /usr/local/bin/addr2line</div></pre></td></tr></table></figure></p>
+<p>找到造成崩溃的so文件地址, 在app目录下搜索so文件
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;liboarp-lib.so&quot;                                                                                           ✘</div><div class="line">./app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/cmake/debug/obj/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/intermediate-jars/debug/jni/armeabi-v7a/liboarp-lib.so</div></pre></td></tr></table></figure></p>
+<p>可以看到android studio编译后生成了许多so文件, 以我的经验正确的so文件一般是这个文件:<code>./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</code>
+然后就可以使用addrline命令了, 格式是a<code>ddr2line -e 文件位置 崩溃地址</code>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">addr2line -e ./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so 000ccb4c</div></pre></td></tr></table></figure></p>
+<p>如果so文件正确的话会打印如下信息,oar_player_gl_thread.c就是崩溃的cpp文件, 152, 然后检查下定位出来的位置是否在DEBUG信息里给出的函数里
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">oar_player_gl_thread.c:152</div></pre></td></tr></table></figure></p>
+<p>如果so文件错误的话会打印问号或者一个不对的位置, 这时就要换so文件多尝试了</p>
 <h3 id="C回调JAVA"><a href="#C回调JAVA" class="headerlink" title="C回调JAVA"></a>C回调JAVA</h3><ol>
 <li><p>c中返回一个字符串</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
@@ -593,7 +610,7 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -604,7 +621,7 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -615,7 +632,7 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-count">50</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -709,7 +726,7 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#NDK技巧"><span class="nav-number">1.</span> <span class="nav-text">NDK技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C回调JAVA"><span class="nav-number">2.</span> <span class="nav-text">C回调JAVA</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#NDK技巧"><span class="nav-number">1.</span> <span class="nav-text">NDK技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#native崩溃分析"><span class="nav-number">2.</span> <span class="nav-text">native崩溃分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定位crash错误位置"><span class="nav-number">2.1.</span> <span class="nav-text">定位crash错误位置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C回调JAVA"><span class="nav-number">3.</span> <span class="nav-text">C回调JAVA</span></a></li></ol></div>
             
 
           </div>
@@ -732,7 +749,7 @@ NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td cl
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
