@@ -101,7 +101,7 @@
 <meta property="og:image" content="http://images.wodekouwei.com/media/aac_ld2.jpg">
 <meta property="og:image" content="http://images.wodekouwei.com/media/aac-he.jpg">
 <meta property="og:image" content="http://images.wodekouwei.com/media/aac_format.jpg">
-<meta property="og:updated_time" content="2018-01-08T11:37:13.372Z">
+<meta property="og:updated_time" content="2018-01-09T04:37:48.827Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="音视频参数之Profile">
 <meta name="twitter:description" content="前两天发现公司产品 触发 有导入从微信等下载的外部小视频时失败的情况, 触发 导入视频时使用开源库media-for-mobile对视频进行重新编码.media-for-mobile使用android系统接口android.media.MediaExtractor对mp4文件解复用,使用android硬件编解码接口android.media.MediaCodec对视频解码-处理-编码操作,最">
@@ -487,55 +487,293 @@ Advanced Audio Coding (AAC) 是一个有损压缩的音频编码集（其实新�
 <h5 id="AOT-Audio-Object-Types"><a href="#AOT-Audio-Object-Types" class="headerlink" title="AOT(Audio Object Types)"></a>AOT(Audio Object Types)</h5><p>AOT就是MPEG-4 Audio Object Types的缩写。能力集协商时用的是AOT ID。
 也正是由于AAC的AOT繁多，导致识别使用AAC的用户很困扰。
 AAC-LC 可认为是AOT为2的AAC。
-下表是AOT的对应表。
-|object type ID|Audio Object Type| z|description|
-|—|—|—|—|
-|0| Null|||
-|1| AAC Main|1999|contains AACLC|
-|2| AAC LC (Low Complexity)|1999|used in the “AAC Profile”.MPEG-4 AAC LC Audio Object Type is based on the MPEG-2 Part7 Low Complexity profile(LC)combined with Perceptual Noise Subsitution(PNS)(define in MPEG-4 part 3 Subpart 4)|
-|3| AAC SSR (Scalable Sample Rate)|1999|Mpeg4 AAC SSR Audio Object Type is based on the MPEG-2 Parg 7 Scalable Sampling Rate profile(SSR)combined with Perceptual Noise Subsitution(PNS)(defined in MPEG-4 Parg 3 Subpart 4)|
-|4| AAC LTP (Long Term Prediction)|1999| contains AAC LC|
-|5| SBR (Spectral Band Replication)|2003| used with AAC LC in the “High Efficiency AAC Profile”(HE-AAC v1)|
-|6| AAC Scalable|1999||
-|7| TwinVQ|1999|audio coding at very low bitrates|
-|8| CELP (Code Excited Linear Prediction)|1999|speech coding|
-|9| HXVC (Harmonic Vector eXcitation Coding)|speech coding|
-|10| Reserved|||
-|11| Reserved|||
-|12| TTSI (Text-To-Speech Interface)|||
-|13| Main Synthesis|||
-|14| Wavetable Synthesis|||
-|15| General MIDI|||
-|16| Algorithmic Synthesis and Audio Effects|||
-|17| ER (Error Resilient) AAC LC|||
-|18| Reserved|||
-|19| ER AAC LTP|||
-|20| ER AAC Scalable|||
-|21| ER TwinVQ|||
-|22| ER BSAC (Bit-Sliced Arithmetic Coding)|||
-|23| ER AAC LD (Low Delay)|||
-|24| ER CELP|||
-|25| ER HVXC|||
-|26| ER HILN (Harmonic and Individual Lines plus Noise)|||
-|27| ER Parametric|||
-|28| SSC (SinuSoidal Coding)|||
-|29| PS (Parametric Stereo)|||
-|30| MPEG Surround|||
-|31| (Escape value)|||
-|32| Layer-1|||
-|33| Layer-2|||
-|34| Layer-3|||
-|35| DST (Direct Stream Transfer)|||
-|36| ALS (Audio Lossless)|||
-|37| SLS (Scalable LosslesS)|||
-|38| SLS non-core|||
-|39| ER AAC ELD (Enhanced Low Delay)|||
-|40| SMR (Symbolic Music Representation) Simple|||
-|41| SMR Main|||
-|42| USAC (Unified Speech and Audio Coding) (no SBR)|||
-|43| SAOC (Spatial Audio Object Coding)|||
-|44| LD MPEG Surround|||
-|45| USAC|||</p>
+下表是AOT的对应表。</p>
+<table>
+<thead>
+<tr>
+<th>object type ID</th>
+<th>Audio Object Type</th>
+<th>z</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Null</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>AAC Main</td>
+<td>1999</td>
+<td>contains AACLC</td>
+</tr>
+<tr>
+<td>2</td>
+<td>AAC LC (Low Complexity)</td>
+<td>1999</td>
+<td>used in the “AAC Profile”.MPEG-4 AAC LC Audio Object Type is based on the MPEG-2 Part7 Low Complexity profile(LC)combined with Perceptual Noise Subsitution(PNS)(define in MPEG-4 part 3 Subpart 4)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AAC SSR (Scalable Sample Rate)</td>
+<td>1999</td>
+<td>Mpeg4 AAC SSR Audio Object Type is based on the MPEG-2 Parg 7 Scalable Sampling Rate profile(SSR)combined with Perceptual Noise Subsitution(PNS)(defined in MPEG-4 Parg 3 Subpart 4)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AAC LTP (Long Term Prediction)</td>
+<td>1999</td>
+<td>contains AAC LC</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SBR (Spectral Band Replication)</td>
+<td>2003</td>
+<td>used with AAC LC in the “High Efficiency AAC Profile”(HE-AAC v1)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>AAC Scalable</td>
+<td>1999</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>TwinVQ</td>
+<td>1999</td>
+<td>audio coding at very low bitrates</td>
+</tr>
+<tr>
+<td>8</td>
+<td>CELP (Code Excited Linear Prediction)</td>
+<td>1999</td>
+<td>speech coding</td>
+</tr>
+<tr>
+<td>9</td>
+<td>HXVC (Harmonic Vector eXcitation Coding)</td>
+<td>speech coding</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Reserved</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Reserved</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>TTSI (Text-To-Speech Interface)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Main Synthesis</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Wavetable Synthesis</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>General MIDI</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Algorithmic Synthesis and Audio Effects</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>17</td>
+<td>ER (Error Resilient) AAC LC</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Reserved</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>19</td>
+<td>ER AAC LTP</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>ER AAC Scalable</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>21</td>
+<td>ER TwinVQ</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>22</td>
+<td>ER BSAC (Bit-Sliced Arithmetic Coding)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>23</td>
+<td>ER AAC LD (Low Delay)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>24</td>
+<td>ER CELP</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>25</td>
+<td>ER HVXC</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>26</td>
+<td>ER HILN (Harmonic and Individual Lines plus Noise)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>27</td>
+<td>ER Parametric</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>28</td>
+<td>SSC (SinuSoidal Coding)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>29</td>
+<td>PS (Parametric Stereo)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td>MPEG Surround</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>31</td>
+<td>(Escape value)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>32</td>
+<td>Layer-1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>33</td>
+<td>Layer-2</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>34</td>
+<td>Layer-3</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>35</td>
+<td>DST (Direct Stream Transfer)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>36</td>
+<td>ALS (Audio Lossless)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>37</td>
+<td>SLS (Scalable LosslesS)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>38</td>
+<td>SLS non-core</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>39</td>
+<td>ER AAC ELD (Enhanced Low Delay)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>40</td>
+<td>SMR (Symbolic Music Representation) Simple</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>41</td>
+<td>SMR Main</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>42</td>
+<td>USAC (Unified Speech and Audio Coding) (no SBR)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>43</td>
+<td>SAOC (Spatial Audio Object Coding)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>44</td>
+<td>LD MPEG Surround</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>45</td>
+<td>USAC</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h5 id="MPEG-4-Audio-Profile"><a href="#MPEG-4-Audio-Profile" class="headerlink" title="MPEG-4 Audio Profile"></a>MPEG-4 Audio Profile</h5><p>  MPEG-4在音频编码方向对音频能力集合的描述称为Audio Profiles，音频能力描述基于AOT
   <img src="http://images.wodekouwei.com/media/mpeg_audio_profile.jpg" alt="image"></p>
 <ol>
@@ -613,32 +851,36 @@ The media type gives the sample rate and number of channels prior to the applica
 <li>.M4A - 为了区别纯音频MP4文件和包含视频的MP4文件而由苹果(Apple)公司使用的扩展名，Apple iTunes 对纯音频MP4文件采用了”.M4A”命名。M4A的本质和音频MP4相同，故音频MP4文件亦可直接更改扩展名为M4A。是 MPEG-4 Audio 标准容器，而 AAC 作为一个容器是 MPEG-2 标准的。现在的 AAC-LC 就是以前制定的 MPEG-2 时代的 AAC 的更名延续，而 MPEG-4 时代的 AAC 叫 AAC-HE .AAC-LC 可以用 AAC (ADTS) 作容器也可以用 MP4 做容器，两者可以用 MP4Box 的一个命令直接转换，而 AAC-HE 只能用 MP4 做容器。</li>
 </ul>
 <h5 id="Sampling-Frequencies"><a href="#Sampling-Frequencies" class="headerlink" title="Sampling Frequencies"></a>Sampling Frequencies</h5><p>There are 13 supported frequencies:</p>
-<p>0: 96000 Hz
-1: 88200 Hz
-2: 64000 Hz
-3: 48000 Hz
-4: 44100 Hz
-5: 32000 Hz
-6: 24000 Hz
-7: 22050 Hz
-8: 16000 Hz
-9: 12000 Hz
-10: 11025 Hz
-11: 8000 Hz
-12: 7350 Hz
-13: Reserved
-14: Reserved
-15: frequency is written explictly</p>
+<ul>
+<li>0: 96000 Hz</li>
+<li>1: 88200 Hz</li>
+<li>2: 64000 Hz</li>
+<li>3: 48000 Hz</li>
+<li>4: 44100 Hz</li>
+<li>5: 32000 Hz</li>
+<li>6: 24000 Hz</li>
+<li>7: 22050 Hz</li>
+<li>8: 16000 Hz</li>
+<li>9: 12000 Hz</li>
+<li>10: 11025 Hz</li>
+<li>11: 8000 Hz</li>
+<li>12: 7350 Hz</li>
+<li>13: Reserved</li>
+<li>14: Reserved</li>
+<li>15: frequency is written explictly</li>
+</ul>
 <h5 id="Channel-Configurations"><a href="#Channel-Configurations" class="headerlink" title="Channel Configurations"></a>Channel Configurations</h5><p>These are the channel configurations:</p>
-<p>0: Defined in AOT Specifc Config
-1: 1 channel: front-center
-2: 2 channels: front-left, front-right
-3: 3 channels: front-center, front-left, front-right
-4: 4 channels: front-center, front-left, front-right, back-center
-5: 5 channels: front-center, front-left, front-right, back-left, back-right
-6: 6 channels: front-center, front-left, front-right, back-left, back-right, LFE-channel
-7: 8 channels: front-center, front-left, front-right, side-left, side-right, back-left, back-right, LFE-channel
-8-15: Reserved</p>
+<ul>
+<li>0: Defined in AOT Specifc Config</li>
+<li>1: 1 channel: front-center</li>
+<li>2: 2 channels: front-left, front-right</li>
+<li>3: 3 channels: front-center, front-left, front-right</li>
+<li>4: 4 channels: front-center, front-left, front-right, back-center</li>
+<li>5: 5 channels: front-center, front-left, front-right, back-left, back-right</li>
+<li>6: 6 channels: front-center, front-left, front-right, back-left, back-right, LFE-channel</li>
+<li>7: 8 channels: front-center, front-left, front-right, side-left, side-right, back-left, back-right, LFE-channel</li>
+<li>8-15: Reserved</li>
+</ul>
 <h5 id="术语说明"><a href="#术语说明" class="headerlink" title="术语说明"></a>术语说明</h5><ul>
 <li>AAC: Advanced Audio Coding 高级音频编码</li>
 <li>AAC LC: AAC with Low Complexity AAC的低复杂度配置</li>
