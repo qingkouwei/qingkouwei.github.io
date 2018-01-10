@@ -1,0 +1,1237 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,tips," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="四大组件ActivityActivity生命周期 不同场景下Activity生命周期的变化过程 启动Activity： onCreate()—&amp;gt;onStart()—&amp;gt;onResume()，Activity进入运行状态。 Activity退居后台： 当前Activity转到新的Activity界面或按Home键回到主屏： onPause()—&amp;gt;onStop()，进入停滞状态。 Ac">
+<meta name="keywords" content="Android,tips">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android系列基础知识">
+<meta property="og:url" content="http://wodekouwei.com/2015/04/13/tips-android-knowledge/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="四大组件ActivityActivity生命周期 不同场景下Activity生命周期的变化过程 启动Activity： onCreate()—&amp;gt;onStart()—&amp;gt;onResume()，Activity进入运行状态。 Activity退居后台： 当前Activity转到新的Activity界面或按Home键回到主屏： onPause()—&amp;gt;onStop()，进入停滞状态。 Ac">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/activity-lifecycle.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/fragment-lifecycle.png">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/view_mechanism_flow.png">
+<meta property="og:updated_time" content="2018-01-10T10:31:21.690Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android系列基础知识">
+<meta name="twitter:description" content="四大组件ActivityActivity生命周期 不同场景下Activity生命周期的变化过程 启动Activity： onCreate()—&amp;gt;onStart()—&amp;gt;onResume()，Activity进入运行状态。 Activity退居后台： 当前Activity转到新的Activity界面或按Home键回到主屏： onPause()—&amp;gt;onStop()，进入停滞状态。 Ac">
+<meta name="twitter:image" content="http://images.wodekouwei.com/technology/activity-lifecycle.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2015/04/13/tips-android-knowledge/"/>
+
+
+
+
+
+  <title> Android系列基础知识 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2015/04/13/tips-android-knowledge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android系列基础知识
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-13T22:34:05+08:00">
+                2015-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2015/04/13/tips-android-knowledge/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="四大组件"><a href="#四大组件" class="headerlink" title="四大组件"></a>四大组件</h3><h4 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h4><h5 id="Activity生命周期"><a href="#Activity生命周期" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h5><p><img src="http://images.wodekouwei.com/technology/activity-lifecycle.jpg" alt="image"></p>
+<h5 id="不同场景下Activity生命周期的变化过程"><a href="#不同场景下Activity生命周期的变化过程" class="headerlink" title="不同场景下Activity生命周期的变化过程"></a>不同场景下Activity生命周期的变化过程</h5><ul>
+<li>启动Activity： onCreate()—&gt;onStart()—&gt;onResume()，Activity进入运行状态。</li>
+<li>Activity退居后台： 当前Activity转到新的Activity界面或按Home键回到主屏： onPause()—&gt;onStop()，进入停滞状态。</li>
+<li>Activity返回前台： onRestart()—&gt;onStart()—&gt;onResume()，再次回到运行状态。</li>
+<li>Activity退居后台，且系统内存不足， 系统会杀死这个后台状态的Activity，若再次回到这个Activity,则会走onCreate()–&gt;onStart()—&gt;onResume()</li>
+<li>锁定屏与解锁屏幕 只会调用onPause()，而不会调用onStop方法，开屏后则调用onResume()</li>
+</ul>
+<h5 id="Activity-四中launchMode"><a href="#Activity-四中launchMode" class="headerlink" title="Activity 四中launchMode"></a>Activity 四中launchMode</h5><ul>
+<li>standard</li>
+<li>singleTop</li>
+<li>singleTask</li>
+<li>singleInstance
+我们可以在AndroidManifest.xml配置的android:launchMode属性为以上四种之一。</li>
+</ul>
+<ol>
+<li>standard standard模式是默认的启动模式，不用为配置android:launchMode属性即可，当然也可以指定值为standard。standard启动模式，不管有没有已存在的实例，都生成新的实例。</li>
+<li>singleTop 我们在上面的基础上为指定属性android:launchMode=”singleTop”，系统就会按照singleTop启动模式处理跳转行为。跳转时系统会先在栈结构中寻找是否有一个Activity实例正位于栈顶，如果有则不再生成新的，而是直接使用。如果系统发现存在有Activity实例,但不是位于栈顶，重新生成一个实例。 这就是singleTop启动模式，如果发现有对应的Activity实例正位于栈顶，则重复利用，不再生成新的实例。</li>
+<li>singleTask 如果发现有对应的Activity实例，则使此Activity实例之上的其他Activity实例统统出栈，使此Activity实例成为栈顶对象，显示到幕前。</li>
+<li>singleInstance 这种启动模式比较特殊，因为它会启用一个新的栈结构，将Acitvity放置于这个新的栈结构中，并保证不再有其他Activity实例进入。</li>
+</ol>
+<p>LaunchMode使用场景</p>
+<ol>
+<li>singleTop适合接收通知启动的内容显示页面。例如，某个新闻客户端的新闻内容页面，如果收到10个新闻推送，每次都打开一个新闻内容页面是很烦人的。</li>
+<li>singleTask适合作为程序入口点。例如浏览器的主界面。不管从多少个应用启动浏览器，只会启动主界面一次，其余情况都会走onNewIntent，并且会清空主界面上面的其他页面。</li>
+<li>singleInstance应用场景：闹铃的响铃界面。 你以前设置了一个闹铃：上午6点。在上午5点58分，你启动了闹铃设置界面，并按 Home 键回桌面；在上午5点59分时，你在微信和朋友聊天；在6点时，闹铃响了，并且弹出了一个对话框形式的 Activity(名为 AlarmAlertActivity) 提示你到6点了(这个 Activity 就是以 SingleInstance 加载模式打开的)，你按返回键，回到的是微信的聊天界面，这是因为 AlarmAlertActivity 所在的 Task 的栈只有他一个元素， 因此退出之后这个 Task 的栈空了。如果是以 SingleTask 打开 AlarmAlertActivity，那么当闹铃响了的时候，按返回键应该进入闹铃设置界面。<h5 id="fragment"><a href="#fragment" class="headerlink" title="fragment"></a>fragment</h5><img src="http://images.wodekouwei.com/technology/fragment-lifecycle.png" alt="image"></li>
+</ol>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><ol>
+<li>若Activity已经销毁,此时AsynTask执行完并返回结果,会报异常么? 当一个App旋转时，整个Activity会被销毁和重建。当Activity重启时，AsyncTask中对该Activity的引用是无效的，因此onPostExecute()就不会起作用，若AsynTask正在执行，折会报 view not attached to window manager 异常.同样也是生命周期的问题，在 Activity 的onDestory()方法中调用Asyntask.cancal方法，让二者的生命周期同步</li>
+<li>内存不足时,系统会杀死后台的Activity,如果需要进行一些临时状态的保存,在哪个方法进行:Activity的 onSaveInstanceState() 和 onRestoreInstanceState()并不是生命周期方法,不同于 onCreate()、onPause()等生命周期方法，它们并不一定会被触发。当应用遇到意外情况（如：内存不足、用户直接按Home键）由系统销毁一个Activity，onSaveInstanceState() 会被调用。但是当用户主动去销毁一个Activity时，例如在应用中按返回键，onSaveInstanceState()就不会被调用。除非该activity是被用户主动销毁的，通常onSaveInstanceState()只适合用于保存一些临时性的状态，而onPause()适合用于数据的持久化保存。</li>
+<li>Android两个应用能在同一个任务栈吗？栈一般以包名命名，两个应用的签名和udid要相同</li>
+</ol>
+<h4 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h4><h5 id="保证Service在后台不被kill的方法"><a href="#保证Service在后台不被kill的方法" class="headerlink" title="保证Service在后台不被kill的方法"></a>保证Service在后台不被kill的方法</h5><ol>
+<li>Service设置成START_STICKY kill 后会被重启（等待5秒左右），重传Intent，保持与重启前一样</li>
+<li>通过 startForeground将进程设置为前台进程， 做前台服务，优先级和前台应用一个级别​，除非在系统内存非常缺，否则此进程不会被 kill</li>
+<li>双进程Service： 让2个进程互相保护**，其中一个Service被清理后，另外没被清理的进程可以立即重启进程</li>
+<li>QQ黑科技: 在应用退到后台后，另起一个只有 1 像素的页面停留在桌面上，让自己保持前台状态，保护自己不被后台清理工具杀死</li>
+<li>在已经root的设备下，修改相应的权限文件,将App伪装成系统级的应用 Android4.0系列的一个漏洞，已经确认可行</li>
+<li>用C编写守护进程(即子进程) : Android系统中当前进程(Process)fork出来的子进程，被系统认为是两个不同的进程。当父进程被杀死的时候，子进程仍然可以存活，并不受影响。鉴于目前提到的在Android-&gt;- Service层做双守护都会失败，我们可以fork出c进程，多进程守护。死循环在那检查是否还存在，具体的思路如下（Android5.0以上的版本不可行）</li>
+<li>用C编写守护进程(即子进程)，守护进程做的事情就是循环检查目标进程是否存在，不存在则启动它。</li>
+<li>在NDK环境中将1中编写的C代码编译打包成可执行文件(BUILD_EXECUTABLE)。主进程启动时将守护进程放入私有目录下，赋予可执行权限，启动它即可。</li>
+<li>联系厂商，加入白名单</li>
+</ol>
+<h5 id="Service进程优先级"><a href="#Service进程优先级" class="headerlink" title="Service进程优先级"></a>Service进程优先级</h5><p>在AndroidManifest.xml文件中对于intent-filter可以通过android:priority = “1000”这个属性设置最高优先级，1000是最高值，如果数字越小则优先级越低，同时适用于广播。</p>
+<h5 id="IntentServices"><a href="#IntentServices" class="headerlink" title="IntentServices"></a>IntentServices</h5><p>IntentService是Service的子类，是一个异步的，会自动停止的服务，很好解决了传统的Service中处理完耗时操作忘记停止并销毁Service的问题</p>
+<p>生成一个默认的且与线程相互独立的工作线程执行所有发送到onStartCommand()方法的Intent,可以在onHandleIntent()中处理.</p>
+<p>串行队列,每次只运行一个任务,不存在线程安全问题,所有任务执行完后自动停止服务,不需要自己手动调用stopSelf()来停止.</p>
+<h4 id="BroadcastReceiver"><a href="#BroadcastReceiver" class="headerlink" title="BroadcastReceiver\"></a>BroadcastReceiver\</h4><h5 id="Android引入广播机制原因"><a href="#Android引入广播机制原因" class="headerlink" title="Android引入广播机制原因"></a>Android引入广播机制原因</h5><ul>
+<li>从MVC的角度考虑(应用程序内) 其实回答这个问题的时候还可以这样问，android为什么要有那4大组件，现在的移动开发模型基本上也是照搬的web那一套MVC架构，只不过是改了点嫁妆而已。android的四大组件本质上就是为了实现移动或者说嵌入式设备上的MVC架构，它们之间有时候是一种相互依存的关系，有时候又是一种补充关系，引入广播机制可以方便几大组件的信息和数据交互。</li>
+<li>程序间互通消息(例如在自己的应用程序内监听系统来电)</li>
+<li>效率上(参考UDP的广播协议在局域网的方便性)</li>
+<li>设计模式上(反转控制的一种应用，类似监听者模式)</li>
+</ul>
+<h5 id="注册广播的两种方法"><a href="#注册广播的两种方法" class="headerlink" title="注册广播的两种方法"></a>注册广播的两种方法</h5><ol>
+<li>静态注册:在清单文件中注册， 常见的有监听设备启动，常驻注册不会随程序生命周期改变</li>
+<li>动态注册:在代码中注册，随着程序的结束，也就停止接受广播了<blockquote>
+<p>补充一点：有些广播只能通过动态方式注册，比如时间变化事件、屏幕亮灭事件、电量变更事件，因为这些事件触发频率通常很高，如果允许后台监听，会导致进程频繁创建和销毁，从而影响系统整体性能</p>
+</blockquote>
+</li>
+</ol>
+<h5 id="两种广播类型"><a href="#两种广播类型" class="headerlink" title="两种广播类型"></a>两种广播类型</h5><p>普通广播为全局广播,LocalBroadcastManager是Android Support包提供了一个工具，是用来在同一个应用内的不同组件间发送Broadcast的。</p>
+<p>使用LocalBroadcastManager有如下好处：</p>
+<ul>
+<li>发送的广播只会在自己App内传播，不会泄露给其他App，确保隐私数据不会泄露</li>
+<li>其他App也无法向你的App发送该广播，不用担心其他App会来搞破坏</li>
+<li>比系统全局广播更加高效</li>
+</ul>
+<p>和系统广播使用方式类似：
+先通过<code>LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this)</code>; 获取实例,然后通过函数 registerReceiver来注册监听器</p>
+<h4 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h4><h5 id="实现数据共享"><a href="#实现数据共享" class="headerlink" title="实现数据共享"></a>实现数据共享</h5><p>当一个应用程序需要把自己的数据暴露给其他程序使用时，该就用程序就可通过提供ContentProvider来实现；其他应用程序就可通过ContentResolver来操作ContentProvider暴露的数据。 一旦某个应用程序通过ContentProvider暴露了自己的数据操作接口，那么不管该应用程序是否启动，其他应用程序都可以通过该接口来操作该应用程序的内部数据，包括增加数据、删除数据、修改数据、查询数据等。</p>
+<p>ContentProvider以某种Uri的形式对外提供数据，允许其他应用访问或修改数据；其他应用程序使用ContentResolver根据Uri去访问操作指定数据。 步骤：</p>
+<ol>
+<li>定义自己的ContentProvider类，该类需要继承Android提供的ContentProvider基类。</li>
+<li>在AndroidManifest.xml文件中注册个ContentProvider，注册ContenProvider时需要为它绑定一个URL。 例： android:authorities=”com.myit.providers.MyProvider” /&gt; 说明：authorities就相当于为该ContentProvider指定URL。 注册后，其他应用程序就可以通过该Uri来访问MyProvider所暴露的数据了。</li>
+<li>接下来，使用ContentResolver操作数据，Context提供了如下方法来获取ContentResolver对象。 一般来说，ContentProvider是单例模式，当多个应用程序通过ContentResolver来操作 ContentProvider提供的数据时，ContentResolver调用的数据操作将会委托给同一个ContentProvider处理。 使用ContentResolver操作数据只需两步： 1、调用Activity的ContentResolver获取ContentResolver对象。 2、根据需要调用ContentResolver的insert()、delete()、update()和query（）方法操作数据即可</li>
+</ol>
+<p>ContentProvider的主要还是用于数据共享，其可以对Sqlite，SharePreferences，File等进行数据操作用来共享数据。而sql的可以理解为数据库的一门语言，可以使用它完成CRUD等一系列的操作</p>
+<h3 id="View与布局"><a href="#View与布局" class="headerlink" title="View与布局"></a>View与布局</h3><h4 id="LinearLayout和RelativeLayout性能对比"><a href="#LinearLayout和RelativeLayout性能对比" class="headerlink" title="LinearLayout和RelativeLayout性能对比"></a>LinearLayout和RelativeLayout性能对比</h4><ol>
+<li>RelativeLayout会让子View调用2次onMeasure，LinearLayout 在有weight时，也会调用子View2次onMeasure</li>
+<li>RelativeLayout的子View如果高度和RelativeLayout不同，则会引发效率问题，当子View很复杂时，这个问题会更加严重。如果可以，尽量使用padding代替margin。</li>
+<li>在不影响层级深度的情况下,使用LinearLayout和FrameLayout而不是RelativeLayout。
+最后再思考一下文章开头那个矛盾的问题，为什么Google给开发者默认新建了个RelativeLayout，而自己却在DecorView中用了个LinearLayout。因为DecorView的层级深度是已知而且固定的，上面一个标题栏，下面一个内容栏。采用RelativeLayout并不会降低层级深度，所以此时在根节点上用LinearLayout是效率最高的。而之所以给开发者默认新建了个RelativeLayout是希望开发者能采用尽量少的View层级来表达布局以实现性能最优，因为复杂的View嵌套对性能的影响会更大一些。</li>
+</ol>
+<h4 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h4><h5 id="自定义view的基本流程"><a href="#自定义view的基本流程" class="headerlink" title="自定义view的基本流程"></a>自定义view的基本流程</h5><ol>
+<li>明确需求，确定你想实现的效果</li>
+<li>确定是使用组合控件的形式还是全新自定义的形式，组合控件即使用多个系统控件来合成一个新控件，你比如titilebar，这种形式相对简单，参考</li>
+<li>如果是完全自定义一个view的话，你首先需要考虑继承哪个类，是View呢，还是ImageView等子类。</li>
+<li>根据需要去复写View#onDraw、View#onMeasure、View#onLayout方法</li>
+<li>根据需要去复写dispatchTouchEvent、onTouchEvent方法</li>
+<li>根据需要为你的自定义view提供自定义属性，即编写attr.xml,然后在代码中通过TypedArray等类获取到自定义属性值</li>
+<li>需要处理滑动冲突、像素转换等问题</li>
+</ol>
+<h5 id="View的绘制流程"><a href="#View的绘制流程" class="headerlink" title="View的绘制流程"></a>View的绘制流程</h5><p><img src="http://images.wodekouwei.com/technology/view_mechanism_flow.png" alt="image">
+measure()方法，layout()，draw()三个方法主要存放了一些标识符，来判断每个View是否需要再重新测量，布局或者绘制，主要的绘制过程还是在onMeasure，onLayout，onDraw这个三个方法中</p>
+<ol>
+<li>onMesarue() 为整个View树计算实际的大小，即设置实际的高(对应属性:mMeasuredHeight)和宽(对应属性: mMeasureWidth)，每个View的控件的实际宽高都是由父视图和本身视图决定的。</li>
+<li>onLayout() 为将整个根据子视图的大小以及布局参数将View树放到合适的位置上。</li>
+<li>onDraw() 开始绘制图像，绘制的流程如下<ol>
+<li>首先绘制该View的背景</li>
+<li>调用onDraw()方法绘制视图本身 (每个View都需要重载该方法，ViewGroup不需要实现该方法)</li>
+<li>如果该View是ViewGroup，调用dispatchDraw ()方法绘制子视图
+绘制滚动条</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>自定义View执行invalidate()方法,不会回调onDraw()可能的原因</p>
+<ol>
+<li>自定义一个view时，重写onDraw。调用view.invalidate(),会触发onDraw和computeScroll()。前提是该view被附加在当前窗口.
+view.postInvalidate(); //是在非UI线程上调用的</li>
+<li>自定义一个ViewGroup，重写onDraw。onDraw可能不会被调用，原因是需要先设置一个背景(颜色或图)。表示这个group有东西需要绘制了，才会触发draw，之后是onDraw。因此，一般直接重写dispatchDraw来绘制viewGroup.自定义一个ViewGroup,dispatchDraw会调用drawChild.</li>
+</ol>
+</blockquote>
+<h5 id="事件传递机制"><a href="#事件传递机制" class="headerlink" title="事件传递机制"></a>事件传递机制</h5><ol>
+<li>事件从Activity.dispatchTouchEvent()开始传递，只要没有被停止或拦截，从最上层的View(ViewGroup)开始一直往下(子View)传递。子View可以通过onTouchEvent()对事件进行处理。</li>
+<li>事件由父View(ViewGroup)传递给子View，ViewGroup可以通过onInterceptTouchEvent()对事件做拦截，停止其往下传递。</li>
+<li>如果事件从上往下传递过程中一直没有被停止，且最底层子View没有消费事件，事件会反向往上传递，这时父View(ViewGroup)可以进行消费，如果还是没有被消费的话，最后会到Activity的onTouchEvent()函数。</li>
+<li>如果View没有对ACTION_DOWN进行消费，之后的其他事件不会传递过来。</li>
+<li>OnTouchListener优先于onTouchEvent()对事件进行消费。</li>
+</ol>
+<p>上面的消费即表示相应函数返回值为true。
+View中setOnTouchListener中的onTouch,onTouchEvent,onClick的执行顺序:onTouch优于onTouchEvent,onTouchEvent优于onClick</p>
+<p>Android下滑冲突的常见解决思路:相关的滑动组件 重写onInterceptTouchEvent，然后判断根据xy值，来决定是否要拦截当前操作</p>
+<h3 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h3><h4 id="三种动画"><a href="#三种动画" class="headerlink" title="三种动画"></a>三种动画</h4><ul>
+<li>逐帧动画(Drawable Animation)： 加载一系列Drawable资源来创建动画，简单来说就是播放一系列的图片来实现动画效果，可以自定义每张图片的持续时间</li>
+<li>补间动画(Tween Animation)： Tween可以对View对象实现一系列简单的动画效果，比如位移，缩放，旋转，透明度等等。但是它并不会改变View属性的值，只是改变了View的绘制的位置，比如，一个按钮在动画过后，不在原来的位置，但是触发点击事件的仍然是原来的坐标。</li>
+<li>属性动画(Property Animation)： 动画的对象除了传统的View对象，还可以是Object对象，动画结束后，Object对象的属性值被实实在在的改变了</li>
+</ul>
+<h4 id="动画原理"><a href="#动画原理" class="headerlink" title="动画原理"></a>动画原理</h4><p>Animation框架定义了透明度，旋转，缩放和位移几种常见的动画，而且控制的是整个View，实现原理是每次绘制视图时View所在的ViewGroup中的drawChild函数获取该View的Animation的Transformation值，然后调用canvas.concat(transformToApply.getMatrix())，通过矩阵运算完成动画帧，如果动画没有完成，继续调用invalidate()函数，启动下次绘制来驱动动画，动画过程中的帧之间间隙时间是绘制函数所消耗的时间，可能会导致动画消耗比较多的CPU资源，最重要的是，动画改变的只是显示，并不能相应事件</p>
+<h4 id="属性动画特性"><a href="#属性动画特性" class="headerlink" title="属性动画特性"></a>属性动画特性</h4><p>如果你的需求中只需要对View进行移动、缩放、旋转和淡入淡出操作，那么补间动画确实已经足够健全了。但是很显然，这些功能是不足以覆盖所有的场景的，一旦我们的需求超出了移动、缩放、旋转和淡入淡出这四种对View的操作，那么补间动画就不能再帮我们忙了，也就是说它在功能和可扩展方面都有相当大的局限性，那么下面我们就来看看补间动画所不能胜任的场景。
+注意上面我在介绍补间动画的时候都有使用“对View进行操作”这样的描述，没错，补间动画是只能够作用在View上的。也就是说，我们可以对一个Button、TextView、甚至是LinearLayout、或者其它任何继承自View的组件进行动画操作，但是如果我们想要对一个非View的对象进行动画操作，抱歉，补间动画就帮不上忙了。可能有的朋友会感到不能理解，我怎么会需要对一个非View的对象进行动画操作呢？这里我举一个简单的例子，比如说我们有一个自定义的View，在这个View当中有一个Point对象用于管理坐标，然后在onDraw()方法当中就是根据这个Point对象的坐标值来进行绘制的。也就是说，如果我们可以对Point对象进行动画操作，那么整个自定义View的动画效果就有了。显然，补间动画是不具备这个功能的，这是它的第一个缺陷。
+然后补间动画还有一个缺陷，就是它只能够实现移动、缩放、旋转和淡入淡出这四种动画操作，那如果我们希望可以对View的背景色进行动态地改变呢？很遗憾，我们只能靠自己去实现了。说白了，之前的补间动画机制就是使用硬编码的方式来完成的，功能限定死就是这些，基本上没有任何扩展性可言。
+最后，补间动画还有一个致命的缺陷，就是它只是改变了View的显示效果而已，而不会真正去改变View的属性。什么意思呢？比如说，现在屏幕的左上角有一个按钮，然后我们通过补间动画将它移动到了屏幕的右下角，现在你可以去尝试点击一下这个按钮，点击事件是绝对不会触发的，因为实际上这个按钮还是停留在屏幕的左上角，只不过补间动画将这个按钮绘制到了屏幕的右下角而已。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><h4 id="布局优化"><a href="#布局优化" class="headerlink" title="布局优化"></a>布局优化</h4><ul>
+<li>避免OverDraw过渡绘制</li>
+<li>优化布局层级</li>
+<li>避免嵌套过多无用布局</li>
+<li>当我们在画布局的时候，如果能实现相同的功能，优先考虑相对布局，然后在考虑别的布局，不要用绝对布局。</li>
+<li>使用<include>标签把复杂的界面需要抽取出来</include></li>
+<li>使用<merge>标签，因为它在优化UI结构时起到很重要的作用。目的是通过删减多余或者额外的层级，从而优化整个Android Layout的结构。核心功能就是减少冗余的层次从而达到优化UI的目的！</merge></li>
+<li>ViewStub 是一个隐藏的，不占用内存空间的视图对象，它可以在运行时延迟加载布局资源文件。<h4 id="ListView卡顿的原因以及优化策略"><a href="#ListView卡顿的原因以及优化策略" class="headerlink" title="ListView卡顿的原因以及优化策略"></a>ListView卡顿的原因以及优化策略</h4></li>
+<li>重用converView： 通过复用converview来减少不必要的view的创建，另外Infalte操作会把xml文件实例化成相应的View实例，属于IO操作，是耗时操作。</li>
+<li>减少findViewById()操作： 将xml文件中的元素封装成viewholder静态类，通过converview的setTag和getTag方法将view与相应的holder对象绑定在一起，避免不必要的findviewbyid操作</li>
+<li>避免在 getView 方法中做耗时的操作: 例如加载本地 Image 需要载入内存以及解析 Bitmap ，都是比较耗时的操作，如果用户快速滑动listview，会因为getview逻辑过于复杂耗时而造成滑动卡顿现象。用户滑动时候不要加载图片，待滑动完成再加载，可以使用这个第三方库glide</li>
+<li>Item的布局层次结构尽量简单，避免布局太深或者不必要的重绘</li>
+<li>尽量能保证 Adapter 的 hasStableIds() 返回 true 这样在 notifyDataSetChanged() 的时候，如果item内容并没有变化，ListView 将不会重新绘制这个 View，达到优化的目的</li>
+<li>在一些场景中，ScollView内会包含多个ListView，可以把listview的高度写死固定下来。 由于ScollView在快速滑动过程中需要大量计算每一个listview的高度，阻塞了UI线程导致卡顿现象出现，如果我们每一个item的高度都是均匀的，可以通过计算把listview的高度确定下来，避免卡顿现象出现</li>
+<li>使用 RecycleView 代替listview： 每个item内容的变动，listview都需要去调用notifyDataSetChanged来更新全部的item，太浪费性能了。RecycleView可以实现当个item的局部刷新，并且引入了增加和删除的动态效果，在性能上和定制上都有很大的改善</li>
+<li>ListView 中元素避免半透明： 半透明绘制需要大量乘法计算，在滑动时不停重绘会造成大量的计算，在比较差的机子上会比较卡。 在设计上能不半透明就不不半透明。实在要弄就把在滑动的时候把半透明设置成不透明，滑动完再重新设置成半透明。</li>
+<li>尽量开启硬件加速： 硬件加速提升巨大，避免使用一些不支持的函数导致含泪关闭某个地方的硬件加速。当然这一条不只是对 ListView。</li>
+</ul>
+<blockquote>
+<p><strong>ViewHolder为什么要被声明成静态内部类</strong>
+这个是考静态内部类和非静态内部类的主要区别之一。非静态内部类会隐式持有外部类的引用，就像大家经常将自定义的adapter在Activity类里，然后在adapter类里面是可以随意调用外部activity的方法的。当你将内部类定义为static时，你就调用不了外部类的实例方法了，因为这时候静态内部类是不持有外部类的引用的。声明ViewHolder静态内部类，可以将ViewHolder和外部类解引用。大家会说一般ViewHolder都很简单，不定义为static也没事吧。确实如此，但是如果你将它定义为static的，说明你懂这些含义。万一有一天你在这个ViewHolder加入一些复杂逻辑，做了一些耗时工作，那么如果ViewHolder是非静态内部类的话，就很容易出现内存泄露。如果是静态的话，你就不能直接引用外部类，迫使你关注如何避免相互引用。 所以将 ViewHolder内部类 定义为静态的，是一种好习惯</p>
+</blockquote>
+<h4 id="内存泄露问题"><a href="#内存泄露问题" class="headerlink" title="内存泄露问题"></a>内存泄露问题</h4><ol>
+<li>资源对象没有关闭造成,如查询数据库没有关闭游标</li>
+<li>构造Adapter时,没有使用缓存ConvertView</li>
+<li>Bitmap对象在不使用时调用recycle()释放内存</li>
+<li>context逃逸问题</li>
+<li>注册没有取消,如动态注册广播在Activity销毁前没有unregisterReceiver</li>
+<li>集合对象未清理,如无用时没有释放对象的引用</li>
+<li>在Activity中使用非静态的内部类，并开启一个长时间运行的线程，因为内部类持有Activity的引用，会导致Activity本来可以被gc时却长期得不到回收</li>
+</ol>
+<h4 id="OOM发生情况"><a href="#OOM发生情况" class="headerlink" title="OOM发生情况"></a>OOM发生情况</h4><ol>
+<li>类的静态变量持有大数据对象 静态变量长期维持到大数据对象的引用，阻止垃圾回收。</li>
+<li>非静态内部类存在静态实例 非静态内部类会维持一个到外部类实例的引用，如果非静态内部类的实例是静态的，就会间接长期维持着外部类的引用，阻止被回收掉。</li>
+<li>资源对象未关闭 资源性对象比如（Cursor，File文件等）往往都用了一些缓冲，我们在不使用的时候，应该及时关闭它们， 以便它们的缓冲及时回收内存。它们的缓冲不仅存在于java虚拟机内，还存在于java虚拟机外。 如果我们仅仅是把它的引用设置为null,而不关闭它们，往往会造成内存泄露。 解决办法： 比如SQLiteCursor（在析构函数finalize（）,如果我们没有关闭它，它自己会调close()关闭）， 如果我们没有关闭它，系统在回收它时也会关闭它，但是这样的效率太低了。 因此对于资源性对象在不使用的时候，应该调用它的close()函数，将其关闭掉，然后才置为null. 在我们的程序退出时一定要确保我们的资源性对象已经关闭。 程序中经常会进行查询数据库的操作，但是经常会有使用完毕Cursor后没有关闭的情况。如果我们的查询结果集比较小， 对内存的消耗不容易被发现，只有在常时间大量操作的情况下才会复现内存问题，这样就会给以后的测试和问题排查带来困难和风险，记得try catch后，在finally方法中关闭连接</li>
+<li>Handler内存泄漏 Handler作为内部类存在于Activity中，但是Handler生命周期与Activity生命周期往往并不是相同的，比如当Handler对象有Message在排队，则无法释放，进而导致本该释放的Acitivity也没有办法进行回收。 解决办法:声明handler为static类，这样内部类就不再持有外部类的引用了，就不会阻塞Activity的释放.如果内部类实在需要用到外部类的对象，可在其内部声明一个弱引用引用外部类
+一些不良代码习惯 有些代码并不造成内存泄露，但是他们的资源没有得到重用，频繁的申请内存和销毁内存，消耗CPU资源的同时，也引起内存抖动 解决方案 如果需要频繁的申请内存对象和和释放对象，可以考虑使用对象池来增加对象的复用。 例如ListView便是采用这种思想，通过复用converview来避免频繁的GC</li>
+</ol>
+<h4 id="避免oom"><a href="#避免oom" class="headerlink" title="避免oom"></a>避免oom</h4><ol>
+<li>使用更加轻量的数据结构 例如，我们可以考虑使用ArrayMap/SparseArray而不是HashMap等传统数据结构。通常的HashMap的实现方式更加消耗内存，因为它需要一个额外的实例对象来记录Mapping操作。另外，SparseArray更加高效，在于他们避免了对key与value的自动装箱（autoboxing），并且避免了装箱后的解箱。</li>
+<li>避免在Android里面使用Enum Android官方培训课程提到过“Enums often require more than twice as much memory as static constants. You should strictly avoid using enums on Android.”，具体原理请参考《Android性能优化典范（三）》，所以请避免在Android里面使用到枚举。</li>
+<li>减小Bitmap对象的内存占用 Bitmap是一个极容易消耗内存的大胖子，减小创建出来的Bitmap的内存占用可谓是重中之重，，通常来说有以下2个措施： inSampleSize：缩放比例，在把图片载入内存之前，我们需要先计算出一个合适的缩放比例，避免不必要的大图载入。 decode format：解码格式，选择ARGB_6666/RBG_545/ARGB_4444/ALPHA_6，存在很大差异</li>
+<li>Bitmap对象的复用 缩小Bitmap的同时，也需要提高BitMap对象的复用率，避免频繁创建BitMap对象，复用的方法有以下2个措施 LRUCache : “最近最少使用算法”在Android中有极其普遍的应用。ListView与GridView等显示大量图片的控件里，就是使用LRU的机制来缓存处理好的Bitmap，把近期最少使用的数据从缓存中移除，保留使用最频繁的数据， inBitMap高级特性:利用inBitmap的高级特性提高Android系统在Bitmap分配与释放执行效率。使用inBitmap属性可以告知Bitmap解码器去尝试使用已经存在的内存区域，新解码的Bitmap会尝试去使用之前那张Bitmap在Heap中所占据的pixel data内存区域，而不是去问内存重新申请一块区域来存放Bitmap。利用这种特性，即使是上千张的图片，也只会仅仅只需要占用屏幕所能够显示的图片数量的内存大小</li>
+<li>使用更小的图片 在涉及给到资源图片时，我们需要特别留意这张图片是否存在可以压缩的空间，是否可以使用更小的图片。尽量使用更小的图片不仅可以减少内存的使用，还能避免出现大量的InflationException。假设有一张很大的图片被XML文件直接引用，很有可能在初始化视图时会因为内存不足而发生InflationException，这个问题的根本原因其实是发生了OOM。</li>
+<li>StringBuilder 在有些时候，代码中会需要使用到大量的字符串拼接的操作，这种时候有必要考虑使用StringBuilder来替代频繁的“+”。</li>
+<li>避免在onDraw方法里面执行对象的创建 类似onDraw等频繁调用的方法，一定需要注意避免在这里做创建对象的操作，因为他会迅速增加内存的使用，而且很容易引起频繁的gc，甚至是内存抖动。</li>
+</ol>
+<h4 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h4><p>ANR全称Application Not Responding，意思就是程序未响应。如果一个应用无法响应用户的输入，系统就会弹出一个ANR对话框，用户可以自行选择继续等待亦或者是停止当前程序。一旦出现下面两种情况，则弹出ANR对话框</p>
+<ol>
+<li>应用在5秒内未响应用户的输入事件（如按键或者触摸）</li>
+<li>BroadcastReceiver未在10秒内完成相关的处理</li>
+</ol>
+<p>Service在特定的时间内无法处理完成
+超时的原因一般有两种：
+(1)当前的事件没有机会得到处理（UI线程正在处理前一个事件没有及时完成或者looper被某种原因阻塞住）
+(2)当前的事件正在处理，但没有及时完成
+UI线程尽量只做跟UI相关的工作，耗时的工作（数据库操作，I/O，连接网络或者其他可能阻碍UI线程的操作）放入单独的线程处理，尽量用Handler来处理UI thread和thread之间的交互。
+UI线程主要包括如下：</p>
+<ul>
+<li>Activity:onCreate(), onResume(), onDestroy(), onKeyDown(), onClick()</li>
+<li>AsyncTask: onPreExecute(), onProgressUpdate(), onPostExecute(), onCancel()</li>
+<li>Mainthread handler: handleMessage(), post(runnable r)</li>
+</ul>
+<h5 id="如何定位ANR错误"><a href="#如何定位ANR错误" class="headerlink" title="如何定位ANR错误"></a>如何定位ANR错误</h5><p>开发机器上,查看/data/anr/traces.text.最新的ANR信息在最开始部分.</p>
+<h5 id="如何避免ANR"><a href="#如何避免ANR" class="headerlink" title="如何避免ANR"></a>如何避免ANR</h5><p>避免ANR最核心的一点就是在主线程减少耗时操作.通常需要从以下几个方案下手:</p>
+<ol>
+<li>使用子线程处理耗时IO操作。</li>
+<li>降低子线程优先级使用Thread或者HandlerThread时，调用Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND)设置优先级，否则仍然会降低程序响应，因为默认Thread的优先级和主线程相同。</li>
+<li>使用Handler处理子线程结果，而不是使用Thread.wait()或者Thread.sleep()来阻塞主线程。</li>
+<li>Activity的onCreate和onResume回调中尽量避免耗时的代码</li>
+<li>BroadcastReceiver中onReceive代码也要尽量减少耗时操作建议使用IntentService处理。IntentService是一个异步的，会自动停止的服务，很好解决了传统的Service中处理完耗时操作忘记停止并销毁Service的问题</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/09/m-f-mp4/" rel="prev" title="MP4格式解析">
+                MP4格式解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#四大组件"><span class="nav-number">1.</span> <span class="nav-text">四大组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity"><span class="nav-number">1.1.</span> <span class="nav-text">Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity生命周期"><span class="nav-number">1.1.1.</span> <span class="nav-text">Activity生命周期</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#不同场景下Activity生命周期的变化过程"><span class="nav-number">1.1.2.</span> <span class="nav-text">不同场景下Activity生命周期的变化过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Activity-四中launchMode"><span class="nav-number">1.1.3.</span> <span class="nav-text">Activity 四中launchMode</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fragment"><span class="nav-number">1.1.4.</span> <span class="nav-text">fragment</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题"><span class="nav-number">1.1.5.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Service"><span class="nav-number">1.2.</span> <span class="nav-text">Service</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#保证Service在后台不被kill的方法"><span class="nav-number">1.2.1.</span> <span class="nav-text">保证Service在后台不被kill的方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Service进程优先级"><span class="nav-number">1.2.2.</span> <span class="nav-text">Service进程优先级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IntentServices"><span class="nav-number">1.2.3.</span> <span class="nav-text">IntentServices</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BroadcastReceiver"><span class="nav-number">1.3.</span> <span class="nav-text">BroadcastReceiver\</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Android引入广播机制原因"><span class="nav-number">1.3.1.</span> <span class="nav-text">Android引入广播机制原因</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注册广播的两种方法"><span class="nav-number">1.3.2.</span> <span class="nav-text">注册广播的两种方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#两种广播类型"><span class="nav-number">1.3.3.</span> <span class="nav-text">两种广播类型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ContentProvider"><span class="nav-number">1.4.</span> <span class="nav-text">ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#实现数据共享"><span class="nav-number">1.4.1.</span> <span class="nav-text">实现数据共享</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View与布局"><span class="nav-number">2.</span> <span class="nav-text">View与布局</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinearLayout和RelativeLayout性能对比"><span class="nav-number">2.1.</span> <span class="nav-text">LinearLayout和RelativeLayout性能对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#绘制"><span class="nav-number">2.2.</span> <span class="nav-text">绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义view的基本流程"><span class="nav-number">2.2.1.</span> <span class="nav-text">自定义view的基本流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#View的绘制流程"><span class="nav-number">2.2.2.</span> <span class="nav-text">View的绘制流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#事件传递机制"><span class="nav-number">2.2.3.</span> <span class="nav-text">事件传递机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动画"><span class="nav-number">3.</span> <span class="nav-text">动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三种动画"><span class="nav-number">3.1.</span> <span class="nav-text">三种动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动画原理"><span class="nav-number">3.2.</span> <span class="nav-text">动画原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#属性动画特性"><span class="nav-number">3.3.</span> <span class="nav-text">属性动画特性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">4.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#布局优化"><span class="nav-number">4.1.</span> <span class="nav-text">布局优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ListView卡顿的原因以及优化策略"><span class="nav-number">4.2.</span> <span class="nav-text">ListView卡顿的原因以及优化策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露问题"><span class="nav-number">4.3.</span> <span class="nav-text">内存泄露问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OOM发生情况"><span class="nav-number">4.4.</span> <span class="nav-text">OOM发生情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#避免oom"><span class="nav-number">4.5.</span> <span class="nav-text">避免oom</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ANR"><span class="nav-number">4.6.</span> <span class="nav-text">ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#如何定位ANR错误"><span class="nav-number">4.6.1.</span> <span class="nav-text">如何定位ANR错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何避免ANR"><span class="nav-number">4.6.2.</span> <span class="nav-text">如何避免ANR</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>
