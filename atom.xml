@@ -613,14 +613,25 @@ Composition Time=0x000043
     <link href="http://wodekouwei.com/2017/12/05/tips-android-pluggable/"/>
     <id>http://wodekouwei.com/2017/12/05/tips-android-pluggable/</id>
     <published>2017-12-05T09:15:57.000Z</published>
-    <updated>2017-12-05T10:33:58.311Z</updated>
+    <updated>2018-01-12T01:35:40.101Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
-下面简单介绍一下：
-|更新方式|签名|
-|—|—|
-|增量更新|旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）
-合并成为新版本Apk（v2.0）安装。|
+下面简单介绍一下：</p>
+<table>
+<thead>
+<tr>
+<th>更新方式</th>
+<th>签名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增量更新</td>
+<td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）</td>
+</tr>
+</tbody>
+</table>
+<p>合并成为新版本Apk（v2.0）安装。|
 |插件式开发|给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。|
 |热修复|通过NDK底层去修复，也是C/C++的技术。|
 |RN|通过JS脚本去修复APK。|
@@ -664,18 +675,103 @@ Composition Time=0x000043
 <p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
 作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
 </blockquote>
-<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>主流插件之间对比
-|特性|    DynamicLoadApk|    DynamicAPK|    Small|    DroidPlugin|    VirtualAPK|RePlugin|
-|—|—|—|—|—|—|—|
-|支持四大组件|    只支持Activity|    只支持Activity|    只支持Activity|    全支持|    全支持|全支持|
-|组件无需在宿主manifest中预注册|    √|    ×|    √|    √|    √|√|
-|插件可以依赖宿主|    √|    √    |√    |×    |√|√|
-|支持PendingIntent|    ×|    ×|    ×    |√    |√|√|
-|Android特性支持|    大部分|    大部分|    大部分|    几乎全部|    几乎全部|几乎全部|
-|兼容性适配|    一般|    一般|    中等|    高|    高|高|
-|插件构建|    无|    部署aapt|    Gradle插件|    无|    Gradle插件|Gradle插件|
-|源码|<code>https://github.com/singwhatiwanna/dynamic-load-apk</code>|<code>https://github.com/CtripMobile/DynamicAPK</code>||<code>https://github.com/DroidPluginTeam/DroidPlugin</code>|<code>https://github.com/didi/VirtualAPK</code>|<code>https://github.com/Qihoo360/RePlugin</code>|
-|开发者|singwhatiwanna|CtripMobile||Lody|滴滴|360|</p>
+<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>主流插件之间对比</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>DynamicLoadApk</th>
+<th>DynamicAPK</th>
+<th>Small</th>
+<th>DroidPlugin</th>
+<th>VirtualAPK</th>
+<th>RePlugin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>支持四大组件</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>全支持</td>
+<td>全支持</td>
+<td>全支持</td>
+</tr>
+<tr>
+<td>组件无需在宿主manifest中预注册</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>插件可以依赖宿主</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>支持PendingIntent</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Android特性支持</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+</tr>
+<tr>
+<td>兼容性适配</td>
+<td>一般</td>
+<td>一般</td>
+<td>中等</td>
+<td>高</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>插件构建</td>
+<td>无</td>
+<td>部署aapt</td>
+<td>Gradle插件</td>
+<td>无</td>
+<td>Gradle插件</td>
+<td>Gradle插件</td>
+</tr>
+<tr>
+<td>源码</td>
+<td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
+<td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
+<td></td>
+<td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
+<td><code>https://github.com/didi/VirtualAPK</code></td>
+<td><code>https://github.com/Qihoo360/RePlugin</code></td>
+</tr>
+<tr>
+<td>开发者</td>
+<td>singwhatiwanna</td>
+<td>CtripMobile</td>
+<td></td>
+<td>Lody</td>
+<td>滴滴</td>
+<td>360</td>
+</tr>
+</tbody>
+</table>
 <h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
 <thead>
 <tr>
@@ -792,10 +888,9 @@ Composition Time=0x000043
     <summary type="html">
     
       &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
-下面简单介绍一下：
-|更新方式|签名|
-|—|—|
-|增量
+下面简单介绍一下：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
     
     </summary>
     
@@ -1436,9 +1531,9 @@ Previous versions of Android would warn if asked to load a shared library with t
     
       <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
     
-      <category term="issue" scheme="http://wodekouwei.com/tags/issue/"/>
-    
       <category term="NDK" scheme="http://wodekouwei.com/tags/NDK/"/>
+    
+      <category term="issue" scheme="http://wodekouwei.com/tags/issue/"/>
     
   </entry>
   
