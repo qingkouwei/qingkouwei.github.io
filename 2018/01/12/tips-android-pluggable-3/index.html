@@ -89,14 +89,20 @@
 
 
 
+<meta name="description" content="Android Apk打包流程 打包资源文件,生成R.java文件; 处理aidl文件,生成相应java文件; 编译工程源文件,生成相应class文件; 转换所有class文件,生成classes.dex文件; 打包生成apk文件; 对apk文件进行签名; 对签名后的apk文件进行对齐处理;   打包过程使用的工具    名称 功能介绍 在操作系统中的路径 源码路径     aapt（Androi">
 <meta name="keywords" content="Android,tips,Pluggable">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android插件化(三)基础之Android应用程序资源的编译和打包过程分析">
 <meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable-3/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:updated_time" content="2018-01-13T06:29:35.012Z">
+<meta property="og:description" content="Android Apk打包流程 打包资源文件,生成R.java文件; 处理aidl文件,生成相应java文件; 编译工程源文件,生成相应class文件; 转换所有class文件,生成classes.dex文件; 打包生成apk文件; 对apk文件进行签名; 对签名后的apk文件进行对齐处理;   打包过程使用的工具    名称 功能介绍 在操作系统中的路径 源码路径     aapt（Androi">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/app_package.png">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/app_package2.png">
+<meta property="og:updated_time" content="2018-01-13T10:25:46.878Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android插件化(三)基础之Android应用程序资源的编译和打包过程分析">
+<meta name="twitter:description" content="Android Apk打包流程 打包资源文件,生成R.java文件; 处理aidl文件,生成相应java文件; 编译工程源文件,生成相应class文件; 转换所有class文件,生成classes.dex文件; 打包生成apk文件; 对apk文件进行签名; 对签名后的apk文件进行对齐处理;   打包过程使用的工具    名称 功能介绍 在操作系统中的路径 源码路径     aapt（Androi">
+<meta name="twitter:image" content="http://images.wodekouwei.com/technology/app_package.png">
 
 
 
@@ -432,7 +438,164 @@
       
 
       
-        
+        <h3 id="Android-Apk打包流程"><a href="#Android-Apk打包流程" class="headerlink" title="Android Apk打包流程"></a>Android Apk打包流程</h3><ol>
+<li>打包资源文件,生成R.java文件;</li>
+<li>处理aidl文件,生成相应java文件;</li>
+<li>编译工程源文件,生成相应class文件;</li>
+<li>转换所有class文件,生成classes.dex文件;</li>
+<li>打包生成apk文件;</li>
+<li>对apk文件进行签名;</li>
+<li>对签名后的apk文件进行对齐处理;</li>
+</ol>
+<p><img src="http://images.wodekouwei.com/technology/app_package.png" alt="image"></p>
+<p>打包过程使用的工具</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>功能介绍</th>
+<th>在操作系统中的路径</th>
+<th>源码路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aapt（Android Asset Package Tool）</td>
+<td>Android资源打包工具</td>
+<td><code>${ANDROID_SDK_HOME} /build-tools/</code> <code>ANDROID_VERSION/aapt</code></td>
+<td><code>frameworks\base\tools\aap</code></td>
+</tr>
+<tr>
+<td>aidl（android interface definition language）</td>
+<td>Android接口描述语言，将aidl转化为.java文件的工具</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/aidl</code></td>
+<td><code>frameworks\base\tools\aidl</code></td>
+</tr>
+<tr>
+<td>javac</td>
+<td>Java Compiler</td>
+<td><code>${JDK_HOME}/javac</code>或<code>/usr/bin/javac</code></td>
+</tr>
+<tr>
+<td>dex</td>
+<td>转化.class文件为Davik VM能识别的.dex文件</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/dx</code></td>
+<td></td>
+</tr>
+<tr>
+<td>apkbuilder</td>
+<td>生成apk包</td>
+<td><code>${ANDROID_SDK_HOME}/tools/apkbuilder</code></td>
+<td><code>sdk\sdkmanager\libs\sdklib\</code> <code>src\com\android\sdklib\build\ApkBuilderMain.java</code></td>
+</tr>
+<tr>
+<td>jarsigner</td>
+<td>.jar文件的签名工具</td>
+<td>${JDK_HOME}/jarsigner或/usr/bin/jarsigner</td>
+<td></td>
+</tr>
+<tr>
+<td>zipalign</td>
+<td>字节码对齐工具</td>
+<td><code>${ANDROID_SDK_HOME}/tools</code>和<code>/zipalign</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="第一步-打包资源文件-生成R-java文件"><a href="#第一步-打包资源文件-生成R-java文件" class="headerlink" title="第一步: 打包资源文件,生成R.java文件"></a>第一步: 打包资源文件,生成R.java文件</h5><p>【输入】Resource文件（就是工程中res中的文件）、Assets文件（相当于另外一种资源，这种资源Android系统并不像对res中的文件那样优化它）、AndroidManifest.xml文件（包名就是从这里读取的，因为生成R.java文件需要包名）、Android基础类库（Android.jar文件）
+【工具】aapt工具
+【输出】打包好的资源（bin目录中的resources.ap<em>文件）、R.java文件（gen目录中）
+打包资源的工具aapt，大部分文本格式的XML资源文件会被编译成二进制格式的XML资源文件，除了assets和res/raw资源被原装不动地打包进APK之外，其它的资源都会被编译或者处理。 。
+生成过程主要是调用了aapt源码目录下的Resource.cpp文件中的buildResource（）函数，该函数首先检查AndroidManifest.xml的合法性，然后对res目录下的资源子目录进行处理，处理的函数为makeFileResource（），处理的内容包括资源文件名的合法性检查，向资源表table添加条目等，处理完后调用compileResourceFile（）函数编译res与asserts目录下的资源并生成resources.arsc文件，compileResourceFile（）函数位于aapt源码目录的ResourceTable.cpp文件中，该函数最后会调用parseAndAddEntry（）函数生成R.java文件，完成资源编译后，接下来调用compileXmlfile()函数对res目录的子目录下的xml文件分别进行编译，这样处理过的xml文件就简单的被“加密”了，最后将所有的资源与编译生成的resorces.arsc文件以及“加密”过的AndroidManifest.xml文件打包压缩成resources.ap</em>文件（使用Ant工具命令行编译则会生成与build.xml中“project name”指定的属性同名的ap_文件）。
+关于这一步更详细的流程可阅读<a href="http://blog.csdn.net/luoshengyang/article/details/8744683" target="_blank" rel="external">http://blog.csdn.net/luoshengyang/article/details/8744683</a></p>
+<p>res目录有9种目录</p>
+<ul>
+<li>–animator。这类资源以XML文件保存在res/animator目录下，用来描述属性动画。</li>
+<li>–anim。这类资源以XML文件保存在res/anim目录下，用来描述补间动画。</li>
+<li>–color。这类资源以XML文件保存在res/color目录下，用描述对象颜色状态选择子。</li>
+<li>–drawable。这类资源以XML或者Bitmap文件保存在res/drawable目录下，用来描述可绘制对象。例如，我们可以在里面放置一些图片（.png, .9.png, .jpg, .gif），来作为程序界面视图的背景图。注意，保存在这个目录中的Bitmap文件在打包的过程中，可能会被优化的。例如，一个不需要多于256色的真彩色PNG文件可能会被转换成一个只有8位调色板的PNG面板，这样就可以无损地压缩图片，以减少图片所占用的内存资源。</li>
+<li>–layout。这类资源以XML文件保存在res/layout目录下，用来描述应用程序界面布局。</li>
+<li>–menu。这类资源以XML文件保存在res/menu目录下，用来描述应用程序菜单。</li>
+<li>–raw。这类资源以任意格式的文件保存在res/raw目录下，它们和assets类资源一样，都是原装不动地打包在apk文件中的，不过它们会被赋予资源ID，这样我们就可以在程序中通过ID来访问它们。例如，假设在res/raw目录下有一个名称为filename的文件，并且它在编译的过程，被赋予的资源ID为R.raw.filename，那么就可以使用以下代码来访问它：<code>Resources res = getResources();  
+InputStream is = res .openRawResource(R.raw.filename);</code></li>
+<li>–values。这类资源以XML文件保存在res/values目录下，用来描述一些简单值，例如，数组、颜色、尺寸、字符串和样式值等，一般来说，这六种不同的值分别保存在名称为arrays.xml、colors.xml、dimens.xml、strings.xml和styles.xml文件中。</li>
+<li>–xml。这类资源以XML文件保存在res/xml目录下，一般就是用来描述应用程序的配置信息。</li>
+</ul>
+<h5 id="第二步：处理aidl文件，生成相应的java文件。"><a href="#第二步：处理aidl文件，生成相应的java文件。" class="headerlink" title="第二步：处理aidl文件，生成相应的java文件。"></a>第二步：处理aidl文件，生成相应的java文件。</h5><p>输入】源码文件、aidl文件、framework.aidl文件
+【工具】aidl工具
+【输出】对应的.java文件
+对于没有使用到aidl的android工程，这一步可以跳过。aidl工具解析接口定义文件并生成相应的java代码供程序调用。</p>
+<h5 id="第三步：编译工程源代码，生成下相应的class文件。"><a href="#第三步：编译工程源代码，生成下相应的class文件。" class="headerlink" title="第三步：编译工程源代码，生成下相应的class文件。"></a>第三步：编译工程源代码，生成下相应的class文件。</h5><p>【输入】源码文件（包括R.java和AIDL生成的.java文件）、库文件（.jar文件）
+【工具】javac工具
+【输出】.class文件
+这一步调用了javac编译工程src目录下所有的java源文件，生成的class文件位于工程的<code>bin\classes</code>目录下，上图假定编译工程源代码时程序是基于android SDK开发的，实际开发过程中，也有可能会使用android NDK来编译native代码，因此，如果可能的话，这一步还需要使用android NDK编译C/C++代码，当然，编译C/C++代码的步骤也可以提前到第一步或第二步。</p>
+<h5 id="第四步：转换所有的class文件，生成classes-dex文件。"><a href="#第四步：转换所有的class文件，生成classes-dex文件。" class="headerlink" title="第四步：转换所有的class文件，生成classes.dex文件。"></a>第四步：转换所有的class文件，生成classes.dex文件。</h5><p>【输入】 .class文件（包括Aidl生成.class文件，R生成的.class文件，源文件生成的.class文件），库文件（.jar文件）
+【工具】javac工具
+【输出】.dex文件
+前面多次提到，android系统dalvik虚拟机的可执行文件为dex格式，程序运行所需的classes.dex文件就是在这一步生成的，使用的工具为dx，dx工具主要的工作是将java字节码转换为dalvik字节码、压缩常量池、消除冗余信息等。</p>
+<h5 id="第五步：打包生成apk。"><a href="#第五步：打包生成apk。" class="headerlink" title="第五步：打包生成apk。"></a>第五步：打包生成apk。</h5><p>【输入】打包后的资源文件、打包后类文件（.dex文件）、libs文件（包括.so文件，当然很多工程都没有这样的文件，如果你不使用C/C++开发的话）
+【工具】apkbuilder工具
+【输出】未签名的.apk文件
+打包工具为apkbuilder，apkbuilder为一个脚本文件，实际调用的是<code>android-sdk\tools\lib\sdklib.jar</code>文件中的<code>com.android.sdklib.build.ApkBuilderMain</code>类。它的代码实现位于android系统源码的<code>sdk\sdkmanager\libs\sdklib\src\com\android\sdklib\build\ApkBuilderMain.java</code>文件，代码构建了一个ApkBuilder类，然后以包含resources.arsc的文件为基础生成apk文件，这个文件一般为ap_结尾，接着调用addSourceFolder()函数添加工程资源，addSourceFolder()会调用processFileForResource（）函数往apk文件中添加资源，处理的内容包括res目录与asserts目录中的文件，添加完资源后调用addResourceFromJar（）函数往apk文件中写入依赖库，接着调用addNativeLibraries()函数添加工程libs目录下的Native库（通过android NDK编译生成的so或bin文件），最后调用sealApk（）关闭apk文件。</p>
+<h5 id="第六步：对apk文件进行签名。"><a href="#第六步：对apk文件进行签名。" class="headerlink" title="第六步：对apk文件进行签名。"></a>第六步：对apk文件进行签名。</h5><p>【输入】未签名的.apk文件
+【工具】jarsigner
+【输出】签名的.apk文件
+android的应用程序需要签名才能在android设备上安装，签名apk文件有两种情况：一种是在调试程序时进行签名，使用eclipse开发android程序时，在编译调试程序时会自己使用一个debug.keystore对apk进行签名；另一种是打包发布时对程序进行签名，这种情况下需要提供一个符合android开发文档中要求的签名文件。签名的方法也分两种：一种是使用jdk中提供的jarsigner工具签名；另一种是使用android源码中提供的signapk工具，它的代码位于android系统源码<code>build\tools\signapk</code>目录下。</p>
+<h5 id="第七步：对签名后的apk文件进行对齐处理。"><a href="#第七步：对签名后的apk文件进行对齐处理。" class="headerlink" title="第七步：对签名后的apk文件进行对齐处理。"></a>第七步：对签名后的apk文件进行对齐处理。</h5><p>【输入】签名后的.apk文件
+【工具】zipalign工具
+【输出】对齐后的.apk文件
+这一步需要使用的工具为zipalign，它位于<code>android-sdk\tools</code>目录，源码位于android系统源码的<code>build\tools\zipalign</code>目录，它的主要工作是将spk包进行对齐处理，使spk包中的所有资源文件距离文件起始偏移为4字节整数倍，这样通过内存映射访问apk文件时速度会更快，验证apk文件是否对齐过的工作由ZipAlign.cpp文件的verify()函数完成，处理对齐的工作则由process（）函数完成。</p>
+<p>以一个具体项目中包含的具体文件为例作图如下：
+<img src="http://images.wodekouwei.com/technology/app_package2.png" alt="image"></p>
+<h3 id="APK文件内容解析"><a href="#APK文件内容解析" class="headerlink" title="APK文件内容解析"></a>APK文件内容解析</h3><p>android的项目经过编译和打包，形成了:</p>
+<ul>
+<li>.dex 文件</li>
+<li>resources.arsc</li>
+<li>uncompiled resources</li>
+<li>AndroidManifest.xml</li>
+</ul>
+<p>解压一个普通的apk文件,解压出来的文件如下:</p>
+<ul>
+<li>META-INF文件夹</li>
+<li>res文件夹</li>
+<li>AndroidManifest.xml</li>
+<li>classes.dex</li>
+<li>resources.arsc</li>
+</ul>
+<p>classes.dex 是.dex文件。
+resources.arsc是resources resources文件。
+AndroidManifest.xml是AndroidManifest.xml文件。
+res是uncompiled resources。
+META-INF是签名文件夹。</p>
+<p>META-INF其中有三个文件：</p>
+<ul>
+<li>CERT.RSA</li>
+<li>CERT.SF</li>
+<li>MANIFEST.MF</li>
+</ul>
+<p>MANIFEST.MF文件
+版本号以及每一个文件的哈希值（BASE64）。包括资源文件。这个是对每个文件的整体进行SHA1(hash)。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Manifest-Version: 1.0</div><div class="line">Built-By: Generated-by-ADT</div><div class="line">Created-By: Android Gradle 2.2.0</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.SF
+这个是对每个文件的头3行进行SHA1 hash。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Signature-Version: 1.0</div><div class="line">X-Android-APK-Signed: 2</div><div class="line">SHA1-Digest-Manifest: QxOfCCAuQtZnHh0YRNnoxmiHT80=</div><div class="line">Created-By: 1.0 (Android)</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.RSA
+这个文件保存了签名和公钥证书。</p>
+<h3 id="插件化中资源冲突解决"><a href="#插件化中资源冲突解决" class="headerlink" title="插件化中资源冲突解决"></a>插件化中资源冲突解决</h3><p>如果需要宿主、插件之间使用同一套资源管理器，那么我们需要将插件的资源路径添加到宿主的AssetManager中。</p>
+<p>我们知道，apk包括代码和资源，在apk编译过程中，dex工具将代码打包成.dex文件，资源文件会由aapt工具生成对应的ID，aapt在打包的时候组织成resources.arsc文件，resources.arsc文件是用来描述资源ID和资源位置配置信息，从18个维度描述了一个资源ID的配置信息（语言、分辨率等），就是资源ID和资源的索引表。资源的ID生成是有规则的，规则：0xPPTTNNNN，由8位16进制组成，其中：
+PP段：表示资源的包空间：0x01表示系统资源空间，0x7f表示应用资源空间。
+TT段：表示资源类型。
+NNNN段：4个16进制表示资源id，一个apk中同一类型资源从0000开始递增。
+例如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">nt anim pop_dialog_in 0x7f040000</div><div class="line">int anim pop_dialog_out 0x7f040001</div><div class="line">int anim slide_left_in 0x7f040002</div><div class="line">int anim slide_left_out 0x7f040003</div><div class="line">int anim slide_right_in 0x7f040004</div><div class="line">int anim slide_right_out 0x7f040005</div><div class="line">int anim update_loading_progressbar_anim 0x7f040006</div><div class="line">int array indicator_tab_icon 0x7f050001</div><div class="line">int array indicator_tab_titlt 0x7f050000</div></pre></td></tr></table></figure></p>
+<p>现在问题来了，宿主apk和插件apk是独立编译出来的两个独立的apk，那么其中就有资源ID相同的情况出现，从而产生资源ID冲突。如何解决这个问题？看了一些开源框架，解决的办法就是修改资源ID的PP段，大体有两种做法：</p>
+<ol>
+<li><strong>修改aapt源码，定制aapt工具编译期间修改PP段。</strong>
+DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在编译的时候可以传入参数修改PP段：例如传入0x05编译得到的资源的PP段就是0x05。个人觉得这个做法不是太灵活，入侵了原有的开发编译流程，不好维护。</li>
+<li><strong>修改aapt的产物，即，编译后期重新整理插件Apk的资源，编排ID。</strong>
+前面说过apk编译之后会生成ID以及对应的索引表resorce.arsc，那么我们能不能后期修改相关ID及索引表呢？答案是肯定的，个人比较赞同这种思路，不用入侵原有编译流程。</li>
+</ol>
+<p>插件可能是 Apk 也可能是 so 格式，不管哪一种，都不会生成 R.id ，从而没办法使用。这个问题有好几种解决方案。一种是是重写 Context 的 getAsset 、 getResource 之类的方法，偷换概念，让插件读取插件里的资源，但缺点就是宿主和插件的资源 id 会冲突，需要重写 AAPT 。另一种是重写 AMS中保存的插件列表，从而让宿主和插件分别去加载各自的资源而不会冲突。第三种方法，就是打包后，执行一个脚本，修改生成包中资源id。</p>
+
       
     </div>
 
@@ -509,8 +672,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/01/12/tips-android-pluggable-4/" rel="prev" title="tips-android-pluggable-4">
-                tips-android-pluggable-4 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/12/tips-android-pluggable-4/" rel="prev" title="Android插件化(四)基础之Hook">
+                Android插件化(四)基础之Hook <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -566,8 +729,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -688,6 +860,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Android-Apk打包流程"><span class="nav-number">1.</span> <span class="nav-text">Android Apk打包流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#第一步-打包资源文件-生成R-java文件"><span class="nav-number">1.0.1.</span> <span class="nav-text">第一步: 打包资源文件,生成R.java文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二步：处理aidl文件，生成相应的java文件。"><span class="nav-number">1.0.2.</span> <span class="nav-text">第二步：处理aidl文件，生成相应的java文件。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第三步：编译工程源代码，生成下相应的class文件。"><span class="nav-number">1.0.3.</span> <span class="nav-text">第三步：编译工程源代码，生成下相应的class文件。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第四步：转换所有的class文件，生成classes-dex文件。"><span class="nav-number">1.0.4.</span> <span class="nav-text">第四步：转换所有的class文件，生成classes.dex文件。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第五步：打包生成apk。"><span class="nav-number">1.0.5.</span> <span class="nav-text">第五步：打包生成apk。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第六步：对apk文件进行签名。"><span class="nav-number">1.0.6.</span> <span class="nav-text">第六步：对apk文件进行签名。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第七步：对签名后的apk文件进行对齐处理。"><span class="nav-number">1.0.7.</span> <span class="nav-text">第七步：对签名后的apk文件进行对齐处理。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#APK文件内容解析"><span class="nav-number">2.</span> <span class="nav-text">APK文件内容解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件化中资源冲突解决"><span class="nav-number">3.</span> <span class="nav-text">插件化中资源冲突解决</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

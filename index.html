@@ -346,7 +346,7 @@
               
                 
                 <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-6/" itemprop="url">
-                  tips-android-pluggable-6
+                  Android插件化(四)基础之用到Android源码类探讨
                 </a>
               
             
@@ -372,6 +372,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -466,7 +488,7 @@
               
                 
                 <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-5/" itemprop="url">
-                  tips-android-pluggable-5
+                  Android插件化(四)基础之Binder
                 </a>
               
             
@@ -492,6 +514,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -586,7 +630,7 @@
               
                 
                 <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-4/" itemprop="url">
-                  tips-android-pluggable-4
+                  Android插件化(四)基础之Hook
                 </a>
               
             
@@ -612,6 +656,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -640,7 +706,39 @@
       
         
           
-            
+            <h4 id="1、寻找Hook点的原则"><a href="#1、寻找Hook点的原则" class="headerlink" title="1、寻找Hook点的原则"></a>1、寻找Hook点的原则</h4><p>Android中主要是依靠分析系统源码类来做到的，首先我们得找到被Hook的对象，我称之为Hook点；什么样的对象比较好Hook呢？一般来说，静态变量和单例变量是相对不容易改变，是一个比较好的hook点，而普通的对象有易变的可能，每个版本都不一样，处理难度比较大。我们根据这个原则找到所谓的Hook点。</p>
+<h4 id="2、寻找Hook点"><a href="#2、寻找Hook点" class="headerlink" title="2、寻找Hook点"></a>2、寻找Hook点</h4><p>通常点击一个Button就开始Activity跳转了，这中间发生了什么，我们如何Hook,来实现Activity启动的拦截呢？
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, OtherActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>我们的目的是要拦截startActivity方法，跟踪源码，发现最后启动Activity是由Instrumentation类的execStartActivity做到的。其实这个类相当于启动Activity的中间者，启动Activity中间都是由它来操作的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public ActivityResult execStartActivity(</div><div class="line">            Context who, IBinder contextThread, IBinder token, Activity target,</div><div class="line">            Intent intent, int requestCode, Bundle options) &#123;</div><div class="line">        IApplicationThread whoThread = (IApplicationThread) contextThread;</div><div class="line">        ....</div><div class="line">        try &#123;</div><div class="line">            intent.migrateExtraStreamToClipData();</div><div class="line">            intent.prepareToLeaveProcess(who);</div><div class="line"></div><div class="line">        //通过ActivityManagerNative.getDefault()获取一个对象，开始启动新的Activity</div><div class="line">            int result = ActivityManagerNative.getDefault()</div><div class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</div><div class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</div><div class="line">                        token, target != null ? target.mEmbeddedID : null,</div><div class="line">                        requestCode, 0, null, options);</div><div class="line"></div><div class="line"></div><div class="line">            checkStartActivityResult(result, intent);</div><div class="line">        &#125; catch (RemoteException e) &#123;</div><div class="line">            throw new RuntimeException(&quot;Failure from system&quot;, e);</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>对于ActivityManagerNative这个东东，熟悉Activity/Service启动过程的都不陌生
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public abstract class ActivityManagerNative extends Binder implements IActivityManager</div></pre></td></tr></table></figure></p>
+<p>继承了Binder，实现了一个IActivityManager接口，这就是为了远程服务通信做准备的”Stub”类，一个完整的AID L有两部分，一个是个跟服务端通信的Stub,一个是跟客户端通信的Proxy。ActivityManagerNative就是Stub,阅读源码发现在ActivityManagerNative 文件中还有个ActivityManagerProxy，这里就多不扯了。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">static public IActivityManager getDefault() &#123;</div><div class="line">    return gDefault.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ActivityManagerNative.getDefault()获取的是一个IActivityManager对象，由IActivityManager去启动Activity，IActivityManager的实现类是ActivityManagerService，ActivityManagerService是在另外一个进程之中，所有Activity 启动是一个跨进程的通信的过程，所以真正启动Activity的是通过远端服务ActivityManagerService来启动的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private static final Singleton&lt;IActivityManager&gt; gDefault = new Singleton&lt;IActivityManager&gt;() &#123;</div><div class="line">        protected IActivityManager create() &#123;</div><div class="line">            IBinder b = ServiceManager.getService(&quot;activity&quot;);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service binder = &quot; + b);</div><div class="line">            &#125;</div><div class="line">            IActivityManager am = asInterface(b);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service = &quot; + am);</div><div class="line">            &#125;</div><div class="line">            return am;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>实gDefalut借助Singleton实现的单例模式，而在内部可以看到先从ServiceManager中获取到AMS远端服务的Binder对象，然后使用asInterface方法转化成本地化对象，我们目的是拦截startActivity,所以改变IActivityManager对象可以做到这个一点，这里gDefault又是静态的，根据Hook原则，这是一个比较好的Hook点。</p>
+<h4 id="3、Hook掉startActivity，输出日志"><a href="#3、Hook掉startActivity，输出日志" class="headerlink" title="3、Hook掉startActivity，输出日志"></a>3、Hook掉startActivity，输出日志</h4><p>我们先实现一个小需求，启动Activity的时候打印一条日志，写一个工具类HookUtil。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">public class HookUtil &#123;</div><div class="line"></div><div class="line">    private Class&lt;?&gt; proxyActivity;</div><div class="line"></div><div class="line">    private Context context;</div><div class="line"></div><div class="line">    public HookUtil(Class&lt;?&gt; proxyActivity, Context context) &#123;</div><div class="line">        this.proxyActivity = proxyActivity;</div><div class="line">        this.context = context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void hookAms() &#123;</div><div class="line"></div><div class="line">        //一路反射，直到拿到IActivityManager的对象</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; ActivityManagerNativeClss = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</div><div class="line">            Field defaultFiled = ActivityManagerNativeClss.getDeclaredField(&quot;gDefault&quot;);</div><div class="line">            defaultFiled.setAccessible(true);</div><div class="line">            Object defaultValue = defaultFiled.get(null);</div><div class="line">            //反射SingleTon</div><div class="line">            Class&lt;?&gt; SingletonClass = Class.forName(&quot;android.util.Singleton&quot;);</div><div class="line">            Field mInstance = SingletonClass.getDeclaredField(&quot;mInstance&quot;);</div><div class="line">            mInstance.setAccessible(true);</div><div class="line">            //到这里已经拿到ActivityManager对象</div><div class="line">            Object iActivityManagerObject = mInstance.get(defaultValue);</div><div class="line"></div><div class="line"></div><div class="line">            //开始动态代理，用代理对象替换掉真实的ActivityManager，瞒天过海</div><div class="line">            Class&lt;?&gt; IActivityManagerIntercept = Class.forName(&quot;android.app.IActivityManager&quot;);</div><div class="line"></div><div class="line">            AmsInvocationHandler handler = new AmsInvocationHandler(iActivityManagerObject);</div><div class="line"></div><div class="line">            Object proxy = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class&lt;?&gt;[]&#123;IActivityManagerIntercept&#125;, handler);</div><div class="line"></div><div class="line">            //现在替换掉这个对象</div><div class="line">            mInstance.set(defaultValue, proxy);</div><div class="line"></div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private class AmsInvocationHandler implements InvocationHandler &#123;</div><div class="line"></div><div class="line">        private Object iActivityManagerObject;</div><div class="line"></div><div class="line">        private AmsInvocationHandler(Object iActivityManagerObject) &#123;</div><div class="line">            this.iActivityManagerObject = iActivityManagerObject;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line"></div><div class="line">            Log.i(&quot;HookUtil&quot;, method.getName());</div><div class="line">            //我要在这里搞点事情</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;Activity已经开始启动&quot;);</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;小弟到此一游！！！&quot;);</div><div class="line">            &#125;</div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>结合注释应该很容易看懂，在Application中配置一下
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        HookUtil hookUtil=new HookUtil(SecondActivity.class, this);</div><div class="line">        hookUtil.hookAms()；</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，我们成功的Hook掉了startActivity，输出了一条日志。有了上面的基础，现在我们开始来点有用的东西，Activity不用在清单文件中注册，就可以启动起来，这个怎么搞呢？</p>
+<h4 id="4、无需注册，启动Activity"><a href="#4、无需注册，启动Activity" class="headerlink" title="4、无需注册，启动Activity"></a>4、无需注册，启动Activity</h4><p>如下，TargetActivity没有在清单文件中注册，怎么去启动TargetActivity？
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, TargetActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这个思路可以是这样，上面已经拦截了启动Activity流程，在invoke中我们可以得到启动参数intent信息，那么就在这里，我们可以自己构造一个假的Activity信息的intent，这个Intent启动的Activity是在清单文件中注册的，当真正启动的时候（ActivityManagerService校验清单文件之后），用真实的Intent把代理的Intent在调换过来，然后启动即可。</p>
+<p>首先获取真实启动参数intent信息
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                //换掉</div><div class="line">                Intent intent = null;</div><div class="line">                int index = 0;</div><div class="line">                for (int i = 0; i &lt; args.length; i++) &#123;</div><div class="line">                    Object arg = args[i];</div><div class="line">                    if (arg instanceof Intent) &#123;</div><div class="line">                        //说明找到了startActivity的Intent参数</div><div class="line">                        intent = (Intent) args[i];</div><div class="line">                        //这个意图是不能被启动的，因为Acitivity没有在清单文件中注册</div><div class="line">                        index = i;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">               //伪造一个代理的Intent，代理Intent启动的是proxyActivity</div><div class="line">                Intent proxyIntent = new Intent();</div><div class="line">                ComponentName componentName = new ComponentName(context, proxyActivity);</div><div class="line">                proxyIntent.setComponent(componentName);</div><div class="line">                proxyIntent.putExtra(&quot;oldIntent&quot;, intent);</div><div class="line">                args[index] = proxyIntent;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>有了上面的两个步骤,这个代理的Intent是可以通过ActivityManagerService检验的，因为我在清单文件中注册过
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;.ProxyActivity&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>为了不启动ProxyActivity，现在我们需要找一个合适的时机，把真实的Intent换过了来，启动我们真正想启动的Activity。看过Activity的启动流程的朋友，我们都知道这个过程是由Handler发送消息来实现的，可是通过Handler处理消息的代码来看，消息的分发处理是有顺序的，下面是Handler处理消息的代码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public void dispatchMessage(Message msg) &#123;</div><div class="line">        if (msg.callback != null) &#123;</div><div class="line">            handleCallback(msg);</div><div class="line">        &#125; else &#123;</div><div class="line">            if (mCallback != null) &#123;</div><div class="line">                if (mCallback.handleMessage(msg)) &#123;</div><div class="line">                    return;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            handleMessage(msg);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>handler处理消息的时候，首先去检查是否实现了callback接口，如果有实现的话，那么会直接执行接口方法，然后才是handleMessage方法，最后才是执行重写的handleMessage方法，我们一般大部分时候都是重写了handleMessage方法,而ActivityThread主线程用的正是重写的方法，这种方法的优先级是最低的，我们完全可以实现接口来替换掉系统Handler的处理过程。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void hookSystemHandler() &#123;</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; activityThreadClass = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod(&quot;currentActivityThread&quot;);</div><div class="line">            currentActivityThreadMethod.setAccessible(true);</div><div class="line">            //获取主线程对象</div><div class="line">            Object activityThread = currentActivityThreadMethod.invoke(null);</div><div class="line">            //获取mH字段</div><div class="line">            Field mH = activityThreadClass.getDeclaredField(&quot;mH&quot;);</div><div class="line">            mH.setAccessible(true);</div><div class="line">            //获取Handler</div><div class="line">            Handler handler = (Handler) mH.get(activityThread);</div><div class="line">            //获取原始的mCallBack字段</div><div class="line">            Field mCallBack = Handler.class.getDeclaredField(&quot;mCallback&quot;);</div><div class="line">            mCallBack.setAccessible(true);</div><div class="line">            //这里设置了我们自己实现了接口的CallBack对象</div><div class="line">            mCallBack.set(handler, new ActivityThreadHandlerCallback(handler)) ;</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>自定义Callback类
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">private class ActivityThreadHandlerCallback implements Handler.Callback &#123;</div><div class="line"></div><div class="line">        private Handler handler;</div><div class="line"></div><div class="line">        private ActivityThreadHandlerCallback(Handler handler) &#123;</div><div class="line">            this.handler = handler;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public boolean handleMessage(Message msg) &#123;</div><div class="line">            Log.i(&quot;HookAmsUtil&quot;, &quot;handleMessage&quot;);</div><div class="line">            //替换之前的Intent</div><div class="line">            if (msg.what ==100) &#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity&quot;);</div><div class="line">                handleLauchActivity(msg);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            handler.handleMessage(msg);</div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        private void handleLauchActivity(Message msg) &#123;</div><div class="line">            Object obj = msg.obj;//ActivityClientRecord</div><div class="line">            try&#123;</div><div class="line">                Field intentField = obj.getClass().getDeclaredField(&quot;intent&quot;);</div><div class="line">                intentField.setAccessible(true);</div><div class="line">                Intent proxyInent = (Intent) intentField.get(obj);</div><div class="line">                Intent realIntent = proxyInent.getParcelableExtra(&quot;oldIntent&quot;);</div><div class="line">                if (realIntent != null) &#123;</div><div class="line">                    proxyInent.setComponent(realIntent.getComponent());</div><div class="line">                &#125;</div><div class="line">            &#125;catch (Exception e)&#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity falied&quot;);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>最后在application中注入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        //这个ProxyActivity在清单文件中注册过，以后所有的Activitiy都可以用ProxyActivity无需声明，绕过监测</div><div class="line">        HookAmsUtil hookAmsUtil = new HookAmsUtil(ProxyActivity.class, this);</div><div class="line">        hookAmsUtil.hookSystemHandler();</div><div class="line">        hookAmsUtil.hookAms();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
           
         
       
@@ -782,7 +880,164 @@
       
         
           
-            
+            <h3 id="Android-Apk打包流程"><a href="#Android-Apk打包流程" class="headerlink" title="Android Apk打包流程"></a>Android Apk打包流程</h3><ol>
+<li>打包资源文件,生成R.java文件;</li>
+<li>处理aidl文件,生成相应java文件;</li>
+<li>编译工程源文件,生成相应class文件;</li>
+<li>转换所有class文件,生成classes.dex文件;</li>
+<li>打包生成apk文件;</li>
+<li>对apk文件进行签名;</li>
+<li>对签名后的apk文件进行对齐处理;</li>
+</ol>
+<p><img src="http://images.wodekouwei.com/technology/app_package.png" alt="image"></p>
+<p>打包过程使用的工具</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>功能介绍</th>
+<th>在操作系统中的路径</th>
+<th>源码路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aapt（Android Asset Package Tool）</td>
+<td>Android资源打包工具</td>
+<td><code>${ANDROID_SDK_HOME} /build-tools/</code> <code>ANDROID_VERSION/aapt</code></td>
+<td><code>frameworks\base\tools\aap</code></td>
+</tr>
+<tr>
+<td>aidl（android interface definition language）</td>
+<td>Android接口描述语言，将aidl转化为.java文件的工具</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/aidl</code></td>
+<td><code>frameworks\base\tools\aidl</code></td>
+</tr>
+<tr>
+<td>javac</td>
+<td>Java Compiler</td>
+<td><code>${JDK_HOME}/javac</code>或<code>/usr/bin/javac</code></td>
+</tr>
+<tr>
+<td>dex</td>
+<td>转化.class文件为Davik VM能识别的.dex文件</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/dx</code></td>
+<td></td>
+</tr>
+<tr>
+<td>apkbuilder</td>
+<td>生成apk包</td>
+<td><code>${ANDROID_SDK_HOME}/tools/apkbuilder</code></td>
+<td><code>sdk\sdkmanager\libs\sdklib\</code> <code>src\com\android\sdklib\build\ApkBuilderMain.java</code></td>
+</tr>
+<tr>
+<td>jarsigner</td>
+<td>.jar文件的签名工具</td>
+<td>${JDK_HOME}/jarsigner或/usr/bin/jarsigner</td>
+<td></td>
+</tr>
+<tr>
+<td>zipalign</td>
+<td>字节码对齐工具</td>
+<td><code>${ANDROID_SDK_HOME}/tools</code>和<code>/zipalign</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="第一步-打包资源文件-生成R-java文件"><a href="#第一步-打包资源文件-生成R-java文件" class="headerlink" title="第一步: 打包资源文件,生成R.java文件"></a>第一步: 打包资源文件,生成R.java文件</h5><p>【输入】Resource文件（就是工程中res中的文件）、Assets文件（相当于另外一种资源，这种资源Android系统并不像对res中的文件那样优化它）、AndroidManifest.xml文件（包名就是从这里读取的，因为生成R.java文件需要包名）、Android基础类库（Android.jar文件）
+【工具】aapt工具
+【输出】打包好的资源（bin目录中的resources.ap<em>文件）、R.java文件（gen目录中）
+打包资源的工具aapt，大部分文本格式的XML资源文件会被编译成二进制格式的XML资源文件，除了assets和res/raw资源被原装不动地打包进APK之外，其它的资源都会被编译或者处理。 。
+生成过程主要是调用了aapt源码目录下的Resource.cpp文件中的buildResource（）函数，该函数首先检查AndroidManifest.xml的合法性，然后对res目录下的资源子目录进行处理，处理的函数为makeFileResource（），处理的内容包括资源文件名的合法性检查，向资源表table添加条目等，处理完后调用compileResourceFile（）函数编译res与asserts目录下的资源并生成resources.arsc文件，compileResourceFile（）函数位于aapt源码目录的ResourceTable.cpp文件中，该函数最后会调用parseAndAddEntry（）函数生成R.java文件，完成资源编译后，接下来调用compileXmlfile()函数对res目录的子目录下的xml文件分别进行编译，这样处理过的xml文件就简单的被“加密”了，最后将所有的资源与编译生成的resorces.arsc文件以及“加密”过的AndroidManifest.xml文件打包压缩成resources.ap</em>文件（使用Ant工具命令行编译则会生成与build.xml中“project name”指定的属性同名的ap_文件）。
+关于这一步更详细的流程可阅读<a href="http://blog.csdn.net/luoshengyang/article/details/8744683" target="_blank" rel="external">http://blog.csdn.net/luoshengyang/article/details/8744683</a></p>
+<p>res目录有9种目录</p>
+<ul>
+<li>–animator。这类资源以XML文件保存在res/animator目录下，用来描述属性动画。</li>
+<li>–anim。这类资源以XML文件保存在res/anim目录下，用来描述补间动画。</li>
+<li>–color。这类资源以XML文件保存在res/color目录下，用描述对象颜色状态选择子。</li>
+<li>–drawable。这类资源以XML或者Bitmap文件保存在res/drawable目录下，用来描述可绘制对象。例如，我们可以在里面放置一些图片（.png, .9.png, .jpg, .gif），来作为程序界面视图的背景图。注意，保存在这个目录中的Bitmap文件在打包的过程中，可能会被优化的。例如，一个不需要多于256色的真彩色PNG文件可能会被转换成一个只有8位调色板的PNG面板，这样就可以无损地压缩图片，以减少图片所占用的内存资源。</li>
+<li>–layout。这类资源以XML文件保存在res/layout目录下，用来描述应用程序界面布局。</li>
+<li>–menu。这类资源以XML文件保存在res/menu目录下，用来描述应用程序菜单。</li>
+<li>–raw。这类资源以任意格式的文件保存在res/raw目录下，它们和assets类资源一样，都是原装不动地打包在apk文件中的，不过它们会被赋予资源ID，这样我们就可以在程序中通过ID来访问它们。例如，假设在res/raw目录下有一个名称为filename的文件，并且它在编译的过程，被赋予的资源ID为R.raw.filename，那么就可以使用以下代码来访问它：<code>Resources res = getResources();  
+InputStream is = res .openRawResource(R.raw.filename);</code></li>
+<li>–values。这类资源以XML文件保存在res/values目录下，用来描述一些简单值，例如，数组、颜色、尺寸、字符串和样式值等，一般来说，这六种不同的值分别保存在名称为arrays.xml、colors.xml、dimens.xml、strings.xml和styles.xml文件中。</li>
+<li>–xml。这类资源以XML文件保存在res/xml目录下，一般就是用来描述应用程序的配置信息。</li>
+</ul>
+<h5 id="第二步：处理aidl文件，生成相应的java文件。"><a href="#第二步：处理aidl文件，生成相应的java文件。" class="headerlink" title="第二步：处理aidl文件，生成相应的java文件。"></a>第二步：处理aidl文件，生成相应的java文件。</h5><p>输入】源码文件、aidl文件、framework.aidl文件
+【工具】aidl工具
+【输出】对应的.java文件
+对于没有使用到aidl的android工程，这一步可以跳过。aidl工具解析接口定义文件并生成相应的java代码供程序调用。</p>
+<h5 id="第三步：编译工程源代码，生成下相应的class文件。"><a href="#第三步：编译工程源代码，生成下相应的class文件。" class="headerlink" title="第三步：编译工程源代码，生成下相应的class文件。"></a>第三步：编译工程源代码，生成下相应的class文件。</h5><p>【输入】源码文件（包括R.java和AIDL生成的.java文件）、库文件（.jar文件）
+【工具】javac工具
+【输出】.class文件
+这一步调用了javac编译工程src目录下所有的java源文件，生成的class文件位于工程的<code>bin\classes</code>目录下，上图假定编译工程源代码时程序是基于android SDK开发的，实际开发过程中，也有可能会使用android NDK来编译native代码，因此，如果可能的话，这一步还需要使用android NDK编译C/C++代码，当然，编译C/C++代码的步骤也可以提前到第一步或第二步。</p>
+<h5 id="第四步：转换所有的class文件，生成classes-dex文件。"><a href="#第四步：转换所有的class文件，生成classes-dex文件。" class="headerlink" title="第四步：转换所有的class文件，生成classes.dex文件。"></a>第四步：转换所有的class文件，生成classes.dex文件。</h5><p>【输入】 .class文件（包括Aidl生成.class文件，R生成的.class文件，源文件生成的.class文件），库文件（.jar文件）
+【工具】javac工具
+【输出】.dex文件
+前面多次提到，android系统dalvik虚拟机的可执行文件为dex格式，程序运行所需的classes.dex文件就是在这一步生成的，使用的工具为dx，dx工具主要的工作是将java字节码转换为dalvik字节码、压缩常量池、消除冗余信息等。</p>
+<h5 id="第五步：打包生成apk。"><a href="#第五步：打包生成apk。" class="headerlink" title="第五步：打包生成apk。"></a>第五步：打包生成apk。</h5><p>【输入】打包后的资源文件、打包后类文件（.dex文件）、libs文件（包括.so文件，当然很多工程都没有这样的文件，如果你不使用C/C++开发的话）
+【工具】apkbuilder工具
+【输出】未签名的.apk文件
+打包工具为apkbuilder，apkbuilder为一个脚本文件，实际调用的是<code>android-sdk\tools\lib\sdklib.jar</code>文件中的<code>com.android.sdklib.build.ApkBuilderMain</code>类。它的代码实现位于android系统源码的<code>sdk\sdkmanager\libs\sdklib\src\com\android\sdklib\build\ApkBuilderMain.java</code>文件，代码构建了一个ApkBuilder类，然后以包含resources.arsc的文件为基础生成apk文件，这个文件一般为ap_结尾，接着调用addSourceFolder()函数添加工程资源，addSourceFolder()会调用processFileForResource（）函数往apk文件中添加资源，处理的内容包括res目录与asserts目录中的文件，添加完资源后调用addResourceFromJar（）函数往apk文件中写入依赖库，接着调用addNativeLibraries()函数添加工程libs目录下的Native库（通过android NDK编译生成的so或bin文件），最后调用sealApk（）关闭apk文件。</p>
+<h5 id="第六步：对apk文件进行签名。"><a href="#第六步：对apk文件进行签名。" class="headerlink" title="第六步：对apk文件进行签名。"></a>第六步：对apk文件进行签名。</h5><p>【输入】未签名的.apk文件
+【工具】jarsigner
+【输出】签名的.apk文件
+android的应用程序需要签名才能在android设备上安装，签名apk文件有两种情况：一种是在调试程序时进行签名，使用eclipse开发android程序时，在编译调试程序时会自己使用一个debug.keystore对apk进行签名；另一种是打包发布时对程序进行签名，这种情况下需要提供一个符合android开发文档中要求的签名文件。签名的方法也分两种：一种是使用jdk中提供的jarsigner工具签名；另一种是使用android源码中提供的signapk工具，它的代码位于android系统源码<code>build\tools\signapk</code>目录下。</p>
+<h5 id="第七步：对签名后的apk文件进行对齐处理。"><a href="#第七步：对签名后的apk文件进行对齐处理。" class="headerlink" title="第七步：对签名后的apk文件进行对齐处理。"></a>第七步：对签名后的apk文件进行对齐处理。</h5><p>【输入】签名后的.apk文件
+【工具】zipalign工具
+【输出】对齐后的.apk文件
+这一步需要使用的工具为zipalign，它位于<code>android-sdk\tools</code>目录，源码位于android系统源码的<code>build\tools\zipalign</code>目录，它的主要工作是将spk包进行对齐处理，使spk包中的所有资源文件距离文件起始偏移为4字节整数倍，这样通过内存映射访问apk文件时速度会更快，验证apk文件是否对齐过的工作由ZipAlign.cpp文件的verify()函数完成，处理对齐的工作则由process（）函数完成。</p>
+<p>以一个具体项目中包含的具体文件为例作图如下：
+<img src="http://images.wodekouwei.com/technology/app_package2.png" alt="image"></p>
+<h3 id="APK文件内容解析"><a href="#APK文件内容解析" class="headerlink" title="APK文件内容解析"></a>APK文件内容解析</h3><p>android的项目经过编译和打包，形成了:</p>
+<ul>
+<li>.dex 文件</li>
+<li>resources.arsc</li>
+<li>uncompiled resources</li>
+<li>AndroidManifest.xml</li>
+</ul>
+<p>解压一个普通的apk文件,解压出来的文件如下:</p>
+<ul>
+<li>META-INF文件夹</li>
+<li>res文件夹</li>
+<li>AndroidManifest.xml</li>
+<li>classes.dex</li>
+<li>resources.arsc</li>
+</ul>
+<p>classes.dex 是.dex文件。
+resources.arsc是resources resources文件。
+AndroidManifest.xml是AndroidManifest.xml文件。
+res是uncompiled resources。
+META-INF是签名文件夹。</p>
+<p>META-INF其中有三个文件：</p>
+<ul>
+<li>CERT.RSA</li>
+<li>CERT.SF</li>
+<li>MANIFEST.MF</li>
+</ul>
+<p>MANIFEST.MF文件
+版本号以及每一个文件的哈希值（BASE64）。包括资源文件。这个是对每个文件的整体进行SHA1(hash)。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Manifest-Version: 1.0</div><div class="line">Built-By: Generated-by-ADT</div><div class="line">Created-By: Android Gradle 2.2.0</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.SF
+这个是对每个文件的头3行进行SHA1 hash。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Signature-Version: 1.0</div><div class="line">X-Android-APK-Signed: 2</div><div class="line">SHA1-Digest-Manifest: QxOfCCAuQtZnHh0YRNnoxmiHT80=</div><div class="line">Created-By: 1.0 (Android)</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.RSA
+这个文件保存了签名和公钥证书。</p>
+<h3 id="插件化中资源冲突解决"><a href="#插件化中资源冲突解决" class="headerlink" title="插件化中资源冲突解决"></a>插件化中资源冲突解决</h3><p>如果需要宿主、插件之间使用同一套资源管理器，那么我们需要将插件的资源路径添加到宿主的AssetManager中。</p>
+<p>我们知道，apk包括代码和资源，在apk编译过程中，dex工具将代码打包成.dex文件，资源文件会由aapt工具生成对应的ID，aapt在打包的时候组织成resources.arsc文件，resources.arsc文件是用来描述资源ID和资源位置配置信息，从18个维度描述了一个资源ID的配置信息（语言、分辨率等），就是资源ID和资源的索引表。资源的ID生成是有规则的，规则：0xPPTTNNNN，由8位16进制组成，其中：
+PP段：表示资源的包空间：0x01表示系统资源空间，0x7f表示应用资源空间。
+TT段：表示资源类型。
+NNNN段：4个16进制表示资源id，一个apk中同一类型资源从0000开始递增。
+例如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">nt anim pop_dialog_in 0x7f040000</div><div class="line">int anim pop_dialog_out 0x7f040001</div><div class="line">int anim slide_left_in 0x7f040002</div><div class="line">int anim slide_left_out 0x7f040003</div><div class="line">int anim slide_right_in 0x7f040004</div><div class="line">int anim slide_right_out 0x7f040005</div><div class="line">int anim update_loading_progressbar_anim 0x7f040006</div><div class="line">int array indicator_tab_icon 0x7f050001</div><div class="line">int array indicator_tab_titlt 0x7f050000</div></pre></td></tr></table></figure></p>
+<p>现在问题来了，宿主apk和插件apk是独立编译出来的两个独立的apk，那么其中就有资源ID相同的情况出现，从而产生资源ID冲突。如何解决这个问题？看了一些开源框架，解决的办法就是修改资源ID的PP段，大体有两种做法：</p>
+<ol>
+<li><strong>修改aapt源码，定制aapt工具编译期间修改PP段。</strong>
+DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在编译的时候可以传入参数修改PP段：例如传入0x05编译得到的资源的PP段就是0x05。个人觉得这个做法不是太灵活，入侵了原有的开发编译流程，不好维护。</li>
+<li><strong>修改aapt的产物，即，编译后期重新整理插件Apk的资源，编排ID。</strong>
+前面说过apk编译之后会生成ID以及对应的索引表resorce.arsc，那么我们能不能后期修改相关ID及索引表呢？答案是肯定的，个人比较赞同这种思路，不用入侵原有编译流程。</li>
+</ol>
+<p>插件可能是 Apk 也可能是 so 格式，不管哪一种，都不会生成 R.id ，从而没办法使用。这个问题有好几种解决方案。一种是是重写 Context 的 getAsset 、 getResource 之类的方法，偷换概念，让插件读取插件里的资源，但缺点就是宿主和插件的资源 id 会冲突，需要重写 AAPT 。另一种是重写 AMS中保存的插件列表，从而让宿主和插件分别去加载各自的资源而不会冲突。第三种方法，就是打包后，执行一个脚本，修改生成包中资源id。</p>
+
           
         
       
@@ -1269,6 +1524,441 @@
 <li>加载指定的类返回一个Class</li>
 <li>然后使用反射调用这个Class</li>
 </ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable/" itemprop="url">
+                  Android插件化(一)技术调研
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T12:21:57+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
+下面简单介绍一下：</p>
+<table>
+<thead>
+<tr>
+<th>更新方式</th>
+<th>签名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增量更新</td>
+<td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。</td>
+</tr>
+<tr>
+<td>插件式开发</td>
+<td>给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。</td>
+</tr>
+<tr>
+<td>热修复</td>
+<td>通过NDK底层去修复，也是C/C++的技术。</td>
+</tr>
+<tr>
+<td>RN</td>
+<td>通过JS脚本去修复APK。</td>
+</tr>
+<tr>
+<td>静默安装</td>
+<td>需要root权限，适配不同手机ROM很麻烦。</td>
+</tr>
+</tbody>
+</table>
+<p>插件化、热修复（思想）的发展历程</p>
+<ul>
+<li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
+<li>2013年，23Code，自定义控件的动态下载：主要利用 Java ClassLoader 的原理，可动态加载的内容包括 apk、dex、jar等。</li>
+<li>2014年初，Altas，阿里伯奎的技术分享：提出了插件化的思想以及一些思考的问题，相关资料比较少。</li>
+<li>2014年底，Dynamic-load-apk，任玉刚：动态加载APK，通过Activity代理的方式给插件Activity添加生命周期。</li>
+<li>2015年4月，OpenAltas/ACCD：Altas的开源项目，一款强大的Android非代理动态部署框架，目前已经处于稳定状态。</li>
+<li>2015年8月，DroidPlugin，360的张勇：DroidPlugin 是360手机助手在 Android 系统上实现了一种新的插件机制：通过Hook思想来实现，它可以在无需安装、修改的情况下运行APK文件,此机制对改进大型APP的架构，实现多团队协作开发具有一定的好处。</li>
+<li>2015年9月，AndFix，阿里：通过NDK的Hook来实现热修复。</li>
+<li>2015年11月，Nuwa，大众点评：通过dex分包方案实现热修复。</li>
+<li>2015年底，Small，林光亮：打通了宿主与插件之间的资源与代码共享。</li>
+<li>2016年4月，ZeusPlugin，掌阅：ZeusPlugin最大特点是：简单易懂，核心类只有6个，类总数只有13个。</li>
+</ul>
+<h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
+与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
+<h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
+<li>APP检测最新版本：把当前版本告诉服务端，服务端进行判断。
+如果有新版本，服务端需要对当前版本的APK与最新版本的APK进行一次差分，产生patch差分文件。（或者新版本的APK上传到服务端的时候就已经差分好了）</li>
+<li>APP在后台下载差分文件，进行文件的MD5校验，在本地进行合并（跟本地的data目录下面的APK文件合并），合并出最新的APK之后，提示用户安装。</li>
+<li>增量更新的最终目的：省流量地更新宿主APK。</li>
+</ol>
+<p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
+注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
+<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
+<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
+<p>根据提示需要传入4个参数：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
+<p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
+<p>写一个Java测试类生成差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意:</p>
+<ul>
+<li>test_new.apk、test_old.apk 要先放在目标目录</li>
+<li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
+</ul>
+<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>代码v1.0差分包合并核心代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
+<blockquote>
+<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
+作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
+</blockquote>
+<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
+<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>DynamicLoadApk</th>
+<th>DynamicAPK</th>
+<th>Small</th>
+<th>DroidPlugin</th>
+<th>VirtualAPK</th>
+<th>RePlugin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>支持四大组件</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>全支持</td>
+<td>全支持</td>
+<td>全支持</td>
+</tr>
+<tr>
+<td>组件无需在宿主manifest中预注册</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>插件可以依赖宿主</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>支持PendingIntent</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Android特性支持</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+</tr>
+<tr>
+<td>兼容性适配</td>
+<td>一般</td>
+<td>一般</td>
+<td>中等</td>
+<td>高</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>插件构建</td>
+<td>无</td>
+<td>部署aapt</td>
+<td>Gradle插件</td>
+<td>无</td>
+<td>Gradle插件</td>
+<td>Gradle插件</td>
+</tr>
+<tr>
+<td>源码</td>
+<td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
+<td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
+<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
+<td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
+<td><code>https://github.com/didi/VirtualAPK</code></td>
+<td><code>https://github.com/Qihoo360/RePlugin</code></td>
+</tr>
+<tr>
+<td>开发者</td>
+<td>singwhatiwanna</td>
+<td>CtripMobile</td>
+<td></td>
+<td>Lody</td>
+<td>滴滴</td>
+<td>360</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supported components</td>
+<td>Activity, Service, Receiver and Provider</td>
+</tr>
+<tr>
+<td>Manually register components in AndroidManifest.xml</td>
+<td>No need</td>
+</tr>
+<tr>
+<td>Access host app classes and resources</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>PendingIntent</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Supported Android features</td>
+<td>Almost all features</td>
+</tr>
+<tr>
+<td>Compatibility</td>
+<td>Almost all devices</td>
+</tr>
+<tr>
+<td>Building system</td>
+<td>Gradle plugin</td>
+</tr>
+<tr>
+<td>Supported Android versions</td>
+<td>API Level 15+</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
+<h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
+<li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
+<li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
+<li>去除插件包对宿主的引用 构建时通过Gradle插件去除插件对宿主的代码以及资源的引用<h5 id="2-2-3-2四大组件的实现原理"><a href="#2-2-3-2四大组件的实现原理" class="headerlink" title="2.2.3.2四大组件的实现原理"></a>2.2.3.2四大组件的实现原理</h5></li>
+<li>Activity 采用宿主manifest中占坑的方式来绕过系统校验，然后再加载真正的activity；</li>
+<li>Service 动态代理AMS，拦截service相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作；</li>
+<li>Receiver 将插件中静态注册的receiver重新注册一遍；</li>
+<li>ContentProvider 动态代理IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</li>
+</ul>
+<h4 id="2-3RePlugin"><a href="#2-3RePlugin" class="headerlink" title="2.3RePlugin"></a>2.3RePlugin</h4><h5 id="2-3-1特性"><a href="#2-3-1特性" class="headerlink" title="2.3.1特性"></a>2.3.1特性</h5><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>组件</td>
+<td>四大组件（含静态Receiver）</td>
+</tr>
+<tr>
+<td>升级无需改主程序Manifest</td>
+<td>完美支持</td>
+</tr>
+<tr>
+<td>Android特性</td>
+<td>支持近乎所有（包括SO库等）</td>
+</tr>
+<tr>
+<td>TaskAffinity &amp; 多进程</td>
+<td>支持（坑位方案）</td>
+</tr>
+<tr>
+<td>插件类型</td>
+<td>支持自带插件（自识别）、外置插件</td>
+</tr>
+<tr>
+<td>插件间耦合</td>
+<td>支持Binder、Class Loader、资源等</td>
+</tr>
+<tr>
+<td>进程间通讯</td>
+<td>支持同步、异步、Binder、广播等</td>
+</tr>
+<tr>
+<td>自定义Theme &amp; AppComat</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>DataBinding</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>安全校验</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>资源方案</td>
+<td>独立资源 + Context传递（相对稳定）</td>
+</tr>
+<tr>
+<td>Android 版本</td>
+<td>API Level 9+ （2.3及以上）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
 
           
         
@@ -2210,441 +2900,6 @@ Composition Time=0x000043
 <p><a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
 <a href="https://github.com/gezhaoyou/RtmpMindmap" target="_blank" rel="external">RtmpMindmap</a></p>
 </blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-pluggable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/05/tips-android-pluggable/" itemprop="url">
-                  Android插件化(一)技术调研
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T17:15:57+08:00">
-                2017-12-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
-下面简单介绍一下：</p>
-<table>
-<thead>
-<tr>
-<th>更新方式</th>
-<th>签名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>增量更新</td>
-<td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。</td>
-</tr>
-<tr>
-<td>插件式开发</td>
-<td>给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。</td>
-</tr>
-<tr>
-<td>热修复</td>
-<td>通过NDK底层去修复，也是C/C++的技术。</td>
-</tr>
-<tr>
-<td>RN</td>
-<td>通过JS脚本去修复APK。</td>
-</tr>
-<tr>
-<td>静默安装</td>
-<td>需要root权限，适配不同手机ROM很麻烦。</td>
-</tr>
-</tbody>
-</table>
-<p>插件化、热修复（思想）的发展历程</p>
-<ul>
-<li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
-<li>2013年，23Code，自定义控件的动态下载：主要利用 Java ClassLoader 的原理，可动态加载的内容包括 apk、dex、jar等。</li>
-<li>2014年初，Altas，阿里伯奎的技术分享：提出了插件化的思想以及一些思考的问题，相关资料比较少。</li>
-<li>2014年底，Dynamic-load-apk，任玉刚：动态加载APK，通过Activity代理的方式给插件Activity添加生命周期。</li>
-<li>2015年4月，OpenAltas/ACCD：Altas的开源项目，一款强大的Android非代理动态部署框架，目前已经处于稳定状态。</li>
-<li>2015年8月，DroidPlugin，360的张勇：DroidPlugin 是360手机助手在 Android 系统上实现了一种新的插件机制：通过Hook思想来实现，它可以在无需安装、修改的情况下运行APK文件,此机制对改进大型APP的架构，实现多团队协作开发具有一定的好处。</li>
-<li>2015年9月，AndFix，阿里：通过NDK的Hook来实现热修复。</li>
-<li>2015年11月，Nuwa，大众点评：通过dex分包方案实现热修复。</li>
-<li>2015年底，Small，林光亮：打通了宿主与插件之间的资源与代码共享。</li>
-<li>2016年4月，ZeusPlugin，掌阅：ZeusPlugin最大特点是：简单易懂，核心类只有6个，类总数只有13个。</li>
-</ul>
-<h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
-与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
-<h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
-<li>APP检测最新版本：把当前版本告诉服务端，服务端进行判断。
-如果有新版本，服务端需要对当前版本的APK与最新版本的APK进行一次差分，产生patch差分文件。（或者新版本的APK上传到服务端的时候就已经差分好了）</li>
-<li>APP在后台下载差分文件，进行文件的MD5校验，在本地进行合并（跟本地的data目录下面的APK文件合并），合并出最新的APK之后，提示用户安装。</li>
-<li>增量更新的最终目的：省流量地更新宿主APK。</li>
-</ol>
-<p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
-注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
-<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
-<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
-<p>根据提示需要传入4个参数：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
-<p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
-<p>写一个Java测试类生成差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>注意:</p>
-<ul>
-<li>test_new.apk、test_old.apk 要先放在目标目录</li>
-<li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
-</ul>
-<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<p>代码v1.0差分包合并核心代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
-<blockquote>
-<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
-作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
-</blockquote>
-<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
-<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>DynamicLoadApk</th>
-<th>DynamicAPK</th>
-<th>Small</th>
-<th>DroidPlugin</th>
-<th>VirtualAPK</th>
-<th>RePlugin</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>支持四大组件</td>
-<td>只支持Activity</td>
-<td>只支持Activity</td>
-<td>只支持Activity</td>
-<td>全支持</td>
-<td>全支持</td>
-<td>全支持</td>
-</tr>
-<tr>
-<td>组件无需在宿主manifest中预注册</td>
-<td>√</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>插件可以依赖宿主</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>支持PendingIntent</td>
-<td>×</td>
-<td>×</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>Android特性支持</td>
-<td>大部分</td>
-<td>大部分</td>
-<td>大部分</td>
-<td>几乎全部</td>
-<td>几乎全部</td>
-<td>几乎全部</td>
-</tr>
-<tr>
-<td>兼容性适配</td>
-<td>一般</td>
-<td>一般</td>
-<td>中等</td>
-<td>高</td>
-<td>高</td>
-<td>高</td>
-</tr>
-<tr>
-<td>插件构建</td>
-<td>无</td>
-<td>部署aapt</td>
-<td>Gradle插件</td>
-<td>无</td>
-<td>Gradle插件</td>
-<td>Gradle插件</td>
-</tr>
-<tr>
-<td>源码</td>
-<td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
-<td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
-<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
-<td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
-<td><code>https://github.com/didi/VirtualAPK</code></td>
-<td><code>https://github.com/Qihoo360/RePlugin</code></td>
-</tr>
-<tr>
-<td>开发者</td>
-<td>singwhatiwanna</td>
-<td>CtripMobile</td>
-<td></td>
-<td>Lody</td>
-<td>滴滴</td>
-<td>360</td>
-</tr>
-</tbody>
-</table>
-<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Supported components</td>
-<td>Activity, Service, Receiver and Provider</td>
-</tr>
-<tr>
-<td>Manually register components in AndroidManifest.xml</td>
-<td>No need</td>
-</tr>
-<tr>
-<td>Access host app classes and resources</td>
-<td>Supported</td>
-</tr>
-<tr>
-<td>PendingIntent</td>
-<td>Supported</td>
-</tr>
-<tr>
-<td>Supported Android features</td>
-<td>Almost all features</td>
-</tr>
-<tr>
-<td>Compatibility</td>
-<td>Almost all devices</td>
-</tr>
-<tr>
-<td>Building system</td>
-<td>Gradle plugin</td>
-</tr>
-<tr>
-<td>Supported Android versions</td>
-<td>API Level 15+</td>
-</tr>
-</tbody>
-</table>
-<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
-<h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
-<li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
-<li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
-<li>去除插件包对宿主的引用 构建时通过Gradle插件去除插件对宿主的代码以及资源的引用<h5 id="2-2-3-2四大组件的实现原理"><a href="#2-2-3-2四大组件的实现原理" class="headerlink" title="2.2.3.2四大组件的实现原理"></a>2.2.3.2四大组件的实现原理</h5></li>
-<li>Activity 采用宿主manifest中占坑的方式来绕过系统校验，然后再加载真正的activity；</li>
-<li>Service 动态代理AMS，拦截service相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作；</li>
-<li>Receiver 将插件中静态注册的receiver重新注册一遍；</li>
-<li>ContentProvider 动态代理IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</li>
-</ul>
-<h4 id="2-3RePlugin"><a href="#2-3RePlugin" class="headerlink" title="2.3RePlugin"></a>2.3RePlugin</h4><h5 id="2-3-1特性"><a href="#2-3-1特性" class="headerlink" title="2.3.1特性"></a>2.3.1特性</h5><table>
-<thead>
-<tr>
-<th>特性</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>组件</td>
-<td>四大组件（含静态Receiver）</td>
-</tr>
-<tr>
-<td>升级无需改主程序Manifest</td>
-<td>完美支持</td>
-</tr>
-<tr>
-<td>Android特性</td>
-<td>支持近乎所有（包括SO库等）</td>
-</tr>
-<tr>
-<td>TaskAffinity &amp; 多进程</td>
-<td>支持（坑位方案）</td>
-</tr>
-<tr>
-<td>插件类型</td>
-<td>支持自带插件（自识别）、外置插件</td>
-</tr>
-<tr>
-<td>插件间耦合</td>
-<td>支持Binder、Class Loader、资源等</td>
-</tr>
-<tr>
-<td>进程间通讯</td>
-<td>支持同步、异步、Binder、广播等</td>
-</tr>
-<tr>
-<td>自定义Theme &amp; AppComat</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>DataBinding</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>安全校验</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>资源方案</td>
-<td>独立资源 + Context传递（相对稳定）</td>
-</tr>
-<tr>
-<td>Android 版本</td>
-<td>API Level 9+ （2.3及以上）</td>
-</tr>
-</tbody>
-</table>
-<h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
 
           
         
