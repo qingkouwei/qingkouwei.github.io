@@ -1,0 +1,1105 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,tips,Pluggable," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.什么是ClassLoader当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候">
+<meta name="keywords" content="Android,tips,Pluggable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android插件化(二)基础之类加载器">
+<meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="1.什么是ClassLoader当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/classloader.gif">
+<meta property="og:updated_time" content="2018-01-12T12:25:31.663Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android插件化(二)基础之类加载器">
+<meta name="twitter:description" content="1.什么是ClassLoader当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候">
+<meta name="twitter:image" content="http://images.wodekouwei.com/technology/classloader.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/"/>
+
+
+
+
+
+  <title> Android插件化(二)基础之类加载器 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android插件化(二)基础之类加载器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:35:40+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/01/12/tips-android-pluggable-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-什么是ClassLoader"><a href="#1-什么是ClassLoader" class="headerlink" title="1.什么是ClassLoader"></a>1.什么是ClassLoader</h3><p>当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
+<h3 id="2-Java-ClassLoader"><a href="#2-Java-ClassLoader" class="headerlink" title="2.Java ClassLoader"></a>2.Java ClassLoader</h3><h4 id="2-1-Java默认提供的三个ClassLoader"><a href="#2-1-Java默认提供的三个ClassLoader" class="headerlink" title="2.1.Java默认提供的三个ClassLoader"></a>2.1.Java默认提供的三个ClassLoader</h4><ol>
+<li>BootStrap ClassLoader：
+称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();  </div><div class="line">for (int i = 0; i &lt; urls.length; i++) &#123;  </div><div class="line">    System.out.println(urls[i].toExternalForm());  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以下内容是上述程序从本机JDK环境所获得的结果：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<p>其实上述结果也是通过查找sun.boot.class.path这个系统属性所得知的。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(System.getProperty(&quot;sun.boot.class.path&quot;));</div></pre></td></tr></table></figure></p>
+<p>打印结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<ol>
+<li>Extension ClassLoader：
+称为扩展类加载器，负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</li>
+<li>App ClassLoader：
+称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。</li>
+</ol>
+<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是Bootstrap ClassLoader不继承自ClassLoader，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
+<h4 id="2-2ClassLoader加载类的原理"><a href="#2-2ClassLoader加载类的原理" class="headerlink" title="2.2ClassLoader加载类的原理"></a>2.2ClassLoader加载类的原理</h4><p>ClassLoader使用的是双亲委托模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
+<p>这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到安全因素，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
+<p>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的。只有两者同时满足的情况下，JVM才认为这两个class是相同的。就算两个class是同一份class字节码，如果被两个不同的ClassLoader实例所加载，JVM也会认为它们是两个不同class。比如网络上的一个Java类org.classloader.simple.NetClassLoaderSimple，javac编译之后生成字节码文件NetClassLoaderSimple.class，ClassLoaderA和ClassLoaderB这两个类加载器并读取了NetClassLoaderSimple.class文件，并分别定义出了java.lang.Class实例来表示这个类，对于JVM来说，它们是两个不同的实例对象，但它们确实是同一份字节码文件，如果试图将这个Class实例生成具体的对象进行转换时，就会抛运行时异常java.lang.ClassCaseException，提示这是两个不同的类型。现在通过实例来验证上述所描述的是否正确:</p>
+<ol>
+<li>在web服务器上建一个org.classloader.simple.NetClassLoaderSimple.java类<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.classloader.simple;  </div><div class="line"></div><div class="line">public class NetClassLoaderSimple &#123;  </div><div class="line"></div><div class="line">    private NetClassLoaderSimple instance;  </div><div class="line"></div><div class="line">    public void setNetClassLoaderSimple(Object obj) &#123;  </div><div class="line">        this.instance = (NetClassLoaderSimple)obj;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>org.classloader.simple.NetClassLoaderSimple类的setNetClassLoaderSimple方法接收一个Object类型参数，并将它强制转换成org.classloader.simple.NetClassLoaderSimple类型。</p>
+<ol>
+<li>测试两个class是否相同
+<code>NetWorkClassLoader.java</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">package classloader;</div><div class="line"></div><div class="line">import java.io.ByteArrayOutputStream;</div><div class="line">import java.io.InputStream;</div><div class="line">import java.net.URL;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 加载网络class的ClassLoader</div><div class="line"> */</div><div class="line">public class NetworkClassLoader extends ClassLoader &#123;</div><div class="line"></div><div class="line">	private String rootUrl;</div><div class="line"></div><div class="line">	public NetworkClassLoader(String rootUrl) &#123;</div><div class="line">		this.rootUrl = rootUrl;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@Override</div><div class="line">	protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException &#123;</div><div class="line">		Class clazz = null;//this.findLoadedClass(name); // 父类已加载</div><div class="line">		//if (clazz == null) &#123;	//检查该类是否已被加载过</div><div class="line">			byte[] classData = getClassData(name);	//根据类的二进制名称,获得该class文件的字节码数组</div><div class="line">			if (classData == null) &#123;</div><div class="line">				throw new ClassNotFoundException();</div><div class="line">			&#125;</div><div class="line">			clazz = defineClass(name, classData, 0, classData.length);	//将class的字节码数组转换成Class类的实例</div><div class="line">		//&#125;</div><div class="line">		return clazz;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private byte[] getClassData(String name) &#123;</div><div class="line">		InputStream is = null;</div><div class="line">		try &#123;</div><div class="line">			String path = classNameToPath(name);</div><div class="line">			URL url = new URL(path);</div><div class="line">			byte[] buff = new byte[1024*4];</div><div class="line">			int len = -1;</div><div class="line">			is = url.openStream();</div><div class="line">			ByteArrayOutputStream baos = new ByteArrayOutputStream();</div><div class="line">			while((len = is.read(buff)) != -1) &#123;</div><div class="line">				baos.write(buff,0,len);</div><div class="line">			&#125;</div><div class="line">			return baos.toByteArray();</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125; finally &#123;</div><div class="line">			if (is != null) &#123;</div><div class="line">			   try &#123;</div><div class="line">			      is.close();</div><div class="line">			   &#125; catch(IOException e) &#123;</div><div class="line">			      e.printStackTrace();</div><div class="line">			   &#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private String classNameToPath(String name) &#123;</div><div class="line">		return rootUrl + &quot;/&quot; + name.replace(&quot;.&quot;, &quot;/&quot;) + &quot;.class&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">package classloader;  </div><div class="line"></div><div class="line">public class NewworkClassLoaderTest &#123;  </div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;  </div><div class="line">        try &#123;  </div><div class="line">            //测试加载网络中的class文件  </div><div class="line">            String rootUrl = &quot;http://localhost:8080/httpweb/classes&quot;;  </div><div class="line">            String className = &quot;org.classloader.simple.NetClassLoaderSimple&quot;;  </div><div class="line">            NetworkClassLoader ncl1 = new NetworkClassLoader(rootUrl);  </div><div class="line">            NetworkClassLoader ncl2 = new NetworkClassLoader(rootUrl);  </div><div class="line">            Class&lt;?&gt; clazz1 = ncl1.loadClass(className);  </div><div class="line">            Class&lt;?&gt; clazz2 = ncl2.loadClass(className);  </div><div class="line">            Object obj1 = clazz1.newInstance();  </div><div class="line">            Object obj2 = clazz2.newInstance();  </div><div class="line">            clazz1.getMethod(&quot;setNetClassLoaderSimple&quot;, Object.class).invoke(obj1, obj2);  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先获得网络上一个class文件的二进制名称，然后通过自定义的类加载器NetworkClassLoader创建两个实例，并根据网络地址分别加载这份class，并得到这两个ClassLoader实例加载后生成的Class实例clazz1和clazz2，最后将这两个Class实例分别生成具体的实例对象obj1和obj2，再通过反射调用clazz1中的setNetClassLoaderSimple方法。</p>
+<p>结果抛出<code>java.lang.ClassCastgException</code>,虽然是同一份class字节码文件，但是由于被两个不同的ClassLoader实例所加载，所以JVM认为它们就是两个不同的类。</p>
+<h4 id="2-3ClassLoader的体系架构："><a href="#2-3ClassLoader的体系架构：" class="headerlink" title="2.3ClassLoader的体系架构："></a>2.3ClassLoader的体系架构：</h4><p><img src="http://images.wodekouwei.com/technology/classloader.gif" alt="iamge"></p>
+<p>打印ClassLoader类的层次结构:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ClassLoader loader = ClassLoaderTest.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  </div><div class="line">while(loader != null) &#123;  </div><div class="line">    System.out.println(loader);  </div><div class="line">    loader = loader.getParent();    //获得父类加载器的引用  </div><div class="line">&#125;  </div><div class="line">System.out.println(loader);</div></pre></td></tr></table></figure></p>
+<p>输出:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</div><div class="line">sun.misc.Launcher$ExtClassLoader@1540e19d</div><div class="line">null</div></pre></td></tr></table></figure></p>
+<p>第一行结果说明：ClassLoaderTest的类加载器是AppClassLoader。</p>
+<p>第二行结果说明：AppClassLoader的类加器是ExtClassLoader，即parent=ExtClassLoader。</p>
+<p>第三行结果说明：ExtClassLoader的类加器是Bootstrap ClassLoader，因为Bootstrap ClassLoader不是一个普通的Java类，所以ExtClassLoader的parent=null，所以第三行的打印结果为null就是这个原因。</p>
+<ul>
+<li>将ClassLoaderTest.class打包成ClassLoaderTest.jar，放到Extension ClassLoader的加载目录下（JAVA_HOME/jre/lib/ext）可以测试Extension ClassLoader</li>
+<li>在jvm中添加-Xbootclasspath参数，指定Bootstrcp ClassLoader加载类的路径，并追加我们自已的jar（ClassTestLoader.jar）或 将class文件放到JAVA_HOME/jre/classes/目录下测试用Bootstrcp ClassLoader加载ClassLoaderTest.class.</li>
+</ul>
+<h4 id="2-4定义自己的ClassLoader"><a href="#2-4定义自己的ClassLoader" class="headerlink" title="2.4定义自己的ClassLoader:"></a>2.4定义自己的ClassLoader:</h4><p>因为Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，比如：我要加载网络上的一个class文件，通过动态加载到内存之后，要调用这个类中的方法实现我的业务逻辑。在这样的情况下，默认的ClassLoader就不能满足我们的需求了，所以需要定义自己的ClassLoader。</p>
+<p><strong>定义自已的类加载器分为两步：</strong></p>
+<ol>
+<li>继承java.lang.ClassLoader</li>
+<li>重写父类的findClass方法</li>
+</ol>
+<blockquote>
+<p>参考:<a href="https://www.ibm.com/developerworks/cn/java/j-lo-classloader/" target="_blank" rel="external">深入探讨 Java 类加载器</a></p>
+<h3 id="3-Android-ClassLoader"><a href="#3-Android-ClassLoader" class="headerlink" title="3.Android ClassLoader"></a>3.Android ClassLoader</h3><p>Android ClassLoader种类：</p>
+<ul>
+<li>DexClassLoader：可以加载文件系统上的jar、dex、apk</li>
+<li>PathClassLoader：可以加载/data/app目录下的apk，这也意味着，它只能加载已经安装的apk</li>
+<li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
+</ul>
+</blockquote>
+<p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
+<ol>
+<li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
+<li>创建一个 DexClassLoader实例</li>
+<li>加载指定的类返回一个Class</li>
+<li>然后使用反射调用这个Class</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+            <a href="/tags/Pluggable/" rel="tag"># Pluggable</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/08/tips-ml-mle-map/" rel="next" title="(转)聊一聊机器学习的MLE和MAP:最大似然估计和最大后验估计">
+                <i class="fa fa-chevron-left"></i> (转)聊一聊机器学习的MLE和MAP:最大似然估计和最大后验估计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/12/tips-android-pluggable-2/" rel="prev" title="Android插件化(三)基础之反射与代理">
+                Android插件化(三)基础之反射与代理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-什么是ClassLoader"><span class="nav-number">1.</span> <span class="nav-text">1.什么是ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Java-ClassLoader"><span class="nav-number">2.</span> <span class="nav-text">2.Java ClassLoader</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Java默认提供的三个ClassLoader"><span class="nav-number">2.1.</span> <span class="nav-text">2.1.Java默认提供的三个ClassLoader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2ClassLoader加载类的原理"><span class="nav-number">2.2.</span> <span class="nav-text">2.2ClassLoader加载类的原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3ClassLoader的体系架构："><span class="nav-number">2.3.</span> <span class="nav-text">2.3ClassLoader的体系架构：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4定义自己的ClassLoader"><span class="nav-number">2.4.</span> <span class="nav-text">2.4定义自己的ClassLoader:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Android-ClassLoader"><span class="nav-number">3.</span> <span class="nav-text">3.Android ClassLoader</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

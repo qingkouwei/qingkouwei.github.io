@@ -1,0 +1,1170 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,tips,Pluggable," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.反射反射机制中的类：  java.lang.Class;                 java.lang.reflect.Constructor; java.lang.reflect.Field; java.lang.reflect.Method; java.lang.reflect.Modifier;   获取Class的三种方式: 12345678910/第一种方式：  Classc1">
+<meta name="keywords" content="Android,tips,Pluggable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android插件化(三)基础之反射与代理">
+<meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable-2/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="1.反射反射机制中的类：  java.lang.Class;                 java.lang.reflect.Constructor; java.lang.reflect.Field; java.lang.reflect.Method; java.lang.reflect.Modifier;   获取Class的三种方式: 12345678910/第一种方式：  Classc1">
+<meta property="og:image" content="http://images.wodekouwei.com/technology/oh3VMNs.gif">
+<meta property="og:updated_time" content="2018-01-12T12:25:27.382Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android插件化(三)基础之反射与代理">
+<meta name="twitter:description" content="1.反射反射机制中的类：  java.lang.Class;                 java.lang.reflect.Constructor; java.lang.reflect.Field; java.lang.reflect.Method; java.lang.reflect.Modifier;   获取Class的三种方式: 12345678910/第一种方式：  Classc1">
+<meta name="twitter:image" content="http://images.wodekouwei.com/technology/oh3VMNs.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-2/"/>
+
+
+
+
+
+  <title> Android插件化(三)基础之反射与代理 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android插件化(三)基础之反射与代理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:38:36+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/01/12/tips-android-pluggable-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-反射"><a href="#1-反射" class="headerlink" title="1.反射"></a>1.反射</h3><p>反射机制中的类：</p>
+<ul>
+<li>java.lang.Class;                </li>
+<li>java.lang.reflect.Constructor;</li>
+<li>java.lang.reflect.Field;</li>
+<li>java.lang.reflect.Method;</li>
+<li>java.lang.reflect.Modifier;</li>
+</ul>
+<ol>
+<li><p>获取Class的三种方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/第一种方式：  </div><div class="line">Classc1 = Class.forName(&quot;Employee&quot;);  </div><div class="line">//第二种方式：  </div><div class="line">//java中每个类型都有class 属性.  </div><div class="line">Classc2 = Employee.class;  </div><div class="line"></div><div class="line">//第三种方式：  </div><div class="line">//java语言中任何一个java对象都有getClass 方法  </div><div class="line">Employeee = new Employee();  </div><div class="line">Classc3 = e.getClass(); //c3是运行时类 (e的运行时类是Employee)</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Class c =Class.forName(&quot;Employee&quot;);  </div><div class="line"></div><div class="line">//创建此Class 对象所表示的类的一个新实例  </div><div class="line">Objecto = c.newInstance(); //调用了Employee的无参数构造方法.</div></pre></td></tr></table></figure>
+</li>
+<li><p>获取属性：分为所有的属性和指定的属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">//获取整个类  </div><div class="line">Class c = Class.forName(&quot;java.lang.Integer&quot;);  </div><div class="line">  //获取所有的属性?  </div><div class="line">Field[] fs = c.getDeclaredFields();  </div><div class="line"></div><div class="line">//定义可变长的字符串，用来存储属性  </div><div class="line">StringBuffer sb = new StringBuffer();  </div><div class="line">//通过追加的方法，将每个属性拼接到此字符串中  </div><div class="line">//最外边的public定义  </div><div class="line">sb.append(Modifier.toString(c.getModifiers()) + &quot; class &quot; + c.getSimpleName() +&quot;&#123;\n&quot;);  </div><div class="line">//里边的每一个属性  </div><div class="line">for(Field field:fs)&#123;  </div><div class="line">    sb.append(&quot;\t&quot;);//空格  </div><div class="line">    sb.append(Modifier.toString(field.getModifiers())+&quot; &quot;);//获得属性的修饰符，例如public，static等等  </div><div class="line">    sb.append(field.getType().getSimpleName() + &quot; &quot;);//属性的类型的名字  </div><div class="line">    sb.append(field.getName()+&quot;;\n&quot;);//属性的名字+回车  </div><div class="line">&#125;  </div><div class="line">sb.append(&quot;&#125;&quot;);  </div><div class="line">System.out.println(sb);  </div><div class="line"></div><div class="line"></div><div class="line">//获取特定属性</div><div class="line">//获取类  </div><div class="line">Class c = Class.forName(&quot;User&quot;);  </div><div class="line">//获取id属性  </div><div class="line">Field idF = c.getDeclaredField(&quot;id&quot;);  </div><div class="line">//实例化这个类赋给o  </div><div class="line">Object o = c.newInstance();  </div><div class="line">//打破封装  </div><div class="line">idF.setAccessible(true); //使用反射机制可以打破封装性，导致了java对象的属性不安全。  </div><div class="line">//给o对象的id属性赋值&quot;110&quot;  </div><div class="line">idF.set(o, &quot;110&quot;); //set  </div><div class="line">//get  </div><div class="line">System.out.println(idF.get(o));</div></pre></td></tr></table></figure>
+</li>
+<li><p>关键字</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>方法关键字</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getDeclaredMethods()</td>
+<td>获取所有的方法</td>
+</tr>
+<tr>
+<td>getReturnType()</td>
+<td>获得方法的放回类型</td>
+</tr>
+<tr>
+<td>getParameterTypes()</td>
+<td>获得方法的传入参数类型</td>
+</tr>
+<tr>
+<td>getDeclaredMethod(“方法名”,参数类型.class,……)</td>
+<td>获得特定的方法</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>构造方法关键字</td>
+<td>含义</td>
+</tr>
+<tr>
+<td>getDeclaredConstructors()</td>
+<td>获取所有的构造方法</td>
+</tr>
+<tr>
+<td>getDeclaredConstructor(参数类型.class,……)</td>
+<td>获取特定的构造方法</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>父类和父接口</td>
+<td>含义</td>
+</tr>
+<tr>
+<td>getSuperclass()</td>
+<td>获取某类的父类</td>
+</tr>
+<tr>
+<td>getInterfaces()</td>
+<td>获取某类实现的接口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-代理模式"><a href="#2-代理模式" class="headerlink" title="2.代理模式"></a>2.代理模式</h3><p>定义：给某个对象提供一个代理对象，并由代理对象控制对于原对象的访问，即客户不直接操控原对象，而是通过代理对象间接地操控原对象。
+<img src="http://images.wodekouwei.com/technology/oh3VMNs.gif" alt="image"></p>
+<ul>
+<li>RealSubject 是原对象（本文把原对象称为”委托对象”），Proxy 是代理对象。</li>
+<li>Subject 是委托对象和代理对象都共同实现的接口。</li>
+<li>Request() 是委托对象和代理对象共同拥有的方法。</li>
+</ul>
+<p>Java 实现上面的UML图的代码（即实现静态代理）为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class ProxyDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        RealSubject subject = new RealSubject();</div><div class="line">        Proxy p = new Proxy(subject);</div><div class="line">        p.request();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">interface Subject&#123;</div><div class="line">    void request();</div><div class="line">&#125;</div><div class="line"></div><div class="line">class RealSubject implements Subject&#123;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;request&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Proxy implements Subject&#123;</div><div class="line">    private Subject subject;</div><div class="line">    public Proxy(Subject subject)&#123;</div><div class="line">        this.subject = subject;</div><div class="line">    &#125;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;PreProcess&quot;);</div><div class="line">        subject.request();</div><div class="line">        System.out.println(&quot;PostProcess&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代理的实现分为：</p>
+<ul>
+<li>静态代理：代理类是在编译时就实现好的。也就是说 Java 编译完成后代理类是一个实际的 class 文件。</li>
+<li>动态代理：代理类是在运行时生成的。也就是说 Java 编译完之后并没有实际的 class 文件，而是在运行时动态生成的类字节码，并加载到JVM中。</li>
+</ul>
+<h4 id="2-1Java-实现动态代理"><a href="#2-1Java-实现动态代理" class="headerlink" title="2.1Java 实现动态代理"></a>2.1Java 实现动态代理</h4><p>首先先说明几个词：</p>
+<ul>
+<li>委托类和委托对象：委托类是一个类，委托对象是委托类的实例。</li>
+<li>代理类和代理对象：代理类是一个类，代理对象是代理类的实例。</li>
+</ul>
+<p>Java实现动态代理的大致步骤如下：</p>
+<ol>
+<li>定义一个委托类和公共接口。</li>
+<li>自己定义一个类（调用处理器类，即实现 InvocationHandler 接口），这个类的目的是指定运行时将生成的代理类需要完成的具体任务（包括Preprocess和Postprocess），即代理类调用任何方法都会经过这个调用处理器类（在本文最后一节对此进行解释）。</li>
+<li>生成代理对象（当然也会生成代理类），需要为他指定(1)委托对象(2)实现的一系列接口(3)调用处理器类的实例。因此可以看出一个代理对象对应一个委托对象，对应一个调用处理器实例。</li>
+</ol>
+<p>Java 实现动态代理主要涉及以下几个类：
+<code>java.lang.reflect.Proxy</code>: 这是生成代理类的主类，通过 Proxy 类生成的代理类都继承了 Proxy 类，即 DynamicProxyClass extends Proxy。
+<code>java.lang.reflect.InvocationHandler</code>: 这里称他为”调用处理器”，他是一个接口，我们动态生成的代理类需要完成的具体内容需要自己定义一个类，而这个类必须实现 InvocationHandler 接口。</p>
+<p>Proxy 类主要方法为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//创建代理对象  </div><div class="line">static Object newProxyInstance(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler h)</div></pre></td></tr></table></figure></p>
+<p>这个静态函数的第一个参数是类加载器对象（即哪个类加载器来加载这个代理类到 JVM 的方法区），第二个参数是接口（表明你这个代理类需要实现哪些接口），第三个参数是调用处理器类实例（指定代理类中具体要干什么）。这个函数是 JDK 为了程序员方便创建代理对象而封装的一个函数，因此你调用newProxyInstance()时直接创建了代理对象（略去了创建代理类的代码）。其实他主要完成了以下几个工作：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static Object newProxyInstance(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler handler)</div><div class="line">&#123;</div><div class="line">    //1. 根据类加载器和接口创建代理类</div><div class="line">    Class clazz = Proxy.getProxyClass(loader, interfaces);</div><div class="line">    //2. 获得代理类的带参数的构造函数</div><div class="line">    Constructor constructor = clazz.getConstructor(new Class[] &#123; InvocationHandler.class &#125;);</div><div class="line">    //3. 创建代理对象，并制定调用处理器实例为参数传入</div><div class="line">    Interface Proxy = (Interface)constructor.newInstance(new Object[] &#123;handler&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Proxy 类还有一些静态方法，比如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">InvocationHandler getInvocationHandler(Object proxy): 获得代理对象对应的调用处理器对象。</div><div class="line">Class getProxyClass(ClassLoader loader, Class[] interfaces): 根据类加载器和实现的接口获得代理类。</div></pre></td></tr></table></figure></p>
+<p>Proxy 类中有一个映射表，映射关系为：(<classloader>,(<interfaces>,<proxyclass>) )，可以看出一级key为类加载器，根据这个一级key获得二级映射表，二级key为接口数组，因此可以看出：一个类加载器对象和一个接口数组确定了一个代理类。</proxyclass></interfaces></classloader></p>
+<p>我们写一个简单的例子来阐述 Java 实现动态代理的整个过程：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">public class DynamicProxyDemo01 &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        RealSubject realSubject = new RealSubject();    //1.创建委托对象</div><div class="line">        ProxyHandler handler = new ProxyHandler(realSubject);   //2.创建调用处理器对象</div><div class="line">        Subject proxySubject = (Subject)Proxy.newProxyInstance(RealSubject.class.getClassLoader(),</div><div class="line">        RealSubject.class.getInterfaces(), handler);    //3.动态生成代理对象</div><div class="line">        proxySubject.request(); //4.通过代理对象调用方法</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 接口</div><div class="line"> */</div><div class="line">interface Subject&#123;</div><div class="line">    void request();</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 委托类</div><div class="line"> */</div><div class="line">class RealSubject implements Subject&#123;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;====RealSubject Request====&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 代理类的调用处理器</div><div class="line"> */</div><div class="line">class ProxyHandler implements InvocationHandler&#123;</div><div class="line">    private Subject subject;</div><div class="line">    public ProxyHandler(Subject subject)&#123;</div><div class="line">        this.subject = subject;</div><div class="line">    &#125;</div><div class="line">    @Override</div><div class="line">    public Object invoke(Object proxy, Method method, Object[] args)</div><div class="line">            throws Throwable &#123;</div><div class="line">        System.out.println(&quot;====before====&quot;);//定义预处理的工作，当然你也可以根据 method 的不同进行不同的预处理工作</div><div class="line">        Object result = method.invoke(subject, args);</div><div class="line">        System.out.println(&quot;====after====&quot;);</div><div class="line">        return result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>InvocationHandler 接口中有方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">invoke(Object proxy, Method method, Object[] args)</div></pre></td></tr></table></figure></p>
+<p>这个函数是在代理对象调用任何一个方法时都会调用的，方法不同会导致第二个参数method不同，第一个参数是代理对象（表示哪个代理对象调用了method方法），第二个参数是 Method 对象（表示哪个方法被调用了），第三个参数是指定调用方法的参数。</p>
+<p>动态生成的代理类具有几个特点：</p>
+<ul>
+<li>继承 Proxy 类，并实现了在Proxy.newProxyInstance()中提供的接口数组。</li>
+<li>public final。</li>
+<li>命名方式为 $ProxyN，其中N会慢慢增加，一开始是 $Proxy1，接下来是$Proxy2…</li>
+<li>有一个参数为 InvocationHandler 的构造函数。这个从 Proxy.newProxyInstance() 函数内部的clazz.getConstructor(new Class[] { InvocationHandler.class }) 可以看出。</li>
+</ul>
+<p>Java 实现动态代理的缺点：因为 Java 的单继承特性（每个代理类都继承了 Proxy 类），只能针对接口创建代理类，不能针对类创建代理类。</p>
+<blockquote>
+<p>不难发现，代理类的实现是有很多共性的（重复代码），动态代理的好处在于避免了这些重复代码，只需要关注操作。</p>
+</blockquote>
+<h4 id="2-2Java-动态代理的内部实现"><a href="#2-2Java-动态代理的内部实现" class="headerlink" title="2.2Java 动态代理的内部实现"></a>2.2Java 动态代理的内部实现</h4><p>现在我们就会有一个问题： Java 是怎么保证代理对象调用的任何方法都会调用 InvocationHandler 的 invoke() 方法的？</p>
+<p>这就涉及到动态代理的内部实现。假设有一个接口 Subject，且里面有 int request(int i) 方法，则生成的代理类大致如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public final class $Proxy1 extends Proxy implements Subject&#123;</div><div class="line">    private InvocationHandler h;</div><div class="line">    private $Proxy1()&#123;&#125;</div><div class="line">    public $Proxy1(InvocationHandler h)&#123;</div><div class="line">        this.h = h;</div><div class="line">    &#125;</div><div class="line">    public int request(int i)&#123;</div><div class="line">        Method method = Subject.class.getMethod(&quot;request&quot;, new Class[]&#123;int.class&#125;); //创建method对象</div><div class="line">        return (Integer)h.invoke(this, method, new Object[]&#123;new Integer(i)&#125;); //调用了invoke方法</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过上面的方法就成功调用了 invoke() 方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+            <a href="/tags/Pluggable/" rel="tag"># Pluggable</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/12/tips-android-pluggable-1/" rel="next" title="Android插件化(二)基础之类加载器">
+                <i class="fa fa-chevron-left"></i> Android插件化(二)基础之类加载器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/12/tips-android-pluggable-3/" rel="prev" title="Android插件化(三)基础之Android应用程序资源的编译和打包过程分析">
+                Android插件化(三)基础之Android应用程序资源的编译和打包过程分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-反射"><span class="nav-number">1.</span> <span class="nav-text">1.反射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-代理模式"><span class="nav-number">2.</span> <span class="nav-text">2.代理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1Java-实现动态代理"><span class="nav-number">2.1.</span> <span class="nav-text">2.1Java 实现动态代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2Java-动态代理的内部实现"><span class="nav-number">2.2.</span> <span class="nav-text">2.2Java 动态代理的内部实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

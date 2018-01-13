@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,tips," />
+  <meta name="keywords" content="Android,tips,Pluggable," />
 
 
 
@@ -90,17 +90,17 @@
 
 
 <meta name="description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
-<meta name="keywords" content="Android,tips">
+<meta name="keywords" content="Android,tips,Pluggable">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android APK动态更新技术">
+<meta property="og:title" content="Android插件化(一)技术调研">
 <meta property="og:url" content="http://wodekouwei.com/2017/12/05/tips-android-pluggable/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/virtualapk_arch.png">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg">
-<meta property="og:updated_time" content="2018-01-12T01:42:26.119Z">
+<meta property="og:updated_time" content="2018-01-12T12:25:19.805Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android APK动态更新技术">
+<meta name="twitter:title" content="Android插件化(一)技术调研">
 <meta name="twitter:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
 <meta name="twitter:image" content="http://images.wodekouwei.com/technology/virtualapk_arch.png">
 
@@ -136,7 +136,7 @@
 
 
 
-  <title> Android APK动态更新技术 | 老司机种菜 </title>
+  <title> Android插件化(一)技术调研 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -350,7 +350,7 @@
             
             
               
-                Android APK动态更新技术
+                Android插件化(一)技术调研
               
             
           </h1>
@@ -470,6 +470,19 @@
 </tr>
 </tbody>
 </table>
+<p>插件化、热修复（思想）的发展历程</p>
+<ul>
+<li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
+<li>2013年，23Code，自定义控件的动态下载：主要利用 Java ClassLoader 的原理，可动态加载的内容包括 apk、dex、jar等。</li>
+<li>2014年初，Altas，阿里伯奎的技术分享：提出了插件化的思想以及一些思考的问题，相关资料比较少。</li>
+<li>2014年底，Dynamic-load-apk，任玉刚：动态加载APK，通过Activity代理的方式给插件Activity添加生命周期。</li>
+<li>2015年4月，OpenAltas/ACCD：Altas的开源项目，一款强大的Android非代理动态部署框架，目前已经处于稳定状态。</li>
+<li>2015年8月，DroidPlugin，360的张勇：DroidPlugin 是360手机助手在 Android 系统上实现了一种新的插件机制：通过Hook思想来实现，它可以在无需安装、修改的情况下运行APK文件,此机制对改进大型APP的架构，实现多团队协作开发具有一定的好处。</li>
+<li>2015年9月，AndFix，阿里：通过NDK的Hook来实现热修复。</li>
+<li>2015年11月，Nuwa，大众点评：通过dex分包方案实现热修复。</li>
+<li>2015年底，Small，林光亮：打通了宿主与插件之间的资源与代码共享。</li>
+<li>2016年4月，ZeusPlugin，掌阅：ZeusPlugin最大特点是：简单易懂，核心类只有6个，类总数只有13个。</li>
+</ul>
 <h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
 与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
 <h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
@@ -509,7 +522,8 @@
 <p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
 作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
 </blockquote>
-<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>主流插件之间对比</p>
+<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
+<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
 <table>
 <thead>
 <tr>
@@ -590,7 +604,7 @@
 <td>源码</td>
 <td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
 <td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
-<td></td>
+<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
 <td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
 <td><code>https://github.com/didi/VirtualAPK</code></td>
 <td><code>https://github.com/Qihoo360/RePlugin</code></td>
@@ -771,6 +785,8 @@
           
             <a href="/tags/tips/" rel="tag"># tips</a>
           
+            <a href="/tags/Pluggable/" rel="tag"># Pluggable</a>
+          
         </div>
       
 
@@ -874,7 +890,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-count">86</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -896,7 +912,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">51</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
