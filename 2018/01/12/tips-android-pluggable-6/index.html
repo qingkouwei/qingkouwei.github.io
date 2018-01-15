@@ -89,14 +89,17 @@
 
 
 
+<meta name="description" content="PackageManager获取:通过Context的getPackageManager() 常用方法:  getInstalledPackages(int flags):可以得到所有安装在机器上的程序的包信息类对象List，PackageInfo类中有一值applicationInfo可以得到Application的对象。 getPackageArchiveInfo(dexPath, Packa">
 <meta name="keywords" content="Android,tips,Pluggable">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android插件化(四)基础之用到Android源码类探讨">
+<meta property="og:title" content="Android插件化(五)基础之用到Android源码类探讨">
 <meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:updated_time" content="2018-01-13T10:28:29.971Z">
+<meta property="og:description" content="PackageManager获取:通过Context的getPackageManager() 常用方法:  getInstalledPackages(int flags):可以得到所有安装在机器上的程序的包信息类对象List，PackageInfo类中有一值applicationInfo可以得到Application的对象。 getPackageArchiveInfo(dexPath, Packa">
+<meta property="og:updated_time" content="2018-01-14T06:36:09.597Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android插件化(四)基础之用到Android源码类探讨">
+<meta name="twitter:title" content="Android插件化(五)基础之用到Android源码类探讨">
+<meta name="twitter:description" content="PackageManager获取:通过Context的getPackageManager() 常用方法:  getInstalledPackages(int flags):可以得到所有安装在机器上的程序的包信息类对象List，PackageInfo类中有一值applicationInfo可以得到Application的对象。 getPackageArchiveInfo(dexPath, Packa">
 
 
 
@@ -130,7 +133,7 @@
 
 
 
-  <title> Android插件化(四)基础之用到Android源码类探讨 | 老司机种菜 </title>
+  <title> Android插件化(五)基础之用到Android源码类探讨 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -344,7 +347,7 @@
             
             
               
-                Android插件化(四)基础之用到Android源码类探讨
+                Android插件化(五)基础之用到Android源码类探讨
               
             
           </h1>
@@ -432,7 +435,17 @@
       
 
       
-        
+        <h6 id="PackageManager"><a href="#PackageManager" class="headerlink" title="PackageManager"></a>PackageManager</h6><p>获取:通过Context的getPackageManager()
+常用方法:</p>
+<ol>
+<li><code>getInstalledPackages(int flags)</code>:可以得到所有安装在机器上的程序的包信息类对象List<packageinfo>，PackageInfo类中有一值applicationInfo可以得到Application的对象。</packageinfo></li>
+<li><code>getPackageArchiveInfo(dexPath,
+PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应用以外其他apk的信息方法</li>
+<li><code>getInstalledApplications(int flags)</code>:得到所有安装在机器上的程序的application对象List<applicationinfo>；</applicationinfo></li>
+<li><code>getApplicationIcon(String packageName)</code>,<code>getApplicationIcon(ApplicationInfo info)</code>:获得应用程序的图片</li>
+<li><code>getApplicationLabel(ApplicationInfo info)</code>:方法可以获得应用程序的名字</li>
+</ol>
+
       
     </div>
 
@@ -499,8 +512,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/12/tips-android-pluggable-5/" rel="next" title="Android插件化(四)基础之Binder">
-                <i class="fa fa-chevron-left"></i> Android插件化(四)基础之Binder
+              <a href="/2018/01/12/tips-android-pluggable-5/" rel="next" title="Android插件化(四)基础之文件存储">
+                <i class="fa fa-chevron-left"></i> Android插件化(四)基础之文件存储
               </a>
             
           </div>
@@ -508,6 +521,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/14/tips-android-pluggable-7/" rel="prev" title="Android插件化(六)基础之Binder">
+                Android插件化(六)基础之Binder <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -562,8 +579,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -578,7 +604,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -589,7 +615,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -600,7 +626,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-count">52</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -684,6 +710,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#PackageManager"><span class="nav-number">1.</span> <span class="nav-text">PackageManager</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2018-01-13T10:28:29.971Z</updated>
+  <updated>2018-01-15T09:33:34.473Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -16,11 +16,166 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Android插件化(四)基础之用到Android源码类探讨</title>
-    <link href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/"/>
-    <id>http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/</id>
-    <published>2018-01-12T12:23:00.000Z</published>
-    <updated>2018-01-13T10:28:29.971Z</updated>
+    <title>docker简介及环境搭建</title>
+    <link href="http://wodekouwei.com/2018/01/15/docker-env-create/"/>
+    <id>http://wodekouwei.com/2018/01/15/docker-env-create/</id>
+    <published>2018-01-15T08:00:03.000Z</published>
+    <updated>2018-01-15T09:33:34.473Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="docker是什么"><a href="#docker是什么" class="headerlink" title="docker是什么"></a>docker是什么</h3><p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
+Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
+<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<h3 id="Docker-三个基本概念"><a href="#Docker-三个基本概念" class="headerlink" title="Docker 三个基本概念"></a>Docker 三个基本概念</h3><ul>
+<li>镜像（Image）:Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</li>
+<li>容器（Container）:镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</li>
+<li>仓库（Repository）:镜像构建完成后，可以很容易的在当前宿主上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest作为默认标签。用 Docker 的时候，需要经常从官方获取镜像，但是由于显而易见的网络原因，拉取镜像的过程非常耗时，严重影响使用 Docker 的体验。因此 DaoCloud等加速器服务商 推出了加速器工具解决这个难题，通过智能路由和缓存机制，极大提升了国内网络访问 Docker Hub 的速度，目前已经拥有了广泛的用户群体，并得到了 Docker 官方的大力推荐。如果您是在国内的网络环境使用 Docker，那么 Docker 加速器一定能帮助到您。docker常用仓库:<a href="https://hub.docker.com/explore/" target="_blank" rel="external">https://hub.docker.com/explore/</a></li>
+</ul>
+<blockquote>
+<p><a href="https://www.daocloud.io/mirror#accelerator-doc" target="_blank" rel="external">docker daocloud加速器</a>:</p>
+<ul>
+<li>linux:<code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://311e425f.m.daocloud.io</code>,该脚本可以将 –registry-mirror 加入到你的 Docker 配置文件 /etc/docker/daemon.json 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同</li>
+<li>Mac:右键点击桌面顶栏的 docker 图标，选择 Preferences ，在 Daemon 标签（Docker 17.03 之前版本为 Advanced 标签）下的 Registry mirrors 列表中加入下面的镜像地址:<code>http://311e425f.m.daocloud.io</code>,点击 Apply &amp; Restart 按钮使设置生效。</li>
+<li>Windows: 在桌面右下角状态栏中右键 docker 图标，修改在 Docker Daemon 标签页中的 json ，把下面的地址:<code>http://311e425f.m.daocloud.io</code>,加到”registry-mirrors”的数组里。点击 Apply 。</li>
+</ul>
+</blockquote>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="mac下安装docker"><a href="#mac下安装docker" class="headerlink" title="mac下安装docker"></a>mac下安装docker</h4><p><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="external">官方mac的安装步骤</a>
+下载<a href="https://link.jianshu.com/?t=https://download.docker.com/mac/stable/Docker.dmg" target="_blank" rel="external">docker.dmg</a>文件，然后点击，一步步操作</p>
+<p>检测Docker Engine, Docker Compose, 和Docker Machine的版本:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">docker version</div><div class="line">Client:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Tue Mar 28 00:40:02 2017</div><div class="line"> OS/Arch:      darwin/amd64</div><div class="line"></div><div class="line">Server:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27 (minimum version 1.12)</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Fri Mar 24 00:00:50 2017</div><div class="line"> OS/Arch:      linux/amd64</div><div class="line"> Experimental: true</div><div class="line"></div><div class="line">docker-compose --version</div><div class="line">docker-compose version 1.11.2, build dfed245</div><div class="line"></div><div class="line">docker-machine --version</div><div class="line">docker-machine version 0.10.0, build 76ed2a6</div></pre></td></tr></table></figure></p>
+<h3 id="运行官网提供的二个简单列子"><a href="#运行官网提供的二个简单列子" class="headerlink" title="运行官网提供的二个简单列子"></a>运行官网提供的二个简单列子</h3><p>拉取hello-world镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull hello-world</div></pre></td></tr></table></figure></p>
+<p>查看hello-world镜像信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker images hello-world</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">hello-world         latest              1815c82652c0        5 days ago          1.84 kB</div></pre></td></tr></table></figure></p>
+<p>根据镜像生成对应容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run hello-world</div></pre></td></tr></table></figure></p>
+<p>ps不加参数只会把当前运行的Community打印出来，查看当前所有的Community，加上-a参数。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure></p>
+<p>当然也可以根据镜像生成一个具体名称的镜像，先删除当前容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 60</div></pre></td></tr></table></figure></p>
+<p>当然如果当前容器正在运行，要删除这个容器，则使用命令
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm -f 60</div></pre></td></tr></table></figure></p>
+<p>使用镜像生成具体名称的容器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name miaozhihao hello-world</div></pre></td></tr></table></figure></p>
+<p>于更多的docker run的命令可以使用来查看
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --help</div></pre></td></tr></table></figure></p>
+<p><strong>第二个examples，启动docker的web服务</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
+<p>-p参数是使用宿主机的80映射容器的80端口
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">curl localhost:80</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</div><div class="line">&lt;style&gt;</div><div class="line">    body &#123;</div><div class="line">        width: 35em;</div><div class="line">        margin: 0 auto;</div><div class="line">        font-family: Tahoma, Verdana, Arial, sans-serif;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</div><div class="line">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</div><div class="line">working. Further configuration is required.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;For online documentation and support please refer to</div><div class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</div><div class="line">Commercial support is available at</div><div class="line">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>交互式终端方式进入 webserver容器，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec -it webserver bash</div></pre></td></tr></table></figure></p>
+<p>修改nginx的显示页面：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@41b6804c716e:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</div><div class="line">root@41b6804c716e:/# exit</div><div class="line">exit</div></pre></td></tr></table></figure></p>
+<p>修改了容器的文件，也就是改动了容器的存储层。我们可以通过 docker diff
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">docker diff webserver</div><div class="line">C /root</div><div class="line">A /root/.bash_history</div><div class="line">C /run</div><div class="line">A /run/nginx.pid</div><div class="line">C /usr/share/nginx/html/index.html</div><div class="line">C /var/cache/nginx</div><div class="line">A /var/cache/nginx/client_temp</div><div class="line">A /var/cache/nginx/fastcgi_temp</div><div class="line">A /var/cache/nginx/proxy_temp</div><div class="line">A /var/cache/nginx/scgi_temp</div><div class="line">A /var/cache/nginx/uwsgi_temp</div></pre></td></tr></table></figure></p>
+<p>使用docker commit生成镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker commit --author &quot;zhihao.miao &lt;1026145686@qq.com&gt;&quot; --message &quot;修改了默认网页&quot; webserver nginx:v2</div><div class="line">sha256:0a34c054b8a826d85dddf4d1dbdd3028ab890feff4c8a0844e9b98dd146c2e07</div></pre></td></tr></table></figure></p>
+<p>–autho 指定作者 –message表示容器的一些信息
+查看当前nginx镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker images nginx</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">nginx               v2                  0a34c054b8a8        11 seconds ago      109 MB</div><div class="line">nginx               latest              958a7ae9e569        4 weeks ago         109 MB</div></pre></td></tr></table></figure></p>
+<p>查看当前所有的容器，包括运行的和停止的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div><div class="line">\CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                    PORTS                NAMES</div><div class="line">41b6804c716e        nginx                                 &quot;nginx -g &apos;daemon ...&quot;   3 minutes ago       Up 3 minutes              0.0.0.0:80-&gt;80/tcp   webserver</div><div class="line">85612b405cda        miaozhihao001dockerhub/commit_test1   &quot;nginx -g &apos;daemon ...&quot;   20 hours ago        Exited (0) 3 hours ago                         nginx_web</div><div class="line">9ef1fb35d7aa        ubuntu:14.04                          &quot;/bin/bash&quot;              20 hours ago        Exited (0) 20 hours ago                        commit_test</div><div class="line">bf8320b9e445        ubuntu:14.04                          &quot;/bin/bash&quot;              24 hours ago        Exited (0) 24 hours ago                        sharp_curie</div><div class="line">9f9767eb8aaf        hello-world                           &quot;/hello&quot;                 10 days ago         Exited (0) 10 days ago                         miaozhihao</div></pre></td></tr></table></figure></p>
+<p>启动新的容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker run --name newwebserver -d -p 80:80 nginx:v2</div><div class="line">3619b34ed347cf1ae2ee3ab32c419140871f3084b9a1325ab5d8c6155d43bf06</div><div class="line">➜ curl localhost:80</div><div class="line">&lt;h1&gt;Hello, Docker!&lt;/h1&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="创建自己的docker镜像"><a href="#创建自己的docker镜像" class="headerlink" title="创建自己的docker镜像"></a>创建自己的docker镜像</h3><p>编辑Dockerfile文件，填入以下内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM docker/whalesay:latest</div><div class="line">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</div><div class="line">CMD /usr/games/fortune -a | cowsay</div></pre></td></tr></table></figure></p>
+<p>运行以下命令创建名为docker-whale的镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-whale .</div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>-t</code>： 给tag命令</li>
+<li><code>.</code>： Dockerfile文件所在路径</li>
+</ul>
+<h4 id="docker-tag-push-pull"><a href="#docker-tag-push-pull" class="headerlink" title="docker tag push pull"></a>docker tag push pull</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 8e15421920b1 xulingfeng/docker-whale:latest</div></pre></td></tr></table></figure>
+<p>上传操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push xulingfeng/docker-whale</div></pre></td></tr></table></figure></p>
+<p>下载操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull centos</div></pre></td></tr></table></figure></p>
+<h4 id="交互式的操作"><a href="#交互式的操作" class="headerlink" title="交互式的操作"></a>交互式的操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -t -i ubuntu /bin/bash</div></pre></td></tr></table></figure>
+<ul>
+<li>t 分配了一个终端在新的容器中</li>
+<li><code>-i</code> 允许你和容器进行交互操作</li>
+<li><code>/bin/bash</code> 启动容器中的Bash shell</li>
+</ul>
+<h4 id="docker的守护状态，也就是后台运行"><a href="#docker的守护状态，也就是后台运行" class="headerlink" title="docker的守护状态，也就是后台运行"></a>docker的守护状态，也就是后台运行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d ubuntu /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li>docker run 运行容器</li>
+<li>-d 让容器在后台运行</li>
+<li>ubuntu 你希望运行容器的镜像</li>
+</ul>
+<h4 id="查看docker容器运行日志"><a href="#查看docker容器运行日志" class="headerlink" title="查看docker容器运行日志"></a>查看docker容器运行日志</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 容器名</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-f</code> 类似与 <code>tail -f</code></li>
+</ul>
+<h4 id="使用docker运行web应用"><a href="#使用docker运行web应用" class="headerlink" title="使用docker运行web应用"></a>使用docker运行web应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-d</code>：代表后台运行该容器</li>
+<li><code>-P</code>：映射容器中的web应用端口号到你的主机上32768-61000中的某一个端口。这样你可以访问该容器中的web应用</li>
+<li><code>training/webapp</code>： 一个已经构建好的镜像，包含一个简单的python flask框架web应用</li>
+<li><code>python app.py</code>：这个命令用来启动容器中的web</li>
+</ul>
+<p>成功运行以上命令后，运行：
+<code>docker ps</code>
+查看到容器的5000端口号映射到了本地的32768，浏览器访问<a href="http://127.0.0.1:32768" target="_blank" rel="external">http://127.0.0.1:32768</a> 看到helloworld 成功提示</p>
+<h4 id="自定义主机端口号"><a href="#自定义主机端口号" class="headerlink" title="自定义主机端口号"></a>自定义主机端口号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:5000 training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li>-p 80:5000 将本机的80端口绑定容器内的5000端口，本地直接访问 <code>http://127.0.0.1</code> 即可</li>
+</ul>
+<h4 id="查看容器的进程"><a href="#查看容器的进程" class="headerlink" title="查看容器的进程"></a>查看容器的进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker top 容器名</div></pre></td></tr></table></figure>
+<h4 id="检查容器的状态信息"><a href="#检查容器的状态信息" class="headerlink" title="检查容器的状态信息"></a>检查容器的状态信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 容器名</div></pre></td></tr></table></figure>
+<h4 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search 内容</div></pre></td></tr></table></figure>
+<h4 id="创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson"><a href="#创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson" class="headerlink" title="创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson"></a>创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson</h4><p><strong>centos镜像，分解步骤如下</strong></p>
+<ul>
+<li>首先添加额外源:<code>yum install -y epel-release</code></li>
+<li>安装编译环境:<code>yum install -y gcc automake autoconf libtool make gcc-c++</code></li>
+<li>安装wget命令:<code>yum install -y wget</code></li>
+<li>安装openssl-devel python的pip命令依赖:<code>yum install -y openssl-devel</code></li>
+<li>下载python3.5.2最新包:<code>wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</code></li>
+<li>解压python3.5.2压缩包并编译安装:<code>tar -zxvf /software/Python-3.5.2.tgz -C /software/</code>与<code>./configure &amp;&amp; make -j2&amp;&amp; make install -j2</code></li>
+<li>更新pip:<code>pip install --upgrade pip</code>与<code>pip install --upgrade setuptools</code></li>
+<li>安装所需的第三方包:<code>pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</code></li>
+</ul>
+<h4 id="通过Dockerfile构建镜像"><a href="#通过Dockerfile构建镜像" class="headerlink" title="通过Dockerfile构建镜像"></a>通过Dockerfile构建镜像</h4><p>Dockerfile:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">FROM centos:latest</div><div class="line">RUN yum install -y epel-release</div><div class="line">RUN yum install -y gcc automake autoconf libtool make gcc-c++</div><div class="line">RUN yum install -y wget</div><div class="line">RUN yum install -y openssl-devel</div><div class="line">RUN wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</div><div class="line">RUN tar -zxvf /software/Python-3.5.2.tgz -C /software/</div><div class="line">RUN cd /software/Python-3.5.2/ &amp;&amp; ./configure python3 &amp;&amp; make -j2&amp;&amp; make install -j2</div><div class="line">RUN pip install --upgrade pip</div><div class="line">RUN pip install --upgrade setuptools</div><div class="line">RUN pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</div></pre></td></tr></table></figure></p>
+<p>在Dockerfile目录中执行：<code>docker build -t 名字:版本 .</code></p>
+<h4 id="兼容docker-for-mac-和-pycharm"><a href="#兼容docker-for-mac-和-pycharm" class="headerlink" title="兼容docker for mac 和 pycharm"></a>兼容docker for mac 和 pycharm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install socat</div><div class="line">socat TCP-LISTEN:2376,reuseaddr,fork,bind=127.0.0.1 UNIX-CLIENT:/var/run/docker.sock</div></pre></td></tr></table></figure>
+<h3 id="一些docker命令总结"><a href="#一些docker命令总结" class="headerlink" title="一些docker命令总结"></a>一些docker命令总结</h3><ul>
+<li>docker images :查看当前宿主机的所有镜像。</li>
+<li>docker images ubuntu：根据仓库名列出镜像</li>
+<li>docker images ubuntu:14.04:指定仓库名和标签</li>
+<li>docker build -t webservice .:表示使用当前目录下的DockerFile来生成镜像，-t参数的值表示镜像的tagname，如果DockerFile在当前路径下则使用.，如果不在当前路径下则使用相对路径。</li>
+<li>docker ps -a: 没有-a参数表示显示当前宿主机的正在运行的容器，加上-a表示显示当前宿主机所有的容器，包括已经退出的容器。</li>
+<li>docker run -d -p 2222:22 –name base centos:7.1
+表示根据指定的镜像后台运行容器，容器的名字是base（–name就是指定容器的名字)，centos:7.1表示镜像的名字，-p参数表示当前宿主机的2222端口对应容器的22端口。-d参数表示（Run container in background and print container ID）</li>
+<li>docker exec -it base /bin/bash
+以交互式命令进入base容器并且执行/bin/bash命令</li>
+<li>docker rmi webservice:删除webservice镜像</li>
+<li>docker rm base: 删除base容器，如果base正在运行，则可以使用docker rm -f base进行强行删除</li>
+<li>docker start 启动容器</li>
+<li>docker stop 停止容器</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;docker是什么&quot;&gt;&lt;a href=&quot;#docker是什么&quot; class=&quot;headerlink&quot; title=&quot;docker是什么&quot;&gt;&lt;/a&gt;docker是什么&lt;/h3&gt;&lt;p&gt;Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Lin
+    
+    </summary>
+    
+      <category term="docker" scheme="http://wodekouwei.com/categories/docker/"/>
+    
+    
+      <category term="虚拟化" scheme="http://wodekouwei.com/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/"/>
+    
+      <category term="docker" scheme="http://wodekouwei.com/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android插件化(六)基础之Binder</title>
+    <link href="http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/"/>
+    <id>http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/</id>
+    <published>2018-01-14T05:47:58.000Z</published>
+    <updated>2018-01-14T05:48:47.084Z</updated>
     
     <summary type="html">
     
@@ -38,13 +193,100 @@
   </entry>
   
   <entry>
-    <title>Android插件化(四)基础之Binder</title>
+    <title>Android插件化(五)基础之用到Android源码类探讨</title>
+    <link href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/"/>
+    <id>http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/</id>
+    <published>2018-01-12T12:23:00.000Z</published>
+    <updated>2018-01-14T06:36:09.597Z</updated>
+    
+    <content type="html"><![CDATA[<h6 id="PackageManager"><a href="#PackageManager" class="headerlink" title="PackageManager"></a>PackageManager</h6><p>获取:通过Context的getPackageManager()
+常用方法:</p>
+<ol>
+<li><code>getInstalledPackages(int flags)</code>:可以得到所有安装在机器上的程序的包信息类对象List<packageinfo>，PackageInfo类中有一值applicationInfo可以得到Application的对象。</packageinfo></li>
+<li><code>getPackageArchiveInfo(dexPath,
+PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应用以外其他apk的信息方法</li>
+<li><code>getInstalledApplications(int flags)</code>:得到所有安装在机器上的程序的application对象List<applicationinfo>；</applicationinfo></li>
+<li><code>getApplicationIcon(String packageName)</code>,<code>getApplicationIcon(ApplicationInfo info)</code>:获得应用程序的图片</li>
+<li><code>getApplicationLabel(ApplicationInfo info)</code>:方法可以获得应用程序的名字</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h6 id=&quot;PackageManager&quot;&gt;&lt;a href=&quot;#PackageManager&quot; class=&quot;headerlink&quot; title=&quot;PackageManager&quot;&gt;&lt;/a&gt;PackageManager&lt;/h6&gt;&lt;p&gt;获取:通过Context的getPackag
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+      <category term="Pluggable" scheme="http://wodekouwei.com/tags/Pluggable/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android插件化(四)基础之文件存储</title>
     <link href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-5/"/>
     <id>http://wodekouwei.com/2018/01/12/tips-android-pluggable-5/</id>
     <published>2018-01-12T12:22:57.000Z</published>
-    <updated>2018-01-13T09:03:21.546Z</updated>
+    <updated>2018-01-14T06:14:08.755Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="android文件存储解析"><a href="#android文件存储解析" class="headerlink" title="android文件存储解析"></a>android文件存储解析</h3><p>安卓中提供了Context中的方法与Environment类来操作文件。</p>
+<h4 id="Context文件操作方法"><a href="#Context文件操作方法" class="headerlink" title="Context文件操作方法"></a>Context文件操作方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public File getFileStreamPath(String name)</div><div class="line">public String[] fileList()</div><div class="line">public File getFilesDir()</div><div class="line">public File getNoBackupFilesDir()</div><div class="line">public File getExternalFilesDir(String type)</div><div class="line">public File[] getExternalFilesDirs(String type)</div><div class="line">public File getObbDir()</div><div class="line">public File[] getObbDirs()</div><div class="line">public File getCacheDir()</div><div class="line">public File getCodeCacheDir()</div><div class="line">public File getExternalCacheDir()</div><div class="line">public File[] getExternalCacheDirs()</div><div class="line">public File[] getExternalMediaDirs()</div><div class="line">public File getDir(String name, int mode)</div></pre></td></tr></table></figure>
+<p>用Log把它们都显示出来
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">Log.d(&quot;context&quot;, &quot;context.getFileStreamPath--&gt;&quot; +</div><div class="line">    this.getFileStreamPath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDir--&gt;&quot; +</div><div class="line">    this.getDir(&quot;test&quot;, Context.MODE_PRIVATE).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getFilesDir--&gt;&quot; +</div><div class="line">    this.getFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getNoBackupFilesDir&quot; +</div><div class="line">    this.getNoBackupFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCacheDir--&gt;&quot; +</div><div class="line">    this.getCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCodeCacheDir&quot; +</div><div class="line">    this.getCodeCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDatabasePath--&gt;&quot; +</div><div class="line">    this.getDatabasePath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getObbDir--&gt;&quot; +</div><div class="line">    this.getObbDir().toString());</div><div class="line"></div><div class="line">File[] files1 = this.getObbDirs();</div><div class="line">for (File file : files1) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getObbDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line">File[] files2 = this.getExternalMediaDirs();</div><div class="line">for (File file : files2) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalMediaDirs&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalCacheDir--&gt;&quot; + this.getExternalCacheDir().toString());</div><div class="line">File[] files3 = this.getExternalCacheDirs();</div><div class="line">for (File file : files3) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalCacheDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalFilesDir--&gt;&quot; + this.getExternalFilesDir(Environment.DIRECTORY_ALARMS).toString());</div><div class="line"></div><div class="line">File[] files4 = this.getExternalFilesDirs(Environment.DIRECTORY_ALARMS);</div><div class="line">for (File file : files4) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalFilesDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>og输出结果(不同版本的安卓系统，目录可能也不相同):
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">context.getFileStreamPath--&gt;/data/data/cn.hufeifei.environmenttest/files/test</div><div class="line">context.getDir--&gt;/data/data/cn.hufeifei.environmenttest/app_test</div><div class="line">context.getFilesDir--&gt;/data/data/cn.hufeifei.environmenttest/files</div><div class="line">context.getNoBackupFilesDir/data/data/cn.hufeifei.environmenttest/no_backup</div><div class="line">context.getCacheDir--&gt;/data/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getCodeCacheDir/data/data/cn.hufeifei.environmenttest/code_cache</div><div class="line">context.getDatabasePath--&gt;/data/data/cn.hufeifei.environmenttest/databases/test</div><div class="line">context.getObbDir--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getObbDirs--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getExternalMediaDirs/storage/emulated/0/Android/media/cn.hufeifei.environmenttest</div><div class="line">context.getExternalCacheDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalCacheDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalFilesDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div><div class="line">context.getExternalFilesDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div></pre></td></tr></table></figure></p>
+<h4 id="Environment工具类中提供了以下几个方法："><a href="#Environment工具类中提供了以下几个方法：" class="headerlink" title="Environment工具类中提供了以下几个方法："></a>Environment工具类中提供了以下几个方法：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Environment.getDataDirectory();</div><div class="line">Environment.getRootDirectory();</div><div class="line">Environment.getDownloadCacheDirectory();</div><div class="line">Environment.getExternalStoragePublicDirectory(String type);</div><div class="line">Environment.getExternalStorageDirectory();</div><div class="line">Environment.getExternalStorageState();</div><div class="line">Environment.getExternalStorageState(File path)</div><div class="line">Environment.getStorageState();//已被getExternalStorageState取代</div></pre></td></tr></table></figure>
+<h5 id="1-前三个方法"><a href="#1-前三个方法" class="headerlink" title="1.前三个方法"></a>1.前三个方法</h5><p>用Log输出来：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//IS标识内部存储</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDataDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDownloadCacheDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getRootDirectory().toString());</div></pre></td></tr></table></figure></p>
+<p>输出结果为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">D/Environment-IS: /data</div><div class="line">D/Environment-IS: /cache</div><div class="line">D/Environment-IS: /system</div></pre></td></tr></table></figure></p>
+<h5 id="2-getExternalStoragePublicDirectory方法"><a href="#2-getExternalStoragePublicDirectory方法" class="headerlink" title="2.getExternalStoragePublicDirectory方法"></a>2.getExternalStoragePublicDirectory方法</h5><p>getExternalStoragePublicDirectory方法用来获取安卓外部存储中系统应用经常用到的公共文件夹，
+在Environment中定义了这些文件夹的名字：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Environment.DIRECTORY_MUSIC = &quot;Music&quot;</div><div class="line">Environment.DIRECTORY_PODCASTS = &quot;Podcasts&quot;</div><div class="line">Environment.DIRECTORY_RINGTONES = &quot;Ringtones&quot;</div><div class="line">Environment.DIRECTORY_ALARMS = &quot;Alarms&quot;</div><div class="line">Environment.DIRECTORY_NOTIFICATIONS = &quot;Notifications&quot;</div><div class="line">Environment.DIRECTORY_PICTURES = &quot;Pictures&quot;</div><div class="line">Environment.DIRECTORY_MOVIES = &quot;Movies&quot;</div><div class="line">Environment.DIRECTORY_DOWNLOADS = &quot;Download&quot;</div><div class="line">Environment.DIRECTORY_DCIM = &quot;DCIM&quot;</div><div class="line">Environment.DIRECTORY_DOCUMENTS = &quot;Documents&quot;</div></pre></td></tr></table></figure></p>
+<p>它们的目录一般在/storage/emulated/0/<dir_name> (dir_name就是Environment中定义的这些字符串常量)</dir_name></p>
+<h5 id="3-最后的三个方法"><a href="#3-最后的三个方法" class="headerlink" title="3.最后的三个方法"></a>3.最后的三个方法</h5><p>最后面三个方法是用来获取挂载点的状态(在Linux中把一些特殊目录称为所谓的挂载点，有点类似于Windows中的分区)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Environment.MEDIA_REMOVED;//媒体存储已经移除了</div><div class="line">Environment.MEDIA_UNMOUNTED;//存储媒体没有挂载</div><div class="line">Environment.MEDIA_CHECKING;//正在检查存储媒体</div><div class="line">Environment.MEDIA_NOFS;//存储媒体是空白或是不支持的文件系统no_file_system</div><div class="line">Environment.MEDIA_MOUNTED;//存储媒体已经挂载，并且挂载点可读/写</div><div class="line">Environment.MEDIA_MOUNTED_READ_ONLY;//存储媒体已经挂载，挂载点只读</div><div class="line">Environment.MEDIA_SHARED;//存储媒体正在通过USB共享</div><div class="line">Environment.MEDIA_BAD_REMOVAL;//在没有挂载前存储媒体已经被移除</div><div class="line">Environment.MEDIA_UNMOUNTABLE;//存储媒体无法挂载,可能是文件系统损坏了</div><div class="line">Environment.MEDIA_EJECTING;//存储媒体正在移除</div><div class="line">Environment.MEDIA_UNKNOWN;//未知的存储状态</div></pre></td></tr></table></figure></p>
+<p>下面图片大概地概括了上面的方法
+<img src="http://images.wodekouwei.com/technology/android-storage.png" alt="image"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h4><ul>
+<li>Context中的方法或得到的路径都与应用包名相关*</li>
+<li>Environment中的方法与整个系统有关*</li>
+</ul>
+<h3 id="storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别"><a href="#storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别" class="headerlink" title="/storage/sdcard0， /sdcard， /mnt/sdcard ，/storage/emulated/legacy 的区别"></a><code>/storage/sdcard0</code>， <code>/sdcard</code>， <code>/mnt/sdcard</code> ，<code>/storage/emulated/legacy</code> 的区别</h3><p>关于android的4.2的0文件夹的详解</p>
+<h4 id="android-4-0"><a href="#android-4-0" class="headerlink" title="android 4.0"></a>android 4.0</h4><p>在galaxy nexus（GN）手机上userdata分区很大，被挂在/data目录，用户的数据通常是放在sd卡上，然而gn是没有sd卡的，所以google想了一个办法，就是虚拟一个。</p>
+<p>所以，在userdata分区下有个目录叫media，是内置sd卡的数据存储位置，使用fuse技术将<code>/data/media</code>虚拟成为一个叫做<code>/dev/fuse</code>的设备，为了让程序能认出来，被同时挂载在 <code>/mnt/sdcard</code> 目录，
+又为了兼容以前的程序，做了一个快捷方式（linux系统里叫软连接） <code>/sdcard</code>指向的是 <code>/mnt/sdcard</code> .</p>
+<p>当然，这些都是4.0的做法。</p>
+<h4 id="android-4-1"><a href="#android-4-1" class="headerlink" title="android 4.1"></a>android 4.1</h4><p>在4.1里，同样也会使用fuse技术，<code>/dev/fuse</code> 会被同时挂载到<code>/storage/sdcard0</code> 目录，这个sdcard0表示第一个sd卡（如果有外置sd卡，那会多一个 <code>/storage/sdcard1</code>，比如我的xoom）， <code>/sdcard</code> 软连接会指向 <code>/storage/sdcard0</code> ，此时<code>/mnt/sdcard</code> 也是个软连接，会指向<code>/storage/sdcard0</code>。
+如果你通过otg线接U盘，会被挂载到 <code>/storage/usb0</code>目录，stickmount这个软件为了让图库、快图、mx player等软件，能看到u盘里的数据，又同时挂载到 <code>/storage/sdcard0/usStorage/sda1</code>.</p>
+<p>也许你会问，为什么不是usb0，而是sda1，这是linux的对硬盘的命名方式，如果你的u盘有多个分区，就分别是sda1,sda2这样一直排下去了。</p>
+<h4 id="android-4-2"><a href="#android-4-2" class="headerlink" title="android 4.2"></a>android 4.2</h4><p>谷歌是不是没事干啊，非要给android搞个多用户，你想想啊，在中国，可能因为经济问题，家里不是每人一个电脑，在美国，几乎需要用电脑的人，都会自己有一台或多台，一台电脑多人用的情况少之又少，这就是为什么叫PC了，顾名思义，个人电脑。像手机和平板这些东西，更加私人化了，很少公用了吧，我想在中国也是如此吧。</p>
+<p>当然，谷歌也不完全是抽风，因为他有更大的战略部署，而且平板也的确有多人用的可能。</p>
+<p>所以谷歌搞出来一个多用户，那每个人的应用、数据、个性配置都要分开吧。 应用和个性配置好弄，想想啊，通过权限控制，每人只能看自己的应用就行了，桌面也可以用自己的。</p>
+<p>那数据怎么办？？？？</p>
+<p>好吧，调整用户数据的挂载结构。android 4.2，同样也会使用fuse技术/dev/fuse 会被挂载到<code>/storage/emulated/0</code> 目录，为什么是0呢，你还记得上边的sdcard0吧，第一个的意思。（如果有第二个，应该就是<code>/storage/emulated/1</code>，我们的三儿子没有外置sd卡，所以没法验证）</p>
+<p>为了兼容以前，同时挂载到 <code>/storage/emulated/legacy</code> （故名思议，传统的），还建立三个软连接 <code>/storage/sdcard0</code> ，<code>/sdcard</code>，<code>/mnt/sdcard</code> ，都指向  <code>/storage/emulated/legacy</code></p>
+<p>还有值得一提的是，4.2刚出来，这块变动又比较大，所以stickmount要升级到2.2之后，才可以通过otg挂载u盘了。</p>
+<p>也许你会问，这个0和多用户有什么关系呢，那是因为多用户这个新特性，只在平板上才启用，在手机上会被禁用的。但是底层实现是一致的。 <code>/mnt/shell/emulated</code> 目录和 <code>/storage/emulated</code> 下的文件夹是一样的。（注意，这个<code>/mnt/shell/emulated</code>  不是挂载出来的）</p>
+<p><code>/mnt/shell/</code>是为了多用户准备的，因为linux的多用户是基于shell实现的。</p>
+<p>4.2在平板上的多用户
+我前一段时间给XOOM Wifi刷上了CM10.1的4.2.1，成功开启多用户特性。新建的用户id从10开始。</p>
+<ul>
+<li>默认用户的sdcard目录： <code>/storage/emulated/0</code></li>
+<li>新建的第一个用户的sdcard目录：  <code>/storage/emulated/10</code></li>
+<li>新建的第二个用户的sdcard目录：  <code>/storage/emulated/11</code></li>
+</ul>
+]]></content>
     
     <summary type="html">
+    
+      &lt;h3 id=&quot;android文件存储解析&quot;&gt;&lt;a href=&quot;#android文件存储解析&quot; class=&quot;headerlink&quot; title=&quot;android文件存储解析&quot;&gt;&lt;/a&gt;android文件存储解析&lt;/h3&gt;&lt;p&gt;安卓中提供了Context中的方法与Environm
     
     </summary>
     
@@ -564,7 +806,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
     <link href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/"/>
     <id>http://wodekouwei.com/2018/01/12/tips-android-pluggable/</id>
     <published>2018-01-12T04:21:57.000Z</published>
-    <updated>2018-01-13T10:30:03.777Z</updated>
+    <updated>2018-01-13T10:38:31.942Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
 下面简单介绍一下：</p>
@@ -748,7 +990,8 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 </tr>
 </tbody>
 </table>
-<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
+<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><p>基于静态代理的实现</p>
+<h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
 <thead>
 <tr>
 <th>Feature</th>
@@ -2105,143 +2348,6 @@ Previous versions of Android would warn if asked to load a shared library with t
       <category term="NDK" scheme="http://wodekouwei.com/tags/NDK/"/>
     
       <category term="issue" scheme="http://wodekouwei.com/tags/issue/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>最近应用杀掉进程application不销毁问题探讨</title>
-    <link href="http://wodekouwei.com/2017/10/31/tips-android-application-recent/"/>
-    <id>http://wodekouwei.com/2017/10/31/tips-android-application-recent/</id>
-    <published>2017-10-31T12:15:34.000Z</published>
-    <updated>2017-10-31T12:42:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>建雨在芝士圈应用的application中使用了全局静态变量标志是否正在录制中,开启直播后将该变量设置为录制中,录制中一些操作将被屏蔽.但是对某些手机(如htc d816)当从”最近应用”杀掉进程后有时候application不被回收,该状态变量无法通过application的onCreate中重新初始化,同时通知栏也未消失.在<a href="http://www.jianshu.com/p/169bd25ce96e" target="_blank" rel="external">Android 应用被杀后Notification不取消问题及应用深杀和浅杀时Service生命周期情况</a>探讨中找到service的<strong>onTaskRemoved</strong>方法可以监听到应用被从最近应用中移除.</p>
-<p>关于&lt;<android 应用被杀后notification不取消问题及应用深杀和浅杀时service生命周期情况="">&gt;摘要:
-目中有如下需求：后台service进行导入操作，要更新Notification。当运行系统清理使应用被杀时，Notification无法取消，仍然在通知栏显示。为解决这个问题进行了如下探索：</android></p>
-<p>首先想到利用service的startForeground()来更新通知栏，这样当应用被杀掉时候Notification可以一起被去掉。但针对项目的需求：service可以同时导入多个文件，并且会对应显示多个通知。这种情况下用service.startForeground()更新通知栏时候，当应用被杀时候之后cancel掉最后一次调用startForeground对应id的Notification，而其他通知仍然不能被取消。</p>
-<p>继续探索用其他方式取消通知栏：在进程被杀掉的时候，会调用service的哪些生命周期函数呢？service的onDestroy()方法只有在调用Context的stopService()或Service的stopSelf()后才会被调用，在应用被杀时候Service的onDestroy()不会被执行。</p>
-<p>我们发现service的 onTaskRemoved()方法，该方法何时被调用呢？方法的注释说明是这么写的：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">* This is called if the service is currently running and the user has</div><div class="line">* removed a task that comes from the service&apos;s application.  If you have</div><div class="line">* set &#123;@linkandroid.content.pm.ServiceInfo#FLAG_STOP_WITH_TASK ServiceInfo.FLAG_STOP_WITH_TASK&#125;</div><div class="line">* then you will not receive this callback; instead, the service will simply</div><div class="line">* be stopped.</div><div class="line">*</div><div class="line">*@paramrootIntentThe original root Intent that was used to launch</div><div class="line">* the task that is being removed.</div><div class="line">*/</div><div class="line"></div><div class="line">public void onTaskRemoved(Intent rootIntent) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注释表明onTaskRemoved()方法在当用户移除应用的一个Task栈时被调用。也就是当用户在最近任务界面把该应用的一个task划掉时，或者在最近任务界面进行清理时。这两种情况下onTaskRemoved()都会被调用，但在大多Android机型上，这两种情况有所不同：第一种情况即应用被浅杀(用户只划掉这一个Task)，该Task栈会被清理，但如果有后台service在运行，该应用的进程不会被杀掉，后台service仍然在运行。第二种即应用被深杀(用户在最近任务界面直接按清理按钮)，该应用的进程会被直接杀掉，后台的service当然也停止了。对于不同的手机品牌和机型在最近任务进行各种清理时过程可能不太一样，但应用浅杀和深杀对于所有Android手机都是有普遍意义的。</p>
-<p>下面我们分析在应用被浅杀和被深杀以及先浅杀再深杀后的生命周期：</p>
-<p>浅杀：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">04-21 17:55:13.733 8264-8264/com.qintong.test D/qintong: vCardService onTaskRemoved.</div></pre></td></tr></table></figure></p>
-<p>深杀：
-会出现两种情况：
-(a).
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">04-26 16:20:00.349 32674-32674/? D/qintong: Service onTaskRemoved.</div><div class="line">04-26 16:21:01.621 2936-2936/? D/qintong: Service is being created.</div><div class="line">04-26 16:21:01.628 2936-2936/? D/qintong: Service onStartCommand.</div></pre></td></tr></table></figure></p>
-<p>(b).
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">04-21 17:59:58.397 8264-8264/com.qintong.test D/qintong: Service onCreate.</div><div class="line">04-21 17:59:58.404 8264-8264/com.qintong.test D/qintong: Service onTaskRemoved.</div></pre></td></tr></table></figure></p>
-<p>浅杀＋深杀 （service 的 onStartCommand 返回 STICKY）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">04-21 18:05:12.717 8264-8264/com.qintong.test D/qintong: Service onTaskRemoved.</div><div class="line">04-21 18:05:29.214 9207-9207/com.qintong.test D/qintong: Service onCreate.</div><div class="line">04-21 18:05:29.223 9207-9207/com.qintong.test D/qintong: Service onStartCommand.</div></pre></td></tr></table></figure></p>
-<p>我们来分析这几种情况：
-(1).浅杀时:应用进程没被杀掉，service仍然在执行，service的onTaskRemoved()立即被调用。</p>
-<p>(2).深杀时：有两种情况：第一种情况是深杀后直接调用onTaskRemoved()且service停止，过段时间后service重启调用其onCreate()和onStartCommand()。第二种是应用的进程被杀掉，过一会后service的onCreate()方法被调用，紧接着onTaskRemoved()被调用。由于被深杀后应用的进程立刻停止了，所以service的onTaskRemoved()无法被立即调用。而过若干秒后，service重启，onCreate()被调用，紧接着onTaskRemoved()被调用。而这里service的其他方法并没有被调用，即使onStartCommand()返回STICKY，service重启后onStartCommand()方法也没有被调用。</p>
-<p>(3).浅杀+深杀时(service 的 onStartCommand 返回 STICKY)：onTaskRemoved()立刻被调用(浅杀后)，深杀后过段时间onCreate()和onStartCommand()相继被调用。执行浅杀Task被清理，应用的进程还在，onTaskRemoved()被调用，过程与(1)一样。再执行深杀：由于该应用的Task栈已经没有了，所有再深杀onTaskRemoved()不会再被调用，深杀后service停止。而由于实验时候onStartCommand()返回STICKY，所有service过段时间会被再次启动，执行了onCreate()方法和onStartCommand()方法。</p>
-<p>所以综上所述，service的onTaskRemoved()在应用浅杀后会被立即调用而在service被深杀后，会直接调用onTaskRemoved或service会被重启并调用onTaskRemoved()。</p>
-<p>回到我们的问题：应用被杀后，如何取消Notification：
-我们先看最后的解决方案，在来分析为何能work。
-service的代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onCreate() &#123;</div><div class="line">  super.onCreate();</div><div class="line">  mBinder=newMyBinder();</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService is being created.&quot;);</div><div class="line">  mNotificationManager= ((NotificationManager)getSystemService(NOTIFICATION_SERVICE));</div><div class="line">  initExporterParams();</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">public int onStartCommand(Intent intent, intflags, intid) &#123;</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService onStartCommand.&quot;);</div><div class="line">  mNotificationManager.cancelAll();</div><div class="line">  return START_STICKY;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">public void onTaskRemoved(Intent rootIntent) &#123;</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService onTaskRemoved.&quot;);</div><div class="line">  mNotificationManager.cancelAll();</div><div class="line">  super.onTaskRemoved(rootIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如上代码，在浅杀时候：只执行onTaskRemoved()，通知被取消，但service仍然在运行，所以还会继续发通知，正常运行。
-深杀时：第一种情况直接调用onTaskRemoved()且service停止，通知被取消。第二种情况，进程被杀掉，几秒后service重启，onCreate() -&gt; onTaskRemoved()，运行结果就是深杀后过几秒后Notification被取消。
-浅杀+深杀时：浅杀后onTaskRemoved()被调用，service仍在运行，通知仍然在更新。深杀时，onCreate() -&gt; onStartCommand()，在onStartCommand()时候取消通知。
-另外，mNotificationManager.cancelAll()会清除应用的所有通知，如果应用想保留和该service无关其他通知，可以调用mNotificationManager.cancel(String tag, int id)或cancel(int id)清除指定通知。
-当然，还可以有另一种方式：浅杀时后就把service后台执行的任务停止，并清理notification，我们可以根据需求来选择。</p>
-<p>补充：
-疑问：1.为啥有时候深杀不立即调用onTaskRemoved()，而是在重启之后调用的呢？
-stackoverflow上的答复:<a href="https://stackoverflow.com/questions/32224233/ontaskremoved-called-after-oncreate-in-started-service-on-swipe-out-from-recent/41506752" target="_blank" rel="external">https://stackoverflow.com/questions/32224233/ontaskremoved-called-after-oncreate-in-started-service-on-swipe-out-from-recent/41506752</a>
-大意是service执行较重UI操作时候service不会立即停止，而新的service会启动。不太确定这个解释的正确性……</p>
-<blockquote>
-<p>Calling onTaskRemoved of the running service(when app gets swiped out from recent apps) will be generally delayed if we are performing any heavy UI related stuff or broadcasting messages to receivers in service.
-E.g , Assume you are downloading the file of size 50MB from web server, so from web server everytime you are reading 1024bytes of stream data as buffer and that data you are writing to a file in device.
-Meanwhile you are updating the progress to the UI thread which means every KB you are updating to the UI thread, this will cause the application to freeze.
-So in between if you swipe-out from recent app list , then the system will try to stop the service but since the service is in-contact with the UI thread, the system will be unable to stop that service, but it will create new service eventhough the old service is not yet stopped.
-Once old service finishes the communication with the UI thread then onTaskRemoved() gets called and the old service will be stopped. The new service will be running in the background.
-2.为何servive.startForeground()添加的Notification可以在service被杀死后去掉呢？我们分析源码：ActiveServices中killServicesLocked()-&gt;scheduleServiceRestartLocked()中调用了r.cancelNotification()，清除了notification:</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public void cancelNotification() &#123;</div><div class="line">        if (foregroundId != 0) &#123;</div><div class="line">            // Do asynchronous communication with notification manager to</div><div class="line">            // avoid deadlocks.</div><div class="line">            final String localPackageName = packageName;</div><div class="line">            final int localForegroundId = foregroundId;</div><div class="line">            ams.mHandler.post(new Runnable() &#123;</div><div class="line">                public void run() &#123;</div><div class="line">                    INotificationManager inm = NotificationManager.getService();</div><div class="line">                    if (inm == null) &#123;</div><div class="line">                        return;</div><div class="line">                    &#125;</div><div class="line">                    try &#123;</div><div class="line">                        inm.cancelNotificationWithTag(localPackageName, null,</div><div class="line">                                localForegroundId, userId);</div><div class="line">                    &#125; catch (RuntimeException e) &#123;</div><div class="line">                        Slog.w(TAG, &quot;Error canceling notification for service&quot;, e);</div><div class="line">                    &#125; catch (RemoteException e) &#123;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;建雨在芝士圈应用的application中使用了全局静态变量标志是否正在录制中,开启直播后将该变量设置为录制中,录制中一些操作将被屏蔽.但是对某些手机(如htc d816)当从”最近应用”杀掉进程后有时候application不被回收,该状态变量无法通过applicatio
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>(转)转使用C语言实现&quot;泛型&quot;链表</title>
-    <link href="http://wodekouwei.com/2017/10/31/l-c-dllist/"/>
-    <id>http://wodekouwei.com/2017/10/31/l-c-dllist/</id>
-    <published>2017-10-31T12:13:42.000Z</published>
-    <updated>2017-12-05T06:49:51.509Z</updated>
-    
-    <content type="html"><![CDATA[<p>看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。</p>
-<h3 id="一、所用的链表类型的选择"><a href="#一、所用的链表类型的选择" class="headerlink" title="一、所用的链表类型的选择"></a>一、所用的链表类型的选择</h3><p>我们知道，链表也有非常多的类型，包括单链表、单循环链表、双链表、双向循环链表等。在我的设计中，我的链表使用的类型是双向循环链表，并带一个不保存真实数据的头结点。其原因如下：
-1）单链表由于不能从后继定位到前驱，在操作时较为不方便
-2）双链表虽然能方便找到前驱，但是如果总是在其尾部插入或删除结点，为了定位的方便和操作的统一（所有的删除和插入操作，都跟在中间插入删除结点的操作一样），还要为其增加一个尾结点，并且程序还要保存一个指向这个尾结点的指针，并管理这个指针，从而增加程序的复杂性。而使用带头结点的循环双向链表，就能方便的定位（其上一个元素为链表的最后一个元素，其下一个元素为链表的第0个元素），并使所有的插入和删除的操作统一，因为头结点也是尾结点。注：结点的下标从0开始，头结点不算入下标值。
-3）接口的使用与C++中stl中list和泛型算法的使用大致相同。</p>
-<h3 id="二、list类型的定义"><a href="#二、list类型的定义" class="headerlink" title="二、list类型的定义"></a>二、list类型的定义</h3><p>为了让大家一睹为快，下面就给出这个用C语言实现的“泛型”的定义，再来说明，我这样设计的原因及要点，其定义如下：
-其定义在文件list_v2.c中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    void* data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;  </div><div class="line"></div><div class="line">struct list  </div><div class="line">&#123;  </div><div class="line">    struct node *head;//头指针，指向头结点  </div><div class="line">    int data_size;//链表对应的数据所占内存的大小  </div><div class="line">    int length;//链表list的长度  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>其声明在文件list_v2.h中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </div><div class="line"></div><div class="line"></div><div class="line">//定义结点指针Node*为List类型的迭代器  </div><div class="line">typedef struct node* Iterator;  </div><div class="line"></div><div class="line"></div><div class="line">//List类型的定义  </div><div class="line">typedef struct list* List;  </div><div class="line"></div><div class="line"></div><div class="line">//初始化链表,数据域所占内存的大小由data_size给出  </div><div class="line">int InitList(List *list, int data_size);  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表list的末尾  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Append(List list, void *data,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表的迭代器it_before的前面  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Insert(List list, void *data, Iterator it_before,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </div><div class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </div><div class="line">                      List B, Iterator it_b_before);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list中迭代器it指向的结点  </div><div class="line">int Remove(List list, Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的第0个结点，下标从0开始  </div><div class="line">int RemoveFirst(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的最后一个结点  </div><div class="line">int RemoveLast(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//返回list中第index个数据的指针  </div><div class="line">void* At(List list, int index);  </div><div class="line"></div><div class="line"></div><div class="line">//在begin和end之间查找符合condition的第一个元素，  </div><div class="line">//比较函数由condition指向,比较的值由data指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </div><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </div><div class="line">                       int (*condition)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找list中第一个与data相等的元素的下标，  </div><div class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </div><div class="line">int IndexOf(List list, void *data,  </div><div class="line">            int (*equal)(const void*,const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最小值，比较函数由less指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMin(Iterator begin, Iterator end,  </div><div class="line">                int (*less)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最大值，比较函数由large指向  </div><div class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMax(Iterator begin, Iterator end,  </div><div class="line">                int (*large)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//获取list的长度  </div><div class="line">int GetLength(List list);  </div><div class="line">//若list为空链表，则返回1，否则返回0  </div><div class="line">int IsEmpty(List list);  </div><div class="line">//销毁list  </div><div class="line">void DestroyList(List *list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的首迭代器  </div><div class="line">Iterator Begin(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </div><div class="line">Iterator End(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </div><div class="line">Iterator Next(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </div><div class="line">Iterator Last(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//通过迭代器it获得数据，相当于*p  </div><div class="line">void* GetData(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetNext(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetLast(Iterator it);</div></pre></td></tr></table></figure></p>
-<h3 id="三、如何实现隐藏链表的成员变量（即封装）"><a href="#三、如何实现隐藏链表的成员变量（即封装）" class="headerlink" title="三、如何实现隐藏链表的成员变量（即封装）"></a>三、如何实现隐藏链表的成员变量（即封装）</h3><p>首先，我们为什么需要封装呢？我觉得封装主要有三大好处。</p>
-<ol>
-<li>隔离变化，在程序中需要封装的通常是程序中最容易发生变化的地方，例如成员变量等，我们可以把它们封装起来，从而让它们的变化不会影响到系统的其他部分，也就是说，封装的是变化。</li>
-<li>降低复杂度，因为我们把一个对象是如何实现的等细节封装起来，只留给用户一个最小依赖的接口，从而让系统变量简单明了，在一定程度降低了系统的复杂性，方便了用户的使用。</li>
-<li>让用户只能按照我们设计好的接口来操作一个对象或类型，而不能自己直接对一个对象进行操作，从而减少了用户的误操作，提高了系统的稳定性。</li>
-</ol>
-<p>在面向对象的设计中，如果我们想要隐藏一个类的成员变量，我们可以把这些成员变量声明为私有的，而在C语言中，我们可以怎么实现呢？其实其实现是很简单的，我们在C语言中，当我们要使用一个自己定义的类型或函数时，我们会把声明它的头文件包含（include）过来，只要我们在文件中只声明其类型是一个结构体，而把它的实现写在.c文件中即可。</p>
-<p>在本例子中，我把<code>struct list</code>和<code>struct node</code>定义在.c文件中，而在头文件中，只声明其指针类型，即<code>typedef struct node* Iterator</code>和<code>typedef struct list* List;</code>当我们要使用该类型时，只需要在所在的文件中，include该头文件即可。因为在编译时，编译器只要知道List和Iterator是一个指针类型就能知道其所占的内存大小，也就能为其分配内存，所以能够编译成功。而又因为该头文件中并没有该类型（struct list和struct node）的定义，所以我们在使用该类型时，只能通过我们提供的接口来操作对象。例如，我们并不能使用<code>List list; list-&gt;data</code>等等的操作，而只能通过已定义的接口GetData来获得。</p>
-<p>###四、如何实现泛型
-泛型，第一时间想起的可能是模板，但是在C语言中却没有这个东西。但是C语言中却有一个可以指向任何类型，在使用时，再根据具体的指针类型进行类型转换的指针类型，它就是<code>void*</code>。</p>
-<p>为什么void<em>可以指向任何类型的数据？这还得从C语言对于数据类型的处理方式来说明。在C语言中，我们使用<code>malloc</code>等函数来申请内存，而从内存的角度来看，数据是没有类型的，它们都是一串的0或1，而程序则根据不同的类型来解释这个内存单元中的数据的意义，例如对于内存中的数据，<code>FFFFFFFF</code>，如果它是一个有符号整型数据，它代表的是<code>-1</code>，而如果它是一个无符号整型数据，它代表的则是<code>2^32-1</code>。进一步说，如果你用一个<code>int</code>的指针变量p指向该内存，则</em>p就是-1，如果你用<code>unsigned int</code>的指针<code>p</code>指向该内存，则<code>*p = 2^32-1</code>。</p>
-<p>而我们使用<code>malloc</code>等函数时，也只需要说明申请的内存的大小即可，也不用说明申请的内存空间所存放的数据的类型，例如，我们申请一块内存空间来存放一个整型数据，则只需要<code>malloc(sizeof(int))</code>，即可，当然你完全可以把它当作一个具有4个单位的char数组来使用。所以我们可以使用void指针来指向我们申请的内存，申请内存的大小由链表中的成员data_size定义，它也是真正的data所占的内存大小。</p>
-<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Iterator Insert(List list, void *data, Iterator it_before,</div><div class="line">                void (*assign)(void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>从上面的解说中，我们可以看到链表中的成员data_size指示了链表中的数据所占的内存大小，那我们们就可以使用函数memcpy把data指向的数据复制到新建的结点的data所指向的内存即可。为什么还需要一个函数指针assign，来指向一个定义数据之间如何赋值的函数呢？其实这和面向对象语言中常说到的深复制和浅复制有关。</p>
-<p>注：memcpy函数的原型为：<code>void * memcpy ( void * destination, const void * source, size_t num );</code></p>
-<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct student  </div><div class="line">&#123;  </div><div class="line">    char *name;  </div><div class="line">    char *no;  </div><div class="line">    int age;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>学生的姓名和学号都是能过动态分配内存而来的，并由student结构体中的name和no指针指向，那么当我们使用memcpy时，只能复制其指针，而不能复制其指向的数据，这样在很多情况下都会带来一定的问题。这个跟在C++中什么时候需要自己定义复制构造函数的情况类似。因为这种情况下，默认的复制构造函数并不能满足我们的需要，只能自己定义复制构造函数。</p>
-<p>所以在插入一个结点时，需要assign函数指针的原理与C++中自己定义复制构造函数的原理一样。它用于定义如何根据一个已有的对象生成一个该对象的拷贝对象。当然，可能在大多数的情况下，我们需要用到的数据类型都没有包含指针，所以在Insert函数的实现中，其实我也是有用到memcpy函数的，就是当assign为NULL时，就使用memcpy函数进行数据对象间的赋值，它其实就相当于C++中的默认复制构造函数或默认赋值操作函数。assign为NULL表示使用默认的逐位复制方式，即浅复制。</p>
-<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    DataType data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;</div></pre></td></tr></table></figure></p>
-<p>然后，当需要使用整型的链表时，就把DataType用typedef为int。其实这样做的一个最大的缺陷就是一个程序中只能存在着一个数据类型的链表，例如，如果我需要一个int型的链表和一个float型的链表，那么该把DataType定义为int呢还是float呢？所以这种看似可行的方式，其实只是虚有其表，在现象中是行不能的，虽然不少的数据结构的书都是这样实现的，但是它却没有什么实用价值。</p>
-<p>而其本质的原因是把结点的数据域的数据类型与某一种特定的数据类型DataType绑定在一起，从而让链表不能独立地变化。</p>
-<h3 id="七、为什么只把结点的指针定义为Iterator"><a href="#七、为什么只把结点的指针定义为Iterator" class="headerlink" title="七、为什么只把结点的指针定义为Iterator"></a>七、为什么只把结点的指针定义为Iterator</h3><p>在C++中iterator是一个类，为什么在这里，我只把结点的指针声明为一个Iterator呢？其实受STL的影响，我在一开始时，也是把Iterator实现为一个结构体，它只有一个数据成员，就是一个指向Node的指针。但在后来的实践中，发现其实并没有必要。在C++中为什么把iterator定义为一个类，是为了重载*，-&gt;等运行符，让iterator使用起来跟普通的指针一样。但是在C语言中，并没有重载运行符的做法，所以直接把Ierator声明为一个Node的指针最为方便、直接和好用，所有的比较运算都可以直接进行，而无需要借助函数。而把它声明为一个结构体反而麻烦、累赘。</p>
-<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>而是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>们可以试想一下，这个链表的为char链表，链表的元素为ABCBCBC，我们要在链表中找出所有的B，如果查找算法是使用第一种定义的话，它只能找出第一个B，而后面的两个B就无能为力了，而第二种定义，则可以通过循环改变其始末迭代器来在不同的序列段间查找目标字符B的位置。</p>
-<blockquote>
-<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="external">使用C语言实现“泛型”链表</a></p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表
-    
-    </summary>
-    
-      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
-    
-    
-      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
-    
-      <category term="C" scheme="http://wodekouwei.com/tags/C/"/>
     
   </entry>
   

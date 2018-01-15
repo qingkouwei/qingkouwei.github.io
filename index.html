@@ -323,7 +323,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -345,8 +345,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-6/" itemprop="url">
-                  Android插件化(四)基础之用到Android源码类探讨
+                <a class="post-title-link" href="/2018/01/15/docker-env-create/" itemprop="url">
+                  docker简介及环境搭建
                 </a>
               
             
@@ -362,8 +362,281 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:23:00+08:00">
-                2018-01-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:00:03+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="docker是什么"><a href="#docker是什么" class="headerlink" title="docker是什么"></a>docker是什么</h3><p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
+Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
+<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<h3 id="Docker-三个基本概念"><a href="#Docker-三个基本概念" class="headerlink" title="Docker 三个基本概念"></a>Docker 三个基本概念</h3><ul>
+<li>镜像（Image）:Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</li>
+<li>容器（Container）:镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</li>
+<li>仓库（Repository）:镜像构建完成后，可以很容易的在当前宿主上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest作为默认标签。用 Docker 的时候，需要经常从官方获取镜像，但是由于显而易见的网络原因，拉取镜像的过程非常耗时，严重影响使用 Docker 的体验。因此 DaoCloud等加速器服务商 推出了加速器工具解决这个难题，通过智能路由和缓存机制，极大提升了国内网络访问 Docker Hub 的速度，目前已经拥有了广泛的用户群体，并得到了 Docker 官方的大力推荐。如果您是在国内的网络环境使用 Docker，那么 Docker 加速器一定能帮助到您。docker常用仓库:<a href="https://hub.docker.com/explore/" target="_blank" rel="external">https://hub.docker.com/explore/</a></li>
+</ul>
+<blockquote>
+<p><a href="https://www.daocloud.io/mirror#accelerator-doc" target="_blank" rel="external">docker daocloud加速器</a>:</p>
+<ul>
+<li>linux:<code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://311e425f.m.daocloud.io</code>,该脚本可以将 –registry-mirror 加入到你的 Docker 配置文件 /etc/docker/daemon.json 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同</li>
+<li>Mac:右键点击桌面顶栏的 docker 图标，选择 Preferences ，在 Daemon 标签（Docker 17.03 之前版本为 Advanced 标签）下的 Registry mirrors 列表中加入下面的镜像地址:<code>http://311e425f.m.daocloud.io</code>,点击 Apply &amp; Restart 按钮使设置生效。</li>
+<li>Windows: 在桌面右下角状态栏中右键 docker 图标，修改在 Docker Daemon 标签页中的 json ，把下面的地址:<code>http://311e425f.m.daocloud.io</code>,加到”registry-mirrors”的数组里。点击 Apply 。</li>
+</ul>
+</blockquote>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="mac下安装docker"><a href="#mac下安装docker" class="headerlink" title="mac下安装docker"></a>mac下安装docker</h4><p><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="external">官方mac的安装步骤</a>
+下载<a href="https://link.jianshu.com/?t=https://download.docker.com/mac/stable/Docker.dmg" target="_blank" rel="external">docker.dmg</a>文件，然后点击，一步步操作</p>
+<p>检测Docker Engine, Docker Compose, 和Docker Machine的版本:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">docker version</div><div class="line">Client:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Tue Mar 28 00:40:02 2017</div><div class="line"> OS/Arch:      darwin/amd64</div><div class="line"></div><div class="line">Server:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27 (minimum version 1.12)</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Fri Mar 24 00:00:50 2017</div><div class="line"> OS/Arch:      linux/amd64</div><div class="line"> Experimental: true</div><div class="line"></div><div class="line">docker-compose --version</div><div class="line">docker-compose version 1.11.2, build dfed245</div><div class="line"></div><div class="line">docker-machine --version</div><div class="line">docker-machine version 0.10.0, build 76ed2a6</div></pre></td></tr></table></figure></p>
+<h3 id="运行官网提供的二个简单列子"><a href="#运行官网提供的二个简单列子" class="headerlink" title="运行官网提供的二个简单列子"></a>运行官网提供的二个简单列子</h3><p>拉取hello-world镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull hello-world</div></pre></td></tr></table></figure></p>
+<p>查看hello-world镜像信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker images hello-world</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">hello-world         latest              1815c82652c0        5 days ago          1.84 kB</div></pre></td></tr></table></figure></p>
+<p>根据镜像生成对应容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run hello-world</div></pre></td></tr></table></figure></p>
+<p>ps不加参数只会把当前运行的Community打印出来，查看当前所有的Community，加上-a参数。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure></p>
+<p>当然也可以根据镜像生成一个具体名称的镜像，先删除当前容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 60</div></pre></td></tr></table></figure></p>
+<p>当然如果当前容器正在运行，要删除这个容器，则使用命令
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm -f 60</div></pre></td></tr></table></figure></p>
+<p>使用镜像生成具体名称的容器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name miaozhihao hello-world</div></pre></td></tr></table></figure></p>
+<p>于更多的docker run的命令可以使用来查看
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --help</div></pre></td></tr></table></figure></p>
+<p><strong>第二个examples，启动docker的web服务</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
+<p>-p参数是使用宿主机的80映射容器的80端口
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">curl localhost:80</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</div><div class="line">&lt;style&gt;</div><div class="line">    body &#123;</div><div class="line">        width: 35em;</div><div class="line">        margin: 0 auto;</div><div class="line">        font-family: Tahoma, Verdana, Arial, sans-serif;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</div><div class="line">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</div><div class="line">working. Further configuration is required.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;For online documentation and support please refer to</div><div class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</div><div class="line">Commercial support is available at</div><div class="line">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>交互式终端方式进入 webserver容器，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec -it webserver bash</div></pre></td></tr></table></figure></p>
+<p>修改nginx的显示页面：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@41b6804c716e:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</div><div class="line">root@41b6804c716e:/# exit</div><div class="line">exit</div></pre></td></tr></table></figure></p>
+<p>修改了容器的文件，也就是改动了容器的存储层。我们可以通过 docker diff
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">docker diff webserver</div><div class="line">C /root</div><div class="line">A /root/.bash_history</div><div class="line">C /run</div><div class="line">A /run/nginx.pid</div><div class="line">C /usr/share/nginx/html/index.html</div><div class="line">C /var/cache/nginx</div><div class="line">A /var/cache/nginx/client_temp</div><div class="line">A /var/cache/nginx/fastcgi_temp</div><div class="line">A /var/cache/nginx/proxy_temp</div><div class="line">A /var/cache/nginx/scgi_temp</div><div class="line">A /var/cache/nginx/uwsgi_temp</div></pre></td></tr></table></figure></p>
+<p>使用docker commit生成镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker commit --author &quot;zhihao.miao &lt;1026145686@qq.com&gt;&quot; --message &quot;修改了默认网页&quot; webserver nginx:v2</div><div class="line">sha256:0a34c054b8a826d85dddf4d1dbdd3028ab890feff4c8a0844e9b98dd146c2e07</div></pre></td></tr></table></figure></p>
+<p>–autho 指定作者 –message表示容器的一些信息
+查看当前nginx镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker images nginx</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">nginx               v2                  0a34c054b8a8        11 seconds ago      109 MB</div><div class="line">nginx               latest              958a7ae9e569        4 weeks ago         109 MB</div></pre></td></tr></table></figure></p>
+<p>查看当前所有的容器，包括运行的和停止的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div><div class="line">\CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                    PORTS                NAMES</div><div class="line">41b6804c716e        nginx                                 &quot;nginx -g &apos;daemon ...&quot;   3 minutes ago       Up 3 minutes              0.0.0.0:80-&gt;80/tcp   webserver</div><div class="line">85612b405cda        miaozhihao001dockerhub/commit_test1   &quot;nginx -g &apos;daemon ...&quot;   20 hours ago        Exited (0) 3 hours ago                         nginx_web</div><div class="line">9ef1fb35d7aa        ubuntu:14.04                          &quot;/bin/bash&quot;              20 hours ago        Exited (0) 20 hours ago                        commit_test</div><div class="line">bf8320b9e445        ubuntu:14.04                          &quot;/bin/bash&quot;              24 hours ago        Exited (0) 24 hours ago                        sharp_curie</div><div class="line">9f9767eb8aaf        hello-world                           &quot;/hello&quot;                 10 days ago         Exited (0) 10 days ago                         miaozhihao</div></pre></td></tr></table></figure></p>
+<p>启动新的容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker run --name newwebserver -d -p 80:80 nginx:v2</div><div class="line">3619b34ed347cf1ae2ee3ab32c419140871f3084b9a1325ab5d8c6155d43bf06</div><div class="line">➜ curl localhost:80</div><div class="line">&lt;h1&gt;Hello, Docker!&lt;/h1&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="创建自己的docker镜像"><a href="#创建自己的docker镜像" class="headerlink" title="创建自己的docker镜像"></a>创建自己的docker镜像</h3><p>编辑Dockerfile文件，填入以下内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM docker/whalesay:latest</div><div class="line">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</div><div class="line">CMD /usr/games/fortune -a | cowsay</div></pre></td></tr></table></figure></p>
+<p>运行以下命令创建名为docker-whale的镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-whale .</div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>-t</code>： 给tag命令</li>
+<li><code>.</code>： Dockerfile文件所在路径</li>
+</ul>
+<h4 id="docker-tag-push-pull"><a href="#docker-tag-push-pull" class="headerlink" title="docker tag push pull"></a>docker tag push pull</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 8e15421920b1 xulingfeng/docker-whale:latest</div></pre></td></tr></table></figure>
+<p>上传操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push xulingfeng/docker-whale</div></pre></td></tr></table></figure></p>
+<p>下载操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull centos</div></pre></td></tr></table></figure></p>
+<h4 id="交互式的操作"><a href="#交互式的操作" class="headerlink" title="交互式的操作"></a>交互式的操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -t -i ubuntu /bin/bash</div></pre></td></tr></table></figure>
+<ul>
+<li>t 分配了一个终端在新的容器中</li>
+<li><code>-i</code> 允许你和容器进行交互操作</li>
+<li><code>/bin/bash</code> 启动容器中的Bash shell</li>
+</ul>
+<h4 id="docker的守护状态，也就是后台运行"><a href="#docker的守护状态，也就是后台运行" class="headerlink" title="docker的守护状态，也就是后台运行"></a>docker的守护状态，也就是后台运行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d ubuntu /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li>docker run 运行容器</li>
+<li>-d 让容器在后台运行</li>
+<li>ubuntu 你希望运行容器的镜像</li>
+</ul>
+<h4 id="查看docker容器运行日志"><a href="#查看docker容器运行日志" class="headerlink" title="查看docker容器运行日志"></a>查看docker容器运行日志</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 容器名</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-f</code> 类似与 <code>tail -f</code></li>
+</ul>
+<h4 id="使用docker运行web应用"><a href="#使用docker运行web应用" class="headerlink" title="使用docker运行web应用"></a>使用docker运行web应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-d</code>：代表后台运行该容器</li>
+<li><code>-P</code>：映射容器中的web应用端口号到你的主机上32768-61000中的某一个端口。这样你可以访问该容器中的web应用</li>
+<li><code>training/webapp</code>： 一个已经构建好的镜像，包含一个简单的python flask框架web应用</li>
+<li><code>python app.py</code>：这个命令用来启动容器中的web</li>
+</ul>
+<p>成功运行以上命令后，运行：
+<code>docker ps</code>
+查看到容器的5000端口号映射到了本地的32768，浏览器访问<a href="http://127.0.0.1:32768" target="_blank" rel="external">http://127.0.0.1:32768</a> 看到helloworld 成功提示</p>
+<h4 id="自定义主机端口号"><a href="#自定义主机端口号" class="headerlink" title="自定义主机端口号"></a>自定义主机端口号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:5000 training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li>-p 80:5000 将本机的80端口绑定容器内的5000端口，本地直接访问 <code>http://127.0.0.1</code> 即可</li>
+</ul>
+<h4 id="查看容器的进程"><a href="#查看容器的进程" class="headerlink" title="查看容器的进程"></a>查看容器的进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker top 容器名</div></pre></td></tr></table></figure>
+<h4 id="检查容器的状态信息"><a href="#检查容器的状态信息" class="headerlink" title="检查容器的状态信息"></a>检查容器的状态信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 容器名</div></pre></td></tr></table></figure>
+<h4 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search 内容</div></pre></td></tr></table></figure>
+<h4 id="创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson"><a href="#创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson" class="headerlink" title="创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson"></a>创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson</h4><p><strong>centos镜像，分解步骤如下</strong></p>
+<ul>
+<li>首先添加额外源:<code>yum install -y epel-release</code></li>
+<li>安装编译环境:<code>yum install -y gcc automake autoconf libtool make gcc-c++</code></li>
+<li>安装wget命令:<code>yum install -y wget</code></li>
+<li>安装openssl-devel python的pip命令依赖:<code>yum install -y openssl-devel</code></li>
+<li>下载python3.5.2最新包:<code>wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</code></li>
+<li>解压python3.5.2压缩包并编译安装:<code>tar -zxvf /software/Python-3.5.2.tgz -C /software/</code>与<code>./configure &amp;&amp; make -j2&amp;&amp; make install -j2</code></li>
+<li>更新pip:<code>pip install --upgrade pip</code>与<code>pip install --upgrade setuptools</code></li>
+<li>安装所需的第三方包:<code>pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</code></li>
+</ul>
+<h4 id="通过Dockerfile构建镜像"><a href="#通过Dockerfile构建镜像" class="headerlink" title="通过Dockerfile构建镜像"></a>通过Dockerfile构建镜像</h4><p>Dockerfile:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">FROM centos:latest</div><div class="line">RUN yum install -y epel-release</div><div class="line">RUN yum install -y gcc automake autoconf libtool make gcc-c++</div><div class="line">RUN yum install -y wget</div><div class="line">RUN yum install -y openssl-devel</div><div class="line">RUN wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</div><div class="line">RUN tar -zxvf /software/Python-3.5.2.tgz -C /software/</div><div class="line">RUN cd /software/Python-3.5.2/ &amp;&amp; ./configure python3 &amp;&amp; make -j2&amp;&amp; make install -j2</div><div class="line">RUN pip install --upgrade pip</div><div class="line">RUN pip install --upgrade setuptools</div><div class="line">RUN pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</div></pre></td></tr></table></figure></p>
+<p>在Dockerfile目录中执行：<code>docker build -t 名字:版本 .</code></p>
+<h4 id="兼容docker-for-mac-和-pycharm"><a href="#兼容docker-for-mac-和-pycharm" class="headerlink" title="兼容docker for mac 和 pycharm"></a>兼容docker for mac 和 pycharm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install socat</div><div class="line">socat TCP-LISTEN:2376,reuseaddr,fork,bind=127.0.0.1 UNIX-CLIENT:/var/run/docker.sock</div></pre></td></tr></table></figure>
+<h3 id="一些docker命令总结"><a href="#一些docker命令总结" class="headerlink" title="一些docker命令总结"></a>一些docker命令总结</h3><ul>
+<li>docker images :查看当前宿主机的所有镜像。</li>
+<li>docker images ubuntu：根据仓库名列出镜像</li>
+<li>docker images ubuntu:14.04:指定仓库名和标签</li>
+<li>docker build -t webservice .:表示使用当前目录下的DockerFile来生成镜像，-t参数的值表示镜像的tagname，如果DockerFile在当前路径下则使用.，如果不在当前路径下则使用相对路径。</li>
+<li>docker ps -a: 没有-a参数表示显示当前宿主机的正在运行的容器，加上-a表示显示当前宿主机所有的容器，包括已经退出的容器。</li>
+<li>docker run -d -p 2222:22 –name base centos:7.1
+表示根据指定的镜像后台运行容器，容器的名字是base（–name就是指定容器的名字)，centos:7.1表示镜像的名字，-p参数表示当前宿主机的2222端口对应容器的22端口。-d参数表示（Run container in background and print container ID）</li>
+<li>docker exec -it base /bin/bash
+以交互式命令进入base容器并且执行/bin/bash命令</li>
+<li>docker rmi webservice:删除webservice镜像</li>
+<li>docker rm base: 删除base容器，如果base正在运行，则可以使用docker rm -f base进行强行删除</li>
+<li>docker start 启动容器</li>
+<li>docker stop 停止容器</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/14/tips-android-pluggable-7/" itemprop="url">
+                  Android插件化(六)基础之Binder
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-14T13:47:58+08:00">
+                2018-01-14
               </time>
             
 
@@ -465,6 +738,158 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-6/" itemprop="url">
+                  Android插件化(五)基础之用到Android源码类探讨
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:23:00+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="PackageManager"><a href="#PackageManager" class="headerlink" title="PackageManager"></a>PackageManager</h6><p>获取:通过Context的getPackageManager()
+常用方法:</p>
+<ol>
+<li><code>getInstalledPackages(int flags)</code>:可以得到所有安装在机器上的程序的包信息类对象List<packageinfo>，PackageInfo类中有一值applicationInfo可以得到Application的对象。</packageinfo></li>
+<li><code>getPackageArchiveInfo(dexPath,
+PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应用以外其他apk的信息方法</li>
+<li><code>getInstalledApplications(int flags)</code>:得到所有安装在机器上的程序的application对象List<applicationinfo>；</applicationinfo></li>
+<li><code>getApplicationIcon(String packageName)</code>,<code>getApplicationIcon(ApplicationInfo info)</code>:获得应用程序的图片</li>
+<li><code>getApplicationLabel(ApplicationInfo info)</code>:方法可以获得应用程序的名字</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -488,7 +913,7 @@
               
                 
                 <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-5/" itemprop="url">
-                  Android插件化(四)基础之Binder
+                  Android插件化(四)基础之文件存储
                 </a>
               
             
@@ -564,7 +989,54 @@
       
         
           
-            
+            <h3 id="android文件存储解析"><a href="#android文件存储解析" class="headerlink" title="android文件存储解析"></a>android文件存储解析</h3><p>安卓中提供了Context中的方法与Environment类来操作文件。</p>
+<h4 id="Context文件操作方法"><a href="#Context文件操作方法" class="headerlink" title="Context文件操作方法"></a>Context文件操作方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public File getFileStreamPath(String name)</div><div class="line">public String[] fileList()</div><div class="line">public File getFilesDir()</div><div class="line">public File getNoBackupFilesDir()</div><div class="line">public File getExternalFilesDir(String type)</div><div class="line">public File[] getExternalFilesDirs(String type)</div><div class="line">public File getObbDir()</div><div class="line">public File[] getObbDirs()</div><div class="line">public File getCacheDir()</div><div class="line">public File getCodeCacheDir()</div><div class="line">public File getExternalCacheDir()</div><div class="line">public File[] getExternalCacheDirs()</div><div class="line">public File[] getExternalMediaDirs()</div><div class="line">public File getDir(String name, int mode)</div></pre></td></tr></table></figure>
+<p>用Log把它们都显示出来
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">Log.d(&quot;context&quot;, &quot;context.getFileStreamPath--&gt;&quot; +</div><div class="line">    this.getFileStreamPath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDir--&gt;&quot; +</div><div class="line">    this.getDir(&quot;test&quot;, Context.MODE_PRIVATE).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getFilesDir--&gt;&quot; +</div><div class="line">    this.getFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getNoBackupFilesDir&quot; +</div><div class="line">    this.getNoBackupFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCacheDir--&gt;&quot; +</div><div class="line">    this.getCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCodeCacheDir&quot; +</div><div class="line">    this.getCodeCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDatabasePath--&gt;&quot; +</div><div class="line">    this.getDatabasePath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getObbDir--&gt;&quot; +</div><div class="line">    this.getObbDir().toString());</div><div class="line"></div><div class="line">File[] files1 = this.getObbDirs();</div><div class="line">for (File file : files1) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getObbDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line">File[] files2 = this.getExternalMediaDirs();</div><div class="line">for (File file : files2) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalMediaDirs&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalCacheDir--&gt;&quot; + this.getExternalCacheDir().toString());</div><div class="line">File[] files3 = this.getExternalCacheDirs();</div><div class="line">for (File file : files3) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalCacheDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalFilesDir--&gt;&quot; + this.getExternalFilesDir(Environment.DIRECTORY_ALARMS).toString());</div><div class="line"></div><div class="line">File[] files4 = this.getExternalFilesDirs(Environment.DIRECTORY_ALARMS);</div><div class="line">for (File file : files4) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalFilesDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>og输出结果(不同版本的安卓系统，目录可能也不相同):
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">context.getFileStreamPath--&gt;/data/data/cn.hufeifei.environmenttest/files/test</div><div class="line">context.getDir--&gt;/data/data/cn.hufeifei.environmenttest/app_test</div><div class="line">context.getFilesDir--&gt;/data/data/cn.hufeifei.environmenttest/files</div><div class="line">context.getNoBackupFilesDir/data/data/cn.hufeifei.environmenttest/no_backup</div><div class="line">context.getCacheDir--&gt;/data/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getCodeCacheDir/data/data/cn.hufeifei.environmenttest/code_cache</div><div class="line">context.getDatabasePath--&gt;/data/data/cn.hufeifei.environmenttest/databases/test</div><div class="line">context.getObbDir--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getObbDirs--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getExternalMediaDirs/storage/emulated/0/Android/media/cn.hufeifei.environmenttest</div><div class="line">context.getExternalCacheDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalCacheDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalFilesDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div><div class="line">context.getExternalFilesDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div></pre></td></tr></table></figure></p>
+<h4 id="Environment工具类中提供了以下几个方法："><a href="#Environment工具类中提供了以下几个方法：" class="headerlink" title="Environment工具类中提供了以下几个方法："></a>Environment工具类中提供了以下几个方法：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Environment.getDataDirectory();</div><div class="line">Environment.getRootDirectory();</div><div class="line">Environment.getDownloadCacheDirectory();</div><div class="line">Environment.getExternalStoragePublicDirectory(String type);</div><div class="line">Environment.getExternalStorageDirectory();</div><div class="line">Environment.getExternalStorageState();</div><div class="line">Environment.getExternalStorageState(File path)</div><div class="line">Environment.getStorageState();//已被getExternalStorageState取代</div></pre></td></tr></table></figure>
+<h5 id="1-前三个方法"><a href="#1-前三个方法" class="headerlink" title="1.前三个方法"></a>1.前三个方法</h5><p>用Log输出来：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//IS标识内部存储</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDataDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDownloadCacheDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getRootDirectory().toString());</div></pre></td></tr></table></figure></p>
+<p>输出结果为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">D/Environment-IS: /data</div><div class="line">D/Environment-IS: /cache</div><div class="line">D/Environment-IS: /system</div></pre></td></tr></table></figure></p>
+<h5 id="2-getExternalStoragePublicDirectory方法"><a href="#2-getExternalStoragePublicDirectory方法" class="headerlink" title="2.getExternalStoragePublicDirectory方法"></a>2.getExternalStoragePublicDirectory方法</h5><p>getExternalStoragePublicDirectory方法用来获取安卓外部存储中系统应用经常用到的公共文件夹，
+在Environment中定义了这些文件夹的名字：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Environment.DIRECTORY_MUSIC = &quot;Music&quot;</div><div class="line">Environment.DIRECTORY_PODCASTS = &quot;Podcasts&quot;</div><div class="line">Environment.DIRECTORY_RINGTONES = &quot;Ringtones&quot;</div><div class="line">Environment.DIRECTORY_ALARMS = &quot;Alarms&quot;</div><div class="line">Environment.DIRECTORY_NOTIFICATIONS = &quot;Notifications&quot;</div><div class="line">Environment.DIRECTORY_PICTURES = &quot;Pictures&quot;</div><div class="line">Environment.DIRECTORY_MOVIES = &quot;Movies&quot;</div><div class="line">Environment.DIRECTORY_DOWNLOADS = &quot;Download&quot;</div><div class="line">Environment.DIRECTORY_DCIM = &quot;DCIM&quot;</div><div class="line">Environment.DIRECTORY_DOCUMENTS = &quot;Documents&quot;</div></pre></td></tr></table></figure></p>
+<p>它们的目录一般在/storage/emulated/0/<dir_name> (dir_name就是Environment中定义的这些字符串常量)</dir_name></p>
+<h5 id="3-最后的三个方法"><a href="#3-最后的三个方法" class="headerlink" title="3.最后的三个方法"></a>3.最后的三个方法</h5><p>最后面三个方法是用来获取挂载点的状态(在Linux中把一些特殊目录称为所谓的挂载点，有点类似于Windows中的分区)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Environment.MEDIA_REMOVED;//媒体存储已经移除了</div><div class="line">Environment.MEDIA_UNMOUNTED;//存储媒体没有挂载</div><div class="line">Environment.MEDIA_CHECKING;//正在检查存储媒体</div><div class="line">Environment.MEDIA_NOFS;//存储媒体是空白或是不支持的文件系统no_file_system</div><div class="line">Environment.MEDIA_MOUNTED;//存储媒体已经挂载，并且挂载点可读/写</div><div class="line">Environment.MEDIA_MOUNTED_READ_ONLY;//存储媒体已经挂载，挂载点只读</div><div class="line">Environment.MEDIA_SHARED;//存储媒体正在通过USB共享</div><div class="line">Environment.MEDIA_BAD_REMOVAL;//在没有挂载前存储媒体已经被移除</div><div class="line">Environment.MEDIA_UNMOUNTABLE;//存储媒体无法挂载,可能是文件系统损坏了</div><div class="line">Environment.MEDIA_EJECTING;//存储媒体正在移除</div><div class="line">Environment.MEDIA_UNKNOWN;//未知的存储状态</div></pre></td></tr></table></figure></p>
+<p>下面图片大概地概括了上面的方法
+<img src="http://images.wodekouwei.com/technology/android-storage.png" alt="image"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h4><ul>
+<li>Context中的方法或得到的路径都与应用包名相关*</li>
+<li>Environment中的方法与整个系统有关*</li>
+</ul>
+<h3 id="storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别"><a href="#storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别" class="headerlink" title="/storage/sdcard0， /sdcard， /mnt/sdcard ，/storage/emulated/legacy 的区别"></a><code>/storage/sdcard0</code>， <code>/sdcard</code>， <code>/mnt/sdcard</code> ，<code>/storage/emulated/legacy</code> 的区别</h3><p>关于android的4.2的0文件夹的详解</p>
+<h4 id="android-4-0"><a href="#android-4-0" class="headerlink" title="android 4.0"></a>android 4.0</h4><p>在galaxy nexus（GN）手机上userdata分区很大，被挂在/data目录，用户的数据通常是放在sd卡上，然而gn是没有sd卡的，所以google想了一个办法，就是虚拟一个。</p>
+<p>所以，在userdata分区下有个目录叫media，是内置sd卡的数据存储位置，使用fuse技术将<code>/data/media</code>虚拟成为一个叫做<code>/dev/fuse</code>的设备，为了让程序能认出来，被同时挂载在 <code>/mnt/sdcard</code> 目录，
+又为了兼容以前的程序，做了一个快捷方式（linux系统里叫软连接） <code>/sdcard</code>指向的是 <code>/mnt/sdcard</code> .</p>
+<p>当然，这些都是4.0的做法。</p>
+<h4 id="android-4-1"><a href="#android-4-1" class="headerlink" title="android 4.1"></a>android 4.1</h4><p>在4.1里，同样也会使用fuse技术，<code>/dev/fuse</code> 会被同时挂载到<code>/storage/sdcard0</code> 目录，这个sdcard0表示第一个sd卡（如果有外置sd卡，那会多一个 <code>/storage/sdcard1</code>，比如我的xoom）， <code>/sdcard</code> 软连接会指向 <code>/storage/sdcard0</code> ，此时<code>/mnt/sdcard</code> 也是个软连接，会指向<code>/storage/sdcard0</code>。
+如果你通过otg线接U盘，会被挂载到 <code>/storage/usb0</code>目录，stickmount这个软件为了让图库、快图、mx player等软件，能看到u盘里的数据，又同时挂载到 <code>/storage/sdcard0/usStorage/sda1</code>.</p>
+<p>也许你会问，为什么不是usb0，而是sda1，这是linux的对硬盘的命名方式，如果你的u盘有多个分区，就分别是sda1,sda2这样一直排下去了。</p>
+<h4 id="android-4-2"><a href="#android-4-2" class="headerlink" title="android 4.2"></a>android 4.2</h4><p>谷歌是不是没事干啊，非要给android搞个多用户，你想想啊，在中国，可能因为经济问题，家里不是每人一个电脑，在美国，几乎需要用电脑的人，都会自己有一台或多台，一台电脑多人用的情况少之又少，这就是为什么叫PC了，顾名思义，个人电脑。像手机和平板这些东西，更加私人化了，很少公用了吧，我想在中国也是如此吧。</p>
+<p>当然，谷歌也不完全是抽风，因为他有更大的战略部署，而且平板也的确有多人用的可能。</p>
+<p>所以谷歌搞出来一个多用户，那每个人的应用、数据、个性配置都要分开吧。 应用和个性配置好弄，想想啊，通过权限控制，每人只能看自己的应用就行了，桌面也可以用自己的。</p>
+<p>那数据怎么办？？？？</p>
+<p>好吧，调整用户数据的挂载结构。android 4.2，同样也会使用fuse技术/dev/fuse 会被挂载到<code>/storage/emulated/0</code> 目录，为什么是0呢，你还记得上边的sdcard0吧，第一个的意思。（如果有第二个，应该就是<code>/storage/emulated/1</code>，我们的三儿子没有外置sd卡，所以没法验证）</p>
+<p>为了兼容以前，同时挂载到 <code>/storage/emulated/legacy</code> （故名思议，传统的），还建立三个软连接 <code>/storage/sdcard0</code> ，<code>/sdcard</code>，<code>/mnt/sdcard</code> ，都指向  <code>/storage/emulated/legacy</code></p>
+<p>还有值得一提的是，4.2刚出来，这块变动又比较大，所以stickmount要升级到2.2之后，才可以通过otg挂载u盘了。</p>
+<p>也许你会问，这个0和多用户有什么关系呢，那是因为多用户这个新特性，只在平板上才启用，在手机上会被禁用的。但是底层实现是一致的。 <code>/mnt/shell/emulated</code> 目录和 <code>/storage/emulated</code> 下的文件夹是一样的。（注意，这个<code>/mnt/shell/emulated</code>  不是挂载出来的）</p>
+<p><code>/mnt/shell/</code>是为了多用户准备的，因为linux的多用户是基于shell实现的。</p>
+<p>4.2在平板上的多用户
+我前一段时间给XOOM Wifi刷上了CM10.1的4.2.1，成功开启多用户特性。新建的用户id从10开始。</p>
+<ul>
+<li>默认用户的sdcard目录： <code>/storage/emulated/0</code></li>
+<li>新建的第一个用户的sdcard目录：  <code>/storage/emulated/10</code></li>
+<li>新建的第二个用户的sdcard目录：  <code>/storage/emulated/11</code></li>
+</ul>
+
           
         
       
@@ -1848,7 +2320,8 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 </tr>
 </tbody>
 </table>
-<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
+<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><p>基于静态代理的实现</p>
+<h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
 <thead>
 <tr>
 <th>Feature</th>
@@ -2189,751 +2662,6 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/29/tips-ml-res/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/29/tips-ml-res/" itemprop="url">
-                  机器学习资源
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-29T09:59:09+08:00">
-                2017-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://github.com/andabi/deep-voice-conversion" target="_blank" rel="external">deep-voice-conversion</a>:Deep neural networks for voice conversion (voice style transfer) in Tensorflow</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/20/m-f-flv/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/20/m-f-flv/" itemprop="url">
-                  FLV格式解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-20T14:49:06+08:00">
-                2017-12-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
-                    <span itemprop="name">音视频封装</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>FLV（Flash Video）是现在非常流行的流媒体格式，由于其视频文件体积轻巧、封装播放简单等特点，使其很适合在网络上进行应用，目前主流的视频网站无一例外地使用了FLV格式。另外由于当前浏览器与Flash Player紧密的结合，使得网页播放FLV视频轻而易举，也是FLV流行的原因之一。</p>
-<p>FLV是流媒体封装格式，我们可以将其数据看为二进制字节流。总体上看，FLV包括文件头（File Header）和文件体（File Body）两部分，其中文件体由一系列的Tag及Tag Size对组成。
-<img src="http://images.wodekouwei.com/M/F/flv-struct.jpg" alt="flv-struct"></p>
-<h3 id="FLV格式解析"><a href="#FLV格式解析" class="headerlink" title="FLV格式解析"></a>FLV格式解析</h3><p>先来一张图，这是《科比退役演讲》下载）的一个FLV视频。我使用的是UltraEdit的二进制查看工具。
-<img src="http://images.wodekouwei.com/M/F/flv1.png" alt="flv-head"></p>
-<h4 id="header"><a href="#header" class="headerlink" title="header"></a>header</h4><p>头部分由一下几部分组成
-Signature(3 Byte)+Version(1 Byte)+Flags(1 Bypte)+DataOffset(4 Byte)</p>
-<ul>
-<li>signature 占3个字节 固定FLV三个字符作为标示。一般发现前三个字符为FLV时就认为他是flv文件。图中0x46 0x4C 0x56,代表FLV</li>
-<li>Version 占1个字节 标示FLV的版本号。这里我们看到是1</li>
-<li>Flags 占1个字节 内容标示。第0位和第2位,分别表示 video 与 audio 存在的情况.(1表示存在,0表示不存在)。截图看到是0x05，也就是00000101，代表既有视频，也有音频。</li>
-<li>DataOffset 4个字节 表示FLV的header长度。这里可以看到固定是9</li>
-</ul>
-<h4 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h4><p>FLV的body部分是一系列的back-pointers+tag构成的</p>
-<ul>
-<li>back-pointers固定4个字节,表示前一个tag的size</li>
-<li><p>tag分三种类型:video,audio,scripts.</p>
-<h5 id="tag组成"><a href="#tag组成" class="headerlink" title="tag组成"></a>tag组成</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tag type+tag data size+Timestamp+TimestampExtended+stream id+ tag data</div></pre></td></tr></table></figure>
-</li>
-<li><p>type 1个字节。8为Audio,9为Video,18为scripts</p>
-</li>
-<li>tag data size 3个字节。表示tag data的长度。从streamd id 后算起。</li>
-<li>Timestreamp 3个字节。时间戳</li>
-<li>TimestampExtended 1个字节。时间戳扩展字段</li>
-<li>stream id 3个字节。总是0</li>
-<li>tag data 数据部分</li>
-</ul>
-<p>图上第一个tag:</p>
-<ul>
-<li>type=0x12=18,表示是一个scripts,FLV中,header后的第一个tag是script tag,script tag内容是amf格式数据,包含两个amf.</li>
-<li>size=0x00 0x01 0x74 = 372</li>
-<li>timpestreamp = 0x00 0x00 0x00</li>
-<li>TimestampExtended=0x00</li>
-<li>streamid=0x00 0x00 0x00</li>
-<li>tag data部分:
-<img src="http://images.wodekouwei.com/M/F/flv2.png" alt="FLV-TAG"></li>
-</ul>
-<h5 id="tag的划分"><a href="#tag的划分" class="headerlink" title="tag的划分"></a>tag的划分</h5><p>图中红色部分是我标出”(“与”)”前后的的两个back-pointers，都是4个字节。而括号中间就是第一个TAG。那是怎么计算的呢？我们就以这个做个示例。</p>
-<ul>
-<li>首先第一个back-pointers是0x00000000，那是因为后面是第一个TAG。所以他为0。</li>
-<li>然后根据我们我们前面格式获取到size是0x00 0x01 0x74 = 372。也就是说从stream id后面再加上372个字节就到了第一个TAG的末尾，我们数一下。tag header有11个字节。那么到第一个TAG，总共有372+11=383=0x17f。</li>
-<li>接下来我们找到0x17f的地址，从工具上很容易找到，正好就是后括号”)”的前面。红0x00 0x00 0x01 0x7F=372，这代表的是上一个TAG的大小。</li>
-<li>最后我们计算一下，上一个TAG数据部分是372个字节，前面type、stream id等字段占了11个字节。正好是匹配的。
-上面我们已经知道了怎么取划分每个TAG。接下来我们就看TAG的具体内容:</li>
-</ul>
-<h5 id="tag的内容"><a href="#tag的内容" class="headerlink" title="tag的内容"></a>tag的内容</h5><p>前面已经提到tag分3种。我们一个个看</p>
-<h6 id="script"><a href="#script" class="headerlink" title="script"></a>script</h6><p>脚本Tag一般只有一个，是flv的第一个Tag，用于存放flv的信息，比如duration、audiodatarate、creator、width等。
-首先介绍下脚本的数据类型。所有数据都是以数据类型+（数据长度）+数据的格式出现的，数据类型占1byte，数据长度看数据类型是否存在，后面才是数据。</p>
-<p>一般来说，该Tag Data结构包含两个AMF包。AMF（Action Message Format）是Adobe设计的一种通用数据封装格式，在Adobe的很多产品中应用，简单来说，AMF将不同类型的数据用统一的格式来描述。第一个AMF包封装字符串类型数据，用来装入一个“onMetaData”标志，这个标志与Adobe的一些API调用有，在此不细述。第二个AMF包封装一个数组类型(srs返回为object类型)，这个数组中包含了音视频信息项的名称和值。具体说明如下</p>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>Number type</td>
-<td>8 Bypte Double</td>
-</tr>
-<tr>
-<td>1</td>
-<td>Boolean type</td>
-<td>1 Bypte bool</td>
-</tr>
-<tr>
-<td>2</td>
-<td>String type</td>
-<td>后面2个字节为长度</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Object type</td>
-<td></td>
-</tr>
-<tr>
-<td>4</td>
-<td>MovieClip type</td>
-<td></td>
-</tr>
-<tr>
-<td>5</td>
-<td>Null type</td>
-<td></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Undefined type</td>
-<td></td>
-</tr>
-<tr>
-<td>7</td>
-<td>Reference type</td>
-<td></td>
-</tr>
-<tr>
-<td>8</td>
-<td>ECMA array type</td>
-<td>数组,类似Map</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Strict array type</td>
-<td></td>
-</tr>
-<tr>
-<td>11</td>
-<td>Date type</td>
-<td></td>
-</tr>
-<tr>
-<td>12</td>
-<td>Long string type</td>
-<td>后面4个字节为长度</td>
-</tr>
-</tbody>
-</table>
-<p><img src="http://images.wodekouwei.com/M/F/flv3.png" alt="FLV-script-1.png">
-上图为第一个AMF包</p>
-<ul>
-<li>type=0x02对应String</li>
-<li>size=0A=10</li>
-<li>value=onMetaData 正好是10个字节。</li>
-</ul>
-<p><img src="http://images.wodekouwei.com/M/F/flv4.png" alt="FLV_script-2.png">
-上图为第二个AMF</p>
-<ul>
-<li>type=0x08 对应ECMA array type。</li>
-</ul>
-<blockquote>
-<p>表示数组，类似Map。后面4个字节为数组的个数。然后是键值对，第一个为键，2个字节为长度。后面跟具体的内容。接着3个字节表示值的类型，然后根据类型判断长度。
-上图我们可以判断，总共有13个键值对。
-第一个长度为8个字节是duration。值类型是0x004073，第一个字节是00，所以是double，8个字节。
-第二个长度5个字节是width。值也是double类型，8个字节。
-依次解析下去…</p>
-</blockquote>
-<h6 id="Audio"><a href="#Audio" class="headerlink" title="Audio"></a>Audio</h6><p><img src="http://images.wodekouwei.com/M/F/flv5.png" alt="flv-audio1">
-<img src="http://images.wodekouwei.com/M/F/flv6.png" alt="flv-audio2">
-<img src="http://images.wodekouwei.com/M/F/flv7.png" alt="flv-audio3">
-<img src="http://images.wodekouwei.com/M/F/flv8.png" alt="flv-audio4">
-视频中第二个tag为音频tag</p>
-<p>stream-id之后:</p>
-<ul>
-<li>前4位为音频格式</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>Linear PCM, platform endian</td>
-</tr>
-<tr>
-<td>1</td>
-<td>ADPCM</td>
-</tr>
-<tr>
-<td>2</td>
-<td>MP3</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Linear PCM, little endian</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Nellymoser 16-kHz mono</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Nellymoser 8-kHz mono</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Nellymoser</td>
-</tr>
-<tr>
-<td>7</td>
-<td>G.711 A-law logarithmic PCM</td>
-</tr>
-<tr>
-<td>8</td>
-<td>G.711 mu-law logarithmic PCM</td>
-</tr>
-<tr>
-<td>9</td>
-<td>reserved</td>
-</tr>
-<tr>
-<td>10</td>
-<td>AAC</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Speex</td>
-</tr>
-<tr>
-<td>14</td>
-<td>MP3 8-Khz</td>
-</tr>
-<tr>
-<td>15</td>
-<td>Device-specific sound</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着2位为采样率(对于AAC总是3)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>5.5-kHz</td>
-</tr>
-<tr>
-<td>1</td>
-<td>11-kHz</td>
-</tr>
-<tr>
-<td>2</td>
-<td>22-kHz</td>
-</tr>
-<tr>
-<td>3</td>
-<td>44-kHz</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着1位为采样的长度(压缩过的音视频都是16bit)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>snd8Bit</td>
-</tr>
-<tr>
-<td>1</td>
-<td>snd16Bit</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着1位为音频类型(对于AAC总是1)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>sndMono</td>
-</tr>
-<tr>
-<td>1</td>
-<td>sndStereo</td>
-</tr>
-</tbody>
-</table>
-<h6 id="video"><a href="#video" class="headerlink" title="video"></a>video</h6><p>由于kobe视频音频编码是pcm,查找视频tag太难,使用&lt;&lt;东风破&gt;&gt; mv视频
-<img src="http://images.wodekouwei.com/M/F/flv9.png" alt="flv-video1"></p>
-<ul>
-<li>type=0x09=9。这里应该是一个video。</li>
-<li>size=0x000030=48。长度为48。</li>
-<li>timestreamp=0x000000。</li>
-<li>TimestampExtended =0x00。</li>
-<li>stream id =0x000000</li>
-</ul>
-<p>我们看到数据部分：
-视频信息+数据
-视频信息，1个字节。</p>
-<blockquote>
-<p>StreamId之后的数据就表示是VideoTagHeader,如果是avc,VideoTagHeader会多出4个字节的信息就是AVCPacketType和CompositionTime</p>
-</blockquote>
-<ul>
-<li>前4位为帧类型Frame Type</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>keyframe (for AVC, a seekable frame) 关键帧</td>
-</tr>
-<tr>
-<td>2</td>
-<td>inter frame (for AVC, a non-seekable frame)</td>
-</tr>
-<tr>
-<td>3</td>
-<td>disposable inter frame (H.263 only)</td>
-</tr>
-<tr>
-<td>4</td>
-<td>generated keyframe (reserved for server use only)</td>
-</tr>
-<tr>
-<td>5</td>
-<td>video info/command frame</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>后4位为编码ID (CodecID)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>JPEG (currently unused)</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Sorenson H.263</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Screen video</td>
-</tr>
-<tr>
-<td>4</td>
-<td>On2 VP6</td>
-</tr>
-<tr>
-<td>5</td>
-<td>On2 VP6 with alpha channel</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Screen video version 2</td>
-</tr>
-<tr>
-<td>7</td>
-<td>AVC</td>
-</tr>
-</tbody>
-</table>
-<p>特殊情况
-视频的格式(CodecID)是AVC（H.264）的话，VideoTagHeader会多出4个字节的信息，AVCPacketType 和CompositionTime。</p>
-<ul>
-<li>AVCPacketType 占1个字节</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>AVCDecoderConfigurationRecord(AVC sequence header)</td>
-</tr>
-<tr>
-<td>1</td>
-<td>AVC NALU</td>
-</tr>
-<tr>
-<td>2</td>
-<td>AVC end of sequence (lower level NALU sequence ender is not required or supported)</td>
-</tr>
-</tbody>
-</table>
-<p>AVCDecoderConfigurationRecord.包含着是H.264解码相关比较重要的sps和pps信息，再给AVC解码器送数据流之前一定要把sps和pps信息送出，否则的话解码器不能正常解码。而且在解码器stop之后再次start之前，如seek、快进快退状态切换等，都需要重新送一遍sps和pps的信息.AVCDecoderConfigurationRecord在FLV文件中一般情况也是出现1次，也就是第一个video tag.</p>
-<ul>
-<li>CompositionTime 占3个字节</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>条件</th>
-<th>值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>AVCPacketType ==1</td>
-<td>Composition time offset</td>
-</tr>
-<tr>
-<td>AVCPacketType !=1</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<p>再看到第二个video tag
-<img src="http://images.wodekouwei.com/M/F/flv10.png" alt="flv-video"></p>
-<p>我们看到 AVCPacketType =1，而后面三个字节为000043。这是一个视频帧数据。
-解析到的数据完全符合上面的理论。</p>
-<p>sps pps
-前面我们提到第一个video 一般存放的是sps和pps。这里我们具体解析下sps和pps内容。先看下存储的格）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x01+sps[1]+sps[2]+sps[3]+0xFF+0xE1+sps size+sps+01+pps size+pps</div></pre></td></tr></table></figure></p>
-<p>sps[1]=0x64
-sps[2]=00
-sps[3]=0D
-sps size=0x001B=27(占两个字节)
-跳过27个字节后，是0x01
-pps size=0x0005=118(占两个字节)
-跳过5个字节，就到了back-pointers。</p>
-<p>视频帧数据
-解析出sps和pps tag后，后面的video tag就是真正的视频数据内容了
-<img src="http://images.wodekouwei.com/M/F/flv11.png" alt="flv-video3">
-这是第二个video tag其实和之前图一样，只是我圈出来关键信息。先看下格式
-frametype=0x17=00010111
-AVCPacketType =1
-Composition Time=0x000043
-后面就是NALU DATA</p>
-<blockquote>
-<p>引用:</p>
-<p><a href="http://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="external">flv格式详解+实例剖析</a></p>
-<p><a href="http://blog.csdn.net/bsplover/article/details/7426511" target="_blank" rel="external">FLV视频封装格式详解</a></p>
-<p><a href="https://blog.evanxia.com/2017/07/1378" target="_blank" rel="external">【总结】FLV（AAC/AVC）学习笔记</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932368" target="_blank" rel="external">将h.264视频流封装成flv格式文件（一.flv格式）</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932431" target="_blank" rel="external">将h.264视频流封装成flv格式文件（二.开始动手）</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932585" target="_blank" rel="external">RTMP协议中的AMF数据</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/8011362" target="_blank" rel="external">rtmp协议简单解析以及用其发送h264的flv文件</a></p>
-<p><a href="https://chensi.moe/blog/2015/11/20/flv-format/" target="_blank" rel="external">FLV 文件格式解析</a></p>
-<p><a href="http://www.cnblogs.com/lihaiping/p/5285166.html" target="_blank" rel="external">(原)从mp4,flv文件中解析出h264和aac,送解码器解码失败</a>:,avc1与H264区别在这里其实有人遇到了和我一样的问题：<a href="http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data" target="_blank" rel="external">http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data</a></p>
-<p><a href="https://gitee.com/leixiaohua1020/simplest_mediadata_test" target="_blank" rel="external">simplest_mediadata_test</a></p>
-<p><a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
-<a href="https://github.com/gezhaoyou/RtmpMindmap" target="_blank" rel="external">RtmpMindmap</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2983,7 +2711,7 @@ Composition Time=0x000043
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2994,7 +2722,7 @@ Composition Time=0x000043
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -3005,7 +2733,7 @@ Composition Time=0x000043
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-count">52</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
