@@ -323,6 +323,496 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/25/FQA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/25/FQA/" itemprop="url">
+                  FQA
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-25T20:42:03+08:00">
+                2017-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="ssh连接服务器出错"><a href="#ssh连接服务器出错" class="headerlink" title="ssh连接服务器出错"></a>ssh连接服务器出错</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</div><div class="line">@ WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! @</div><div class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</div><div class="line">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!</div><div class="line">Someone could be eavesdropping on you right now (man-in-the-middle attack)!</div><div class="line">It is also possible that a host key has just been changed.</div><div class="line">The fingerprint for the RSA key sent by the remote host is</div><div class="line">da:f7:3e:ba:f7:00:e6:44:76:f2:58:6e:48:**.</div><div class="line">Please contact your system administrator.</div><div class="line">Add correct host key in /用户home目录/.ssh/known_hosts to get rid of this message.</div><div class="line">Offending RSA key in /用户home目录/.ssh/known_hosts:1</div><div class="line">RSA host key for ip地址 has changed and you have requested strict checking.</div><div class="line">Host key verification failed.</div></pre></td></tr></table></figure>
+<p>出现这个问题的原因是,第一次使用SSH连接时，会生成一个认证，储存在客户端的known_hosts中.</p>
+<p>可使用以下指令查看:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -l -f ~/.ssh/known_hosts</div></pre></td></tr></table></figure></p>
+<p>由于服务器重新安装系统了，所以会出现以上错误。
+解决办法:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -R 服务器端的ip地址</div></pre></td></tr></table></figure></p>
+<p>或者直接在known_hosts中删除对应ip的行</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/23/webrtc-source-thread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/23/webrtc-source-thread/" itemprop="url">
+                  Webrtc线程模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-23T10:22:18+08:00">
+                2017-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>webrtc的base的 thread，是我见过的封装最帅的c++线程库，根据比qt的还好用,发个例子给你
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"> using namespace webrtc;</div><div class="line">using namespace rtc;</div><div class="line">//std::cout&lt;&lt;&quot;Thread::Current()：&quot; &lt;&lt; Thread::Current()-&gt;GetId();</div><div class="line">//Thread::Current()-&gt;Start(); 不能调用start，因为不是我创建的，他已经开始了</div><div class="line">   //Thread::Current()-&gt;Run(); //阻塞当前线程进入线程循环</div><div class="line"></div><div class="line">Thread * thread = new Thread();</div><div class="line">//MyRunnable run;</div><div class="line">//thread-&gt;Start(&amp;run);//可以带一个Runnable参数运行,运行完就结束，否则运行Thread::Run进入消息循环</div><div class="line">thread-&gt;Start();</div><div class="line">//std::cout &lt;&lt; &quot;Thread::Invoke()：&quot;&lt;&lt; thread-&gt;Invoke&lt;bool&gt;(RTC_FROM_HERE, &amp;task)&lt;&lt; &quot; at &quot; &lt;&lt; Thread::Current()-&gt;GetId() &lt;&lt; std::endl;</div><div class="line">thread-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">auto  handler= new MessageClient;</div><div class="line">//thread-&gt;PostAt(RTC_FROM_HERE, (int64_t)3000,handler);</div><div class="line">//thread-&gt;PostDelayed(RTC_FROM_HERE, (int64_t)5000, handler);</div><div class="line">//thread-&gt;Stop();</div><div class="line"></div><div class="line"></div><div class="line">Thread * thread2 = new Thread();</div><div class="line">thread2-&gt;Start();</div><div class="line">thread2-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">//thread2-&gt;Invoke() 非常有用，在任何地方可以指定我的代码运行在某个线程</div><div class="line"></div><div class="line">//api下的proxy机制，实际上就是设置要执行的线程，然后加锁等待线程执行结果。这是我设计对外接口可以在任何线程调用而不出错的常用方法</div><div class="line"></div><div class="line">//base的asyncinvoker与proxy类似的机制。</div></pre></td></tr></table></figure></p>
+<p>有ios的gdc，android的handler异曲同工</p>
+<p>因为编写复杂稳定的多线程C++项目实在太难，所以一个好的跨平台C++基础库是我最求的目标,目前比较欣赏的项目有：</p>
+<p>Boost:大而全，缺少一些可以直接上手的东西如线程消息队列，智能指针并非线程安全。
+QT core：非常好
+C++11：也需要线程消息队列，线程安全智能指针。
+chromium的base库：太大了
+当我看到webrtc的base时，非常惊讶的发现它正是我想要的,特点：</p>
+<p>小：只有几M
+纯：基于c++标准库和各操作系统sdk
+跨平台
+对智能指针、线程、socket封装非常好。
+不断更新（需要一直跟踪官方代码）
+移植出来单独使用，方案有三：</p>
+<p>把源码拷贝出来用通用的编译工具（makefile，cmake，qmake）管理。（makefile较复杂，cmake简单，qmake最简单）
+把源码拷贝出来用基于自带的gn管理
+在webrtc项目里面编译和合并需要的静态库和pdb</p>
+<p>因为google官方说了：引用计数+引用计数的智能化（scoped_ref_ptr）+弱引用就可以解决问题。
+shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数，和源对象指针。没办法对两个成员同时实现原子操作。
+但unique_ptr是个好东西</p>
+<p>智能指针的使用：</p>
+<ol>
+<li>不用再使用delete。</li>
+<li>尽量使用unique_ptr。</li>
+<li>多个线程读写同一个 shared_ptr 对象，那么需要加锁。</li>
+<li>shared_ptr 和weak_ptr配合解决循环引用的问题。</li>
+</ol>
+<p>weak_ptr必须，oc，swift的ViewControler和控件都是weak关系</p>
+<p>内存管理模型的三种级别：
+1 手动内存管理(c/c++的malloc与free，new与delete)：容易出错。
+2 自动内存管理（oc的arc，c++的智能指针，scoped_ptr）：存在循环引用问题，通过程序员自己管理强弱引用关系解决。
+3 垃圾回收机制（如java,python）：后台GC降低了程序效率，好的程序员仍然好考虑java的强引用[表情]引用/软引用/</p>
+<p>3 线程模型
+1 生产者消费模型（mutex，condition）：最最常用的模型。
+2 线程池模型：解决大量请求分配太多线程的问题。比如一个android和ios的app，http请求会很多很多。
+3 (着重强调）串行模型：ios有GCD(Grand Central Dispatch，global queue是线程池），android有looper， win32有PostMessage，boost有strand
+读写锁：特别只有写才会不安全的情况。
+再结合其他的手段会让程序简洁优美易读：java的handler，oc的delegate和block、swift的闭包，mvc模式 ，c++的function/bind/lambda，python和javascript的function</p>
+<p>而串行模型就成了解决这类多线程问题的首选，就是线程消息模型。
+在android 系统里面，无数这样的例子。</p>
+<h3 id="模块处理线程"><a href="#模块处理线程" class="headerlink" title="模块处理线程"></a>模块处理线程</h3><p>Call构造方法中创建module_process_thread与pacer_thread两个ProcessThread.接着为module_process_thread注册CallStats, ReceiveSideCongestionController, SendSideCongestionController模块,为pacer_thread注册PacedSender, RemoteBitrateEstimator模块.</p>
+<p>Call::CreateVideoSendStream创建VideoSendStream时,将module_process_thread做构造参数传入,调用RegisterProcessThread方法,注册所有的rtc_rtcp模块到module_process_thread线程.同样的为VideoReceiveStream中设置.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/23/tips-androidstudio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/23/tips-androidstudio/" itemprop="url">
+                  AndroidStudio常见问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-23T08:09:17+08:00">
+                2017-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="如何解决Unsupported-major-minor-version-52-0问题？"><a href="#如何解决Unsupported-major-minor-version-52-0问题？" class="headerlink" title="如何解决Unsupported major.minor version 52.0问题？"></a>如何解决Unsupported major.minor version 52.0问题？</h4><blockquote>
+<p><a href="http://www.jianshu.com/p/5eebd3c609d6" target="_blank" rel="external">http://www.jianshu.com/p/5eebd3c609d6</a></p>
+</blockquote>
+<p>运行./gradlew :PandaAndroidDemo:release出现如下错误：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">FAILURE: Build failed with an exception.</div><div class="line"></div><div class="line">* Where:</div><div class="line">Build file &apos;/Users/shitianci/work/Lab/panda.android/PandaAndroidDemo/build.gradle&apos; line: 1</div><div class="line"></div><div class="line">* What went wrong:</div><div class="line">A problem occurred evaluating project &apos;:PandaAndroidDemo&apos;.</div><div class="line">&gt; java.lang.UnsupportedClassVersionError: com/android/build/gradle/AppPlugin : Unsupported major.minor version 52.0</div><div class="line"></div><div class="line">* Try:</div><div class="line">Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.</div><div class="line"></div><div class="line">BUILD FAILED</div></pre></td></tr></table></figure></p>
+<p>直接点击 run按钮 或者 Build→Generate Build APK 却运行正常。</p>
+<p>这里面有两个问题：</p>
+<p>为什么出现Unsupported major.minor version 52.0？
+为什么gradle命令和android studio按钮运行结果不一样？</p>
+<h5 id="问题一：为什么出现Unsupported-major-minor-version-52-0？"><a href="#问题一：为什么出现Unsupported-major-minor-version-52-0？" class="headerlink" title="问题一：为什么出现Unsupported major.minor version 52.0？"></a>问题一：为什么出现Unsupported major.minor version 52.0？</h5><p>在网上找了一圈，最后在stackoverflow找到了本质原因
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">You get this error because a Java 7 VM tries to load a class compiled for Java 8</div><div class="line"></div><div class="line">Java 8 has the class file version 52.0 but a Java 7 VM can only load class files up to version 51.0</div><div class="line"></div><div class="line">In your case the Java 7 VM is your gradle build and the class is com.android.build.gradle.AppPlugin</div></pre></td></tr></table></figure></p>
+<p>简单来说，就是java的编译环境版本太低，java 8 class file的版本是52，Java 7虚拟机只能支持到51。所以需要升级到java 8 vm才行。</p>
+<h5 id="问题二：为什么gradle命令和android-studio按钮运行结果不一样？"><a href="#问题二：为什么gradle命令和android-studio按钮运行结果不一样？" class="headerlink" title="问题二：为什么gradle命令和android studio按钮运行结果不一样？"></a>问题二：为什么gradle命令和android studio按钮运行结果不一样？</h5><p>从问题1来看，肯定Android Studio按钮调用的是java 8 vm，所以查找一下系统配置，最终在Project Structure找到了如下设置：
+Android Studio 2.2.2使用了自带的JDK环境，其地址为
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
+<p>而gradle命令的执行环境是在gradle.properties配置的，其指向为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/home</div></pre></td></tr></table></figure></p>
+<p>将其修改为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
+<h4 id="INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题"><a href="#INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题" class="headerlink" title="INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题"></a>INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题</h4><p>Android studio
+更新到25后打包问题，打包后的应用安装提示：INSTALL_PARSE_FAILED_NO_CERTIFICATES
+Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能提供更快的应用安装时间和更多针对未授权</p>
+<p>APK 文件更改的保护。 在默认情况下，Android Studio 2.2 和 Android Gradle 2.2 插件会使用 APK</p>
+<p>Signature Scheme v2 和传统签名方案来签署您的应用。</p>
+<p>脏的解决方式：使用v1打包</p>
+<h4 id="INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案"><a href="#INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案" class="headerlink" title="INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案"></a>INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案</h4><p>在安装Android应用时出现INSTALL FAILED CONFLICTING PROVIDER问题，是不是感觉很抓狂呢，下面就跟大家分享一下出现这个问题的原因及解决方案。
+<strong>问题原因:</strong>
+在Android中authority要求必须是唯一的，比如你在定义一个provider时需要为它指定一个唯一的authority。如果你在安装一个带有provider的应用时，系统会检查当前已安装应用的authority是否和你要安装应用的authority相同，如果相同则会弹出上述警告，并且安装失败。
+<strong>解决方案</strong>
+在定义provider是，使用软编码的形式，如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;provider</div><div class="line">    android:name=&quot;android.support.v4.content.FileProvider&quot;</div><div class="line">    android:authorities=&quot;$&#123;applicationId&#125;.fileprovider&quot;</div><div class="line">    android:grantUriPermissions=&quot;true&quot;</div><div class="line">    android:exported=&quot;false&quot;&gt;</div><div class="line">    &lt;meta-data</div><div class="line">        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;</div><div class="line">        android:resource=&quot;@xml/file_paths&quot; /&gt;</div><div class="line">&lt;/provider&gt;</div></pre></td></tr></table></figure></p>
+<p>上述代码中通过${applicationId}.fileprovider的形式来指定provider的authorities，所以该provider的authorities会根据applicationId的不同而不同，从而避免了authorities的冲突问题。
+<strong>那么如何使用刚才定义的authorities呢？</strong>
+我们在定义authorities是采用了applicationId+fileprovider的形式，在获取authorities的时候，我们就可以通过包名+fileprovider来获取，代码如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public final static String getFileProviderName(Context context)&#123;</div><div class="line">    return context.getPackageName()+&quot;.fileprovider&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/22/p-rfc-3550-zh/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2146,683 +2636,11 @@ QP(quantizer parameter)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/media-graphic-image-stride/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/27/media-graphic-image-stride/" itemprop="url">
-                  Image Stride(内存图像行跨度)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T15:00:14+08:00">
-                2017-06-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/media/" itemprop="url" rel="index">
-                    <span itemprop="name">media</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>When a video image is stored in memory, the memory buffer might contain extra padding bytes after each row of pixels. The padding bytes affect how the image is store in memory, but do not affect how the image is displayed.</p>
-<p>当视频图像存储在内存时，图像的每一行末尾也许包含一些扩展的内容，这些扩展的内容只影响图像如何存储在内存中，但是不影响图像如何显示出来；</p>
-<p>The stride is the number of bytes from one row of pixels in memory to the next row of pixels in memory. Stride is also called pitch. If padding bytes are present, the stride is wider than the width of the image, as shown in the following illustration.</p>
-<p>Stride 就是这些扩展内容的名称，Stride 也被称作 Pitch，如果图像的每一行像素末尾拥有扩展内容，Stride 的值一定大于图像的宽度值，就像下图所示：
-<img src="http://images.wodekouwei.com/media/imagestride1.png" alt="image"></p>
-<p>Two buffers that contain video frames with equal dimensions can have two different strides. If you process a video image, you must take into the stride into account.</p>
-<p>两个缓冲区包含同样大小（宽度和高度）的视频帧，却不一定拥有同样的 Stride 值，如果你处理一个视频帧，你必须在计算的时候把 Stride 考虑进去；</p>
-<p>In addition, there are two ways that an image can be arranged in memory. In a top-down image, the top row of pixels in the image appears first in memory. In a bottom-up image, the last row of pixels appears first in memory. The following illustration shows the difference between a top-down image and a bottom-up image.</p>
-<p>另外，一张图像在内存中有两种不同的存储序列（arranged），对于一个从上而下存储（Top-Down） 的图像，最顶行的像素保存在内存中最开头的部分，对于一张从下而上存储（Bottom-Up）的图像，最后一行的像素保存在内存中最开头的部分，下面图示展示了这两种情况：
-<img src="http://images.wodekouwei.com/media/imagestride2.png" alt="image"></p>
-<p>A bottom-up image has a negative stride, because stride is defined as the number of bytes need to move down a row of pixels, relative to the displayed image. YUV images should always be top-down, and any image that is contained in a Direct3D surface must be top-down. RGB images in system memory are usually bottom-up.</p>
-<p>一张从下而上的图像拥有一个负的 Stride 值，因为 Stride 被定义为[从一行像素移动到下一行像素时需要跨过多少个像素]，仅相对于被显示出来的图像而言；而 YUV 图像永远都是从上而下表示的，以及任何包含在 Direct3D Surface 中的图像必须是从上而下，RGB 图像保存在系统内存时通常是从下而上；</p>
-<p>Video transforms in particular need to handle buffers with mismatched strides, because the input buffer might not match the output buffer. For example, suppose that you want to convert a source image and write the result to a destination image. Assume that both images have the same width and height, but might not have the same pixel format or the same image stride.</p>
-<p>尤其是视频变换，特别需要处理不同 Stride 值的图像，因为输入缓冲也许与输出缓冲不匹配，举个例子，假设你想要将源图像转换并且将结果写入到目标图像，假设两个图像拥有相同的宽度和高度，但是其像素格式与 Stride 值也许不同；</p>
-<p>The following example code shows a generalized approach for writing this kind of function. This is not a complete working example, because it abstracts many of the specific details.</p>
-<p>下面代码演示了一种通用方法来编写这种功能，这段代码并不完整，因为这只是一个抽象的算法，没有完全考虑到真实需求中的所有细节；
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">void ProcessVideoImage(</div><div class="line">    BYTE*       pDestScanLine0,    </div><div class="line">    LONG        lDestStride,       </div><div class="line">    const BYTE* pSrcScanLine0,     </div><div class="line">    LONG        lSrcStride,        </div><div class="line">    DWORD       dwWidthInPixels,    </div><div class="line">    DWORD       dwHeightInPixels</div><div class="line">    )</div><div class="line">&#123;</div><div class="line">    for (DWORD y = 0; y &lt; dwHeightInPixels; y++)</div><div class="line">    &#123;</div><div class="line">        SOURCE_PIXEL_TYPE *pSrcPixel = (SOURCE_PIXEL_TYPE*)pDestScanLine0;</div><div class="line">        DEST_PIXEL_TYPE *pDestPixel = (DEST_PIXEL_TYPE*)pSrcScanLine0;</div><div class="line"></div><div class="line">        for (DWORD x = 0; x &lt; dwWidthInPixels; x +=2)</div><div class="line">        &#123;</div><div class="line">            pDestPixel[x] = TransformPixelValue(pSrcPixel[x]);</div><div class="line">        &#125;</div><div class="line">        pDestScanLine0 += lDestStride;</div><div class="line">        pSrcScanLine0 += lSrcStride;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>This function takes six parameters:</p>
-<ul>
-<li>A pointer to the start of scan line 0 in the destination image.</li>
-<li>The stride of the destination image.</li>
-<li>A pointer to the start of scan line 0 in the source image.</li>
-<li>The stride of the source image.</li>
-<li>The width of the image in pixels.</li>
-<li>The height of the image in pixels.</li>
-</ul>
-<p>这个函数需要六个参数：</p>
-<ul>
-<li>目标图像的起始扫描行的内存指针</li>
-<li>目标图像的 Stride 值</li>
-<li>源图像的起始扫描行的内存指针</li>
-<li>源图像的 Stride 值</li>
-<li>图像的宽度值（以像素为单位）</li>
-<li>图像的高度值（以像素为单位）
-The general idea is to process one row at a time, iterating over each pixel in the row. Assume that SOURCE_PIXEL_TYPE and DEST_PIXEL_TYPE are structures representing the pixel layout for the source and destination images, respectively. (For example, 32-bit RGB uses the RGBQUAD structure. Not every pixel format has a pre-defined structure.) Casting the array pointer to the structure type enables you to access the RGB or YUV components of each pixel. At the start of each row, the function stores a pointer to the row. At the end of the row, it increments the pointer by the width of the image stride, which advances the pointer to the next row.</li>
-</ul>
-<p>这里的要点是如何一次处理一行像素，遍历一行里面的每一个像素，假设源像素类型与目标像素类型各自在像素的层面上已经结构化来表示一个源图像与目标图像的像素，（举个例子，32 位 RGB 像素使用 RGBQUAD 结构体，并不是每一种像素类型都有预定义结构体的）强制转换数组指针到这样的结构体指针，可以方便你直接读写每一个像素的 RGB 或者 YUV 值，在每一行的开头，这个函数保存了一个指向这行像素的指针，函数的最后一行，通过图像的 Stride 值直接将指针跳转到图像的下一行像素的起始点；</p>
-<p>This example calls a hypothetical function named TransformPixelValue for each pixel. This could be any function that calculates a target pixel from a source pixel. Of course, the exact details will depend on the particular task. For example, if you have a planar YUV format, you must access the chroma planes independently from the luma plane; with interlaced video, you might need to process the fields separately; and so forth.</p>
-<p>To give a more concrete example, the following code converts a 32-bit RGB image into an AYUV image. The RGB pixels are accessed using an RGBQUAD structure, and the AYUV pixels are accessed using aDXVA2_AYUVSample8 Structure structure.</p>
-<blockquote>
-<p>引用:
-如果你用的是 MSDN Library For Visual Studio 2008 SP1，那么你应该能够在下面地址中找到这篇文章的原文：
-ms-help://MS.MSDNQTR.v90.chs/medfound/html/13cd1106-48b3-4522-ac09-8efbaab5c31d.htm</p>
-<p><a href="http://blog.csdn.net/g0ose/article/details/52116453" target="_blank" rel="external">http://blog.csdn.net/g0ose/article/details/52116453</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/27/gl-glBlendFunc/" itemprop="url">
-                  OpenGL混色
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T10:44:39+08:00">
-                2017-06-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenGL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。
-假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把将要绘制上去的红色和原来的绿色进行混合，于是得到一种新的颜色，看上去就好像玻璃是半透明的。
-要使用OpenGL的混合功能，只需要调用：<code>glEnable(GL_BLEND);</code>即可。要关闭OpenGL的混合功能，只需要调用：<code>glDisable(GL_BLEND);</code>即可。
-<strong>注意：</strong> 只有在RGBA模式下，才可以使用混合功能，颜色索引模式下是无法使用混合功能的。</p>
-<h3 id="1-源因子和目标因子"><a href="#1-源因子和目标因子" class="headerlink" title="1.源因子和目标因子"></a>1.源因子和目标因子</h3><p>混合需要把原来的颜色和将要画上去的颜色找出来，经过某种方式处理后得到一种新的颜色。这里把将要画上去的颜色称为“源颜色”，把原来的颜色称为“目标颜色”。
-OpenGL 会把源颜色和目标颜色各自取出，并乘以一个系数（源颜色乘以的系数称为“源因子”，目标颜色乘以的系数称为“目标因子”），然后相加，这样就得到了新的颜 色。（也可以不是相加，新版本的OpenGL可以设置运算方式，包括加、减、取两者中较大的、取两者中较小的、逻辑运算等）
-下面用数学公式来表达一下这个运算方式。假设源颜色的四个分量（指红色，绿色，蓝色，alpha值）是(Rs, Gs, Bs,  As)，目标颜色的四个分量是(Rd, Gd, Bd, Ad)，又设源因子为(Sr, Sg, Sb, Sa)，目标因子为(Dr, Dg, Db,  Da)。则混合产生的新颜色可以表示为：
-<code>(Rs*Sr+Rd*Dr, Gs*Sg+Gd*Dg, Bs*Sb+Bd*Db, As*Sa+Ad*Da)</code>
-如果颜色的某一分量超过了1.0，则它会被自动截取为1.0，不需要考虑越界的问题。</p>
-<p>源因子和目标因子是可以通过<code>glBlendFunc</code>函数来进行设置的。glBlendFunc有两个参数，前者表示源因子，后者表示目标因子。这两个参数可以是多种值，下面介绍比较常用的几种。</p>
-<ul>
-<li>GL_ZERO：表示使用0.0作为因子，实际上相当于不使用这种颜色参与混合运算。</li>
-<li>GL_ONE：表示使用1.0作为因子，实际上相当于完全的使用了这种颜色参与混合运算。</li>
-<li>GL_SRC_ALPHA：表示使用源颜色的alpha值来作为因子。</li>
-<li>GL_DST_ALPHA：表示使用目标颜色的alpha值来作为因子。</li>
-<li>GL_ONE_MINUS_SRC_ALPHA：表示用1.0减去源颜色的alpha值来作为因子。</li>
-<li>GL_ONE_MINUS_DST_ALPHA：表示用1.0减去目标颜色的alpha值来作为因子。</li>
-<li>GL_SRC_COLOR: 把源颜色的四个分量分别作为因子的四个分量</li>
-<li>GL_ONE_MINUS_SRC_COLOR</li>
-<li>GL_DST_COLOR</li>
-<li>GL_ONE_MINUS_DST_COLOR
-GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目标因子，GL_DST_COLOR与GL_ONE_MINUS_DST_COLOR在OpenGL 旧版本中只能用于设置源因子。新版本的OpenGL则没有这个限制，并且支持新的GL_CONST_COLOR（设定一种常数颜色，将其四个分量分别作为 因子的四个分量）、GL_ONE_MINUS_CONST_COLOR、GL_CONST_ALPHA、 GL_ONE_MINUS_CONST_ALPHA。另外还有GL_SRC_ALPHA_SATURATE。新版本的OpenGL还允许颜色的alpha 值和RGB值采用不同的混合因子。</li>
-</ul>
-<h3 id="2-模式示例"><a href="#2-模式示例" class="headerlink" title="2.模式示例"></a>2.模式示例</h3><ul>
-<li>如果设置了glBlendFunc(GL_ONE, GL_ZERO);，则表示完全使用源颜色，完全不使用目标颜色，因此画面效果和不使用混合的时候一致（当然效率可能会低一点点）。如果没有设置源因子和目标因子，则默认情况就是这样的设置。</li>
-<li>如果设置了glBlendFunc(GL_ZERO, GL_ONE);，则表示完全不使用源颜色，因此无论你想画什么，最后都不会被画上去了。（但这并不是说这样设置就没有用，有些时候可能有特殊用途）</li>
-<li>如果设置了glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);，则表示源颜色乘以自身的alpha 值，目标颜色乘以1.0减去源颜色的alpha值，这样一来，源颜色的alpha值越大，则产生的新颜色中源颜色所占比例就越大，而目标颜色所占比例则减 小。这种情况下，我们可以简单的将源颜色的alpha值理解为“不透明度”。这也是混合时最常用的方式。</li>
-<li>如果设置了glBlendFunc(GL_ONE, GL_ONE);，则表示完全使用源颜色和目标颜色，最终的颜色实际上就是两种颜色的简单相加。例如红色(1, 0, 0)和绿色(0, 1, 0)相加得到(1, 1, 0)，结果为黄色。
-注意：
-所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。</li>
-</ul>
-<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
-<p>模式二:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
-<p>模式一是传统的alpha通道混合，这种模式下颜色和alpha值是分立的，rgb决定颜色，alpha决定..（英文是决定how solid it is 水平有限找不到准确的中文来表达）
-在数学上表达式是：<code>blend(source, dest) = (source.rgb * source.a) + (dest.rgb * (1 – source.a)).</code>要注意的是这种模式下，透明只跟alpha有关，跟rgb值无关，一个透明的颜色，不透明的颜色有相同的rgb值，只要alpha=0即可。</p>
-<p>模式二是alpha预乘的混合（Premultiplied Alpha Blending），这种模式下rgb与alpha是联系在一起的，数学上的表达式是
-<code>blend(source, dest) = source.rgb + (dest.rgb * (1 – source.a))</code>,在这种模式下，透明的表示是rgb值都为0.</p>
-<h3 id="4-EGLSurface背景透明设置"><a href="#4-EGLSurface背景透明设置" class="headerlink" title="4.EGLSurface背景透明设置"></a>4.EGLSurface背景透明设置</h3><p>在OpenGL绘制中,除了设置混色外,还要设置EGLSurface配置支持Alpha,如果不设置EGL相关的EGLSurface支持透明,就算OpenGL函数中开启混色,绘制完成后仍是有黑色背景.</p>
-<h4 id="4-1GLSurfaceView"><a href="#4-1GLSurfaceView" class="headerlink" title="4.1GLSurfaceView"></a>4.1GLSurfaceView</h4><p>在onSurfaceCreated里，调用GLES20.glClearColor(0f, 0f, 0f, 0f);alpha为0，即透明。</p>
-<p>然后，对surfaceview要作一定处理：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</div><div class="line">TestRenderer renderer = new TestRenderer();</div><div class="line">mGLSurfaceView.setRender(renderer);</div><div class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</div><div class="line">mGLSurfaceView.setZOrderOnTop(true);</div></pre></td></tr></table></figure></p>
-<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">int[] CONFIG_RGBA = &#123;</div><div class="line">          EGL10.EGL_RED_SIZE, 8,</div><div class="line">          EGL10.EGL_GREEN_SIZE, 8,</div><div class="line">          EGL10.EGL_BLUE_SIZE, 8,</div><div class="line">          EGL10.EGL_ALPHA_SIZE, 8,</div><div class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</div><div class="line">          EGL10.EGL_NONE</div><div class="line">  &#125;;</div></pre></td></tr></table></figure></p>
-<h3 id="5-实现三维混合"><a href="#5-实现三维混合" class="headerlink" title="5.实现三维混合"></a>5.实现三维混合</h3><p>在进行三维场景的混合时必须注意的是深度缓冲。</p>
-<p>深度缓冲是这样一段数据，它记录了每一个像素距离观察者有多近。在启用深度缓冲测试的情况下，如果将要绘制的像素比原来的像素更近，则像素将被绘制。否则,像素就会被忽略掉，不进行绘制。这在绘制不透明的物体时非常有用——不管是先绘制近的物体再绘制远的物体，还是先绘制远的物体再绘制近的物体，或者干脆以 混乱的顺序进行绘制，最后的显示结果总是近的物体遮住远的物体。
-然而在你需要实现半透明效果时，发现一切都不是那么美好了。如果你绘制了一个近距离的半透明物体，则它在深度缓冲区内保留了一些信息，使得远处的物体将无法再被绘制出来。虽然半透明的物体仍然半透明，但透过它看到的却不是正确的内容了。
-要 解决以上问题，需要在绘制半透明物体时将深度缓冲区设置为只读，这样一来，虽然半透明物体被绘制上去了，深度缓冲区还保持在原来的状态。如果再有一个物体 出现在半透明物体之后，在不透明物体之前，则它也可以被绘制（因为此时深度缓冲区中记录的是那个不透明物体的深度）。以后再要绘制不透明物体时，只需要再 将深度缓冲区设置为可读可写的形式即可。怎么绘制一个一部分半透明一部分不透明的物体？这个好办，只需要把物体分为两个部分，一部分全是半透明 的，一部分全是不透明的，分别绘制就可以了。
-即使使用了以上技巧，我们仍然不能随心所欲的按照混乱顺序来进行绘制。必须是先绘制不透明的物体，然 后绘制透明的物体。否则，假设背景为蓝色，近处一块红色玻璃，中间一个绿色物体。如果先绘制红色半透明玻璃的话，它先和蓝色背景进行混合，则以后绘制中间 的绿色物体时，想单独与红色玻璃混合已经不能实现了。
-总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
-调用glDepthMask(GL_FALSE);可将深度缓冲区设置为只读形式。调用glDepthMask(GL_TRUE);可将深度缓冲区设置为可读可写形式。</p>
-<blockquote>
-<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="external">glBlendFunc函数官网文档</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/25/tips-android-mediacodec/" itemprop="url">
-                  android系统编码MediaCodec
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T16:03:24+08:00">
-                2017-06-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="android编码器局限性"><a href="#android编码器局限性" class="headerlink" title="android编码器局限性"></a>android编码器局限性</h3><h4 id="1-颜色格式问题"><a href="#1-颜色格式问题" class="headerlink" title="1. 颜色格式问题"></a>1. 颜色格式问题</h4><p>MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色格式，而对于Android的摄像头在onPreviewFrame输出的YUV帧格式，如果没有配置任何参数的情况下，基本上都是NV21格式，但Google对MediaCodec的API在设计和规范的时候，显得很不厚道，过于贴近Android的HAL层了，导致了NV21格式并不是所有机器的MediaCodec都支持这种格式作为编码器的输入格式！</p>
-<p>因此，在初始化MediaCodec的时候，我们需要通过codecInfo.getCapabilitiesForType来查询机器上的MediaCodec实现具体支持哪些YUV格式作为输入格式，一般来说，起码在4.4+的系统上，这两种格式在大部分机器都有支持：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Plannder</div><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlannder</div></pre></td></tr></table></figure></p>
-<p>两种格式分别是YUV420P和NV21，如果机器上只支持YUV420P格式的情况下，则需要先将摄像头输出的NV21格式先转换成YUV420P，才能送入编码器进行编码，否则最终出来的视频就会花屏，或者颜色出现错乱</p>
-<p>这个算是一个不大不小的坑，基本上用上了MediaCodec进行视频编码都会遇上这个问题</p>
-<h4 id="2-编码器支持特性相当有限"><a href="#2-编码器支持特性相当有限" class="headerlink" title="2. 编码器支持特性相当有限"></a>2. 编码器支持特性相当有限</h4><p>如果使用MediaCodec来编码H264视频流，对于H264格式来说，会有一些针对压缩率以及码率相关的视频质量设置，典型的诸如Profile(baseline, main, high)，Profile Level, Bitrate mode(CBR, CQ, VBR)，合理配置这些参数可以让我们在同等的码率下，获得更高的压缩率，从而提升视频的质量，Android也提供了对应的API进行设置，可以设置到MediaFormat中这些设置项:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MediaFormat.KEY_BITRATE_MODE</div><div class="line">MediaFormat.KEY_PROFILE</div><div class="line">MediaFormat.KEY_LEVEL</div></pre></td></tr></table></figure></p>
-<p>但问题是，对于Profile，Level, Bitrate mode这些设置，在大部分手机上都是不支持的，即使是设置了最终也不会生效，例如设置了Profile为high，最后出来的视频依然还会是Baseline….</p>
-<p>这个问题，在7.0以下的机器几乎是必现的，其中一个可能的原因是，Android在源码层级hardcode了profile的的设置：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//XXXX</div><div class="line">if(h264type.eProfile != OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ALOGW(&quot;Use baseline profile instead of %d for AVC recording&quot;, h264type.eProfile);</div><div class="line">  h264type.eProfile = OMX_VIDEO_AVCProfileBaseline;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Android直到7.0之后才取消了这段地方的Hardcode:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(h264type.eProfile == OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ....</div><div class="line">&#125;else if(h264type.eProfile == OMX_VIDEO_AVCProfileMain</div><div class="line">  || h264type.eProfile == OMX_VIDEO_AVCProfileBaseHigh)</div><div class="line">  .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个问题可以说间接导致了MediaCodec编码出来的视频质量偏低，同等码率下，难以获得跟软编码甚至iOS那样的视频质量。</p>
-<h4 id="3-16位对齐要求"><a href="#3-16位对齐要求" class="headerlink" title="3. 16位对齐要求"></a>3. 16位对齐要求</h4><p>前面说到，MediaCodec这个API在设计的时候，过于贴近HAL层，这在很多Soc的实现上，是直接把传入MediaCodec的buffer，在不经过任何前置处理的情况下就直接送入了Soc中。而在编码h264视频流的时候，由于h264的编码块大小一般是16x16，于是乎在一开始设置视频的宽高的时候，如果设置了一个没有对齐16的大小，例如960x540，在某些cpu上，最终编码出来的视频就会直接花屏！</p>
-<p>很明显这还是因为厂商在实现这个API的时候，对传入的数据缺少校验以及前置处理导致的，目前来看，华为，三星的Soc出现这个问题会比较频繁，其他厂商的一些早期Soc也有这种问题，一般来说解决方法还是在设置视频宽高的时候，统一设置成对齐16位之后的大小就好了。</p>
-<h4 id="4-软编解码介绍"><a href="#4-软编解码介绍" class="headerlink" title="4.软编解码介绍"></a>4.软编解码介绍</h4><p>除了使用MediaCodec进行编码之外，另外一种比较流行的方案就是使用ffmpeg+x264/openh264进行软编码，ffmpeg是用于一些视频帧的预处理。这里主要是使用x264/openh264作为视频的编码器。</p>
-<ol>
-<li>x264基本上被认为是当今市面上最快的商用视频编码器，而且基本上所有h264的特性都支持，通过合理配置各种参数还是能够得到较好的压缩率和编码速度的，限于篇幅，这里不再阐述h264的参数配置，有兴趣可以看下这两篇文章对x264编码参数的调优：</li>
-</ol>
-<ul>
-<li><a href="https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn" target="_blank" rel="external">https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn</a></li>
-<li><a href="http://www.cnblogs.com/wainiwann/p/5647521.html" target="_blank" rel="external">http://www.cnblogs.com/wainiwann/p/5647521.html</a></li>
-</ul>
-<ol>
-<li>openh264(<a href="https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。" target="_blank" rel="external">https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。</a></li>
-</ol>
-<p>但对比起x264，openh264在h264高级特性的支持比较差：</p>
-<ul>
-<li>Profile只支持到baseline, level 5.2</li>
-<li>多线程编码只支持slice based，不支持frame based的多线程编码</li>
-</ul>
-<p>从编码效率上来看，openh264的速度也并不会比x264快，不过其最大的好处，还是能够直接免费使用吧。</p>
-<blockquote>
-<p>参考<a href="https://mp.weixin.qq.com/s/gwjL2OuoLVExbhYtbdpF2g" target="_blank" rel="external">微信Android视频编码爬过的那些坑</a></p>
-</blockquote>
-<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
-The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>SD (Low quality)</th>
-<th>SD (High quality)</th>
-<th>HD 720p (N/A on all devices)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Video resolution</td>
-<td>176 x 144 px</td>
-<td>480 x 360 px</td>
-<td>1280 x 720 px</td>
-</tr>
-<tr>
-<td>Video frame rate</td>
-<td>12 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-</tr>
-<tr>
-<td>Video bitrate</td>
-<td>56 Kbps</td>
-<td>500 Kbps</td>
-<td>2 Mbps</td>
-</tr>
-<tr>
-<td>Audio codec</td>
-<td>AAC-LC</td>
-<td>AAC-LC</td>
-<td>AAC-LC</td>
-</tr>
-<tr>
-<td>Audio channels</td>
-<td>1 (mono)</td>
-<td>2 (stereo)</td>
-<td>2 (stereo)</td>
-</tr>
-<tr>
-<td>Audio bitrate</td>
-<td>24 Kbps</td>
-<td>128 Kbps</td>
-<td>192 Kbps</td>
-</tr>
-</tbody>
-</table>
-<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>SD (Low quality)</th>
-<th>SD (High quality)</th>
-<th>HD 720p (N/A on all devices)</th>
-<th>HD 1080p (N/A on all devices)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Video resolution</td>
-<td>320 x 180 px</td>
-<td>640 x 360 px</td>
-<td>1280 x 720 px</td>
-<td>1920 x 1080 px</td>
-</tr>
-<tr>
-<td>Video frame rate</td>
-<td>30 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-<td>30 fps</td>
-</tr>
-<tr>
-<td>Video bitrate</td>
-<td>800 Kbps</td>
-<td>2 Mbps</td>
-<td>4 Mbps</td>
-<td>10 Mbps</td>
-</tr>
-</tbody>
-</table>
-<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
-<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
-<p>Each profile specifies the following set of parameters:</p>
-<ul>
-<li>The file output format</li>
-<li>Video codec format</li>
-<li>Video bit rate in bits per second</li>
-<li>Video frame rate in frames per second</li>
-<li>Video frame width and height,</li>
-<li>Audio codec format</li>
-<li>Audio bit rate in bits per second,</li>
-<li>Audio sample rate</li>
-<li>Number of audio channels for recording.</li>
-</ul>
-<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
-<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
-<p>the result is always the same ( a very high frame rate )
-Is the encoder ignoring this property ? how can I control the frame rate ?</p>
-<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
-<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
-<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
-<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
-<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
-<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
-<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2867,7 +2685,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2878,7 +2696,7 @@ Is the encoder ignoring this property ? how can I control the frame rate ?</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

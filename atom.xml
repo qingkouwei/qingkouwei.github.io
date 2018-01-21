@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2018-01-15T09:33:34.473Z</updated>
+  <updated>2018-01-21T15:28:33.469Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,192 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>deep-photo-styletransfer介绍</title>
+    <link href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/"/>
+    <id>http://wodekouwei.com/2018/01/21/tips-ml-dpst/</id>
+    <published>2018-01-21T14:41:30.000Z</published>
+    <updated>2018-01-21T15:28:33.469Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
+<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
+安装:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
+<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>如果你想要卸载 torch，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
+<p>现在在你可以用 Luarocks 安装新的包
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
+<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
+<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
+要执行 file.lua, 写 th&gt; dofile “file.lua”。
+在非交互模式下执行文件：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
+<p>th 命令有很多选项，类似 perl 和 ruby。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
+<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
+<ul>
+<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
+<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
+</ul>
+<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
+Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
+<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
+<p>之后安装Mac下的包管理神器Homebrew，命令如下，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
+<p>通过以下命令升级Homebrew:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
+<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
+<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
+<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
+<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
+使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
+<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
+<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
+<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
+<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
+<blockquote>
+<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
+<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
+<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
+<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
+</blockquote>
+<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
+<ul>
+<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
+<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
+使用不同版本有兼容性问题</li>
+</ul>
+<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
+<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
+<p>可能有xcode Command Line Tool版本不兼容问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
+<p>替换版本即可:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
+</blockquote>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
+<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
+<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
+<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-介绍&quot; class=&quot;headerlink&quot; title=&quot;1.介绍&quot;&gt;&lt;/a&gt;1.介绍&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/luanfujun/deep-photo-styletransfer
+    
+    </summary>
+    
+      <category term="ml" scheme="http://wodekouwei.com/categories/ml/"/>
+    
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+      <category term="ml" scheme="http://wodekouwei.com/tags/ml/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>python常见问题</title>
+    <link href="http://wodekouwei.com/2018/01/16/issue-python/"/>
+    <id>http://wodekouwei.com/2018/01/16/issue-python/</id>
+    <published>2018-01-16T10:09:41.000Z</published>
+    <updated>2018-01-16T10:12:59.172Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt"><a href="#OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt" class="headerlink" title="OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt"></a><code>OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt</code></h5><p>在用下列名字安装时
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install Scrapy</div><div class="line">sudo pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
+<p>出现下列错误
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">Found existing installation: six 1.4.1</div><div class="line"></div><div class="line">    DEPRECATION: Uninstalling a distutils installed project (six) has been deprecated and will be removed in a future version. This is due to the fact that uninstalling a distutils project will only partially uninstall the project.</div><div class="line"></div><div class="line">    Uninstalling six-1.4.1:</div><div class="line"></div><div class="line">Exception:</div><div class="line"></div><div class="line">Traceback (most recent call last):</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/basecommand.py&quot;, line 215, in main</div><div class="line"></div><div class="line">    status = self.run(options, args)</div><div class="line"></div><div class="line">  File &quot;/Library/python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/commands/install.py&quot;, line 342, in run</div><div class="line"></div><div class="line">    prefix=options.prefix_path,</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_set.py&quot;, line 778, in install</div><div class="line"></div><div class="line">    requirement.uninstall(auto_confirm=True)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_install.py&quot;, line 754, in uninstall</div><div class="line"></div><div class="line">    paths_to_remove.remove(auto_confirm)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_uninstall.py&quot;, line 115, in remove</div><div class="line"></div><div class="line">    renames(path, new_path)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/utils/__init__.py&quot;, line 267, in renames</div><div class="line"></div><div class="line">    shutil.move(old, new)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 302, in move</div><div class="line"></div><div class="line">    copy2(src, real_dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 131, in copy2</div><div class="line"></div><div class="line">    copystat(src, dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 103, in copystat</div><div class="line"></div><div class="line">    os.chflags(dst, st.st_flags)</div><div class="line"></div><div class="line">OSError: [Errno 1] Operation not permitted: &apos;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info&apos;</div></pre></td></tr></table></figure></p>
+<p>Scrapy，virtualenvwrapper需要依赖six，在安装six的时候发现系统已经有一个six-1.4.1，但是virtualenvwrapper需要six-1.9.0，于是想先卸载老版本的six，此时问题来了，发现没有权限卸载，此时我就纳闷，加上sudo，还是没权限。于是Google之，最终还是在万能的GitHub找到答案。six-1.4.1是系统内置的packages，因 系统集成保护 你是没有权限去修改/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info目录的。因此在安装virtualenvwrapper的时候需要选择忽略six的安装：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo pip install virtualenvwrapper --upgrade --ignore-installed six</div><div class="line">sudo pip install Scrapy --upgrade --ignore-installed six</div></pre></td></tr></table></figure></p>
+<p>如果使用requirements安装,也使用:<code>sudo -H pip install -r requirements.txt --upgrade --ignore-installed six</code></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h5 id=&quot;OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt&quot;&gt;&lt;a href=&quot;#OSError-Errno-1-Operati
+    
+    </summary>
+    
+      <category term="python" scheme="http://wodekouwei.com/categories/python/"/>
+    
+    
+      <category term="issue" scheme="http://wodekouwei.com/tags/issue/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>android逆向(1)之root方式注入apk</title>
+    <link href="http://wodekouwei.com/2018/01/16/tips-android-inject1/"/>
+    <id>http://wodekouwei.com/2018/01/16/tips-android-inject1/</id>
+    <published>2018-01-16T10:06:20.000Z</published>
+    <updated>2018-01-17T04:08:24.163Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="第一步-注入动态库到目标进程"><a href="#第一步-注入动态库到目标进程" class="headerlink" title="第一步,注入动态库到目标进程"></a>第一步,注入动态库到目标进程</h3><ol>
+<li>启动注入程序,入口main函数中输入将被注入的进程名称以及欲注入动态库路径;</li>
+<li>根据进程名获取进程id:打开<code>/proc</code>目录,读取<code>/proc/%d/cmdline</code>;</li>
+<li>attach到目标进程:<code>ptrace(PTRACE_ATTACH, pid, NULL, 0)</code>并暂停目前进程;</li>
+<li>读取寄存器值:<code>ptrace(PTRACE_GETREGS, pid, NULL, regs)</code>,并保持读取到的寄存器;</li>
+<li>获取被加载的动态库中mmap函数地址,获取被加载动态库中函数地址的方法是,获取本地libc.so模块和被加载动态库中libc.so模块中各自起始地址,local_addr-local_handle的值为指定函数(如mmap)在该模块中的偏移量，然后再加上remote_handle，结果就为指定函数在目的进程的虚拟地址,获取模块起始地址的方法是读取进程对应的<code>/proc/self/maps</code>或<code>/proc/%d/maps</code>文件;</li>
+<li>调用被加载库的mmap方法申请空间:<code>ptrace_call(target_pid, (uint32_t)func_addr, parameters, param_num, regs)</code>;</li>
+<li>获取申请空间时的R0寄存器,arm中R0~R3作为传递参数的寄存器,R0可以获取到申请空间的起始地址;</li>
+<li>获取被加载库中dlopen,dlsym,dlclose,dlerror函数地址;</li>
+<li>将被加载动态库的路径写入到mmap分配的栈空间:<code>ptrace(PTRACE_PEEKTEXT, pid, dest, 0);</code>;</li>
+<li>调用远程函数的dlopen函数打开要被注入的动态库;</li>
+<li>调用<code>dlsym</code>获取加载动态库目标函数符号对应地址,并调用目标函数,完成注入;</li>
+<li>调用dlclose关闭被注入库;</li>
+<li>完成注入;</li>
+</ol>
+<h3 id="动态库中加载目标apk-aar"><a href="#动态库中加载目标apk-aar" class="headerlink" title="动态库中加载目标apk(aar)"></a>动态库中加载目标apk(aar)</h3><ol>
+<li>入口函数中启动新线程,并调用<code>pthread_detach(tid)</code>将新线程设置为detach状态,可自动回收资源;</li>
+<li>新线程中调用<code>AndroidRuntime::getJavaVM();</code>获取JavaVM对象并Attach当前线程到JavaVM:<code>jvm-&gt;AttachCurrentThread(&amp;jni_env, NULL);</code>获取到jni env;</li>
+<li>找到<code>dalvik/system/DexClassLoader</code>类,并获取其构造方法<code>public DexClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</code>的methodid及<code>public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException</code>的methodid;</li>
+<li>找到类<code>java/lang/ClassLoader</code>,获取其静态方法<code>Gpublic static ClassLoader getSystemClassLoader()</code>的MethodID,调用静态方法getSystemClassLoader获取系统ClassLoader;</li>
+<li>基于系统ClassLoader,以及DexClassClassLoader构造方法MethodID创建DexClassLoader对象:<code>jni_env-&gt;NewObject(dexloader_claxx, dexloader_init_method, apk_path, dex_out_path, lib_path, class_loader);</code>,要传入DexClassloader jclass,DexClassLoader构造方法id,要被加载的apk路径,dex输出路径,动态库路径,以及父(即系统)ClassLoader;</li>
+<li>调用DexClassLoader的loadClass方法id加载apk中被调起的类:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>调用动态加载到的apk中类的方法:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>线程与JavaVM脱离:<code>jvm-&gt;DetachCurrentThread();</code>;</li>
+</ol>
+<h3 id="java中获取context"><a href="#java中获取context" class="headerlink" title="java中获取context"></a>java中获取context</h3>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;第一步-注入动态库到目标进程&quot;&gt;&lt;a href=&quot;#第一步-注入动态库到目标进程&quot; class=&quot;headerlink&quot; title=&quot;第一步,注入动态库到目标进程&quot;&gt;&lt;/a&gt;第一步,注入动态库到目标进程&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;启动注入程序,入口main函数中
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
   
   <entry>
     <title>docker简介及环境搭建</title>
@@ -2034,320 +2220,6 @@ onCreateView()、onDestoryView()</p>
       <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
     
       <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SQL查询案例</title>
-    <link href="http://wodekouwei.com/2017/11/08/db-sql-query/"/>
-    <id>http://wodekouwei.com/2017/11/08/db-sql-query/</id>
-    <published>2017-11-08T07:47:36.000Z</published>
-    <updated>2017-11-08T08:54:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>如下数据库表:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Student(S#,Sname,Sage,Ssex)学生表</div><div class="line">S#：学号</div><div class="line">Sname：学生姓名</div><div class="line">Sage：学生年龄</div><div class="line">Ssex：学生性别</div><div class="line">Course(C#,Cname,T#)课程表</div><div class="line">C#：课程编号</div><div class="line">Cname：课程名称</div><div class="line">T#：教师编号</div><div class="line">SC(S#,C#,score)成绩表</div><div class="line">S#：学号</div><div class="line">C#：课程编号</div><div class="line">score：成绩</div><div class="line">Teacher(T#,Tname)教师表</div><div class="line">T#：教师编号：</div><div class="line">Tname：教师名字</div></pre></td></tr></table></figure></p>
-<ol>
-<li><p>查询“001”课程比“002”课程成绩高的所有学生的学号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select a.S# from (select S#,score from SC where C#=&apos;001&apos;)a, (select s#,score from SC where c#=&apos;002&apos;)b Where a.score&gt;b.score</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询平均成绩大于60分的同学的学号和平均成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查询平均成绩大于60分的同学的学号和平均成绩</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有同学的学号、姓名、选课数、总成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname, count(sc.C#), sum(score) from student left outer join SC on student.S# = SC.S# group by S</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询姓‘李’的老师的个数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(distinct(Tname))</div><div class="line">from teacher</div><div class="line">where tname like &apos;李%&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学过“叶平”老师可的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname</div><div class="line">from Student</div><div class="line">where S# not in (select distinct(SC.S#) from SC,Course,Teacher</div><div class="line">where sc.c#=course.c# AND teacher.T#=course.T# AND Teahcer.Tname =&apos;叶平&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“叶平”老师所教的所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select S#,Sname   from Student    </div><div class="line">where S# in (select S# from SC ,Course ,Teacher</div><div class="line">where SC.C#=Course.C# and Teacher.T#=Course.T#</div><div class="line">and Teacher.Tname=&apos;叶平&apos; group by S#</div><div class="line">having count(SC.C#)=(select count(C#) from Course,Teacher  </div><div class="line">where Teacher.T#=Course.T# and Tname=&apos;叶平&apos;));</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“011”并且也学过编号“002”课程的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select Student.S#,Student.Sname</div><div class="line">from Student,SC where Student.S#=SC.S#</div><div class="line">and SC.C#=&apos;001&apos;and</div><div class="line">exists( Select * from SC as SC_2 where SC_2.S#=SC.S# and SC_2.C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询课程编号“002”的成绩比课程编号“001”课程低的所有同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Select S#,Sname</div><div class="line">from (select Student.S#,Student.Sname,score ,</div><div class="line">(select score from SC SC_2 where SC_2.S#=Student.S# and SC_2.C#=&apos;002&apos;) score2    </div><div class="line">from Student,SC</div><div class="line">where Student.S#=SC.S# and C#=&apos;001&apos;) S_2</div><div class="line">where score2 &lt; score;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有课程成绩小于60的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select S#, sname</div><div class="line">from student</div><div class="line">where s# not in</div><div class="line">(select student.s# from student, sc where s.s# = sc.s# and score&gt;60);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学全所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select student.s#, student.sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">group by student.s#, student.sname</div><div class="line">having count(c#)&lt;(select count(c#) from course);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少有一门课与学号为“1001”同学所学相同的同学的学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s#, Sname</div><div class="line">from Student, SC</div><div class="line">where student.s# = sc.s#</div><div class="line">and c# in (select c# from SC where s#=&apos;1001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少学过学号为“001”同学所有一门课的其他同学学号和姓名；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select distinct sc.s# , sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">and c# in (select C# from sc where s#=&apos;001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>把“SC”表中“叶平”老师教的课的成绩都更改为此课程的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Update Sc Set Score=(Select Avg(s2_Score) From sc s2 Where s2.c#=sc.c#)  </div><div class="line">Where c# IN</div><div class="line">(Select c# From sc cs INNER JOIN Teacher tc ON cs.t#=tc.t# WHERE tname =&apos;叶平&apos;)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询和“1002”号的同学学习的课程完全相同的其他同学学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s# from sc where c#  in</div><div class="line">(select c# from sc where s#=&apos;1002&apos;)</div><div class="line">group by s# having count(*)=</div><div class="line">(select count(*) from sc where s#=&apos;1002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>删除学习“叶平”老师课的SC表记录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">delect sc</div><div class="line">from course, Teacher</div><div class="line">where course.c#=sc.c#</div><div class="line">and course.t#=teacher.t#</div><div class="line">and tname=&apos;叶平&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>向SC表中插入一些记录，这些记录要求符合以下条件：没有上过编号“003”课程的同学学号、002号课的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Insert SC select S#,&apos;002&apos;,</div><div class="line">(Select avg(score) from SC where C#=&apos;002&apos;)</div><div class="line">from Student where S# not in (Select S# from SC where C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按平均成绩从高到低显示所有学生的“数据库”、“企业管理”、“英语”三门的课程成绩，按如下形式显示：学生ID，数据库，企业管理，英语，有效课程数，有效平均分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">select s# as 学生ID,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;004&apos;) as 数据库,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;001&apos;) as 企业管理,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;006&apos;) as 英语,</div><div class="line">count(*) as 有效课程数, avg(t.score) as 平局成绩</div><div class="line">from sc as t</div><div class="line">group by s#</div><div class="line">order by avg(t.score)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩最高和最低的分： 以如下的形式显示：课程ID，最高分，最低分</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">select L.c# as 课程ID, L.score as 最高分,</div><div class="line">R.score as 最低分</div><div class="line">from sc L, sc R</div><div class="line">where L.c# = R.c#</div><div class="line">and L.score = (select max(IL.score)</div><div class="line">        from sc IL, student as IM</div><div class="line">        where L.c#=IL.c# and IM.s#=IL.s#</div><div class="line">        group by IL.c#)</div><div class="line">and R.score = (select min(IR.score)</div><div class="line">        from sc as IR</div><div class="line">        where R.c#=IR.c#</div><div class="line">        group by IR.c#);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按各科平均成绩从低到高和及格率的百分数从高到低顺序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT t.C# AS 课程号,</div><div class="line">max(course.Cname)AS 课程名,</div><div class="line">isnull(AVG(score),0) AS 平均成绩,</div><div class="line">100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) AS 及格百分数     </div><div class="line">FROM SC T,Course     </div><div class="line">where t.C#=course.C#     </div><div class="line">GROUP BY t.C#      </div><div class="line">ORDER BY 100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程平均成绩和及格率的百分数(用”1行”显示): 企业管理（001），马克思（002），OO&amp;UML （003），数据库（004）：</p>
-</li>
-<li><p>查询不同老师所教不同课程平均分从高到低显示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT max(Z.T#) AS 教师ID,</div><div class="line">MAX(Z.Tname) AS 教师姓名,</div><div class="line">C.C# AS 课程ID,</div><div class="line">AVG(Score) AS 平均成绩     </div><div class="line">FROM SC AS T,Course AS C ,Teacher AS Z    </div><div class="line">where T.C#=C.C# and C.T#=Z.T#   </div><div class="line">GROUP BY C.C#    </div><div class="line">ORDER BY AVG(Score) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程成绩第3名到第6名的学生成绩单：企业管理(001)，马克思(002)，UML(003)，数据库(004)：</p>
-</li>
-<li><p>统计下列各科成绩，各分数段人数：课程ID，课程名称，[100-85],[85-70],[70-60],[ 小于60] ：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT SC.C# as 课程ID, Cname as 课程名称,</div><div class="line">SUM(CASE WHEN score BETWEEN 85 AND 100 THEN 1 ELSE 0 END) AS [100 - 85]  ,</div><div class="line">SUM(CASE WHEN score BETWEEN 70 AND 85 THEN 1 ELSE 0 END) AS [85 - 70],</div><div class="line">SUM(CASE WHEN score BETWEEN 60 AND 70 THEN 1 ELSE 0 END) AS [70 - 60],</div><div class="line">SUM(CASE WHEN score &lt; 60 THEN 1 ELSE 0 END) AS [60 -]     </div><div class="line">FROM SC,Course     </div><div class="line">where SC.C#=Course.C#     </div><div class="line">GROUP BY SC.C#,Cname;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学生平均成绩及其名次：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT 1+(SELECT COUNT( distinct 平均成绩)                </div><div class="line">FROM (SELECT S#,AVG(score) AS 平均成绩                       </div><div class="line">FROM SC                   </div><div class="line">GROUP BY S#  ) AS T1  WHERE 平均成绩 &gt; T2.平均成绩) as 名次,       </div><div class="line">S# as 学生学号,平均成绩      </div><div class="line">FROM (SELECT S#,AVG(score) 平均成绩             </div><div class="line">FROM SC         </div><div class="line">GROUP BY S# ) AS T2      </div><div class="line">ORDER BY 平均成绩 desc;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩前三名的记录（不考虑成绩并列情况）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数       </div><div class="line">FROM SC t1        </div><div class="line">WHERE score IN</div><div class="line">(SELECT TOP 3 score               </div><div class="line">FROM SC               </div><div class="line">WHERE t1.C#= C#             </div><div class="line">ORDER BY score DESC)</div><div class="line">```        </div><div class="line">26. 查询每门课程被选修的学生数：</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>select c#, count(s#)
-from sc
-group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">27. 查询出只选修一门课程的全部学生的学号和姓名：</div></pre></td></tr></table></figure></p>
-<p>select sc.s#, student.sname, count(c#) as 选课数
-from sc,student
-where sc.s# =student.s#
-group by sc.s#,Student.sname
-having count(c#)=1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">28. 查询男生、女生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(Ssex) as 男生人数
-from student
-group by Ssex
-having Ssex=’男’；
-select count(Ssex) as 女生人数
-from student
-group by Ssex
-having Ssex=’女’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">29. 查询姓“张”的学生名单：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where sname like ‘张%’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">30. 查询同名同姓的学生名单，并统计同名人数：</div></pre></td></tr></table></figure></p>
-<p>select sanme,count(<em>)
-from student
-group by sname
-havang count(</em>)&gt;1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">31. 1981年出生的学生名单（注：student表中sage列的类型是datetime）:</div></pre></td></tr></table></figure></p>
-<p>select sname, convert(char(11),DATEPART(year,sage)) as age
-from student
-where convert(char(11),DATEPART(year,Sage))=’1981’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">32. 查询平均成绩大于85的所有学生的学号、姓名和平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select Sname,SC.S# ,avg(score)<br>from Student,SC<br>where Student.S#=SC.S#
-group by SC.S#,Sname
-having    avg(score)&gt;85;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">33. 查询每门课程的平均成绩，结果按平均成绩升序排序，平均成绩相同时，按课程号降序排列：</div></pre></td></tr></table></figure></p>
-<p>select C#, avg(score)
-from sc
-group by c#
-order by avg(score), c# desc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">34. 查询课程名称为“数据库”，且分数低于60的学生名字和分数：</div></pre></td></tr></table></figure></p>
-<p>select sname, isnull(score,0)
-from student, sc ,course
-where sc.s#=student.s#  and sc.c#=course.c# and course.cname=’数据库’ and score<60; <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">35. 查询所有学生的选课情况：</div></pre></td></tr></table></60;></p>
-<p>select sc.s#,sc.c#,sname,cname
-from sc,student course
-where sc.s#=student.s# and sc.c#=course.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">36. 查询任何一门课程成绩在70分以上的姓名、课程名称和分数：</div></pre></td></tr></table></figure></p>
-<p>select distinct student.s#,student.sname,sc.c#,sc.score
-from student,sc
-where sc.score&gt;=70 and sc.s#=student.s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">37. 查询不及格的课程，并按课程号从大到小的排列：</div></pre></td></tr></table></figure></p>
-<p>select c#
-from sc
-where score<60 order="" by="" c#;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">38. 查询课程编号为“003”且课程成绩在80分以上的学生的学号和姓名：</div></pre></td></tr></table></60></p>
-<p>select sc.s#,student.sname
-from sc,student
-where sc.s#=student.s# and score&gt;80 and c#=’003’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">39. 求选了课程的学生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">40. 查询选修“叶平”老师所授课程的学生中，成绩最高的学生姓名及其成绩：</div></pre></td></tr></table></figure></p>
-<p>select student.sname,score
-from student,sc,course c, teacher
-where student.s#=sc.S# and sc.c#=c.c#
-and c.T#=teacher.T#
-and teacher.tname=’叶平’
-and sc.score=(select max(score) from sc where c#=c.c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">41. 查询各个课程及相应的选修人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">42. 查询不同课程成绩相同的学生和学号、课程号、学生成绩：</div></pre></td></tr></table></figure></p>
-<p>select distinct a.s#,b.score
-from sc a ,sc b
-where a.score=b.score
-and a.c#&lt;&gt;b.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">43. 查询每门课程成绩最好的前两名：</div></pre></td></tr></table></figure></p>
-<p>select t1.s# as 学生ID,t1.c#  课程ID, Score as 分数
-from sc t1
-where score in (select top 2 score from sc
-        where t1.c#=c#
-        order by score desc)
-order by t1.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">44. 统计每门课程的学生选修人数(超过10人的课程才统计)。要求输出课程号和选修人数，查询结果按人数降序排序，若人数相同，按课程号升序排序：</div></pre></td></tr></table></figure></p>
-<p>select c# as 课程号,count(<em>) as 人数
-from sc
-group by c#
-order by count(</em>) desc c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">45. 检索至少选修两门课程的学生学号：</div></pre></td></tr></table></figure></p>
-<p>select s#
-from sc
-group by s#
-having count(*)&gt;=2;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">46. 查询全部学生选修的课程和课程号和课程名：</div></pre></td></tr></table></figure></p>
-<p>select c# ,cname
-from course
-where c# in (select c# from sc group by c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">47. 查询没学过”叶平”老师讲授的任一门课程的学生姓名：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where s# not in (select s# from course,teacher,sc where course.t#=teacher.t# and sc.c#=course.c#
-and tname=’叶平’);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">48. 查询两门以上不及格课程的同学的学号以及其平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select s#,avg(isnull(score,0))
-from sc
-where s# in (select s# from sc where score<60 group="" by="" s#="" having="" count(*)="">2)
-group by s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">49. 检索“004”课程分数小于60，按分数降序排列的同学学号：</div></pre></td></tr></table></figure></60></p>
-<p>select s#
-from sc
-where c#=’004’
-and score<60 order="" by="" score="" desc;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">50. 删除“002”同学的“001”课程的成绩：</div></pre></td></tr></table></60></p>
-<p>delect from sc
-where s#=’002’
-and c#=’001’;
-```</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;如下数据库表:
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;
-    
-    </summary>
-    
-      <category term="db" scheme="http://wodekouwei.com/categories/db/"/>
-    
-    
-      <category term="sql" scheme="http://wodekouwei.com/tags/sql/"/>
-    
-      <category term="db" scheme="http://wodekouwei.com/tags/db/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>android-phone-compatibility</title>
-    <link href="http://wodekouwei.com/2017/11/02/android-phone-compatibility/"/>
-    <id>http://wodekouwei.com/2017/11/02/android-phone-compatibility/</id>
-    <published>2017-11-02T09:26:11.000Z</published>
-    <updated>2017-11-02T09:29:20.000Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="系统摄像视频文件格式"><a href="#系统摄像视频文件格式" class="headerlink" title="系统摄像视频文件格式"></a>系统摄像视频文件格式</h4><p>一般手机使用摄像头录制视频格式为yuv420p,而小米5录制出的为yuvj420p.格式转换是yuvj420p当成yuv420p处理即可.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;系统摄像视频文件格式&quot;&gt;&lt;a href=&quot;#系统摄像视频文件格式&quot; class=&quot;headerlink&quot; title=&quot;系统摄像视频文件格式&quot;&gt;&lt;/a&gt;系统摄像视频文件格式&lt;/h4&gt;&lt;p&gt;一般手机使用摄像头录制视频格式为yuv420p,而小米5录制出的为yuvj4
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="compatibility" scheme="http://wodekouwei.com/tags/compatibility/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ndk编译常见问题</title>
-    <link href="http://wodekouwei.com/2017/11/01/issue-ndk-compile/"/>
-    <id>http://wodekouwei.com/2017/11/01/issue-ndk-compile/</id>
-    <published>2017-11-01T02:27:28.000Z</published>
-    <updated>2017-11-01T04:14:39.000Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="depends-on-undefined-modules"><a href="#depends-on-undefined-modules" class="headerlink" title="depends on undefined modules"></a>depends on undefined modules</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:687: Android NDK: Module magicsdk_fmod depends on undefined modules: cutils</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:700: *** Android NDK: Aborting (set APP_ALLOW_MISSING_DEPS=true to allow missing dependencies)    .  Stop.</div></pre></td></tr></table></figure></p>
-<p>解决方案:
-Android.mk中增加<code>APP_ALLOW_MISSING_DEPS=true</code></p>
-<h4 id="shared-library-text-segment-is-not-shareable"><a href="#shared-library-text-segment-is-not-shareable" class="headerlink" title="shared library text segment is not shareable"></a>shared library text segment is not shareable</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: warning: shared library text segment is not shareable</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: error: treating warnings as errors</div><div class="line">clang++: error: linker command failed with exit code 1 (use -v to see invocation)</div><div class="line">make: *** [/Users/shenjunwei/Documents/repository/wonxing/normandy_android_app/modules-int/magicsdk_core/src/main/obj/local/armeabi-v7a/libmagicsdk_ex.so] Error 1</div></pre></td></tr></table></figure></p>
-<p>解决:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from Android NDK r11 you can use</div><div class="line"></div><div class="line">LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel</div><div class="line">You can also use</div><div class="line"></div><div class="line">LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><a href="https://stackoverflow.com/questions/19986523/shared-library-text-segment-is-not-shareable" target="_blank" rel="external">shared library text segment is not shareable</a></p>
-</blockquote>
-<h4 id="has-text-relocations"><a href="#has-text-relocations" class="headerlink" title="has text relocations"></a>has text relocations</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">E/FileUtil: access inferno failed! /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so</div><div class="line">                                                             java.lang.UnsatisfiedLinkError: dlopen failed: /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">                                                                 at java.lang.Runtime.load0(Runtime.java:897)</div><div class="line">                                                                 at java.lang.System.load(System.java:1505)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.util.FileUtil$EXLibUtil.load(FileUtil.java:465)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.loadEXLibrary(MagicRecorder.java:280)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:471)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:352)</div><div class="line">                                                                 at com.wonxing.touchfa.ui.activity.VideoImportActivity.preparePlaySDK(VideoImportActivity.java:144)</div></pre></td></tr></table></figure></p>
-<p>解决:</p>
-<ol>
-<li>方案一
-This issue could be solved by checking the targetSDKVersion in the manifest file.</li>
-</ol>
-<p>Using “22” and not “23” as targetSDKVersion solved it. (See below)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;uses-sdk</div><div class="line">        android:minSdkVersion=&quot;15&quot;</div><div class="line">        android:targetSdkVersion=&quot;22&quot; /&gt;</div></pre></td></tr></table></figure></p>
-<p>I also checked the build.gradle files for compile version and targetSDKversion:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion 22</div><div class="line">    buildToolsVersion &apos;22.0.1&apos;</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        minSdkVersion 15</div><div class="line">        targetSdkVersion 22</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<ol>
-<li>方案二
-It was caused by the ffmpeg, and it could also be solved by patching the latest ffmpeg code<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">libavcodec\arm\fft_fixed_neon.S</div><div class="line">libavcodec\arm\fft_neon.S</div><div class="line">libavcodec\arm\fft_vfp.S</div><div class="line">libavcodec\arm\mlpdsp_armv5te.S</div><div class="line">libutil\arm\asm.S</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>I took the latest from <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">https://github.com/FFmpeg/FFmpeg</a></p>
-<p>You will also need HAVE_SECTION_DATA_REL_RO declared somewhere in your build for the macro in asm.S to use the dynamic relocations option.</p>
-<ol>
-<li>方案三(Further informations:)
-Previous versions of Android would warn if asked to load a shared library with text relocations:</li>
-</ol>
-<p>“libfoo.so has text relocations. This is wasting memory and prevents security hardening. Please fix.”.</p>
-<p>Despite this, the OS will load the library anyway. Marshmallow rejects library if your app’s target SDK version is &gt;= 23. System no longer logs this because it assumes that your app will log the dlopen(3) failure itself, and include the text from dlerror(3) which does explain the problem. Unfortunately, lots of apps seem to catch and hide the UnsatisfiedLinkError throw by System.loadLibrary in this case, often leaving no clue that the library failed to load until you try to invoke one of your native methods and the VM complains that it’s not present.</p>
-<p>You can use the command-line scanelf tool to check for text relocations. You can find advice on the subject on the internet; for example <a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide" target="_blank" rel="external">https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide</a> is a useful guide.</p>
-<p>And you can check if your shared lbirary has text relocations by doing this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">readelf -a path/to/yourlib.so | grep TEXTREL</div></pre></td></tr></table></figure></p>
-<p>If it has text relocations, it will show you something like this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00000016 (TEXTREL)                    0x0</div></pre></td></tr></table></figure></p>
-<p>If this is the case, you may recompile your shared library with the latest NDK version available:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -B -j 8</div></pre></td></tr></table></figure>
-<p>And if you check it again, the grep command will return nothing.</p>
-<blockquote>
-<p><a href="https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html" target="_blank" rel="external">Android Developers Blog</a>
-<a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide#Introduction" target="_blank" rel="external">Hardened/Textrels Guide</a></p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;depends-on-undefined-modules&quot;&gt;&lt;a href=&quot;#depends-on-undefined-modules&quot; class=&quot;headerlink&quot; title=&quot;depends on undefined modules&quot;&gt;&lt;/a&gt;de
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="NDK" scheme="http://wodekouwei.com/tags/NDK/"/>
-    
-      <category term="issue" scheme="http://wodekouwei.com/tags/issue/"/>
     
   </entry>
   

@@ -323,6 +323,849 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-1/" itemprop="url">
+                  Android插件化(二)基础之类加载器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:35:40+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-什么是ClassLoader"><a href="#1-什么是ClassLoader" class="headerlink" title="1.什么是ClassLoader"></a>1.什么是ClassLoader</h3><p>当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
+<h3 id="2-Java-ClassLoader"><a href="#2-Java-ClassLoader" class="headerlink" title="2.Java ClassLoader"></a>2.Java ClassLoader</h3><h4 id="2-1-Java默认提供的三个ClassLoader"><a href="#2-1-Java默认提供的三个ClassLoader" class="headerlink" title="2.1.Java默认提供的三个ClassLoader"></a>2.1.Java默认提供的三个ClassLoader</h4><ol>
+<li>BootStrap ClassLoader：
+称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();  </div><div class="line">for (int i = 0; i &lt; urls.length; i++) &#123;  </div><div class="line">    System.out.println(urls[i].toExternalForm());  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以下内容是上述程序从本机JDK环境所获得的结果：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<p>其实上述结果也是通过查找sun.boot.class.path这个系统属性所得知的。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(System.getProperty(&quot;sun.boot.class.path&quot;));</div></pre></td></tr></table></figure></p>
+<p>打印结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<ol>
+<li>Extension ClassLoader：
+称为扩展类加载器，负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</li>
+<li>App ClassLoader：
+称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。</li>
+</ol>
+<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是Bootstrap ClassLoader不继承自ClassLoader，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
+<h4 id="2-2ClassLoader加载类的原理"><a href="#2-2ClassLoader加载类的原理" class="headerlink" title="2.2ClassLoader加载类的原理"></a>2.2ClassLoader加载类的原理</h4><p>ClassLoader使用的是双亲委托模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
+<p>这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到安全因素，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
+<p>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的。只有两者同时满足的情况下，JVM才认为这两个class是相同的。就算两个class是同一份class字节码，如果被两个不同的ClassLoader实例所加载，JVM也会认为它们是两个不同class。比如网络上的一个Java类org.classloader.simple.NetClassLoaderSimple，javac编译之后生成字节码文件NetClassLoaderSimple.class，ClassLoaderA和ClassLoaderB这两个类加载器并读取了NetClassLoaderSimple.class文件，并分别定义出了java.lang.Class实例来表示这个类，对于JVM来说，它们是两个不同的实例对象，但它们确实是同一份字节码文件，如果试图将这个Class实例生成具体的对象进行转换时，就会抛运行时异常java.lang.ClassCaseException，提示这是两个不同的类型。现在通过实例来验证上述所描述的是否正确:</p>
+<ol>
+<li>在web服务器上建一个org.classloader.simple.NetClassLoaderSimple.java类<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.classloader.simple;  </div><div class="line"></div><div class="line">public class NetClassLoaderSimple &#123;  </div><div class="line"></div><div class="line">    private NetClassLoaderSimple instance;  </div><div class="line"></div><div class="line">    public void setNetClassLoaderSimple(Object obj) &#123;  </div><div class="line">        this.instance = (NetClassLoaderSimple)obj;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>org.classloader.simple.NetClassLoaderSimple类的setNetClassLoaderSimple方法接收一个Object类型参数，并将它强制转换成org.classloader.simple.NetClassLoaderSimple类型。</p>
+<ol>
+<li>测试两个class是否相同
+<code>NetWorkClassLoader.java</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">package classloader;</div><div class="line"></div><div class="line">import java.io.ByteArrayOutputStream;</div><div class="line">import java.io.InputStream;</div><div class="line">import java.net.URL;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 加载网络class的ClassLoader</div><div class="line"> */</div><div class="line">public class NetworkClassLoader extends ClassLoader &#123;</div><div class="line"></div><div class="line">	private String rootUrl;</div><div class="line"></div><div class="line">	public NetworkClassLoader(String rootUrl) &#123;</div><div class="line">		this.rootUrl = rootUrl;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@Override</div><div class="line">	protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException &#123;</div><div class="line">		Class clazz = null;//this.findLoadedClass(name); // 父类已加载</div><div class="line">		//if (clazz == null) &#123;	//检查该类是否已被加载过</div><div class="line">			byte[] classData = getClassData(name);	//根据类的二进制名称,获得该class文件的字节码数组</div><div class="line">			if (classData == null) &#123;</div><div class="line">				throw new ClassNotFoundException();</div><div class="line">			&#125;</div><div class="line">			clazz = defineClass(name, classData, 0, classData.length);	//将class的字节码数组转换成Class类的实例</div><div class="line">		//&#125;</div><div class="line">		return clazz;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private byte[] getClassData(String name) &#123;</div><div class="line">		InputStream is = null;</div><div class="line">		try &#123;</div><div class="line">			String path = classNameToPath(name);</div><div class="line">			URL url = new URL(path);</div><div class="line">			byte[] buff = new byte[1024*4];</div><div class="line">			int len = -1;</div><div class="line">			is = url.openStream();</div><div class="line">			ByteArrayOutputStream baos = new ByteArrayOutputStream();</div><div class="line">			while((len = is.read(buff)) != -1) &#123;</div><div class="line">				baos.write(buff,0,len);</div><div class="line">			&#125;</div><div class="line">			return baos.toByteArray();</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125; finally &#123;</div><div class="line">			if (is != null) &#123;</div><div class="line">			   try &#123;</div><div class="line">			      is.close();</div><div class="line">			   &#125; catch(IOException e) &#123;</div><div class="line">			      e.printStackTrace();</div><div class="line">			   &#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private String classNameToPath(String name) &#123;</div><div class="line">		return rootUrl + &quot;/&quot; + name.replace(&quot;.&quot;, &quot;/&quot;) + &quot;.class&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">package classloader;  </div><div class="line"></div><div class="line">public class NewworkClassLoaderTest &#123;  </div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;  </div><div class="line">        try &#123;  </div><div class="line">            //测试加载网络中的class文件  </div><div class="line">            String rootUrl = &quot;http://localhost:8080/httpweb/classes&quot;;  </div><div class="line">            String className = &quot;org.classloader.simple.NetClassLoaderSimple&quot;;  </div><div class="line">            NetworkClassLoader ncl1 = new NetworkClassLoader(rootUrl);  </div><div class="line">            NetworkClassLoader ncl2 = new NetworkClassLoader(rootUrl);  </div><div class="line">            Class&lt;?&gt; clazz1 = ncl1.loadClass(className);  </div><div class="line">            Class&lt;?&gt; clazz2 = ncl2.loadClass(className);  </div><div class="line">            Object obj1 = clazz1.newInstance();  </div><div class="line">            Object obj2 = clazz2.newInstance();  </div><div class="line">            clazz1.getMethod(&quot;setNetClassLoaderSimple&quot;, Object.class).invoke(obj1, obj2);  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先获得网络上一个class文件的二进制名称，然后通过自定义的类加载器NetworkClassLoader创建两个实例，并根据网络地址分别加载这份class，并得到这两个ClassLoader实例加载后生成的Class实例clazz1和clazz2，最后将这两个Class实例分别生成具体的实例对象obj1和obj2，再通过反射调用clazz1中的setNetClassLoaderSimple方法。</p>
+<p>结果抛出<code>java.lang.ClassCastgException</code>,虽然是同一份class字节码文件，但是由于被两个不同的ClassLoader实例所加载，所以JVM认为它们就是两个不同的类。</p>
+<h4 id="2-3ClassLoader的体系架构："><a href="#2-3ClassLoader的体系架构：" class="headerlink" title="2.3ClassLoader的体系架构："></a>2.3ClassLoader的体系架构：</h4><p><img src="http://images.wodekouwei.com/technology/classloader.gif" alt="iamge"></p>
+<p>打印ClassLoader类的层次结构:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ClassLoader loader = ClassLoaderTest.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  </div><div class="line">while(loader != null) &#123;  </div><div class="line">    System.out.println(loader);  </div><div class="line">    loader = loader.getParent();    //获得父类加载器的引用  </div><div class="line">&#125;  </div><div class="line">System.out.println(loader);</div></pre></td></tr></table></figure></p>
+<p>输出:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</div><div class="line">sun.misc.Launcher$ExtClassLoader@1540e19d</div><div class="line">null</div></pre></td></tr></table></figure></p>
+<p>第一行结果说明：ClassLoaderTest的类加载器是AppClassLoader。</p>
+<p>第二行结果说明：AppClassLoader的类加器是ExtClassLoader，即parent=ExtClassLoader。</p>
+<p>第三行结果说明：ExtClassLoader的类加器是Bootstrap ClassLoader，因为Bootstrap ClassLoader不是一个普通的Java类，所以ExtClassLoader的parent=null，所以第三行的打印结果为null就是这个原因。</p>
+<ul>
+<li>将ClassLoaderTest.class打包成ClassLoaderTest.jar，放到Extension ClassLoader的加载目录下（JAVA_HOME/jre/lib/ext）可以测试Extension ClassLoader</li>
+<li>在jvm中添加-Xbootclasspath参数，指定Bootstrcp ClassLoader加载类的路径，并追加我们自已的jar（ClassTestLoader.jar）或 将class文件放到JAVA_HOME/jre/classes/目录下测试用Bootstrcp ClassLoader加载ClassLoaderTest.class.</li>
+</ul>
+<h4 id="2-4定义自己的ClassLoader"><a href="#2-4定义自己的ClassLoader" class="headerlink" title="2.4定义自己的ClassLoader:"></a>2.4定义自己的ClassLoader:</h4><p>因为Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，比如：我要加载网络上的一个class文件，通过动态加载到内存之后，要调用这个类中的方法实现我的业务逻辑。在这样的情况下，默认的ClassLoader就不能满足我们的需求了，所以需要定义自己的ClassLoader。</p>
+<p><strong>定义自已的类加载器分为两步：</strong></p>
+<ol>
+<li>继承java.lang.ClassLoader</li>
+<li>重写父类的findClass方法</li>
+</ol>
+<blockquote>
+<p>参考:<a href="https://www.ibm.com/developerworks/cn/java/j-lo-classloader/" target="_blank" rel="external">深入探讨 Java 类加载器</a></p>
+<h3 id="3-Android-ClassLoader"><a href="#3-Android-ClassLoader" class="headerlink" title="3.Android ClassLoader"></a>3.Android ClassLoader</h3><p>Android ClassLoader种类：</p>
+<ul>
+<li>DexClassLoader：可以加载文件系统上的jar、dex、apk</li>
+<li>PathClassLoader：可以加载/data/app目录下的apk，这也意味着，它只能加载已经安装的apk</li>
+<li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
+</ul>
+</blockquote>
+<p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
+<ol>
+<li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
+<li>创建一个 DexClassLoader实例</li>
+<li>加载指定的类返回一个Class</li>
+<li>然后使用反射调用这个Class</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable/" itemprop="url">
+                  Android插件化(一)技术调研
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T12:21:57+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
+下面简单介绍一下：</p>
+<table>
+<thead>
+<tr>
+<th>更新方式</th>
+<th>签名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增量更新</td>
+<td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。</td>
+</tr>
+<tr>
+<td>插件式开发</td>
+<td>给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。</td>
+</tr>
+<tr>
+<td>热修复</td>
+<td>通过NDK底层去修复，也是C/C++的技术。</td>
+</tr>
+<tr>
+<td>RN</td>
+<td>通过JS脚本去修复APK。</td>
+</tr>
+<tr>
+<td>静默安装</td>
+<td>需要root权限，适配不同手机ROM很麻烦。</td>
+</tr>
+</tbody>
+</table>
+<p>插件化、热修复（思想）的发展历程</p>
+<ul>
+<li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
+<li>2013年，23Code，自定义控件的动态下载：主要利用 Java ClassLoader 的原理，可动态加载的内容包括 apk、dex、jar等。</li>
+<li>2014年初，Altas，阿里伯奎的技术分享：提出了插件化的思想以及一些思考的问题，相关资料比较少。</li>
+<li>2014年底，Dynamic-load-apk，任玉刚：动态加载APK，通过Activity代理的方式给插件Activity添加生命周期。</li>
+<li>2015年4月，OpenAltas/ACCD：Altas的开源项目，一款强大的Android非代理动态部署框架，目前已经处于稳定状态。</li>
+<li>2015年8月，DroidPlugin，360的张勇：DroidPlugin 是360手机助手在 Android 系统上实现了一种新的插件机制：通过Hook思想来实现，它可以在无需安装、修改的情况下运行APK文件,此机制对改进大型APP的架构，实现多团队协作开发具有一定的好处。</li>
+<li>2015年9月，AndFix，阿里：通过NDK的Hook来实现热修复。</li>
+<li>2015年11月，Nuwa，大众点评：通过dex分包方案实现热修复。</li>
+<li>2015年底，Small，林光亮：打通了宿主与插件之间的资源与代码共享。</li>
+<li>2016年4月，ZeusPlugin，掌阅：ZeusPlugin最大特点是：简单易懂，核心类只有6个，类总数只有13个。</li>
+</ul>
+<h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
+与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
+<h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
+<li>APP检测最新版本：把当前版本告诉服务端，服务端进行判断。
+如果有新版本，服务端需要对当前版本的APK与最新版本的APK进行一次差分，产生patch差分文件。（或者新版本的APK上传到服务端的时候就已经差分好了）</li>
+<li>APP在后台下载差分文件，进行文件的MD5校验，在本地进行合并（跟本地的data目录下面的APK文件合并），合并出最新的APK之后，提示用户安装。</li>
+<li>增量更新的最终目的：省流量地更新宿主APK。</li>
+</ol>
+<p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
+注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
+<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
+<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
+<p>根据提示需要传入4个参数：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
+<p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
+<p>写一个Java测试类生成差分包：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意:</p>
+<ul>
+<li>test_new.apk、test_old.apk 要先放在目标目录</li>
+<li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
+</ul>
+<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>代码v1.0差分包合并核心代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
+<blockquote>
+<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
+作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
+</blockquote>
+<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
+<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>DynamicLoadApk</th>
+<th>DynamicAPK</th>
+<th>Small</th>
+<th>DroidPlugin</th>
+<th>VirtualAPK</th>
+<th>RePlugin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>支持四大组件</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>只支持Activity</td>
+<td>全支持</td>
+<td>全支持</td>
+<td>全支持</td>
+</tr>
+<tr>
+<td>组件无需在宿主manifest中预注册</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>插件可以依赖宿主</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>支持PendingIntent</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Android特性支持</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>大部分</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+<td>几乎全部</td>
+</tr>
+<tr>
+<td>兼容性适配</td>
+<td>一般</td>
+<td>一般</td>
+<td>中等</td>
+<td>高</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>插件构建</td>
+<td>无</td>
+<td>部署aapt</td>
+<td>Gradle插件</td>
+<td>无</td>
+<td>Gradle插件</td>
+<td>Gradle插件</td>
+</tr>
+<tr>
+<td>源码</td>
+<td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
+<td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
+<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
+<td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
+<td><code>https://github.com/didi/VirtualAPK</code></td>
+<td><code>https://github.com/Qihoo360/RePlugin</code></td>
+</tr>
+<tr>
+<td>开发者</td>
+<td>singwhatiwanna</td>
+<td>CtripMobile</td>
+<td></td>
+<td>Lody</td>
+<td>滴滴</td>
+<td>360</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><p>基于静态代理的实现</p>
+<h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supported components</td>
+<td>Activity, Service, Receiver and Provider</td>
+</tr>
+<tr>
+<td>Manually register components in AndroidManifest.xml</td>
+<td>No need</td>
+</tr>
+<tr>
+<td>Access host app classes and resources</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>PendingIntent</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>Supported Android features</td>
+<td>Almost all features</td>
+</tr>
+<tr>
+<td>Compatibility</td>
+<td>Almost all devices</td>
+</tr>
+<tr>
+<td>Building system</td>
+<td>Gradle plugin</td>
+</tr>
+<tr>
+<td>Supported Android versions</td>
+<td>API Level 15+</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
+<h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
+<li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
+<li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
+<li>去除插件包对宿主的引用 构建时通过Gradle插件去除插件对宿主的代码以及资源的引用<h5 id="2-2-3-2四大组件的实现原理"><a href="#2-2-3-2四大组件的实现原理" class="headerlink" title="2.2.3.2四大组件的实现原理"></a>2.2.3.2四大组件的实现原理</h5></li>
+<li>Activity 采用宿主manifest中占坑的方式来绕过系统校验，然后再加载真正的activity；</li>
+<li>Service 动态代理AMS，拦截service相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作；</li>
+<li>Receiver 将插件中静态注册的receiver重新注册一遍；</li>
+<li>ContentProvider 动态代理IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</li>
+</ul>
+<h4 id="2-3RePlugin"><a href="#2-3RePlugin" class="headerlink" title="2.3RePlugin"></a>2.3RePlugin</h4><h5 id="2-3-1特性"><a href="#2-3-1特性" class="headerlink" title="2.3.1特性"></a>2.3.1特性</h5><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>组件</td>
+<td>四大组件（含静态Receiver）</td>
+</tr>
+<tr>
+<td>升级无需改主程序Manifest</td>
+<td>完美支持</td>
+</tr>
+<tr>
+<td>Android特性</td>
+<td>支持近乎所有（包括SO库等）</td>
+</tr>
+<tr>
+<td>TaskAffinity &amp; 多进程</td>
+<td>支持（坑位方案）</td>
+</tr>
+<tr>
+<td>插件类型</td>
+<td>支持自带插件（自识别）、外置插件</td>
+</tr>
+<tr>
+<td>插件间耦合</td>
+<td>支持Binder、Class Loader、资源等</td>
+</tr>
+<tr>
+<td>进程间通讯</td>
+<td>支持同步、异步、Binder、广播等</td>
+</tr>
+<tr>
+<td>自定义Theme &amp; AppComat</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>DataBinding</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>安全校验</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>资源方案</td>
+<td>独立资源 + Context传递（相对稳定）</td>
+</tr>
+<tr>
+<td>Android 版本</td>
+<td>API Level 9+ （2.3及以上）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/08/tips-ml-mle-map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/08/tips-ml-mle-map/" itemprop="url">
+                  (转)聊一聊机器学习的MLE和MAP:最大似然估计和最大后验估计
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T17:36:01+08:00">
+                2018-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="TLDR-or-the-take-away"><a href="#TLDR-or-the-take-away" class="headerlink" title="TLDR (or the take away)"></a>TLDR (or the take away)</h3><ul>
+<li>概率学派 - Frequentist - Maximum Likelihood Estimation(MLE,最大似然估计)</li>
+<li>贝叶斯学派 - Baysesian - Maximum A Posteriori(MAP, 最大后验估计)</li>
+</ul>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>有时候和别人聊天，对方会说自己有很多机器学习经验，深入一聊发现，对方竟然对MLE和MAP一知半解，至少在我看来，这位同学的机器学习基础并不扎实。难道在这个深度学习盛行的年代，不少同学都只注重调参数？</p>
+<p>现代机器学习的终极问题都会转化为解目标函数的优化问题，MLE和MAP是生成这个函数的很基本的思想，因此我们对二者的认知是非常重要的。这次就和大家认真聊一聊MLE和MAP这两种estimator。</p>
+<h3 id="两大学派的争论"><a href="#两大学派的争论" class="headerlink" title="两大学派的争论"></a>两大学派的争论</h3><p>抽象一点来讲，频率学派和贝叶斯学派对世界的认知有本质不同：频率学派认为世界是确定的，有一个本体，这个本体的真值是不变的，我们的目标就是要找到这个真值或真值所在的范围；而贝叶斯学派认为世界是不确定的，人们对世界先有一个预判，而后通过观测数据对这个预判做调整，我们的目标是要找到最优的描述这个世界的概率分布。</p>
+<p>在对事物建模时，用 θ  表示模型的参数，请注意，解决问题的本质就是求θ 。那么：
+<strong>(1) 频率学派：</strong> 存在唯一真值 θ  。举一个简单直观的例子–抛硬币，我们用 P(head) 来表示硬币的bias。抛一枚硬币100次，有20次正面朝上，要估计抛硬币正面朝上的bias P(head)=θ。在频率学派来看，θ = 20 / 100 = 0.2，很直观。当数据量趋于无穷时，这种方法能给出精准的估计；然而缺乏数据时则可能产生严重的偏差。例如，对于一枚均匀硬币，即 θ = 0.5，抛掷5次，出现5次正面 (这种情况出现的概率是1/2^5=3.125%)，频率学派会直接估计这枚硬币 θ = 1，出现严重错误。</p>
+<p><strong>(2) 贝叶斯学派：</strong> θ 是一个随机变量，符合一定的概率分布。在贝叶斯学派里有两大输入和一大输出，输入是先验 (prior)和似然 (likelihood)，输出是后验 (posterior)。先验，即 P(θ) ，指的是在没有观测到任何数据时对 θ 的预先判断，例如给我一个硬币，一种可行的先验是认为这个硬币有很大的概率是均匀的，有较小的概率是是不均匀的；似然，即 P(X|θ) ，是假设 θ 已知后我们观察到的数据应该是什么样子的；后验，即 P(θ|X) ，是最终的参数分布。贝叶斯估计的基础是贝叶斯公式，如下：</p>
+<p>$P(\theta|X)=\frac{P(X|\theta) \times P(\theta)}{P(X)}$</p>
+<p>同样是抛硬币的例子，对一枚均匀硬币抛5次得到5次正面，那么 P(head) ，即 P(θ|X) ，是一个distribution，最大值会介于0.5~1之间，而不是武断的 θ = 1。</p>
+<p>这里有两点值得注意的地方：</p>
+<p>随着数据量的增加，参数分布会越来越向数据靠拢，先验的影响力会越来越小
+如果先验是uniform distribution，则贝叶斯方法等价于频率方法。因为直观上来讲，先验是uniform distribution本质上表示对事物没有任何预判</p>
+<h3 id="MLE-最大似然估计"><a href="#MLE-最大似然估计" class="headerlink" title="MLE - 最大似然估计"></a>MLE - 最大似然估计</h3><p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
+<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
+<p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
+<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
+<p>最后这一行所优化的函数被称为Negative Log Likelihood (NLL)，这个概念和上面的推导是非常重要的！</p>
+<p>我们经常在不经意间使用MLE，例如</p>
+<ul>
+<li>上文中关于频率学派求硬币概率的例子，其方法其实本质是由优化NLL得出。本文末尾附录中给出了具体的原因 :-)</li>
+<li>给定一些数据，求对应的高斯分布时，我们经常会算这些数据点的均值和方差然后带入到高斯分布的公式，其理论依据是优化NLL</li>
+<li>深度学习做分类任务时所用的cross entropy loss，其本质也是MLE</li>
+</ul>
+<h3 id="MAP-最大后验估计"><a href="#MAP-最大后验估计" class="headerlink" title="MAP - 最大后验估计"></a>MAP - 最大后验估计</h3><p>Maximum A Posteriori, MAP是贝叶斯学派常用的估计方法！</p>
+<p>同样的，假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。那么MLE对 $\theta$ 的估计方法可以如下推导：
+其中，第二行到第三行使用了贝叶斯定理，第三行到第四行P(X) 可以丢掉因为与 $\theta$ 无关。注意 $-\log P(X|\theta )$ 其实就是NLL，所以MLE和MAP在优化时的不同就是在于先验项 - $\log P(\theta) $。好的，那现在我们来研究一下这个先验项，假定先验是一个高斯分布，即</p>
+<p>$P(\theta) = \text{constant} \times e^{-\frac{\theta^2}{2\sigma^2}}$</p>
+<p>那么， $-\log P(\theta) = \text{constant} + \frac{\theta^2}{2\sigma^2} $。至此，一件神奇的事情发生了 – 在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的regularizaton！</p>
+<p>再稍微补充几点：</p>
+<ul>
+<li>我们不少同学大学里学习概率论时，最主要的还是频率学派的思想，其实贝叶斯学派思想也非常流行，而且实战性很强</li>
+<li>CMU的很多老师都喜欢用贝叶斯思想解决问题；我本科时的导师朱军老师也在做<a href="https://arxiv.org/abs/1709.05870" target="_blank" rel="external">贝叶斯深度学习</a>的工作，有兴趣可以关注一下。</li>
+</ul>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>有的同学说：“了解这些没用，现在大家都不用了。”这种想法是不对的，因为这是大家常年在用的知识，是推导优化函数的核心，而优化函数又是机器学习 (包含深度学习) 的核心之一。这位同学有这样的看法，说明对机器学习的本质并没有足够的认识，而让我吃惊的是，竟然有不少其他同学为这种看法点赞。内心感到有点儿悲凉，也引发了我写这篇文章的动力，希望能帮到一些朋友 :-)</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><p>[1] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">Bayesian Method Lecture</a>, UT Dallas.</p>
+</li>
+<li><p>[2] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">MLE, MAP, Bayes classification Lecture</a>, CMU.</p>
+</li>
+</ul>
+<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>为什么说频率学派求硬币概率的算法本质是在优化NLL？</p>
+<p>因为抛硬币可以表示为参数为 $\theta$  的Bernoulli分布，即</p>
+<p>$P(x_i; \theta) =\left{ \begin{array}{ll} \theta &amp; x_i = 1 \ 1 - \theta &amp; x_i = 0 \ \end{array} \right. \ = \theta^{x_i} (1- \theta)^{1-x_i}$</p>
+<p>其中 x_i = 1 表示第 i 次抛出正面。那么，</p>
+<p>$\text{NLL} = -\sum_{i=1}^n \log P(x<em>i; \theta) = -\sum</em>{i=1}^n \log \theta^{x_i} (1- \theta)^{1-x_i}$</p>
+<p>求导数并使其等于零，得到</p>
+<p>$\text{NLL}’ = -\sum_{i=1}^n\Big(\frac{x_i}{\theta} + (1-x_i)\frac{-1}{1-\theta}\Big) = 0$</p>
+<p>即 $\hat{\theta} = \frac{\sum_{i=1}^n x_i}{n}$ ，也就是出现正面的次数除以总共的抛掷次数。</p>
+<blockquote>
+<p>转自<a href="https://zhuanlan.zhihu.com/p/32480810" target="_blank" rel="external">聊一聊机器学习的MLE和MAP：最大似然估计和最大后验估计</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/29/tips-ml-res/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1967,676 +2810,11 @@ onCreateView()、onDestoryView()</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/08/db-sql-query/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/08/db-sql-query/" itemprop="url">
-                  SQL查询案例
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T15:47:36+08:00">
-                2017-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如下数据库表:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Student(S#,Sname,Sage,Ssex)学生表</div><div class="line">S#：学号</div><div class="line">Sname：学生姓名</div><div class="line">Sage：学生年龄</div><div class="line">Ssex：学生性别</div><div class="line">Course(C#,Cname,T#)课程表</div><div class="line">C#：课程编号</div><div class="line">Cname：课程名称</div><div class="line">T#：教师编号</div><div class="line">SC(S#,C#,score)成绩表</div><div class="line">S#：学号</div><div class="line">C#：课程编号</div><div class="line">score：成绩</div><div class="line">Teacher(T#,Tname)教师表</div><div class="line">T#：教师编号：</div><div class="line">Tname：教师名字</div></pre></td></tr></table></figure></p>
-<ol>
-<li><p>查询“001”课程比“002”课程成绩高的所有学生的学号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select a.S# from (select S#,score from SC where C#=&apos;001&apos;)a, (select s#,score from SC where c#=&apos;002&apos;)b Where a.score&gt;b.score</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询平均成绩大于60分的同学的学号和平均成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查询平均成绩大于60分的同学的学号和平均成绩</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有同学的学号、姓名、选课数、总成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname, count(sc.C#), sum(score) from student left outer join SC on student.S# = SC.S# group by S</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询姓‘李’的老师的个数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(distinct(Tname))</div><div class="line">from teacher</div><div class="line">where tname like &apos;李%&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学过“叶平”老师可的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname</div><div class="line">from Student</div><div class="line">where S# not in (select distinct(SC.S#) from SC,Course,Teacher</div><div class="line">where sc.c#=course.c# AND teacher.T#=course.T# AND Teahcer.Tname =&apos;叶平&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“叶平”老师所教的所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select S#,Sname   from Student    </div><div class="line">where S# in (select S# from SC ,Course ,Teacher</div><div class="line">where SC.C#=Course.C# and Teacher.T#=Course.T#</div><div class="line">and Teacher.Tname=&apos;叶平&apos; group by S#</div><div class="line">having count(SC.C#)=(select count(C#) from Course,Teacher  </div><div class="line">where Teacher.T#=Course.T# and Tname=&apos;叶平&apos;));</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“011”并且也学过编号“002”课程的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select Student.S#,Student.Sname</div><div class="line">from Student,SC where Student.S#=SC.S#</div><div class="line">and SC.C#=&apos;001&apos;and</div><div class="line">exists( Select * from SC as SC_2 where SC_2.S#=SC.S# and SC_2.C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询课程编号“002”的成绩比课程编号“001”课程低的所有同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Select S#,Sname</div><div class="line">from (select Student.S#,Student.Sname,score ,</div><div class="line">(select score from SC SC_2 where SC_2.S#=Student.S# and SC_2.C#=&apos;002&apos;) score2    </div><div class="line">from Student,SC</div><div class="line">where Student.S#=SC.S# and C#=&apos;001&apos;) S_2</div><div class="line">where score2 &lt; score;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有课程成绩小于60的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select S#, sname</div><div class="line">from student</div><div class="line">where s# not in</div><div class="line">(select student.s# from student, sc where s.s# = sc.s# and score&gt;60);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学全所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select student.s#, student.sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">group by student.s#, student.sname</div><div class="line">having count(c#)&lt;(select count(c#) from course);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少有一门课与学号为“1001”同学所学相同的同学的学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s#, Sname</div><div class="line">from Student, SC</div><div class="line">where student.s# = sc.s#</div><div class="line">and c# in (select c# from SC where s#=&apos;1001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少学过学号为“001”同学所有一门课的其他同学学号和姓名；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select distinct sc.s# , sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">and c# in (select C# from sc where s#=&apos;001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>把“SC”表中“叶平”老师教的课的成绩都更改为此课程的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Update Sc Set Score=(Select Avg(s2_Score) From sc s2 Where s2.c#=sc.c#)  </div><div class="line">Where c# IN</div><div class="line">(Select c# From sc cs INNER JOIN Teacher tc ON cs.t#=tc.t# WHERE tname =&apos;叶平&apos;)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询和“1002”号的同学学习的课程完全相同的其他同学学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s# from sc where c#  in</div><div class="line">(select c# from sc where s#=&apos;1002&apos;)</div><div class="line">group by s# having count(*)=</div><div class="line">(select count(*) from sc where s#=&apos;1002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>删除学习“叶平”老师课的SC表记录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">delect sc</div><div class="line">from course, Teacher</div><div class="line">where course.c#=sc.c#</div><div class="line">and course.t#=teacher.t#</div><div class="line">and tname=&apos;叶平&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>向SC表中插入一些记录，这些记录要求符合以下条件：没有上过编号“003”课程的同学学号、002号课的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Insert SC select S#,&apos;002&apos;,</div><div class="line">(Select avg(score) from SC where C#=&apos;002&apos;)</div><div class="line">from Student where S# not in (Select S# from SC where C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按平均成绩从高到低显示所有学生的“数据库”、“企业管理”、“英语”三门的课程成绩，按如下形式显示：学生ID，数据库，企业管理，英语，有效课程数，有效平均分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">select s# as 学生ID,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;004&apos;) as 数据库,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;001&apos;) as 企业管理,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;006&apos;) as 英语,</div><div class="line">count(*) as 有效课程数, avg(t.score) as 平局成绩</div><div class="line">from sc as t</div><div class="line">group by s#</div><div class="line">order by avg(t.score)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩最高和最低的分： 以如下的形式显示：课程ID，最高分，最低分</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">select L.c# as 课程ID, L.score as 最高分,</div><div class="line">R.score as 最低分</div><div class="line">from sc L, sc R</div><div class="line">where L.c# = R.c#</div><div class="line">and L.score = (select max(IL.score)</div><div class="line">        from sc IL, student as IM</div><div class="line">        where L.c#=IL.c# and IM.s#=IL.s#</div><div class="line">        group by IL.c#)</div><div class="line">and R.score = (select min(IR.score)</div><div class="line">        from sc as IR</div><div class="line">        where R.c#=IR.c#</div><div class="line">        group by IR.c#);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按各科平均成绩从低到高和及格率的百分数从高到低顺序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT t.C# AS 课程号,</div><div class="line">max(course.Cname)AS 课程名,</div><div class="line">isnull(AVG(score),0) AS 平均成绩,</div><div class="line">100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) AS 及格百分数     </div><div class="line">FROM SC T,Course     </div><div class="line">where t.C#=course.C#     </div><div class="line">GROUP BY t.C#      </div><div class="line">ORDER BY 100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程平均成绩和及格率的百分数(用”1行”显示): 企业管理（001），马克思（002），OO&amp;UML （003），数据库（004）：</p>
-</li>
-<li><p>查询不同老师所教不同课程平均分从高到低显示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT max(Z.T#) AS 教师ID,</div><div class="line">MAX(Z.Tname) AS 教师姓名,</div><div class="line">C.C# AS 课程ID,</div><div class="line">AVG(Score) AS 平均成绩     </div><div class="line">FROM SC AS T,Course AS C ,Teacher AS Z    </div><div class="line">where T.C#=C.C# and C.T#=Z.T#   </div><div class="line">GROUP BY C.C#    </div><div class="line">ORDER BY AVG(Score) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程成绩第3名到第6名的学生成绩单：企业管理(001)，马克思(002)，UML(003)，数据库(004)：</p>
-</li>
-<li><p>统计下列各科成绩，各分数段人数：课程ID，课程名称，[100-85],[85-70],[70-60],[ 小于60] ：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT SC.C# as 课程ID, Cname as 课程名称,</div><div class="line">SUM(CASE WHEN score BETWEEN 85 AND 100 THEN 1 ELSE 0 END) AS [100 - 85]  ,</div><div class="line">SUM(CASE WHEN score BETWEEN 70 AND 85 THEN 1 ELSE 0 END) AS [85 - 70],</div><div class="line">SUM(CASE WHEN score BETWEEN 60 AND 70 THEN 1 ELSE 0 END) AS [70 - 60],</div><div class="line">SUM(CASE WHEN score &lt; 60 THEN 1 ELSE 0 END) AS [60 -]     </div><div class="line">FROM SC,Course     </div><div class="line">where SC.C#=Course.C#     </div><div class="line">GROUP BY SC.C#,Cname;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学生平均成绩及其名次：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT 1+(SELECT COUNT( distinct 平均成绩)                </div><div class="line">FROM (SELECT S#,AVG(score) AS 平均成绩                       </div><div class="line">FROM SC                   </div><div class="line">GROUP BY S#  ) AS T1  WHERE 平均成绩 &gt; T2.平均成绩) as 名次,       </div><div class="line">S# as 学生学号,平均成绩      </div><div class="line">FROM (SELECT S#,AVG(score) 平均成绩             </div><div class="line">FROM SC         </div><div class="line">GROUP BY S# ) AS T2      </div><div class="line">ORDER BY 平均成绩 desc;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩前三名的记录（不考虑成绩并列情况）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数       </div><div class="line">FROM SC t1        </div><div class="line">WHERE score IN</div><div class="line">(SELECT TOP 3 score               </div><div class="line">FROM SC               </div><div class="line">WHERE t1.C#= C#             </div><div class="line">ORDER BY score DESC)</div><div class="line">```        </div><div class="line">26. 查询每门课程被选修的学生数：</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>select c#, count(s#)
-from sc
-group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">27. 查询出只选修一门课程的全部学生的学号和姓名：</div></pre></td></tr></table></figure></p>
-<p>select sc.s#, student.sname, count(c#) as 选课数
-from sc,student
-where sc.s# =student.s#
-group by sc.s#,Student.sname
-having count(c#)=1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">28. 查询男生、女生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(Ssex) as 男生人数
-from student
-group by Ssex
-having Ssex=’男’；
-select count(Ssex) as 女生人数
-from student
-group by Ssex
-having Ssex=’女’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">29. 查询姓“张”的学生名单：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where sname like ‘张%’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">30. 查询同名同姓的学生名单，并统计同名人数：</div></pre></td></tr></table></figure></p>
-<p>select sanme,count(<em>)
-from student
-group by sname
-havang count(</em>)&gt;1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">31. 1981年出生的学生名单（注：student表中sage列的类型是datetime）:</div></pre></td></tr></table></figure></p>
-<p>select sname, convert(char(11),DATEPART(year,sage)) as age
-from student
-where convert(char(11),DATEPART(year,Sage))=’1981’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">32. 查询平均成绩大于85的所有学生的学号、姓名和平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select Sname,SC.S# ,avg(score)<br>from Student,SC<br>where Student.S#=SC.S#
-group by SC.S#,Sname
-having    avg(score)&gt;85;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">33. 查询每门课程的平均成绩，结果按平均成绩升序排序，平均成绩相同时，按课程号降序排列：</div></pre></td></tr></table></figure></p>
-<p>select C#, avg(score)
-from sc
-group by c#
-order by avg(score), c# desc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">34. 查询课程名称为“数据库”，且分数低于60的学生名字和分数：</div></pre></td></tr></table></figure></p>
-<p>select sname, isnull(score,0)
-from student, sc ,course
-where sc.s#=student.s#  and sc.c#=course.c# and course.cname=’数据库’ and score<60; <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">35. 查询所有学生的选课情况：</div></pre></td></tr></table></60;></p>
-<p>select sc.s#,sc.c#,sname,cname
-from sc,student course
-where sc.s#=student.s# and sc.c#=course.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">36. 查询任何一门课程成绩在70分以上的姓名、课程名称和分数：</div></pre></td></tr></table></figure></p>
-<p>select distinct student.s#,student.sname,sc.c#,sc.score
-from student,sc
-where sc.score&gt;=70 and sc.s#=student.s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">37. 查询不及格的课程，并按课程号从大到小的排列：</div></pre></td></tr></table></figure></p>
-<p>select c#
-from sc
-where score<60 order="" by="" c#;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">38. 查询课程编号为“003”且课程成绩在80分以上的学生的学号和姓名：</div></pre></td></tr></table></60></p>
-<p>select sc.s#,student.sname
-from sc,student
-where sc.s#=student.s# and score&gt;80 and c#=’003’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">39. 求选了课程的学生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">40. 查询选修“叶平”老师所授课程的学生中，成绩最高的学生姓名及其成绩：</div></pre></td></tr></table></figure></p>
-<p>select student.sname,score
-from student,sc,course c, teacher
-where student.s#=sc.S# and sc.c#=c.c#
-and c.T#=teacher.T#
-and teacher.tname=’叶平’
-and sc.score=(select max(score) from sc where c#=c.c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">41. 查询各个课程及相应的选修人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">42. 查询不同课程成绩相同的学生和学号、课程号、学生成绩：</div></pre></td></tr></table></figure></p>
-<p>select distinct a.s#,b.score
-from sc a ,sc b
-where a.score=b.score
-and a.c#&lt;&gt;b.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">43. 查询每门课程成绩最好的前两名：</div></pre></td></tr></table></figure></p>
-<p>select t1.s# as 学生ID,t1.c#  课程ID, Score as 分数
-from sc t1
-where score in (select top 2 score from sc
-        where t1.c#=c#
-        order by score desc)
-order by t1.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">44. 统计每门课程的学生选修人数(超过10人的课程才统计)。要求输出课程号和选修人数，查询结果按人数降序排序，若人数相同，按课程号升序排序：</div></pre></td></tr></table></figure></p>
-<p>select c# as 课程号,count(<em>) as 人数
-from sc
-group by c#
-order by count(</em>) desc c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">45. 检索至少选修两门课程的学生学号：</div></pre></td></tr></table></figure></p>
-<p>select s#
-from sc
-group by s#
-having count(*)&gt;=2;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">46. 查询全部学生选修的课程和课程号和课程名：</div></pre></td></tr></table></figure></p>
-<p>select c# ,cname
-from course
-where c# in (select c# from sc group by c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">47. 查询没学过”叶平”老师讲授的任一门课程的学生姓名：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where s# not in (select s# from course,teacher,sc where course.t#=teacher.t# and sc.c#=course.c#
-and tname=’叶平’);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">48. 查询两门以上不及格课程的同学的学号以及其平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select s#,avg(isnull(score,0))
-from sc
-where s# in (select s# from sc where score<60 group="" by="" s#="" having="" count(*)="">2)
-group by s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">49. 检索“004”课程分数小于60，按分数降序排列的同学学号：</div></pre></td></tr></table></figure></60></p>
-<p>select s#
-from sc
-where c#=’004’
-and score<60 order="" by="" score="" desc;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">50. 删除“002”同学的“001”课程的成绩：</div></pre></td></tr></table></60></p>
-<p>delect from sc
-where s#=’002’
-and c#=’001’;
-```</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/02/android-phone-compatibility/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/02/android-phone-compatibility/" itemprop="url">
-                  android-phone-compatibility
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-02T17:26:11+08:00">
-                2017-11-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="系统摄像视频文件格式"><a href="#系统摄像视频文件格式" class="headerlink" title="系统摄像视频文件格式"></a>系统摄像视频文件格式</h4><p>一般手机使用摄像头录制视频格式为yuv420p,而小米5录制出的为yuvj420p.格式转换是yuvj420p当成yuv420p处理即可.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/01/issue-ndk-compile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/01/issue-ndk-compile/" itemprop="url">
-                  ndk编译常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-01T10:27:28+08:00">
-                2017-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="depends-on-undefined-modules"><a href="#depends-on-undefined-modules" class="headerlink" title="depends on undefined modules"></a>depends on undefined modules</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:687: Android NDK: Module magicsdk_fmod depends on undefined modules: cutils</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:700: *** Android NDK: Aborting (set APP_ALLOW_MISSING_DEPS=true to allow missing dependencies)    .  Stop.</div></pre></td></tr></table></figure></p>
-<p>解决方案:
-Android.mk中增加<code>APP_ALLOW_MISSING_DEPS=true</code></p>
-<h4 id="shared-library-text-segment-is-not-shareable"><a href="#shared-library-text-segment-is-not-shareable" class="headerlink" title="shared library text segment is not shareable"></a>shared library text segment is not shareable</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: warning: shared library text segment is not shareable</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: error: treating warnings as errors</div><div class="line">clang++: error: linker command failed with exit code 1 (use -v to see invocation)</div><div class="line">make: *** [/Users/shenjunwei/Documents/repository/wonxing/normandy_android_app/modules-int/magicsdk_core/src/main/obj/local/armeabi-v7a/libmagicsdk_ex.so] Error 1</div></pre></td></tr></table></figure></p>
-<p>解决:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from Android NDK r11 you can use</div><div class="line"></div><div class="line">LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel</div><div class="line">You can also use</div><div class="line"></div><div class="line">LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><a href="https://stackoverflow.com/questions/19986523/shared-library-text-segment-is-not-shareable" target="_blank" rel="external">shared library text segment is not shareable</a></p>
-</blockquote>
-<h4 id="has-text-relocations"><a href="#has-text-relocations" class="headerlink" title="has text relocations"></a>has text relocations</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">E/FileUtil: access inferno failed! /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so</div><div class="line">                                                             java.lang.UnsatisfiedLinkError: dlopen failed: /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">                                                                 at java.lang.Runtime.load0(Runtime.java:897)</div><div class="line">                                                                 at java.lang.System.load(System.java:1505)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.util.FileUtil$EXLibUtil.load(FileUtil.java:465)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.loadEXLibrary(MagicRecorder.java:280)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:471)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:352)</div><div class="line">                                                                 at com.wonxing.touchfa.ui.activity.VideoImportActivity.preparePlaySDK(VideoImportActivity.java:144)</div></pre></td></tr></table></figure></p>
-<p>解决:</p>
-<ol>
-<li>方案一
-This issue could be solved by checking the targetSDKVersion in the manifest file.</li>
-</ol>
-<p>Using “22” and not “23” as targetSDKVersion solved it. (See below)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;uses-sdk</div><div class="line">        android:minSdkVersion=&quot;15&quot;</div><div class="line">        android:targetSdkVersion=&quot;22&quot; /&gt;</div></pre></td></tr></table></figure></p>
-<p>I also checked the build.gradle files for compile version and targetSDKversion:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion 22</div><div class="line">    buildToolsVersion &apos;22.0.1&apos;</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        minSdkVersion 15</div><div class="line">        targetSdkVersion 22</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<ol>
-<li>方案二
-It was caused by the ffmpeg, and it could also be solved by patching the latest ffmpeg code<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">libavcodec\arm\fft_fixed_neon.S</div><div class="line">libavcodec\arm\fft_neon.S</div><div class="line">libavcodec\arm\fft_vfp.S</div><div class="line">libavcodec\arm\mlpdsp_armv5te.S</div><div class="line">libutil\arm\asm.S</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>I took the latest from <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">https://github.com/FFmpeg/FFmpeg</a></p>
-<p>You will also need HAVE_SECTION_DATA_REL_RO declared somewhere in your build for the macro in asm.S to use the dynamic relocations option.</p>
-<ol>
-<li>方案三(Further informations:)
-Previous versions of Android would warn if asked to load a shared library with text relocations:</li>
-</ol>
-<p>“libfoo.so has text relocations. This is wasting memory and prevents security hardening. Please fix.”.</p>
-<p>Despite this, the OS will load the library anyway. Marshmallow rejects library if your app’s target SDK version is &gt;= 23. System no longer logs this because it assumes that your app will log the dlopen(3) failure itself, and include the text from dlerror(3) which does explain the problem. Unfortunately, lots of apps seem to catch and hide the UnsatisfiedLinkError throw by System.loadLibrary in this case, often leaving no clue that the library failed to load until you try to invoke one of your native methods and the VM complains that it’s not present.</p>
-<p>You can use the command-line scanelf tool to check for text relocations. You can find advice on the subject on the internet; for example <a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide" target="_blank" rel="external">https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide</a> is a useful guide.</p>
-<p>And you can check if your shared lbirary has text relocations by doing this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">readelf -a path/to/yourlib.so | grep TEXTREL</div></pre></td></tr></table></figure></p>
-<p>If it has text relocations, it will show you something like this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00000016 (TEXTREL)                    0x0</div></pre></td></tr></table></figure></p>
-<p>If this is the case, you may recompile your shared library with the latest NDK version available:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -B -j 8</div></pre></td></tr></table></figure>
-<p>And if you check it again, the grep command will return nothing.</p>
-<blockquote>
-<p><a href="https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html" target="_blank" rel="external">Android Developers Blog</a>
-<a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide#Introduction" target="_blank" rel="external">Hardened/Textrels Guide</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2681,7 +2859,7 @@ Previous versions of Android would warn if asked to load a shared library with t
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2692,7 +2870,7 @@ Previous versions of Android would warn if asked to load a shared library with t
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

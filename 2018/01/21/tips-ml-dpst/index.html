@@ -1,0 +1,1111 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tips,ml," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.介绍deep-photo-styletransfer: 2.安装环境为mac10.13.2 2.1安装依赖2.1.1 TorchTorch是基于Lua语言的深度学习框架. 安装: 123curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bashgit clone https://git">
+<meta name="keywords" content="tips,ml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="deep-photo-styletransfer介绍">
+<meta property="og:url" content="http://wodekouwei.com/2018/01/21/tips-ml-dpst/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="1.介绍deep-photo-styletransfer: 2.安装环境为mac10.13.2 2.1安装依赖2.1.1 TorchTorch是基于Lua语言的深度学习框架. 安装: 123curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bashgit clone https://git">
+<meta property="og:updated_time" content="2018-01-21T15:28:33.469Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="deep-photo-styletransfer介绍">
+<meta name="twitter:description" content="1.介绍deep-photo-styletransfer: 2.安装环境为mac10.13.2 2.1安装依赖2.1.1 TorchTorch是基于Lua语言的深度学习框架. 安装: 123curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bashgit clone https://git">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/"/>
+
+
+
+
+
+  <title> deep-photo-styletransfer介绍 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                deep-photo-styletransfer介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-21T22:41:30+08:00">
+                2018-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/01/21/tips-ml-dpst/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
+<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
+安装:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
+<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>如果你想要卸载 torch，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
+<p>现在在你可以用 Luarocks 安装新的包
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
+<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
+<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
+要执行 file.lua, 写 th&gt; dofile “file.lua”。
+在非交互模式下执行文件：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
+<p>th 命令有很多选项，类似 perl 和 ruby。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
+<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
+<ul>
+<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
+<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
+</ul>
+<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
+Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
+<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
+<p>之后安装Mac下的包管理神器Homebrew，命令如下，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
+<p>通过以下命令升级Homebrew:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
+<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
+<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
+<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
+<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
+使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
+<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
+<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
+<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
+<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
+<blockquote>
+<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
+<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
+<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
+<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
+</blockquote>
+<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
+<ul>
+<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
+<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
+使用不同版本有兼容性问题</li>
+</ul>
+<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
+<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
+<p>可能有xcode Command Line Tool版本不兼容问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
+<p>替换版本即可:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
+</blockquote>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
+<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
+<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
+<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+            <a href="/tags/ml/" rel="tag"># ml</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/16/issue-python/" rel="next" title="python常见问题">
+                <i class="fa fa-chevron-left"></i> python常见问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-介绍"><span class="nav-number">1.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装"><span class="nav-number">2.</span> <span class="nav-text">2.安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1安装依赖"><span class="nav-number">2.1.</span> <span class="nav-text">2.1安装依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Torch"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 Torch</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2Matlab-or-Octave"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2Matlab or Octave</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-3CUDA-cudnn"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3CUDA cudnn</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-4下载VGG-19"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4下载VGG-19</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关资源"><span class="nav-number">3.</span> <span class="nav-text">相关资源</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

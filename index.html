@@ -323,6 +323,547 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/21/tips-ml-dpst/" itemprop="url">
+                  deep-photo-styletransfer介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-21T22:41:30+08:00">
+                2018-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
+<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
+安装:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
+<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>如果你想要卸载 torch，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
+<p>现在在你可以用 Luarocks 安装新的包
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
+<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
+<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
+要执行 file.lua, 写 th&gt; dofile “file.lua”。
+在非交互模式下执行文件：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
+<p>th 命令有很多选项，类似 perl 和 ruby。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
+<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
+<ul>
+<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
+<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
+</ul>
+<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
+Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
+<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
+<p>之后安装Mac下的包管理神器Homebrew，命令如下，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
+<p>通过以下命令升级Homebrew:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
+<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
+<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
+<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
+<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
+使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
+<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
+<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
+<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
+<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
+<blockquote>
+<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
+<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
+<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
+<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
+</blockquote>
+<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
+<ul>
+<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
+<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
+使用不同版本有兼容性问题</li>
+</ul>
+<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
+<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
+<p>可能有xcode Command Line Tool版本不兼容问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
+<p>替换版本即可:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
+</blockquote>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
+<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
+<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
+<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/issue-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/issue-python/" itemprop="url">
+                  python常见问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:09:41+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt"><a href="#OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt" class="headerlink" title="OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt"></a><code>OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt</code></h5><p>在用下列名字安装时
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install Scrapy</div><div class="line">sudo pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
+<p>出现下列错误
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">Found existing installation: six 1.4.1</div><div class="line"></div><div class="line">    DEPRECATION: Uninstalling a distutils installed project (six) has been deprecated and will be removed in a future version. This is due to the fact that uninstalling a distutils project will only partially uninstall the project.</div><div class="line"></div><div class="line">    Uninstalling six-1.4.1:</div><div class="line"></div><div class="line">Exception:</div><div class="line"></div><div class="line">Traceback (most recent call last):</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/basecommand.py&quot;, line 215, in main</div><div class="line"></div><div class="line">    status = self.run(options, args)</div><div class="line"></div><div class="line">  File &quot;/Library/python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/commands/install.py&quot;, line 342, in run</div><div class="line"></div><div class="line">    prefix=options.prefix_path,</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_set.py&quot;, line 778, in install</div><div class="line"></div><div class="line">    requirement.uninstall(auto_confirm=True)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_install.py&quot;, line 754, in uninstall</div><div class="line"></div><div class="line">    paths_to_remove.remove(auto_confirm)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_uninstall.py&quot;, line 115, in remove</div><div class="line"></div><div class="line">    renames(path, new_path)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/utils/__init__.py&quot;, line 267, in renames</div><div class="line"></div><div class="line">    shutil.move(old, new)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 302, in move</div><div class="line"></div><div class="line">    copy2(src, real_dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 131, in copy2</div><div class="line"></div><div class="line">    copystat(src, dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 103, in copystat</div><div class="line"></div><div class="line">    os.chflags(dst, st.st_flags)</div><div class="line"></div><div class="line">OSError: [Errno 1] Operation not permitted: &apos;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info&apos;</div></pre></td></tr></table></figure></p>
+<p>Scrapy，virtualenvwrapper需要依赖six，在安装six的时候发现系统已经有一个six-1.4.1，但是virtualenvwrapper需要six-1.9.0，于是想先卸载老版本的six，此时问题来了，发现没有权限卸载，此时我就纳闷，加上sudo，还是没权限。于是Google之，最终还是在万能的GitHub找到答案。six-1.4.1是系统内置的packages，因 系统集成保护 你是没有权限去修改/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info目录的。因此在安装virtualenvwrapper的时候需要选择忽略six的安装：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo pip install virtualenvwrapper --upgrade --ignore-installed six</div><div class="line">sudo pip install Scrapy --upgrade --ignore-installed six</div></pre></td></tr></table></figure></p>
+<p>如果使用requirements安装,也使用:<code>sudo -H pip install -r requirements.txt --upgrade --ignore-installed six</code></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/tips-android-inject1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/tips-android-inject1/" itemprop="url">
+                  android逆向(1)之root方式注入apk
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:06:20+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="第一步-注入动态库到目标进程"><a href="#第一步-注入动态库到目标进程" class="headerlink" title="第一步,注入动态库到目标进程"></a>第一步,注入动态库到目标进程</h3><ol>
+<li>启动注入程序,入口main函数中输入将被注入的进程名称以及欲注入动态库路径;</li>
+<li>根据进程名获取进程id:打开<code>/proc</code>目录,读取<code>/proc/%d/cmdline</code>;</li>
+<li>attach到目标进程:<code>ptrace(PTRACE_ATTACH, pid, NULL, 0)</code>并暂停目前进程;</li>
+<li>读取寄存器值:<code>ptrace(PTRACE_GETREGS, pid, NULL, regs)</code>,并保持读取到的寄存器;</li>
+<li>获取被加载的动态库中mmap函数地址,获取被加载动态库中函数地址的方法是,获取本地libc.so模块和被加载动态库中libc.so模块中各自起始地址,local_addr-local_handle的值为指定函数(如mmap)在该模块中的偏移量，然后再加上remote_handle，结果就为指定函数在目的进程的虚拟地址,获取模块起始地址的方法是读取进程对应的<code>/proc/self/maps</code>或<code>/proc/%d/maps</code>文件;</li>
+<li>调用被加载库的mmap方法申请空间:<code>ptrace_call(target_pid, (uint32_t)func_addr, parameters, param_num, regs)</code>;</li>
+<li>获取申请空间时的R0寄存器,arm中R0~R3作为传递参数的寄存器,R0可以获取到申请空间的起始地址;</li>
+<li>获取被加载库中dlopen,dlsym,dlclose,dlerror函数地址;</li>
+<li>将被加载动态库的路径写入到mmap分配的栈空间:<code>ptrace(PTRACE_PEEKTEXT, pid, dest, 0);</code>;</li>
+<li>调用远程函数的dlopen函数打开要被注入的动态库;</li>
+<li>调用<code>dlsym</code>获取加载动态库目标函数符号对应地址,并调用目标函数,完成注入;</li>
+<li>调用dlclose关闭被注入库;</li>
+<li>完成注入;</li>
+</ol>
+<h3 id="动态库中加载目标apk-aar"><a href="#动态库中加载目标apk-aar" class="headerlink" title="动态库中加载目标apk(aar)"></a>动态库中加载目标apk(aar)</h3><ol>
+<li>入口函数中启动新线程,并调用<code>pthread_detach(tid)</code>将新线程设置为detach状态,可自动回收资源;</li>
+<li>新线程中调用<code>AndroidRuntime::getJavaVM();</code>获取JavaVM对象并Attach当前线程到JavaVM:<code>jvm-&gt;AttachCurrentThread(&amp;jni_env, NULL);</code>获取到jni env;</li>
+<li>找到<code>dalvik/system/DexClassLoader</code>类,并获取其构造方法<code>public DexClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</code>的methodid及<code>public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException</code>的methodid;</li>
+<li>找到类<code>java/lang/ClassLoader</code>,获取其静态方法<code>Gpublic static ClassLoader getSystemClassLoader()</code>的MethodID,调用静态方法getSystemClassLoader获取系统ClassLoader;</li>
+<li>基于系统ClassLoader,以及DexClassClassLoader构造方法MethodID创建DexClassLoader对象:<code>jni_env-&gt;NewObject(dexloader_claxx, dexloader_init_method, apk_path, dex_out_path, lib_path, class_loader);</code>,要传入DexClassloader jclass,DexClassLoader构造方法id,要被加载的apk路径,dex输出路径,动态库路径,以及父(即系统)ClassLoader;</li>
+<li>调用DexClassLoader的loadClass方法id加载apk中被调起的类:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>调用动态加载到的apk中类的方法:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>线程与JavaVM脱离:<code>jvm-&gt;DetachCurrentThread();</code>;</li>
+</ol>
+<h3 id="java中获取context"><a href="#java中获取context" class="headerlink" title="java中获取context"></a>java中获取context</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1819,854 +2360,11 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-1/" itemprop="url">
-                  Android插件化(二)基础之类加载器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:35:40+08:00">
-                2018-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-什么是ClassLoader"><a href="#1-什么是ClassLoader" class="headerlink" title="1.什么是ClassLoader"></a>1.什么是ClassLoader</h3><p>当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
-<h3 id="2-Java-ClassLoader"><a href="#2-Java-ClassLoader" class="headerlink" title="2.Java ClassLoader"></a>2.Java ClassLoader</h3><h4 id="2-1-Java默认提供的三个ClassLoader"><a href="#2-1-Java默认提供的三个ClassLoader" class="headerlink" title="2.1.Java默认提供的三个ClassLoader"></a>2.1.Java默认提供的三个ClassLoader</h4><ol>
-<li>BootStrap ClassLoader：
-称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();  </div><div class="line">for (int i = 0; i &lt; urls.length; i++) &#123;  </div><div class="line">    System.out.println(urls[i].toExternalForm());  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>以下内容是上述程序从本机JDK环境所获得的结果：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
-<p>其实上述结果也是通过查找sun.boot.class.path这个系统属性所得知的。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(System.getProperty(&quot;sun.boot.class.path&quot;));</div></pre></td></tr></table></figure></p>
-<p>打印结果:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
-<ol>
-<li>Extension ClassLoader：
-称为扩展类加载器，负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</li>
-<li>App ClassLoader：
-称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。</li>
-</ol>
-<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是Bootstrap ClassLoader不继承自ClassLoader，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
-<h4 id="2-2ClassLoader加载类的原理"><a href="#2-2ClassLoader加载类的原理" class="headerlink" title="2.2ClassLoader加载类的原理"></a>2.2ClassLoader加载类的原理</h4><p>ClassLoader使用的是双亲委托模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
-<p>这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到安全因素，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
-<p>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的。只有两者同时满足的情况下，JVM才认为这两个class是相同的。就算两个class是同一份class字节码，如果被两个不同的ClassLoader实例所加载，JVM也会认为它们是两个不同class。比如网络上的一个Java类org.classloader.simple.NetClassLoaderSimple，javac编译之后生成字节码文件NetClassLoaderSimple.class，ClassLoaderA和ClassLoaderB这两个类加载器并读取了NetClassLoaderSimple.class文件，并分别定义出了java.lang.Class实例来表示这个类，对于JVM来说，它们是两个不同的实例对象，但它们确实是同一份字节码文件，如果试图将这个Class实例生成具体的对象进行转换时，就会抛运行时异常java.lang.ClassCaseException，提示这是两个不同的类型。现在通过实例来验证上述所描述的是否正确:</p>
-<ol>
-<li>在web服务器上建一个org.classloader.simple.NetClassLoaderSimple.java类<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.classloader.simple;  </div><div class="line"></div><div class="line">public class NetClassLoaderSimple &#123;  </div><div class="line"></div><div class="line">    private NetClassLoaderSimple instance;  </div><div class="line"></div><div class="line">    public void setNetClassLoaderSimple(Object obj) &#123;  </div><div class="line">        this.instance = (NetClassLoaderSimple)obj;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>org.classloader.simple.NetClassLoaderSimple类的setNetClassLoaderSimple方法接收一个Object类型参数，并将它强制转换成org.classloader.simple.NetClassLoaderSimple类型。</p>
-<ol>
-<li>测试两个class是否相同
-<code>NetWorkClassLoader.java</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">package classloader;</div><div class="line"></div><div class="line">import java.io.ByteArrayOutputStream;</div><div class="line">import java.io.InputStream;</div><div class="line">import java.net.URL;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 加载网络class的ClassLoader</div><div class="line"> */</div><div class="line">public class NetworkClassLoader extends ClassLoader &#123;</div><div class="line"></div><div class="line">	private String rootUrl;</div><div class="line"></div><div class="line">	public NetworkClassLoader(String rootUrl) &#123;</div><div class="line">		this.rootUrl = rootUrl;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@Override</div><div class="line">	protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException &#123;</div><div class="line">		Class clazz = null;//this.findLoadedClass(name); // 父类已加载</div><div class="line">		//if (clazz == null) &#123;	//检查该类是否已被加载过</div><div class="line">			byte[] classData = getClassData(name);	//根据类的二进制名称,获得该class文件的字节码数组</div><div class="line">			if (classData == null) &#123;</div><div class="line">				throw new ClassNotFoundException();</div><div class="line">			&#125;</div><div class="line">			clazz = defineClass(name, classData, 0, classData.length);	//将class的字节码数组转换成Class类的实例</div><div class="line">		//&#125;</div><div class="line">		return clazz;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private byte[] getClassData(String name) &#123;</div><div class="line">		InputStream is = null;</div><div class="line">		try &#123;</div><div class="line">			String path = classNameToPath(name);</div><div class="line">			URL url = new URL(path);</div><div class="line">			byte[] buff = new byte[1024*4];</div><div class="line">			int len = -1;</div><div class="line">			is = url.openStream();</div><div class="line">			ByteArrayOutputStream baos = new ByteArrayOutputStream();</div><div class="line">			while((len = is.read(buff)) != -1) &#123;</div><div class="line">				baos.write(buff,0,len);</div><div class="line">			&#125;</div><div class="line">			return baos.toByteArray();</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125; finally &#123;</div><div class="line">			if (is != null) &#123;</div><div class="line">			   try &#123;</div><div class="line">			      is.close();</div><div class="line">			   &#125; catch(IOException e) &#123;</div><div class="line">			      e.printStackTrace();</div><div class="line">			   &#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private String classNameToPath(String name) &#123;</div><div class="line">		return rootUrl + &quot;/&quot; + name.replace(&quot;.&quot;, &quot;/&quot;) + &quot;.class&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">package classloader;  </div><div class="line"></div><div class="line">public class NewworkClassLoaderTest &#123;  </div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;  </div><div class="line">        try &#123;  </div><div class="line">            //测试加载网络中的class文件  </div><div class="line">            String rootUrl = &quot;http://localhost:8080/httpweb/classes&quot;;  </div><div class="line">            String className = &quot;org.classloader.simple.NetClassLoaderSimple&quot;;  </div><div class="line">            NetworkClassLoader ncl1 = new NetworkClassLoader(rootUrl);  </div><div class="line">            NetworkClassLoader ncl2 = new NetworkClassLoader(rootUrl);  </div><div class="line">            Class&lt;?&gt; clazz1 = ncl1.loadClass(className);  </div><div class="line">            Class&lt;?&gt; clazz2 = ncl2.loadClass(className);  </div><div class="line">            Object obj1 = clazz1.newInstance();  </div><div class="line">            Object obj2 = clazz2.newInstance();  </div><div class="line">            clazz1.getMethod(&quot;setNetClassLoaderSimple&quot;, Object.class).invoke(obj1, obj2);  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>首先获得网络上一个class文件的二进制名称，然后通过自定义的类加载器NetworkClassLoader创建两个实例，并根据网络地址分别加载这份class，并得到这两个ClassLoader实例加载后生成的Class实例clazz1和clazz2，最后将这两个Class实例分别生成具体的实例对象obj1和obj2，再通过反射调用clazz1中的setNetClassLoaderSimple方法。</p>
-<p>结果抛出<code>java.lang.ClassCastgException</code>,虽然是同一份class字节码文件，但是由于被两个不同的ClassLoader实例所加载，所以JVM认为它们就是两个不同的类。</p>
-<h4 id="2-3ClassLoader的体系架构："><a href="#2-3ClassLoader的体系架构：" class="headerlink" title="2.3ClassLoader的体系架构："></a>2.3ClassLoader的体系架构：</h4><p><img src="http://images.wodekouwei.com/technology/classloader.gif" alt="iamge"></p>
-<p>打印ClassLoader类的层次结构:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ClassLoader loader = ClassLoaderTest.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  </div><div class="line">while(loader != null) &#123;  </div><div class="line">    System.out.println(loader);  </div><div class="line">    loader = loader.getParent();    //获得父类加载器的引用  </div><div class="line">&#125;  </div><div class="line">System.out.println(loader);</div></pre></td></tr></table></figure></p>
-<p>输出:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</div><div class="line">sun.misc.Launcher$ExtClassLoader@1540e19d</div><div class="line">null</div></pre></td></tr></table></figure></p>
-<p>第一行结果说明：ClassLoaderTest的类加载器是AppClassLoader。</p>
-<p>第二行结果说明：AppClassLoader的类加器是ExtClassLoader，即parent=ExtClassLoader。</p>
-<p>第三行结果说明：ExtClassLoader的类加器是Bootstrap ClassLoader，因为Bootstrap ClassLoader不是一个普通的Java类，所以ExtClassLoader的parent=null，所以第三行的打印结果为null就是这个原因。</p>
-<ul>
-<li>将ClassLoaderTest.class打包成ClassLoaderTest.jar，放到Extension ClassLoader的加载目录下（JAVA_HOME/jre/lib/ext）可以测试Extension ClassLoader</li>
-<li>在jvm中添加-Xbootclasspath参数，指定Bootstrcp ClassLoader加载类的路径，并追加我们自已的jar（ClassTestLoader.jar）或 将class文件放到JAVA_HOME/jre/classes/目录下测试用Bootstrcp ClassLoader加载ClassLoaderTest.class.</li>
-</ul>
-<h4 id="2-4定义自己的ClassLoader"><a href="#2-4定义自己的ClassLoader" class="headerlink" title="2.4定义自己的ClassLoader:"></a>2.4定义自己的ClassLoader:</h4><p>因为Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，比如：我要加载网络上的一个class文件，通过动态加载到内存之后，要调用这个类中的方法实现我的业务逻辑。在这样的情况下，默认的ClassLoader就不能满足我们的需求了，所以需要定义自己的ClassLoader。</p>
-<p><strong>定义自已的类加载器分为两步：</strong></p>
-<ol>
-<li>继承java.lang.ClassLoader</li>
-<li>重写父类的findClass方法</li>
-</ol>
-<blockquote>
-<p>参考:<a href="https://www.ibm.com/developerworks/cn/java/j-lo-classloader/" target="_blank" rel="external">深入探讨 Java 类加载器</a></p>
-<h3 id="3-Android-ClassLoader"><a href="#3-Android-ClassLoader" class="headerlink" title="3.Android ClassLoader"></a>3.Android ClassLoader</h3><p>Android ClassLoader种类：</p>
-<ul>
-<li>DexClassLoader：可以加载文件系统上的jar、dex、apk</li>
-<li>PathClassLoader：可以加载/data/app目录下的apk，这也意味着，它只能加载已经安装的apk</li>
-<li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
-</ul>
-</blockquote>
-<p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
-<ol>
-<li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
-<li>创建一个 DexClassLoader实例</li>
-<li>加载指定的类返回一个Class</li>
-<li>然后使用反射调用这个Class</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable/" itemprop="url">
-                  Android插件化(一)技术调研
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T12:21:57+08:00">
-                2018-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。
-下面简单介绍一下：</p>
-<table>
-<thead>
-<tr>
-<th>更新方式</th>
-<th>签名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>增量更新</td>
-<td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。</td>
-</tr>
-<tr>
-<td>插件式开发</td>
-<td>给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。</td>
-</tr>
-<tr>
-<td>热修复</td>
-<td>通过NDK底层去修复，也是C/C++的技术。</td>
-</tr>
-<tr>
-<td>RN</td>
-<td>通过JS脚本去修复APK。</td>
-</tr>
-<tr>
-<td>静默安装</td>
-<td>需要root权限，适配不同手机ROM很麻烦。</td>
-</tr>
-</tbody>
-</table>
-<p>插件化、热修复（思想）的发展历程</p>
-<ul>
-<li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
-<li>2013年，23Code，自定义控件的动态下载：主要利用 Java ClassLoader 的原理，可动态加载的内容包括 apk、dex、jar等。</li>
-<li>2014年初，Altas，阿里伯奎的技术分享：提出了插件化的思想以及一些思考的问题，相关资料比较少。</li>
-<li>2014年底，Dynamic-load-apk，任玉刚：动态加载APK，通过Activity代理的方式给插件Activity添加生命周期。</li>
-<li>2015年4月，OpenAltas/ACCD：Altas的开源项目，一款强大的Android非代理动态部署框架，目前已经处于稳定状态。</li>
-<li>2015年8月，DroidPlugin，360的张勇：DroidPlugin 是360手机助手在 Android 系统上实现了一种新的插件机制：通过Hook思想来实现，它可以在无需安装、修改的情况下运行APK文件,此机制对改进大型APP的架构，实现多团队协作开发具有一定的好处。</li>
-<li>2015年9月，AndFix，阿里：通过NDK的Hook来实现热修复。</li>
-<li>2015年11月，Nuwa，大众点评：通过dex分包方案实现热修复。</li>
-<li>2015年底，Small，林光亮：打通了宿主与插件之间的资源与代码共享。</li>
-<li>2016年4月，ZeusPlugin，掌阅：ZeusPlugin最大特点是：简单易懂，核心类只有6个，类总数只有13个。</li>
-</ul>
-<h3 id="1-增量更新"><a href="#1-增量更新" class="headerlink" title="1.增量更新"></a>1.增量更新</h3><p>增量更新就是原有app的基础上只更新发生变化的地方，其余保持原样。
-与原来每次更新都要下载完整apk包的做法相比，这样做的好处显而易见：每次变化的地方总是比较少，因此更新包的体积就会小很多。</p>
-<h4 id="1-1增量更新的流程"><a href="#1-1增量更新的流程" class="headerlink" title="1.1增量更新的流程"></a>1.1增量更新的流程</h4><ol>
-<li>APP检测最新版本：把当前版本告诉服务端，服务端进行判断。
-如果有新版本，服务端需要对当前版本的APK与最新版本的APK进行一次差分，产生patch差分文件。（或者新版本的APK上传到服务端的时候就已经差分好了）</li>
-<li>APP在后台下载差分文件，进行文件的MD5校验，在本地进行合并（跟本地的data目录下面的APK文件合并），合并出最新的APK之后，提示用户安装。</li>
-<li>增量更新的最终目的：省流量地更新宿主APK。</li>
-</ol>
-<p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
-注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
-<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
-<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
-<p>根据提示需要传入4个参数：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
-<p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
-<p>写一个Java测试类生成差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>注意:</p>
-<ul>
-<li>test_new.apk、test_old.apk 要先放在目标目录</li>
-<li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
-</ul>
-<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<p>代码v1.0差分包合并核心代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
-<blockquote>
-<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
-作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
-</blockquote>
-<h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
-<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>DynamicLoadApk</th>
-<th>DynamicAPK</th>
-<th>Small</th>
-<th>DroidPlugin</th>
-<th>VirtualAPK</th>
-<th>RePlugin</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>支持四大组件</td>
-<td>只支持Activity</td>
-<td>只支持Activity</td>
-<td>只支持Activity</td>
-<td>全支持</td>
-<td>全支持</td>
-<td>全支持</td>
-</tr>
-<tr>
-<td>组件无需在宿主manifest中预注册</td>
-<td>√</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>插件可以依赖宿主</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>支持PendingIntent</td>
-<td>×</td>
-<td>×</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>Android特性支持</td>
-<td>大部分</td>
-<td>大部分</td>
-<td>大部分</td>
-<td>几乎全部</td>
-<td>几乎全部</td>
-<td>几乎全部</td>
-</tr>
-<tr>
-<td>兼容性适配</td>
-<td>一般</td>
-<td>一般</td>
-<td>中等</td>
-<td>高</td>
-<td>高</td>
-<td>高</td>
-</tr>
-<tr>
-<td>插件构建</td>
-<td>无</td>
-<td>部署aapt</td>
-<td>Gradle插件</td>
-<td>无</td>
-<td>Gradle插件</td>
-<td>Gradle插件</td>
-</tr>
-<tr>
-<td>源码</td>
-<td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
-<td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
-<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
-<td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
-<td><code>https://github.com/didi/VirtualAPK</code></td>
-<td><code>https://github.com/Qihoo360/RePlugin</code></td>
-</tr>
-<tr>
-<td>开发者</td>
-<td>singwhatiwanna</td>
-<td>CtripMobile</td>
-<td></td>
-<td>Lody</td>
-<td>滴滴</td>
-<td>360</td>
-</tr>
-</tbody>
-</table>
-<h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><p>基于静态代理的实现</p>
-<h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Supported components</td>
-<td>Activity, Service, Receiver and Provider</td>
-</tr>
-<tr>
-<td>Manually register components in AndroidManifest.xml</td>
-<td>No need</td>
-</tr>
-<tr>
-<td>Access host app classes and resources</td>
-<td>Supported</td>
-</tr>
-<tr>
-<td>PendingIntent</td>
-<td>Supported</td>
-</tr>
-<tr>
-<td>Supported Android features</td>
-<td>Almost all features</td>
-</tr>
-<tr>
-<td>Compatibility</td>
-<td>Almost all devices</td>
-</tr>
-<tr>
-<td>Building system</td>
-<td>Gradle plugin</td>
-</tr>
-<tr>
-<td>Supported Android versions</td>
-<td>API Level 15+</td>
-</tr>
-</tbody>
-</table>
-<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
-<h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
-<li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
-<li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
-<li>去除插件包对宿主的引用 构建时通过Gradle插件去除插件对宿主的代码以及资源的引用<h5 id="2-2-3-2四大组件的实现原理"><a href="#2-2-3-2四大组件的实现原理" class="headerlink" title="2.2.3.2四大组件的实现原理"></a>2.2.3.2四大组件的实现原理</h5></li>
-<li>Activity 采用宿主manifest中占坑的方式来绕过系统校验，然后再加载真正的activity；</li>
-<li>Service 动态代理AMS，拦截service相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作；</li>
-<li>Receiver 将插件中静态注册的receiver重新注册一遍；</li>
-<li>ContentProvider 动态代理IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</li>
-</ul>
-<h4 id="2-3RePlugin"><a href="#2-3RePlugin" class="headerlink" title="2.3RePlugin"></a>2.3RePlugin</h4><h5 id="2-3-1特性"><a href="#2-3-1特性" class="headerlink" title="2.3.1特性"></a>2.3.1特性</h5><table>
-<thead>
-<tr>
-<th>特性</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>组件</td>
-<td>四大组件（含静态Receiver）</td>
-</tr>
-<tr>
-<td>升级无需改主程序Manifest</td>
-<td>完美支持</td>
-</tr>
-<tr>
-<td>Android特性</td>
-<td>支持近乎所有（包括SO库等）</td>
-</tr>
-<tr>
-<td>TaskAffinity &amp; 多进程</td>
-<td>支持（坑位方案）</td>
-</tr>
-<tr>
-<td>插件类型</td>
-<td>支持自带插件（自识别）、外置插件</td>
-</tr>
-<tr>
-<td>插件间耦合</td>
-<td>支持Binder、Class Loader、资源等</td>
-</tr>
-<tr>
-<td>进程间通讯</td>
-<td>支持同步、异步、Binder、广播等</td>
-</tr>
-<tr>
-<td>自定义Theme &amp; AppComat</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>DataBinding</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>安全校验</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>资源方案</td>
-<td>独立资源 + Context传递（相对稳定）</td>
-</tr>
-<tr>
-<td>Android 版本</td>
-<td>API Level 9+ （2.3及以上）</td>
-</tr>
-</tbody>
-</table>
-<h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/08/tips-ml-mle-map/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/08/tips-ml-mle-map/" itemprop="url">
-                  (转)聊一聊机器学习的MLE和MAP:最大似然估计和最大后验估计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T17:36:01+08:00">
-                2018-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="TLDR-or-the-take-away"><a href="#TLDR-or-the-take-away" class="headerlink" title="TLDR (or the take away)"></a>TLDR (or the take away)</h3><ul>
-<li>概率学派 - Frequentist - Maximum Likelihood Estimation(MLE,最大似然估计)</li>
-<li>贝叶斯学派 - Baysesian - Maximum A Posteriori(MAP, 最大后验估计)</li>
-</ul>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>有时候和别人聊天，对方会说自己有很多机器学习经验，深入一聊发现，对方竟然对MLE和MAP一知半解，至少在我看来，这位同学的机器学习基础并不扎实。难道在这个深度学习盛行的年代，不少同学都只注重调参数？</p>
-<p>现代机器学习的终极问题都会转化为解目标函数的优化问题，MLE和MAP是生成这个函数的很基本的思想，因此我们对二者的认知是非常重要的。这次就和大家认真聊一聊MLE和MAP这两种estimator。</p>
-<h3 id="两大学派的争论"><a href="#两大学派的争论" class="headerlink" title="两大学派的争论"></a>两大学派的争论</h3><p>抽象一点来讲，频率学派和贝叶斯学派对世界的认知有本质不同：频率学派认为世界是确定的，有一个本体，这个本体的真值是不变的，我们的目标就是要找到这个真值或真值所在的范围；而贝叶斯学派认为世界是不确定的，人们对世界先有一个预判，而后通过观测数据对这个预判做调整，我们的目标是要找到最优的描述这个世界的概率分布。</p>
-<p>在对事物建模时，用 θ  表示模型的参数，请注意，解决问题的本质就是求θ 。那么：
-<strong>(1) 频率学派：</strong> 存在唯一真值 θ  。举一个简单直观的例子–抛硬币，我们用 P(head) 来表示硬币的bias。抛一枚硬币100次，有20次正面朝上，要估计抛硬币正面朝上的bias P(head)=θ。在频率学派来看，θ = 20 / 100 = 0.2，很直观。当数据量趋于无穷时，这种方法能给出精准的估计；然而缺乏数据时则可能产生严重的偏差。例如，对于一枚均匀硬币，即 θ = 0.5，抛掷5次，出现5次正面 (这种情况出现的概率是1/2^5=3.125%)，频率学派会直接估计这枚硬币 θ = 1，出现严重错误。</p>
-<p><strong>(2) 贝叶斯学派：</strong> θ 是一个随机变量，符合一定的概率分布。在贝叶斯学派里有两大输入和一大输出，输入是先验 (prior)和似然 (likelihood)，输出是后验 (posterior)。先验，即 P(θ) ，指的是在没有观测到任何数据时对 θ 的预先判断，例如给我一个硬币，一种可行的先验是认为这个硬币有很大的概率是均匀的，有较小的概率是是不均匀的；似然，即 P(X|θ) ，是假设 θ 已知后我们观察到的数据应该是什么样子的；后验，即 P(θ|X) ，是最终的参数分布。贝叶斯估计的基础是贝叶斯公式，如下：</p>
-<p>$P(\theta|X)=\frac{P(X|\theta) \times P(\theta)}{P(X)}$</p>
-<p>同样是抛硬币的例子，对一枚均匀硬币抛5次得到5次正面，那么 P(head) ，即 P(θ|X) ，是一个distribution，最大值会介于0.5~1之间，而不是武断的 θ = 1。</p>
-<p>这里有两点值得注意的地方：</p>
-<p>随着数据量的增加，参数分布会越来越向数据靠拢，先验的影响力会越来越小
-如果先验是uniform distribution，则贝叶斯方法等价于频率方法。因为直观上来讲，先验是uniform distribution本质上表示对事物没有任何预判</p>
-<h3 id="MLE-最大似然估计"><a href="#MLE-最大似然估计" class="headerlink" title="MLE - 最大似然估计"></a>MLE - 最大似然估计</h3><p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
-<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
-<p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
-<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
-<p>最后这一行所优化的函数被称为Negative Log Likelihood (NLL)，这个概念和上面的推导是非常重要的！</p>
-<p>我们经常在不经意间使用MLE，例如</p>
-<ul>
-<li>上文中关于频率学派求硬币概率的例子，其方法其实本质是由优化NLL得出。本文末尾附录中给出了具体的原因 :-)</li>
-<li>给定一些数据，求对应的高斯分布时，我们经常会算这些数据点的均值和方差然后带入到高斯分布的公式，其理论依据是优化NLL</li>
-<li>深度学习做分类任务时所用的cross entropy loss，其本质也是MLE</li>
-</ul>
-<h3 id="MAP-最大后验估计"><a href="#MAP-最大后验估计" class="headerlink" title="MAP - 最大后验估计"></a>MAP - 最大后验估计</h3><p>Maximum A Posteriori, MAP是贝叶斯学派常用的估计方法！</p>
-<p>同样的，假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。那么MLE对 $\theta$ 的估计方法可以如下推导：
-其中，第二行到第三行使用了贝叶斯定理，第三行到第四行P(X) 可以丢掉因为与 $\theta$ 无关。注意 $-\log P(X|\theta )$ 其实就是NLL，所以MLE和MAP在优化时的不同就是在于先验项 - $\log P(\theta) $。好的，那现在我们来研究一下这个先验项，假定先验是一个高斯分布，即</p>
-<p>$P(\theta) = \text{constant} \times e^{-\frac{\theta^2}{2\sigma^2}}$</p>
-<p>那么， $-\log P(\theta) = \text{constant} + \frac{\theta^2}{2\sigma^2} $。至此，一件神奇的事情发生了 – 在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的regularizaton！</p>
-<p>再稍微补充几点：</p>
-<ul>
-<li>我们不少同学大学里学习概率论时，最主要的还是频率学派的思想，其实贝叶斯学派思想也非常流行，而且实战性很强</li>
-<li>CMU的很多老师都喜欢用贝叶斯思想解决问题；我本科时的导师朱军老师也在做<a href="https://arxiv.org/abs/1709.05870" target="_blank" rel="external">贝叶斯深度学习</a>的工作，有兴趣可以关注一下。</li>
-</ul>
-<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>有的同学说：“了解这些没用，现在大家都不用了。”这种想法是不对的，因为这是大家常年在用的知识，是推导优化函数的核心，而优化函数又是机器学习 (包含深度学习) 的核心之一。这位同学有这样的看法，说明对机器学习的本质并没有足够的认识，而让我吃惊的是，竟然有不少其他同学为这种看法点赞。内心感到有点儿悲凉，也引发了我写这篇文章的动力，希望能帮到一些朋友 :-)</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><p>[1] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">Bayesian Method Lecture</a>, UT Dallas.</p>
-</li>
-<li><p>[2] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">MLE, MAP, Bayes classification Lecture</a>, CMU.</p>
-</li>
-</ul>
-<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>为什么说频率学派求硬币概率的算法本质是在优化NLL？</p>
-<p>因为抛硬币可以表示为参数为 $\theta$  的Bernoulli分布，即</p>
-<p>$P(x_i; \theta) =\left{ \begin{array}{ll} \theta &amp; x_i = 1 \ 1 - \theta &amp; x_i = 0 \ \end{array} \right. \ = \theta^{x_i} (1- \theta)^{1-x_i}$</p>
-<p>其中 x_i = 1 表示第 i 次抛出正面。那么，</p>
-<p>$\text{NLL} = -\sum_{i=1}^n \log P(x<em>i; \theta) = -\sum</em>{i=1}^n \log \theta^{x_i} (1- \theta)^{1-x_i}$</p>
-<p>求导数并使其等于零，得到</p>
-<p>$\text{NLL}’ = -\sum_{i=1}^n\Big(\frac{x_i}{\theta} + (1-x_i)\frac{-1}{1-\theta}\Big) = 0$</p>
-<p>即 $\hat{\theta} = \frac{\sum_{i=1}^n x_i}{n}$ ，也就是出现正面的次数除以总共的抛掷次数。</p>
-<blockquote>
-<p>转自<a href="https://zhuanlan.zhihu.com/p/32480810" target="_blank" rel="external">聊一聊机器学习的MLE和MAP：最大似然估计和最大后验估计</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2711,7 +2409,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2722,7 +2420,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
