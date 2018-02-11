@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/01/21/tips-ml-dpst/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1.介绍deep-photo-styletransfer: 2.安装环境为mac10.13.2 2.1安装依赖2.1.1 TorchTorch是基于Lua语言的深度学习框架. 安装: 123curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bashgit clone https://git">
-<meta property="og:updated_time" content="2018-01-21T15:28:33.469Z">
+<meta property="og:updated_time" content="2018-01-25T07:22:47.585Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="deep-photo-styletransfer介绍">
 <meta name="twitter:description" content="1.介绍deep-photo-styletransfer: 2.安装环境为mac10.13.2 2.1安装依赖2.1.1 TorchTorch是基于Lua语言的深度学习框架. 安装: 123curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bashgit clone https://git">
@@ -517,7 +517,35 @@ Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:�
 <li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
 <li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
 <li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+<li><a href="https://github.com/LouieYang/deep-photo-styletransfer-tf" target="_blank" rel="external">deep-photo-styletransfer-tf</a>:Tensorflow (Python API) implementation of Deep Photo Style Transfer</li>
+<li><a href="https://github.com/floydhub/deep-photo-styletransfer" target="_blank" rel="external">floydhub/deep-photo-styletransfer</a>:Jupyter Notebook to train photorealistic style transfer</li>
+<li><a href="https://askubuntu.com/questions/652004/how-do-i-rebuild-octave-and-link-in-graphicsmagick" target="_blank" rel="external">How do I rebuild Octave and link in GraphicsMagick?</a></li>
+<li><a href="ftp://ftp.gnu.org/gnu/octave/" target="_blank" rel="external">/gnu/octave/ 的索引</a></li>
 </ul>
+<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><ol>
+<li><code>configure :error: No usable version of sed found:</code>
+I did ./configure to make a makefile</li>
+</ol>
+<p>but it ran into an error: configure :error: No usable version of sed found:</p>
+<p>I then typed which see</p>
+<p>it shows /usr/bin/sed.</p>
+<p>so, what’s wrong? why can’t ./configure find sed?</p>
+<p>I happened to have this problem on my mac. This is because OS X uses an old version of sed. Installing gnu-sed by <code>brew install gnu-sed</code> and <code>alias gsed=sed</code> solved this problem. You may install gnu-sed with other method.</p>
+<p><a href="https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found" target="_blank" rel="external">https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found</a></p>
+<ol>
+<li><code>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</code></li>
+</ol>
+<p>I am attempting to install GraphicsMagick in a hosting account…</p>
+<p>I used this info to get it to work in most cases:</p>
+<p><a href="https://superuser.com/questions/192573/how-do-you-specify-the-location-of-libraries-to-a-binary-linux" target="_blank" rel="external">How do you specify the location of libraries to a binary? (linux)</a></p>
+<p>However, it still cannot find the delegates.mgk (which is in ./lib/GraphicsMagick-1.3.14/delegates.mgk) as witnessed in this error:</p>
+<p>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</p>
+<p>Either, a) how do find out where the binary thinks this file should be, or b) how do I extend the wrapper script to help it out?</p>
+<p>Figured it out after looking through the binary for /PATH/</p>
+<p>The binaries require these additional path variables:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$MAGICK_CONFIG_PATH</div><div class="line">$MAGICK_CODER_MODULE_PATH</div><div class="line">$MAGICK_FILTER_MODULE_PATH</div></pre></td></tr></table></figure></p>
+<p>…here is the resulting script modification form my setup:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ -n &quot;$LD_LIBRARY_PATH&quot; ]; then</div><div class="line">  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/USER/lib</div><div class="line">else</div><div class="line">  LD_LIBRARY_PATH=/home/USER/lib</div><div class="line">fi</div><div class="line">[ -z &quot;$&#123;MAGICK_CONFIGURE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CONFIGURE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/config</div><div class="line">[ -z &quot;$&#123;MAGICK_CODER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CODER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/coders</div><div class="line">[ -z &quot;$&#123;MAGICK_FILTER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_FILTER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/filters</div><div class="line">export LD_LIBRARY_PATH</div><div class="line">exec /home/USER/bin/gm-bin &quot;$@&quot;</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -592,6 +620,10 @@ Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/25/tips-ml-about-backgroundremoval/" rel="prev" title="基于深度学习的自动抠图">
+                基于深度学习的自动抠图 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -671,7 +703,7 @@ Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-count">94</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -787,7 +819,7 @@ Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-介绍"><span class="nav-number">1.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装"><span class="nav-number">2.</span> <span class="nav-text">2.安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1安装依赖"><span class="nav-number">2.1.</span> <span class="nav-text">2.1安装依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Torch"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 Torch</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2Matlab-or-Octave"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2Matlab or Octave</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-3CUDA-cudnn"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3CUDA cudnn</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-4下载VGG-19"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4下载VGG-19</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关资源"><span class="nav-number">3.</span> <span class="nav-text">相关资源</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-介绍"><span class="nav-number">1.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装"><span class="nav-number">2.</span> <span class="nav-text">2.安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1安装依赖"><span class="nav-number">2.1.</span> <span class="nav-text">2.1安装依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Torch"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 Torch</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2Matlab-or-Octave"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2Matlab or Octave</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-3CUDA-cudnn"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3CUDA cudnn</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-4下载VGG-19"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4下载VGG-19</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关资源"><span class="nav-number">3.</span> <span class="nav-text">相关资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关问题"><span class="nav-number">4.</span> <span class="nav-text">相关问题</span></a></li></ol></div>
             
 
           </div>

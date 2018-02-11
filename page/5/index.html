@@ -323,6 +323,491 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/tips-qt-audiooutput/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/13/tips-qt-audiooutput/" itemprop="url">
+                  关于QT QAudioOutput push模式问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-13T11:52:14+08:00">
+                2017-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/QT/" itemprop="url" rel="index">
+                    <span itemprop="name">QT</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在MAC上基于QT和ffmpeg实现最简单播放器,在完成声音播放模块后导致无法正常播放,QAudioOutput start后state仍是idel,将QAudioOutput buffer写满后就不能继续写数据了,导致播放被卡死.</p>
+<p>QAudioOutput创建代码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">QAudioFormat fmt;</div><div class="line">fmt.setSampleRate(this-&gt;sampleRate);</div><div class="line">fmt.setSampleSize(this-&gt;sampleSize);</div><div class="line">fmt.setChannelCount(this-&gt;channel);</div><div class="line">fmt.setCodec(&quot;audio/pcm&quot;);</div><div class="line">fmt.setByteOrder(QAudioFormat::LittleEndian);</div><div class="line">fmt.setSampleType(QAudioFormat::UnSignedInt);</div><div class="line">QAudioDeviceInfo info = QAudioDeviceInfo::defaultOutputDevice();</div><div class="line">printf(&quot;deviceName:%s\n&quot;,qPrintable(info.deviceName()));</div><div class="line">if (!info.isFormatSupported(fmt)) &#123;</div><div class="line">    printf(&quot;default format not supported try to use nearest\n&quot;);</div><div class="line">    fmt = info.nearestFormat(fmt);</div><div class="line">&#125;</div><div class="line">output = new QAudioOutput(fmt);</div><div class="line">//connect(output, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));</div><div class="line">io = output-&gt;start();</div><div class="line">printf(&quot;io:%p\n&quot;, io);</div><div class="line">//printf(&quot;state:%s&quot;,output-&gt;state());</div><div class="line">QAudio::State stat = output-&gt;state();</div></pre></td></tr></table></figure></p>
+<p>在stackoverflow <a href="https://stackoverflow.com/questions/15651407/qt-qaudiooutput-push-mode" target="_blank" rel="external">Qt QAudioOutput push mode</a>看到别人的问题和解释,发现是setSampleType引起的,代码在window上可以正常跑,只是在mac上失败.</p>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>I’ve got a question about using QAudioOutput to directly write samples at a specific sample rate to the sound output device. I’m writing an emulator that emualates sound chips on a per-frame basis, and then gets a buffer containing a frame’s worth of audio samples, which I would like to write to the audio output. Currently, to test my audio output routine, I allocate a huge (5 minute) buffer to put random numbers into, like so:</p>
+<p>Header:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">uint16_t *audio_outputBuffer;</div><div class="line">uint32_t audio_bytesRemainingToRead;</div><div class="line">QAudioOutput *audio_outputStream;</div><div class="line">QIODevice *audio_outputDevice;</div></pre></td></tr></table></figure></p>
+<p>Implementation:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">audio_outputBuffer = (uint16_t *) malloc((96000 * 4) * 300);</div><div class="line">int i = 0;</div><div class="line"></div><div class="line">uint16_t *tempAudioBuffer = audio_outputBuffer;</div><div class="line">for(i = 0; i &lt; ((96000 * 4) * 150); i++) &#123;</div><div class="line">    *tempAudioBuffer = (uint16_t) rand() &amp; 0xFFFF;</div><div class="line">    tempAudioBuffer++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">audio_bytesRemainingToRead = (96000 * 4) * 300;</div></pre></td></tr></table></figure></p>
+<p>Next, I set up my audio device with some basic parameters:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// Set up the format</div><div class="line">QAudioFormat format;</div><div class="line">format.setFrequency(96000); // Usually this is specified through an UI option</div><div class="line">format.setChannels(2);</div><div class="line">format.setSampleSize(16);</div><div class="line">format.setCodec(&quot;audio/pcm&quot;);</div><div class="line">format.setByteOrder(QAudioFormat::LittleEndian);</div><div class="line">format.setSampleType(QAudioFormat::UnSignedInt);</div><div class="line"></div><div class="line">// There&apos;s code here to notify the user of inability to match the format and choose an action, which is omitted for clarity</div><div class="line"></div><div class="line">// Create audio output stream, set up signals</div><div class="line">audio_outputStream = new QAudioOutput(format, this);</div><div class="line"></div><div class="line">connect(audio_outputStream, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audio_stateChanged(QAudio::State)));</div><div class="line"></div><div class="line">audio_outputDevice = audio_outputStream-&gt;start();</div></pre></td></tr></table></figure></p>
+<p>Then, in my timer tick routine, which is called by a QTimer at 60 FPS, I do the following code to write a ‘chunk’ of audio data to the QAudioOutput’s buffer:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(audio_outputDevice-&gt;isOpen() &amp;&amp; audio_outputStream-&gt;state() != QAudio::StoppedState) &#123;</div><div class="line">    qint64 bytesOfAudioWrittenToDevice = audio_outputDevice-&gt;write((char *) audio_outputBuffer, audio_outputStream-&gt;periodSize());</div><div class="line">    audio_bytesRemainingToRead -= bytesOfAudioWrittenToDevice;</div><div class="line">    qDebug() &lt;&lt; &quot;Wrote&quot; &lt;&lt; bytesOfAudioWrittenToDevice &lt;&lt; &quot;bytes of audio to output device. Remaining bytes to read:&quot; &lt;&lt; audio_bytesRemainingToRead;</div><div class="line">    qDebug() &lt;&lt; &quot;Free bytes in audio output:&quot; &lt;&lt; audio_outputStream-&gt;bytesFree();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Once I start the audio output process, I get the following output on the console:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Current audio state: 3 Error: 0</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115197952</div><div class="line">Free bytes in audio output: 6144</div><div class="line">Current audio state: 0 Error: 0</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115195904</div><div class="line">Free bytes in audio output: 4096</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115193856</div><div class="line">Free bytes in audio output: 2048</div><div class="line">Wrote 2048 bytes of audio to output device. Remaining bytes to read: 115191808</div><div class="line">Free bytes in audio output: 0 (This and the above line is repeated forever)</div></pre></td></tr></table></figure></p>
+<p>To me, it looks like QAudioOutput isn’t flushing it’s internal buffer to the sound card, which goes along with the entire “no sound coming out of my computer” thing.</p>
+<p>What would cause this issue, and how could I fix it?</p>
+<p>(By the way, I’m compiling my code against Qt 4.8.1, on Mac OS X 10.7.4.)</p>
+<p>Thanks for any answers.</p>
+<h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><p>Upfront just wanna point out: This is not a Qt bug. Why? The answer is that in the WAV spec’, 8-bit samples are always unsigned, whereas 16-bit samples are always signed. Any other combination does not work. This is device related, the framework can not do anything about it.</p>
+<p>So this will not work because you have set 16 bit sample size and unsigned integer format. And yes, the solution is: you have to set the sample type to signed for 16-bit resolution:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format.setSampleType(QAudioFormat::SignedInt);</div></pre></td></tr></table></figure></p>
+<p>Inversely for 8-bit samples you would have to put:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format.setSampleType(QAudioFormat:UnsignedInt);</div></pre></td></tr></table></figure></p>
+<p>Also this very similar question (same problem but with 8-bit) shows you that it is not a particular problem of using signed or unsigned samples in Qt, but that it is the combination of samples size and type that matters (for the audio device, not for Qt ;) QAudioOutput in Qt5 is not producing any sound</p>
+<p>IMHO the fact that Qt does not take care of handling these cases by forcing the correct format is a flaw but not a lack in functionnality.</p>
+<p>You can learn more about this in the notes section of this page: <a href="https://ccrma.stanford.edu/courses/422/projects/WaveFormat/" target="_blank" rel="external">https://ccrma.stanford.edu/courses/422/projects/WaveFormat/</a></p>
+<p>I’ve figured this out — apparently Qt has issues with UNSIGNED samples. If you set the sample type to signed, everything works fine, regardless of platform.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/ffmpeg-arch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/13/ffmpeg-arch/" itemprop="url">
+                  FFMPEG api使用流程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-13T10:04:15+08:00">
+                2017-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
+                    <span itemprop="name">FFMPEG</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>ffmpeg接口使用流程比较固定:</p>
+<ol>
+<li><code>av_register_all()</code>:注册所有模块</li>
+<li><code>int ret = avformat_open_input(&amp;ic, ofn, 0, 0);</code>:获取AVFormatContext ic(ofn为输入文件地址)</li>
+<li><code>for(i = 0; i &lt; ic-&gt;nb_streams; i++)</code>:遍历AVFormatContext中所有stream,分别找到Audio与Video对应的AVCodecContext;</li>
+<li><code>AVCodec *codec = avcodec_find_decoder(enc-&gt;codec_id);</code>:根据AVCodecContext中codec_id获取到AVCodec;</li>
+<li><code>avcodec_open2(enc, codec,NULL)</code>:打开AVCodec;</li>
+<li>接下来分配AVPacket与AVFrame</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/ffmpeg-codec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/13/ffmpeg-codec/" itemprop="url">
+                  FFMPEG编解码
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-13T10:03:37+08:00">
+                2017-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
+                    <span itemprop="name">FFMPEG</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h3><p>ffmpeg3版本的解码接口做了调整,之前的视频解码接口<code>avcodec_decode_video2</code>和音频解码接口<code>avcodec_decode_audio4</code>被设置为deprecated,对这两个接口做了合并,使用同一的接口.并且将音视频解码步骤分成了两步,第一步<code>avcodec_send_packet</code>,第二步<code>avcodec_receive_frame</code>,</p>
+<h4 id="旧版本avcodec-decode-video2"><a href="#旧版本avcodec-decode-video2" class="headerlink" title="旧版本avcodec_decode_video2"></a>旧版本<code>avcodec_decode_video2</code></h4><h4 id="旧版本avcodec-decode-audio4"><a href="#旧版本avcodec-decode-audio4" class="headerlink" title="旧版本avcodec_decode_audio4"></a>旧版本<code>avcodec_decode_audio4</code></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">int got_picture;</div><div class="line">            ret = avcodec_decode_audio4(enc, pcm,&amp;got_picture, pkt);</div><div class="line">            if ( ret &lt; 0 ) &#123;</div><div class="line">                char buf[1024] = &#123;0&#125;;</div><div class="line">                av_strerror(err, buf, sizeof(buf));</div><div class="line">                printf(buf);</div><div class="line">                printf(&quot;avcodec_decode_audio4 failed:%d&quot; ,got_picture);</div><div class="line">                av_packet_unref(pkt);</div><div class="line">                av_frame_free(&amp;pcm);</div><div class="line">                if(ic) avformat_close_input(&amp;ic);</div><div class="line">                return -1;</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<p>将AVPacket的pkt解码成AVFrame的pcm</p>
+<h4 id="新版本avcodec-send-packet"><a href="#新版本avcodec-send-packet" class="headerlink" title="新版本avcodec_send_packet"></a>新版本<code>avcodec_send_packet</code></h4><h5 id="接口源码"><a href="#接口源码" class="headerlink" title="接口源码:"></a>接口源码:</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Supply raw packet data as input to a decoder.</div><div class="line"> *</div><div class="line"> * Internally, this call will copy relevant AVCodecContext fields, which can</div><div class="line"> * influence decoding per-packet, and apply them when the packet is actually</div><div class="line"> * decoded. (For example AVCodecContext.skip_frame, which might direct the</div><div class="line"> * decoder to drop the frame contained by the packet sent with this function.)</div><div class="line"> *</div><div class="line"> * @warning The input buffer, avpkt-&gt;data must be AV_INPUT_BUFFER_PADDING_SIZE</div><div class="line"> *          larger than the actual read bytes because some optimized bitstream</div><div class="line"> *          readers read 32 or 64 bits at once and could read over the end.</div><div class="line"> *</div><div class="line"> * @warning Do not mix this API with the legacy API (like avcodec_decode_video2())</div><div class="line"> *          on the same AVCodecContext. It will return unexpected results now</div><div class="line"> *          or in future libavcodec versions.</div><div class="line"> *</div><div class="line"> * @note The AVCodecContext MUST have been opened with @ref avcodec_open2()</div><div class="line"> *       before packets may be fed to the decoder.</div><div class="line"> *</div><div class="line"> * @param avctx codec context</div><div class="line"> * @param[in] avpkt The input AVPacket. Usually, this will be a single video</div><div class="line"> *                  frame, or several complete audio frames.</div><div class="line"> *                  Ownership of the packet remains with the caller, and the</div><div class="line"> *                  decoder will not write to the packet. The decoder may create</div><div class="line"> *                  a reference to the packet data (or copy it if the packet is</div><div class="line"> *                  not reference-counted).</div><div class="line"> *                  Unlike with older APIs, the packet is always fully consumed,</div><div class="line"> *                  and if it contains multiple frames (e.g. some audio codecs),</div><div class="line"> *                  will require you to call avcodec_receive_frame() multiple</div><div class="line"> *                  times afterwards before you can send a new packet.</div><div class="line"> *                  It can be NULL (or an AVPacket with data set to NULL and</div><div class="line"> *                  size set to 0); in this case, it is considered a flush</div><div class="line"> *                  packet, which signals the end of the stream. Sending the</div><div class="line"> *                  first flush packet will return success. Subsequent ones are</div><div class="line"> *                  unnecessary and will return AVERROR_EOF. If the decoder</div><div class="line"> *                  still has frames buffered, it will return them after sending</div><div class="line"> *                  a flush packet.</div><div class="line"> *</div><div class="line"> * @return 0 on success, otherwise negative error code:</div><div class="line"> *      AVERROR(EAGAIN):   input is not accepted right now - the packet must be</div><div class="line"> *                         resent after trying to read output</div><div class="line"> *      AVERROR_EOF:       the decoder has been flushed, and no new packets can</div><div class="line"> *                         be sent to it (also returned if more than 1 flush</div><div class="line"> *                         packet is sent)</div><div class="line"> *      AVERROR(EINVAL):   codec not opened, it is an encoder, or requires flush</div><div class="line"> *      AVERROR(ENOMEM):   failed to add packet to internal queue, or similar</div><div class="line"> *      other errors: legitimate decoding errors</div><div class="line"> */</div><div class="line">int avcodec_send_packet(AVCodecContext *avctx, const AVPacket *avpkt);</div></pre></td></tr></table></figure>
+<h5 id="参数分析"><a href="#参数分析" class="headerlink" title="参数分析"></a>参数分析</h5><ul>
+<li><code>AVCodecContext *avctx</code>：第一个参数与旧的接口一致，是视频解码的上下文，包含解码器。</li>
+<li><code>const AVPacket *avpkt</code>： 编码的音视频帧数据</li>
+</ul>
+<p>为什么要传递空的avpkt
+这里有一个说明是可以传递NULL，什么情况下需要传递NULL，你平时看一些视频播放器，播放经常会少最后几帧，很多情况就是因为没有处理好缓冲帧的问题，ffmpeg内部会缓冲几帧，要想取出来就需要传递空的AVPacket进去。</p>
+<h4 id="新版本avcodec-receive-frame"><a href="#新版本avcodec-receive-frame" class="headerlink" title="新版本avcodec_receive_frame"></a>新版本<code>avcodec_receive_frame</code></h4><h5 id="接口源码-1"><a href="#接口源码-1" class="headerlink" title="接口源码"></a>接口源码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Return decoded output data from a decoder.</div><div class="line"> *</div><div class="line"> * @param avctx codec context</div><div class="line"> * @param frame This will be set to a reference-counted video or audio</div><div class="line"> *              frame (depending on the decoder type) allocated by the</div><div class="line"> *              decoder. Note that the function will always call</div><div class="line"> *              av_frame_unref(frame) before doing anything else.</div><div class="line"> *</div><div class="line"> * @return</div><div class="line"> *      0:                 success, a frame was returned</div><div class="line"> *      AVERROR(EAGAIN):   output is not available right now - user must try</div><div class="line"> *                         to send new input</div><div class="line"> *      AVERROR_EOF:       the decoder has been fully flushed, and there will be</div><div class="line"> *                         no more output frames</div><div class="line"> *      AVERROR(EINVAL):   codec not opened, or it is an encoder</div><div class="line"> *      other negative values: legitimate decoding errors</div><div class="line"> */</div><div class="line">int avcodec_receive_frame(AVCodecContext *avctx, AVFrame *frame);</div></pre></td></tr></table></figure>
+<h5 id="参数分析-1"><a href="#参数分析-1" class="headerlink" title="参数分析"></a>参数分析</h5><ul>
+<li><code>AVCodecContext *avctx</code>：第一个参数视频解码的上下文，与上面接口一致。</li>
+<li><code>AVFrame *frame</code>：解码后的视频帧数据。</li>
+</ul>
+<h5 id="空间申请和释放问题"><a href="#空间申请和释放问题" class="headerlink" title="空间申请和释放问题"></a>空间申请和释放问题</h5><p>解码后图像空间由函数内部申请，你所做的只需要分配 AVFrame 对象空间，如果你每次调用avcodec_receive_frame传递同一个对象，接口内部会判断空间是否已经分配，如果没有分配会在函数内部分配。
+avcodec_send_packet和avcodec_receive_frame调用关系并不一定是一对一的，比如一些音频数据一个AVPacket中包含了1秒钟的音频，调用一次avcodec_send_packet之后，可能需要调用25次 avcodec_receive_frame才能获取全部的解码音频数据，所以要做如下处理：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">int re = avcodec_send_packet(codec, pkt);</div><div class="line">if (re != 0)</div><div class="line">&#123;</div><div class="line">    return;</div><div class="line">&#125;</div><div class="line">while( avcodec_receive_frame(codec, frame) == 0)</div><div class="line">&#123;</div><div class="line">    //读取到一帧音频或者视频</div><div class="line">    //处理解码后音视频 frame</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>参考
+<a href="http://ffmpeg.org/doxygen/trunk/group__lavc__encdec.html" target="_blank" rel="external">send/receive encoding and decoding API overview</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/ffmpeg-util/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2230,671 +2715,6 @@ onClick代码如下：
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/24/tips-activity-stack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/24/tips-activity-stack/" itemprop="url">
-                  Android Activity任务和返回栈
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T00:31:17+08:00">
-                2017-08-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>问题:homeActivity为正常启动模式activity,另一个activity为singleTask Activity.从package installers启动homeaty,再启动另一个activity,桌面,再点击桌面图标进入应用,会重新打开homeaty,而不是另一个activity.但是如果是从桌面首次进入home再进入另一个activity,切换到到桌面回来是在正常的另一个activity.同事发现homeaty, 另一个aty,桌面重新回来的homeaty, taskid相同.</p>
-<p>解决办法是使用application记录front activity.</p>
-<p><a href="http://blog.csdn.net/love100628/article/details/43238135" target="_blank" rel="external">实例化launcher activity</a></p>
-<p>这个问题表现:</p>
-<ol>
-<li><p>在package installers 安装界面安装完一个应用后，直接打开app，然后进入了 Activity_1, 此时再通过此activity用startActivity(intent)的方法打开 Activity_2.</p>
-</li>
-<li><p>然后按home键返回桌面，在桌面点击app图标进入，你觉得应该进入的是 Activity_2 ，实际上却是launcher Activity_1 .</p>
-</li>
-<li><p>然而还没完，这时候你按 back 返回键，会发现返回到了之前打开的 Activity_2，再按返回，又出现 launcherActivity_1. 也就是说系统重复实例化了Activity_1.</p>
-</li>
-<li><p>退出app后再次点击桌面图标进入，反复试验，没有再出现这个问题。也就是说，这个问题（bug ？）只出现在操作步骤（1）后才会产生.</p>
-</li>
-</ol>
-<p>以上问题我在一些知名厂商的app 上发现也存在这个BUG ：</p>
-<p>百度云</p>
-<p>陌陌</p>
-<p>去哪儿旅行</p>
-<p>…QQ没有出现这个问题</p>
-<p>另外，如果以root方式静默安装的话不会出现这个问题，在eclipse里直接发布到模拟器上运行也没有出现这个问题</p>
-<p>解决方案:
-在super.onCreate(…)方法之后插入代码：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">if(!this.isTaskRoot()) &#123; //判断该Activity是不是任务空间的源Activity，“非”也就是说是被系统重新实例化出来  </div><div class="line">//如果你就放在launcher Activity中话，这里可以直接return了  </div><div class="line">        Intent mainIntent=getIntent();   </div><div class="line">String action=mainIntent.getAction();  </div><div class="line">if(mainIntent.hasCategory(Intent.CATEGORY_LAUNCHER) &amp;&amp; action.equals(Intent.ACTION_MAIN)) &#123;  </div><div class="line">finish();  </div><div class="line">return;//finish()之后该活动会继续执行后面的代码，你可以logCat验证，加return避免可能的exception  </div><div class="line">&#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>来源google ：
-<a href="https://code.google.com/p/android/issues/detail?id=14262" target="_blank" rel="external">https://code.google.com/p/android/issues/detail?id=14262</a></p>
-<p><a href="https://code.google.com/p/android/issues/detail?id=2373#c40" target="_blank" rel="external">https://code.google.com/p/android/issues/detail?id=2373#c40</a></p>
-<p>还有另一种方案：</p>
-<p><a href="http://stackoverflow.com/questions/3042420/home-key-press-behaviour/4782423#4782423" target="_blank" rel="external">http://stackoverflow.com/questions/3042420/home-key-press-behaviour/4782423#4782423</a></p>
-<p><a href="https://developer.android.com/guide/components/tasks-and-back-stack.html" target="_blank" rel="external">以下引用自google官方文档</a></p>
-<p>应用通常包含多个 Activity。每个 Activity 均应围绕用户可以执行的特定操作设计，并且能够启动其他 Activity。 例如，电子邮件应用可能有一个 Activity 显示新邮件的列表。用户选择某邮件时，会打开一个新 Activity 以查看该邮件。</p>
-<p>一个 Activity 甚至可以启动设备上其他应用中存在的 Activity。例如，如果应用想要发送电子邮件，则可将 Intent 定义为执行“发送”操作并加入一些数据，如电子邮件地址和电子邮件。 然后，系统将打开其他应用中声明自己处理此类 Intent 的 Activity。在这种情况下，Intent 是要发送电子邮件，因此将启动电子邮件应用的“撰写”Activity（如果多个 Activity 支持相同 Intent，则系统会让用户选择要使用的 Activity）。发送电子邮件时，Activity 将恢复，看起来好像电子邮件 Activity 是您的应用的一部分。 即使这两个 Activity 可能来自不同的应用，但是 Android 仍会将 Activity 保留在相同的任务中，以维护这种无缝的用户体验。</p>
-<p>任务是指在执行特定作业时与用户交互的一系列 Activity。 这些 Activity 按照各自的打开顺序排列在堆栈（即返回栈）中。</p>
-<p>设备主屏幕是大多数任务的起点。当用户触摸应用启动器中的图标（或主屏幕上的快捷方式）时，该应用的任务将出现在前台。 如果应用不存在任务（应用最近未曾使用），则会创建一个新任务，并且该应用的“主”Activity 将作为堆栈中的根 Activity 打开。</p>
-<p>当前 Activity 启动另一个 Activity 时，该新 Activity 会被推送到堆栈顶部，成为焦点所在。 前一个 Activity 仍保留在堆栈中，但是处于停止状态。Activity 停止时，系统会保持其用户界面的当前状态。 用户按“返回”按钮时，当前 Activity 会从堆栈顶部弹出（Activity 被销毁），而前一个 Activity 恢复执行（恢复其 UI 的前一状态）。 堆栈中的 Activity 永远不会重新排列，仅推入和弹出堆栈：由当前 Activity 启动时推入堆栈；用户使用“返回”按钮退出时弹出堆栈。 因此，返回栈以“后进先出”对象结构运行。 图 1 通过时间线显示 Activity 之间的进度以及每个时间点的当前返回栈，直观呈现了这种行为。
-<img src="https://developer.android.com/images/fundamentals/diagram_backstack.png" alt="image">
-图 1. 显示任务中的每个新 Activity 如何向返回栈添加项目。 用户按“返回”按钮时，当前 Activity 随即被销毁，而前一个 Activity 恢复执行。</p>
-<p>如果用户继续按“返回”，堆栈中的相应 Activity 就会弹出，以显示前一个 Activity，直到用户返回主屏幕为止（或者，返回任务开始时正在运行的任意 Activity）。 当所有 Activity 均从堆栈中移除后，任务即不复存在。</p>
-<p>任务是一个有机整体，当用户开始新任务或通过“主页”按钮转到主屏幕时，可以移动到“后台”。 尽管在后台时，该任务中的所有 Activity 全部停止，但是任务的返回栈仍旧不变，也就是说，当另一个任务发生时，该任务仅仅失去焦点而已，如图 2 中所示。然后，任务可以返回到“前台”，用户就能够回到离开时的状态。 例如，假设当前任务（任务 A）的堆栈中有三个 Activity，即当前 Activity 下方还有两个 Activity。 用户先按“主页”按钮，然后从应用启动器启动新应用。 显示主屏幕时，任务 A 进入后台。新应用启动时，系统会使用自己的 Activity 堆栈为该应用启动一个任务（任务 B）。与该应用交互之后，用户再次返回主屏幕并选择最初启动任务 A 的应用。现在，任务 A 出现在前台，其堆栈中的所有三个 Activity 保持不变，而位于堆栈顶部的 Activity 则会恢复执行。 此时，用户还可以通过转到主屏幕并选择启动该任务的应用图标（或者，通过从概览屏幕选择该应用的任务）切换回任务 B。这是 Android 系统中的一个多任务示例。
-<img src="https://developer.android.com/images/fundamentals/diagram_multitasking.png" alt="image">
-图 2. 两个任务：任务 B 在前台接收用户交互，而任务 A 则在后台等待恢复。</p>
-<blockquote>
-<p>注：后台可以同时运行多个任务。但是，如果用户同时运行多个后台任务，则系统可能会开始销毁后台 Activity，以回收内存资源，从而导致 Activity 状态丢失。请参阅下面有关 Activity 状态的部分。</p>
-</blockquote>
-<p>由于返回栈中的 Activity 永远不会重新排列，因此如果应用允许用户从多个 Activity 中启动特定 Activity，则会创建该 Activity 的新实例并推入堆栈中（而不是将 Activity 的任一先前实例置于顶部）。 因此，应用中的一个 Activity 可能会多次实例化（即使 Activity 来自不同的任务），如图 3 所示。因此，如果用户使用“返回”按钮向后导航，则会按 Activity 每个实例的打开顺序显示这些实例（每个实例的 UI 状态各不相同）。 但是，如果您不希望 Activity 多次实例化，则可修改此行为。 具体操作方法将在后面的管理任务部分中讨论。
-<img src="https://developer.android.com/images/fundamentals/diagram_multiple_instances.png" alt="image">
-图 3. 一个 Activity 将多次实例化。</p>
-<p>Activity 和任务的默认行为总结如下：</p>
-<ul>
-<li>当 Activity A 启动 Activity B 时，Activity A 将会停止，但系统会保留其状态（例如，滚动位置和已输入表单中的文本）。如果用户在处于 Activity B 时按“返回”按钮，则 Activity A 将恢复其状态，继续执行。</li>
-<li>用户通过按“主页”按钮离开任务时，当前 Activity 将停止且其任务会进入后台。 系统将保留任务中每个 Activity 的状态。如果用户稍后通过选择开始任务的启动器图标来恢复任务，则任务将出现在前台并恢复执行堆栈顶部的 Activity。</li>
-<li>如果用户按“返回”按钮，则当前 Activity 会从堆栈弹出并被销毁。 堆栈中的前一个 Activity 恢复执行。销毁 Activity 时，系统不会保留该 Activity 的状态。</li>
-<li>即使来自其他任务，Activity 也可以多次实例化。</li>
-</ul>
-<h3 id="保存-Activity-状态"><a href="#保存-Activity-状态" class="headerlink" title="保存 Activity 状态"></a>保存 Activity 状态</h3><p>正如上文所述，当 Activity 停止时，系统的默认行为会保留其状态。 这样一来，当用户导航回到上一个 Activity 时，其用户界面与用户离开时一样。 但是，在 Activity 被销毁且必须重建时，您可以而且应当主动使用回调方法保留 Activity 的状态。</p>
-<p>系统停止您的一个 Activity 时（例如，新 Activity 启动或任务转到前台），如果系统需要回收系统内存资源，则可能会完全销毁该 Activity。 发生这种情况时，有关该 Activity 状态的信息将会丢失。如果发生这种情况，系统仍会知道该 Activity 存在于返回栈中，但是当该 Activity 被置于堆栈顶部时，系统一定会重建 Activity（而不是恢复 Activity）。 为了避免用户的工作丢失，您应主动通过在 Activity 中实现 onSaveInstanceState() 回调方法来保留工作。</p>
-<p>如需了解有关如何保存 Activity 状态的详细信息，请参阅 Activity 文档。</p>
-<h3 id="管理任务"><a href="#管理任务" class="headerlink" title="管理任务"></a>管理任务</h3><p>Android 管理任务和返回栈的方式（如上所述，即：将所有连续启动的 Activity 放入同一任务和“后进先出”堆栈中）非常适用于大多数应用，而您不必担心 Activity 如何与任务关联或者如何存在于返回栈中。 但是，您可能会决定要中断正常行为。 也许您希望应用中的 Activity 在启动时开始新任务（而不是放置在当前任务中）；或者，当启动 Activity 时，您希望将其现有实例上移一层（而不是在返回栈的顶部创建新实例）；或者，您希望在用户离开任务时，清除返回栈中除根 Activity 以外的所有其他 Activity。</p>
-<p>通过使用 <activity> 清单文件元素中的属性和传递给 startActivity() 的 Intent 中的标志，您可以执行所有这些操作以及其他操作。</activity></p>
-<p>在这一方面，您可以使用的主要 <activity> 属性包括：</activity></p>
-<ul>
-<li>taskAffinity</li>
-<li>launchMode</li>
-<li>allowTaskReparenting</li>
-<li>clearTaskOnLaunch</li>
-<li>alwaysRetainTaskState</li>
-<li>finishOnTaskLaunch</li>
-</ul>
-<p>您可以使用的主要 Intent 标志包括：</p>
-<ul>
-<li>FLAG_ACTIVITY_NEW_TASK</li>
-<li>FLAG_ACTIVITY_CLEAR_TOP</li>
-<li>FLAG_ACTIVITY_SINGLE_TOP</li>
-</ul>
-<p>在下文中，您将了解如何使用这些清单文件属性和 Intent 标志定义 Activity 与任务的关联方式，以及 Activity 在返回栈中的行为方式。</p>
-<p>此外，我们还单独介绍了有关如何在概览屏幕中显示和管理任务与 Activity 的注意事项。 如需了解详细信息，请参阅概览屏幕。 通常，您应该允许系统定义任务和 Activity 在概览屏幕中的显示方法，并且无需修改此行为。</p>
-<blockquote>
-<p>注意：大多数应用都不得中断 Activity 和任务的默认行为： 如果确定您的 Activity 必须修改默认行为，当使用“返回”按钮从其他 Activity 和任务导航回到该 Activity 时，请务必要谨慎并确保在启动期间测试该 Activity 的可用性。请确保测试导航行为是否有可能与用户的预期行为冲突。</p>
-</blockquote>
-<h3 id="定义启动模式"><a href="#定义启动模式" class="headerlink" title="定义启动模式"></a>定义启动模式</h3><p>启动模式允许您定义 Activity 的新实例如何与当前任务关联。 您可以通过两种方法定义不同的启动模式：</p>
-<ol>
-<li>使用清单文件
-在清单文件中声明 Activity 时，您可以指定 Activity 在启动时应该如何与任务关联。</li>
-<li>使用 Intent 标志
-调用 startActivity() 时，可以在 Intent 中加入一个标志，用于声明新 Activity 如何（或是否）与当前任务关联。</li>
-</ol>
-<p>因此，如果 Activity A 启动 Activity B，则 Activity B 可以在其清单文件中定义它应该如何与当前任务关联（如果可能），并且 Activity A 还可以请求 Activity B 应该如何与当前任务关联。如果这两个 Activity 均定义 Activity B 应该如何与任务关联，则 Activity A 的请求（如 Intent 中所定义）优先级要高于 Activity B 的请求（如其清单文件中所定义）。</p>
-<blockquote>
-<p>注：某些适用于清单文件的启动模式不可用作 Intent 标志，同样，某些可用作 Intent 标志的启动模式无法在清单文件中定义。</p>
-<h4 id="使用清单文件"><a href="#使用清单文件" class="headerlink" title="使用清单文件"></a>使用清单文件</h4><p>在清单文件中声明 Activity 时，您可以使用 <activity> 元素的 launchMode 属性指定 Activity 应该如何与任务关联。</activity></p>
-</blockquote>
-<p>launchMode 属性指定有关应如何将 Activity 启动到任务中的指令。您可以分配给 launchMode 属性的启动模式共有四种：</p>
-<ul>
-<li>“standard”（默认模式）
-默认。系统在启动 Activity 的任务中创建 Activity 的新实例并向其传送 Intent。Activity 可以多次实例化，而每个实例均可属于不同的任务，并且一个任务可以拥有多个实例。</li>
-<li>“singleTop”
-如果当前任务的顶部已存在 Activity 的一个实例，则系统会通过调用该实例的 onNewIntent() 方法向其传送 Intent，而不是创建 Activity 的新实例。Activity 可以多次实例化，而每个实例均可属于不同的任务，并且一个任务可以拥有多个实例（但前提是位于返回栈顶部的 Activity 并不是 Activity 的现有实例）。
-例如，假设任务的返回栈包含根 Activity A 以及 Activity B、C 和位于顶部的 D（堆栈是 A-B-C-D；D 位于顶部）。收到针对 D 类 Activity 的 Intent。如果 D 具有默认的 “standard” 启动模式，则会启动该类的新实例，且堆栈会变成 A-B-C-D-D。但是，如果 D 的启动模式是 “singleTop”，则 D 的现有实例会通过 onNewIntent() 接收 Intent，因为它位于堆栈的顶部；而堆栈仍为 A-B-C-D。但是，如果收到针对 B 类 Activity 的 Intent，则会向堆栈添加 B 的新实例，即便其启动模式为 “singleTop” 也是如此。</li>
-</ul>
-<blockquote>
-<p>注：为某个 Activity 创建新实例时，用户可以按“返回”按钮返回到前一个 Activity。 但是，当 Activity 的现有实例处理新 Intent 时，则在新 Intent 到达 onNewIntent() 之前，用户无法按“返回”按钮返回到 Activity 的状态。</p>
-</blockquote>
-<ul>
-<li><p>“singleTask”
-系统创建新任务并实例化位于新任务底部的 Activity。但是，如果该 Activity 的一个实例已存在于一个单独的任务中，则系统会通过调用现有实例的 onNewIntent() 方法向其传送 Intent，而不是创建新实例。一次只能存在 Activity 的一个实例。</p>
-<blockquote>
-<p>注：尽管 Activity 在新任务中启动，但是用户按“返回”按钮仍会返回到前一个 Activity。</p>
-</blockquote>
-</li>
-<li><p>“singleInstance”.
-与 “singleTask” 相同，只是系统不会将任何其他 Activity 启动到包含实例的任务中。该 Activity 始终是其任务唯一仅有的成员；由此 Activity 启动的任何 Activity 均在单独的任务中打开。</p>
-</li>
-</ul>
-<p>我们再来看另一示例，Android 浏览器应用声明网络浏览器 Activity 应始终在其自己的任务中打开（通过在 <activity> 元素中指定 singleTask 启动模式）。这意味着，如果您的应用发出打开 Android 浏览器的 Intent，则其 Activity 与您的应用位于不同的任务中。相反，系统会为浏览器启动新任务，或者如果浏览器已有任务正在后台运行，则会将该任务上移一层以处理新 Intent。</activity></p>
-<p>无论 Activity 是在新任务中启动，还是在与启动 Activity 相同的任务中启动，用户按“返回”按钮始终会转到前一个 Activity。 但是，如果启动指定 singleTask 启动模式的 Activity，则当某后台任务中存在该 Activity 的实例时，整个任务都会转移到前台。此时，返回栈包括上移到堆栈顶部的任务中的所有 Activity。 图 4 显示了这种情况。
-<img src="https://developer.android.com/images/fundamentals/diagram_backstack_singletask_multiactivity.png" alt="image">
-图 4. 显示如何将启动模式为“singleTask”的 Activity 添加到返回栈。 如果 Activity 已经是某个拥有自己的返回栈的后台任务的一部分，则整个返回栈也会上移到当前任务的顶部。</p>
-<p>如需了解有关在清单文件中使用启动模式的详细信息，请参阅 <activity> 元素文档，其中更详细地讨论了 launchMode 属性和可接受的值。</activity></p>
-<blockquote>
-<p>注：使用 launchMode 属性为 Activity 指定的行为可由 Intent 附带的 Activity 启动标志替代，下文将对此进行讨论。</p>
-</blockquote>
-<h4 id="使用-Intent-标志"><a href="#使用-Intent-标志" class="headerlink" title="使用 Intent 标志"></a>使用 Intent 标志</h4><p>启动 Activity 时，您可以通过在传递给 startActivity() 的 Intent 中加入相应的标志，修改 Activity 与其任务的默认关联方式。可用于修改默认行为的标志包括：</p>
-<ul>
-<li><p>FLAG_ACTIVITY_NEW_TASK
-在新任务中启动 Activity。如果已为正在启动的 Activity 运行任务，则该任务会转到前台并恢复其最后状态，同时 Activity 会在 onNewIntent() 中收到新 Intent。
-正如前文所述，这会产生与 “singleTask”launchMode 值相同的行为。</p>
-</li>
-<li><p>FLAG_ACTIVITY_SINGLE_TOP
-如果正在启动的 Activity 是当前 Activity（位于返回栈的顶部），则 现有实例会接收对 onNewIntent() 的调用，而不是创建 Activity 的新实例。
-正如前文所述，这会产生与 “singleTop”launchMode 值相同的行为。</p>
-</li>
-<li><p>FLAG_ACTIVITY_CLEAR_TOP
-如果正在启动的 Activity 已在当前任务中运行，则会销毁当前任务顶部的所有 Activity，并通过 onNewIntent() 将此 Intent 传递给 Activity 已恢复的实例（现在位于顶部），而不是启动该 Activity 的新实例。
-产生这种行为的 launchMode 属性没有值。</p>
-<p>FLAG_ACTIVITY_CLEAR_TOP 通常与 FLAG_ACTIVITY_NEW_TASK 结合使用。一起使用时，通过这些标志，可以找到其他任务中的现有 Activity，并将其放入可从中响应 Intent 的位置。</p>
-<blockquote>
-<p>注：如果指定 Activity 的启动模式为 “standard”，则该 Activity 也会从堆栈中移除，并在其位置启动一个新实例，以便处理传入的 Intent。 这是因为当启动模式为 “standard” 时，将始终为新 Intent 创建新实例。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="处理关联"><a href="#处理关联" class="headerlink" title="处理关联"></a>处理关联</h3><p>“关联”指示 Activity 优先属于哪个任务。默认情况下，同一应用中的所有 Activity 彼此关联。 因此，默认情况下，同一应用中的所有 Activity 优先位于相同任务中。 不过，您可以修改 Activity 的默认关联。 在不同应用中定义的 Activity 可以共享关联，或者可为在同一应用中定义的 Activity 分配不同的任务关联。</p>
-<p>可以使用 <activity> 元素的 taskAffinity 属性修改任何给定 Activity 的关联。</activity></p>
-<p>taskAffinity 属性取字符串值，该值必须不同于在 <manifest> 元素中声明的默认软件包名称，因为系统使用该名称标识应用的默认任务关联。</manifest></p>
-<p>在两种情况下，关联会起作用：</p>
-<ul>
-<li>启动 Activity 的 Intent 包含 FLAG_ACTIVITY_NEW_TASK 标志。
-默认情况下，新 Activity 会启动到调用 startActivity() 的 Activity 任务中。它将推入与调用方相同的返回栈。 但是，如果传递给 startActivity() 的 Intent 包含 FLAG_ACTIVITY_NEW_TASK 标志，则系统会寻找其他任务来储存新 Activity。这通常是新任务，但未做强制要求。 如果现有任务与新 Activity 具有相同关联，则会将 Activity 启动到该任务中。 否则，将开始新任务。
-如果此标志导致 Activity 开始新任务，且用户按“主页”按钮离开，则必须为用户提供导航回任务的方式。 有些实体（如通知管理器）始终在外部任务中启动 Activity，而从不作为其自身的一部分启动 Activity，因此它们始终将 FLAG_ACTIVITY_NEW_TASK 放入传递给 startActivity() 的 Intent 中。请注意，如果 Activity 能够由可以使用此标志的外部实体调用，则用户可以通过独立方式返回到启动的任务，例如，使用启动器图标（任务的根 Activity 具有 CATEGORY_LAUNCHER Intent 过滤器；请参阅下面的启动任务部分）。</li>
-<li><p>Activity 将其 allowTaskReparenting 属性设置为 “true”。
-在这种情况下，Activity 可以从其启动的任务移动到与其具有关联的任务（如果该任务出现在前台）。</p>
-<blockquote>
-<p>提示：如果从用户的角度来看，一个 .apk 文件包含多个“应用”，则您可能需要使用 taskAffinity 属性将不同关联分配给与每个“应用”相关的 Activity。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="清理返回栈"><a href="#清理返回栈" class="headerlink" title="清理返回栈"></a>清理返回栈</h3><p>如果用户长时间离开任务，则系统会清除所有 Activity 的任务，根 Activity 除外。 当用户再次返回到任务时，仅恢复根 Activity。系统这样做的原因是，经过很长一段时间后，用户可能已经放弃之前执行的操作，返回到任务是要开始执行新的操作。</p>
-<p>您可以使用下列几个 Activity 属性修改此行为：</p>
-<ul>
-<li>alwaysRetainTaskState
-如果在任务的根 Activity 中将此属性设置为 “true”，则不会发生刚才所述的默认行为。即使在很长一段时间后，任务仍将所有 Activity 保留在其堆栈中。</li>
-<li>clearTaskOnLaunch
-如果在任务的根 Activity 中将此属性设置为 “true”，则每当用户离开任务然后返回时，系统都会将堆栈清除到只剩下根 Activity。 换而言之，它与 alwaysRetainTaskState 正好相反。 即使只离开任务片刻时间，用户也始终会返回到任务的初始状态。</li>
-<li>finishOnTaskLaunch
-此属性类似于 clearTaskOnLaunch，但它对单个 Activity 起作用，而非整个任务。 此外，它还有可能会导致任何 Activity 停止，包括根 Activity。 设置为 “true” 时，Activity 仍是任务的一部分，但是仅限于当前会话。如果用户离开然后返回任务，则任务将不复存在。<h3 id="启动任务"><a href="#启动任务" class="headerlink" title="启动任务"></a>启动任务</h3>通过为 Activity 提供一个以 “android.intent.action.MAIN” 为指定操作、以 “android.intent.category.LAUNCHER” 为指定类别的 Intent 过滤器，您可以将 Activity 设置为任务的入口点。 例如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;activity ... &gt;</div><div class="line">    &lt;intent-filter ... &gt;</div><div class="line">        &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;</div><div class="line">        &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;</div><div class="line">    &lt;/intent-filter&gt;</div><div class="line">    ...</div><div class="line">&lt;/activity&gt;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>此类 Intent 过滤器会使 Activity 的图标和标签显示在应用启动器中，让用户能够启动 Activity 并在启动之后随时返回到创建的任务中。</p>
-<p>第二个功能非常重要：用户必须能够在离开任务后，再使用此 Activity 启动器返回该任务。 因此，只有在 Activity 具有 ACTION_MAIN 和 CATEGORY_LAUNCHER 过滤器时，才应该使用将 Activity 标记为“始终启动任务”的两种启动模式，即 “singleTask” 和 “singleInstance”。例如，我们可以想像一下如果缺少过滤器会发生什么情况： Intent 启动一个 “singleTask” Activity，从而启动一个新任务，并且用户花了些时间处理该任务。然后，用户按“主页”按钮。 任务现已发送到后台，而且不可见。现在，用户无法返回到任务，因为该任务未显示在应用启动器中。</p>
-<p>如果您并不想用户能够返回到 Activity，对于这些情况，请将 <activity> 元素的 finishOnTaskLaunch 设置为 “true”（请参阅清理堆栈）。</activity></p>
-<p>有关如何在概览屏幕中显示和管理任务与 Activity 的更多信息，请参阅概览屏幕。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/24/tips-starting-an-activity-from-a-service-after-home-button/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/24/tips-starting-an-activity-from-a-service-after-home-button/" itemprop="url">
-                  home后从service重新启动activity延迟问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T00:23:17+08:00">
-                2017-08-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>问题:
-在Activity界面，按下HOME键后，点击悬浮层按钮，再启动Activity， Activity要延时5S后才出来。
-经验证，这个问题不是应用自身的BUG。那怕该Activity是空的，也会有这个问题</p>
-<p>Android为了避免应用在按下HOME键退出后还可以强制把自己启动，特意加的限制。
-在现有的API情况下，不能解决这个问题，除非你的应用是一个启动器（Launcher）， 添加了home/ launcher intent filter。如果你不是启动器，又要从悬浮层启动一个Activity，就把该Activity也改成悬浮层吧</p>
-<h3 id="1-不从后台启动-Activity-准则："><a href="#1-不从后台启动-Activity-准则：" class="headerlink" title="1. 不从后台启动 Activity 准则："></a>1. 不从后台启动 Activity 准则：</h3><p>在谷歌的 Android API Guides 中，特意提醒开发者不要在后台启动 activity，包括在 Service 和 BroadcastReceiver 中，这样的设计是为了避免在用户毫不知情的情况下突然中断用户正在进行的工作，在  <a href="http://developer.android.com/guide/practices/seamlessness.html#interrupt" target="_blank" rel="external">http://developer.android.com/guide/practices/seamlessness.html#interrupt</a> 中有如下解释：</p>
-<p>That is, don’t call startActivity() from BroadcastReceivers or Services running in the background. Doing so will interrupt whatever application is currently running, and result in an annoyed user. Perhaps even worse, your Activity may become a “keystroke bandit” and receive some of the input the user was in the middle of providing to the previous Activity. Depending on what your application does, this could be bad news.</p>
-<h3 id="2-需要违反“不从后台启动-Activity”准则的特例："><a href="#2-需要违反“不从后台启动-Activity”准则的特例：" class="headerlink" title="2. 需要违反“不从后台启动 Activity”准则的特例："></a>2. 需要违反“不从后台启动 Activity”准则的特例：</h3><p>特例：即便如此，手机厂商的开发者们在开发基于系统级的应用的时候，可能仍然需要有从 Service 或 BroadcastReceiver 中 startActivity 的需求，往往这样的前提是连这样的 Service 或 BroadcastReceiver 也是由用户的某些操作而触发的，Service 或 BroadcastReceiver 只是充当了即将启动 activity 之前的一些代理参数检查工作以便决定是否需要 start 该 activity。</p>
-<p>除非是上述笔者所述的特殊情况，应用开发者都应该遵循 “不要从后台启动 Activity”准则。</p>
-<p>一个需要特别注意的问题是，特例中所述的情况还会遇到一个问题，就是当通过 home 键将当前 activity 置于后台时，任何在后台startActivity 的操作都将会延迟 5 秒，除非该应用获取了 “android.permission.STOP_APP_SWITCHES” 权限。</p>
-<p>关于延迟 5 秒的操作在 com.android.server.am.ActivityManagerService 中的 stopAppSwitches() 方法中，系统级的应用当获取了 “android.permission.STOP_APP_SWITCHES” 后将不会调用到这个方法来延迟通过后台启动 activity 的操作，事实上 android 原生的 Phone 应用就是这样的情况，它是一个获取了”android.permission.STOP_APP_SWITCHES” 权限的系统级应用，当有来电时，一个从后台启动的 activity 将突然出现在用户的面前，警醒用户有新的来电，这样的设计是合理的。</p>
-<p>所以，当你需要开发类似 Phone 这样的应用时，需要做如下工作：</p>
-<ol>
-<li>root 你的手机；</li>
-<li>在 AndroidManifest.xml 中添加 “android.permission.STOP_APP_SWITCHES”  用户权限；</li>
-<li>将你开发的应用程序 push 到手机的 /system/app 目录中。</li>
-</ol>
-<h3 id="3-参考资料："><a href="#3-参考资料：" class="headerlink" title="3. 参考资料："></a>3. 参考资料：</h3><p><a href="http://developer.android.com/guide/practices/seamlessness.html#interrupt" target="_blank" rel="external">无缝的设计之——不要中断你的用户</a>
-<a href="http://stackoverflow.com/questions/5600084/starting-an-activity-from-a-service-after-home-button-pressed-without-the-5-seco" target="_blank" rel="external">stackoverflow 中关于后台 startActivity 被延迟 5 秒的探讨</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/06/tips-c-language/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/06/tips-c-language/" itemprop="url">
-                  Linux下C开发使用小技巧
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-06T10:45:03+08:00">
-                2017-08-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="基础类"><a href="#基础类" class="headerlink" title="基础类"></a>基础类</h3><h4 id="整形-字符串互转"><a href="#整形-字符串互转" class="headerlink" title="整形,字符串互转"></a>整形,字符串互转</h4><p>C语言提供了几个标准库函数，可以将任意类型(整型、长整型、浮点型等)的数字转换为字符串，下面列举了各函数的方法及其说明。
-● itoa()：将整型值转换为字符串。
-● ltoa()：将长整型值转换为字符串。
-● ultoa()：将无符号长整型值转换为字符串。
-● gcvt()：将浮点型数转换为字符串，取四舍五入。
-● ecvt()：将双精度浮点型值转换为字符串，转换结果中不包含十进制小数点。
-● fcvt()：指定位数为转换精度，其余同ecvt()。</p>
-<p>除此外，还可以使用sprintf系列函数把数字转换成字符串，其比itoa()系列函数运行速度慢</p>
-<p>以下是用itoa()函数将整数转换为字符串的一个例子：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># include &lt;stdio.h&gt;</div><div class="line"># include &lt;stdlib.h&gt;</div><div class="line">void main (void)</div><div class="line">&#123;</div><div class="line">int num = 100;</div><div class="line">char str[25];</div><div class="line">itoa(num, str, 10);</div><div class="line">printf(&quot;The number &apos;num&apos; is %d and the string &apos;str&apos; is %s. \n&quot; ,</div><div class="line">num, str);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>itoa()函数有3个参数：第一个参数是要转换的数字，第二个参数是要写入转换结果的目标字符串，第三个参数是转移数字时所用 的基数。在上例中，转换基数为10。10：十进制；2：二进制…</p>
-<p>itoa并不是一个标准的C函数，它是Windows特有的，如果要写跨平台的程序，请用sprintf。是Windows平台下扩展的，标准库中有sprintf，功能比这个更强，用法跟printf类似：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">char str[255];</div><div class="line">sprintf(str, &quot;%x&quot;, 100); //将100转为16进制表示的字符串。</div></pre></td></tr></table></figure></p>
-<p>cpp中string转int:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void str2int(int &amp;int_temp,const string &amp;string_temp)  </div><div class="line">&#123;  </div><div class="line">    int_temp=atoi(string_temp.c_str());                     </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>cpp中int转string:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">void int2str(const int &amp;int_temp,string &amp;string_temp)  </div><div class="line">&#123;  </div><div class="line">    char s[12];             //设定12位对于存储32位int值足够  </div><div class="line">    itoa(int_temp,s,10);            //itoa函数亦可以实现，但是属于C中函数，在C++中推荐用流的方法  </div><div class="line">    string_temp=s;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="架构类"><a href="#架构类" class="headerlink" title="架构类"></a>架构类</h3><h4 id="Linux-C代码实现主函数参数选项解析"><a href="#Linux-C代码实现主函数参数选项解析" class="headerlink" title="Linux C代码实现主函数参数选项解析"></a>Linux C代码实现主函数参数选项解析</h4><h5 id="1-手动解析版本"><a href="#1-手动解析版本" class="headerlink" title="1. 手动解析版本"></a>1. 手动解析版本</h5><p>使用argc、argv，逐个字符比较，得到要想的参数名字即进行判断、解析。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;ctype.h&gt;</div><div class="line"></div><div class="line">int debug;</div><div class="line"></div><div class="line">void show_version(char* name)</div><div class="line">&#123;</div><div class="line">    printf(&quot;%s by Late Lee, version: 1.0\n&quot;, name);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void usage(char* name)</div><div class="line">&#123;</div><div class="line">    show_version(name);</div><div class="line"></div><div class="line">    printf(&quot;         -h,  --help           short help\n&quot;);</div><div class="line">    printf(&quot;         -v,  --version        show version\n&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char *argv[])</div><div class="line">&#123;</div><div class="line">    int i = 0;</div><div class="line"></div><div class="line">    /* early check for debug and config parameter */</div><div class="line">    if (argc &gt; 1) &#123;</div><div class="line">        for (i = 1; i &lt; argc; i++)</div><div class="line">        &#123;</div><div class="line">            if ((strcmp(argv[i], &quot;-D&quot;)==0) || (strcmp(argv[i], &quot;--debug&quot;)==0))</div><div class="line">            &#123;</div><div class="line">                debug = 1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //</div><div class="line">    /* parse parameters, maybe not the best way but... */</div><div class="line">    for (i = 1; i &lt; argc; i++)</div><div class="line">    &#123;</div><div class="line">        if (debug)</div><div class="line">            printf(&quot;arg %d: \&quot;%s\&quot;\n&quot;,i,argv[i]);</div><div class="line">        // help</div><div class="line">        if ((strcmp(argv[i],&quot;-h&quot;)==0) || (strcmp(argv[i],&quot;--help&quot;)==0))</div><div class="line">        &#123;</div><div class="line">            usage(argv[0]);</div><div class="line">            return 0;</div><div class="line">        &#125;</div><div class="line">        // version</div><div class="line">        else if ((strcmp(argv[i],&quot;-v&quot;)==0) || (strcmp(argv[i],&quot;--version&quot;)==0))</div><div class="line">        &#123;</div><div class="line">            show_version(argv[0]);</div><div class="line">            return 0;</div><div class="line">        &#125;</div><div class="line">        // debug</div><div class="line">        else if ((strcmp(argv[i],&quot;-D&quot;)==0) || (strcmp(argv[i],&quot;--debug&quot;)==0))</div><div class="line">        &#123;</div><div class="line">            debug=1;</div><div class="line">        &#125;</div><div class="line">        else if ((strcmp(argv[i],&quot;fpga&quot;)==0))</div><div class="line">        &#123;</div><div class="line">            printf(&quot;test of fpga...\n&quot;);</div><div class="line">        &#125;</div><div class="line">        // string</div><div class="line">        else if ((strcmp(argv[i],&quot;-i&quot;)==0) || (strcmp(argv[i],&quot;--iface&quot;)==0))</div><div class="line">        &#123;</div><div class="line">            if (i+1&lt;argc)</div><div class="line">            &#123;</div><div class="line">                char interface[32] = &#123;0&#125;;</div><div class="line">                strncpy(interface, argv[i+1], 32);</div><div class="line">                if (debug)</div><div class="line">                    printf(&quot;Used interface: %s\n&quot;, interface);</div><div class="line">                i++;</div><div class="line">                continue;</div><div class="line">            &#125; else &#123;</div><div class="line">                printf(&quot;Error: Interface for -i missing.\n&quot;);</div><div class="line">                return 1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        // number</div><div class="line">        else if ((strcmp(argv[i],&quot;-ru&quot;)==0) || (strcmp(argv[i],&quot;--rateunit&quot;))==0)</div><div class="line">        &#123;</div><div class="line">            if (i+1&lt;argc &amp;&amp; isdigit(argv[i+1][0])) &#123;</div><div class="line">                int rateunit = 0;</div><div class="line">                rateunit = atoi(argv[i+1]);</div><div class="line">                if (rateunit &lt; 0 || rateunit &gt; 1)</div><div class="line">                &#123;</div><div class="line">                    printf(&quot;Error: Invalid parameter \&quot;%d\&quot; for --rateunit.\n&quot;, rateunit);</div><div class="line">                    printf(&quot; Valid parameters:\n&quot;);</div><div class="line">                    printf(&quot;    0 - bytes\n&quot;);</div><div class="line">                    printf(&quot;    1 - bits\n&quot;);</div><div class="line">                    return 1;</div><div class="line">                &#125;</div><div class="line">                if (debug)</div><div class="line">                    printf(&quot;Rateunit changed: %d\n&quot;, rateunit);</div><div class="line">                i++;</div><div class="line">                continue;</div><div class="line">            &#125;</div><div class="line">            else</div><div class="line">            &#123;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        // only one</div><div class="line">        else if (strcmp(argv[i],&quot;--enable&quot;)==0)</div><div class="line">        &#123;</div><div class="line">            int enable = 0;</div><div class="line">            enable = 1;</div><div class="line">        &#125;</div><div class="line">        else</div><div class="line">        &#123;</div><div class="line">            printf(&quot;Unknown parameter \&quot;%s\&quot;. Use --help for help.\n&quot;,argv[i]);</div><div class="line">            return 1;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="2-利用getopt函数完成"><a href="#2-利用getopt函数完成" class="headerlink" title="2. 利用getopt函数完成"></a>2. 利用getopt函数完成</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">解析命令选项示例</div><div class="line"></div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">extern char *optarg;   //选项的参数指针</div><div class="line">extern int optind,    //下一次调用getopt的时，从optind存储的位置处重新开始检查选项。</div><div class="line">extern int opterr,   //当opterr=0时，getopt不向stderr输出错误信息。</div><div class="line">extern int optopt;   //当命令行选项字符不包括在optstring中或者选项缺少必要的参数时，该选项存储在optopt中，getopt返回&apos;？’、</div><div class="line">int getopt(int argc, char * const argv[], const char *optstring);</div><div class="line"></div><div class="line">使用：</div><div class="line">$ ./a.out -Wall -o hello.c</div><div class="line"></div><div class="line">*/</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;stdarg.h&gt;</div><div class="line"></div><div class="line">int debug_level = 0;</div><div class="line"></div><div class="line">#define _AUTHOR &quot;Late Lee&quot;</div><div class="line">#define _VERSION_STR &quot;1.0&quot;</div><div class="line">#define _DATE &quot;&quot;</div><div class="line"></div><div class="line">// 默认打印error等级</div><div class="line">enum</div><div class="line">&#123;</div><div class="line">    MSG_ERROR = 0,</div><div class="line">    MSG_WARNING,</div><div class="line">    MSG_INFO,</div><div class="line">    MSG_DEBUG,</div><div class="line">    MSG_MSGDUMP,</div><div class="line">    MSG_EXCESSIVE,</div><div class="line">&#125;;</div><div class="line"></div><div class="line">void ll_printf(int level, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));</div><div class="line"></div><div class="line">void ll_printf(int level, const char *fmt, ...)</div><div class="line">&#123;</div><div class="line">    va_list ap;</div><div class="line"></div><div class="line">    va_start(ap, fmt);</div><div class="line">    if (debug_level &gt;= level)</div><div class="line">    &#123;</div><div class="line">#ifdef CONFIG_DEBUG_SYSLOG</div><div class="line">        if (wpa_debug_syslog) &#123;</div><div class="line">            vsyslog(syslog_priority(level), fmt, ap);</div><div class="line">        &#125; else &#123;</div><div class="line">#endif /* CONFIG_DEBUG_SYSLOG */</div><div class="line">        //debug_print_timestamp();</div><div class="line">#ifdef CONFIG_DEBUG_FILE</div><div class="line">        if (out_file) &#123;</div><div class="line">            vfprintf(out_file, fmt, ap);</div><div class="line">            fprintf(out_file, &quot;\n&quot;);</div><div class="line">        &#125; else &#123;</div><div class="line">#endif /* CONFIG_DEBUG_FILE */</div><div class="line">        vprintf(fmt, ap);</div><div class="line">        printf(&quot;\n&quot;);</div><div class="line">#ifdef CONFIG_DEBUG_FILE</div><div class="line">        &#125;</div><div class="line">#endif /* CONFIG_DEBUG_FILE */</div><div class="line">#ifdef CONFIG_DEBUG_SYSLOG</div><div class="line">        &#125;</div><div class="line">#endif /* CONFIG_DEBUG_SYSLOG */</div><div class="line">    &#125;</div><div class="line">    va_end(ap);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void show_version(char* name)</div><div class="line">&#123;</div><div class="line">    printf(&quot;%s by %s, version: %s\n&quot;, name, _AUTHOR, _VERSION_STR);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void usage(char* name)</div><div class="line">&#123;</div><div class="line">    show_version(name);</div><div class="line"></div><div class="line">    printf(&quot;    -h,    short help\n&quot;);</div><div class="line">    printf(&quot;    -v,    show version\n&quot;);</div><div class="line">    printf(&quot;    -d,    debug level\n&quot;);</div><div class="line"></div><div class="line">    exit(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">const char* my_opt = &quot;hOo:W:d:&quot;;</div><div class="line"></div><div class="line">int main(int argc, char *argv[])</div><div class="line">&#123;</div><div class="line">    int c;</div><div class="line">    const char* p1 = NULL;</div><div class="line">    const char* p2 = NULL;</div><div class="line">    const char* p3 = NULL;</div><div class="line">    while(1)</div><div class="line">    &#123;</div><div class="line">        c = getopt(argc, argv, my_opt);</div><div class="line">        printf(&quot;optind: %d\n&quot;, optind);</div><div class="line">        if (c &lt; 0)</div><div class="line">        &#123;</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">        printf(&quot;option char: %x %c\n&quot;, c, c);</div><div class="line">        switch(c)</div><div class="line">        &#123;</div><div class="line">        case &apos;d&apos;:</div><div class="line">                debug_level = atoi(optarg);</div><div class="line">                printf(&quot;debug level: %d\n&quot;, debug_level);</div><div class="line">                break;</div><div class="line">        case &apos;O&apos;:</div><div class="line">                printf(&quot;optimization flag is open.\n\n&quot;);</div><div class="line">                break;</div><div class="line">        case &apos;o&apos;:</div><div class="line">                printf(&quot;the obj is: %s\n\n&quot;, optarg);</div><div class="line">                p1 = optarg;</div><div class="line">                break;</div><div class="line">        case &apos;W&apos;:</div><div class="line">                printf(&quot;optarg: %s\n\n&quot;, optarg);</div><div class="line">                p2 = optarg;</div><div class="line">                break;</div><div class="line">        case &apos;:&apos;:</div><div class="line">                fprintf(stderr, &quot;miss option char in optstring.\n&quot;);</div><div class="line">                break;</div><div class="line">        case &apos;?&apos;:</div><div class="line">        case &apos;h&apos;:</div><div class="line">        default:</div><div class="line">                usage(argv[0]);</div><div class="line">                break;</div><div class="line">                //return 0;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if (optind == 1)</div><div class="line">    &#123;</div><div class="line">        usage(argv[0]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ll_printf(MSG_ERROR, &quot;p1: %s p2: %s\n&quot;, p1, p2);</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p><a href="https://www.ibm.com/developerworks/cn/aix/library/au-unix-getopt.html" target="_blank" rel="external">使用 getopt() 进行命令行处理</a></p>
-<h4 id="网络模块"><a href="#网络模块" class="headerlink" title="网络模块"></a>网络模块</h4></blockquote>
-<h4 id="日志模块"><a href="#日志模块" class="headerlink" title="日志模块"></a>日志模块</h4><h4 id="读取配置文件模块"><a href="#读取配置文件模块" class="headerlink" title="读取配置文件模块"></a>读取配置文件模块</h4><h4 id="内存池模块"><a href="#内存池模块" class="headerlink" title="内存池模块"></a>内存池模块</h4><h4 id="缓存库模块"><a href="#缓存库模块" class="headerlink" title="缓存库模块"></a>缓存库模块</h4><h4 id="文件系统模块"><a href="#文件系统模块" class="headerlink" title="文件系统模块"></a>文件系统模块</h4><h4 id="管理后台模块"><a href="#管理后台模块" class="headerlink" title="管理后台模块"></a>管理后台模块</h4><h4 id="数据库模块"><a href="#数据库模块" class="headerlink" title="数据库模块"></a>数据库模块</h4><h3 id="技巧类"><a href="#技巧类" class="headerlink" title="技巧类"></a>技巧类</h3><h4 id="Linux程序中预定义的几个调试宏"><a href="#Linux程序中预定义的几个调试宏" class="headerlink" title="Linux程序中预定义的几个调试宏"></a>Linux程序中预定义的几个调试宏</h4><p>Linux下C语言编程中有几个很实用的调试宏
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">__LINE__ __FILE__  __FUNCTION__ __TIME__ __DATA__</div></pre></td></tr></table></figure></p>
-<p>这几个预定义宏是属于ANSI标准的，内置于编译器，全局性的变量，可以方便地实现代码跟踪调试，不是在哪个头文件中包含的，见下例：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">    printf(&quot;The file is %s.\n&quot;,__FILE__);</div><div class="line">    printf( &quot;The date is %s.\n&quot;, __DATE__ );</div><div class="line">    printf( &quot;The time is %s.\n&quot;, __TIME__ );</div><div class="line">    printf( &quot;This is line %d.\n&quot;, __LINE__ );</div><div class="line">    printf( &quot;This function is %s.\n&quot;, __FUNCTION__ );   </div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>运行结果:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">The file is macro.c.</div><div class="line">The date is Aug 24 2012.</div><div class="line">The time is 23:13:26.</div><div class="line">This is line 8.</div><div class="line">This function is main.</div></pre></td></tr></table></figure></p>
-<p><code>line 行数 文件名</code>指令可以改变它的值，简单的讲，编译时，它们包含程序的当前行数和文件名。</p>
-<p>DATE 宏指令含有形式为月/日/年的串,表示源文件被翻译到代码时的日期。
-TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式为时：分：秒</p>
-<p><code>__func__</code>代表这条语句所在的函数的函数名</p>
-<h4 id="联合体用途"><a href="#联合体用途" class="headerlink" title="联合体用途"></a>联合体用途</h4><p>字节序有两种表示方法：大端法（big ending），小端法（little  ending）。网络字节序采用的是大端法。主机字节序不同的CPU采用的方法不一样，可以通过代码来查看自己主机的字节序。</p>
-<ul>
-<li>大端法：高位字节排放在内存低地址端，低位字节排放在内存的高地址端。</li>
-<li>小端法：低位字节排放在内存的低地址端，高位字节排放在内存的高地址端。
-看一个unsigned short 数据，它占2个字节，给它赋值0x1234。</li>
-<li>若采用的大端法，则其低地址端应该存放的是0x12；</li>
-<li>若采用的小端法，则其低地址端应该存放的是0x34；
-可以通过联合体来获得其高低地址的数据。测试主机字节序的代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">typedef union&#123;</div><div class="line">    unsigned short value;</div><div class="line">    unsigned char bytes[2];</div><div class="line">&#125;Test;</div><div class="line"></div><div class="line">int main(void)</div><div class="line">&#123;</div><div class="line">    Test test_value;</div><div class="line">    test_value.value = 0x1234;</div><div class="line">    if(test_value.bytes[0] == 0x12 &amp;&amp; test_value.bytes[1] == 0x34)</div><div class="line">    &#123;</div><div class="line">        printf(&quot;big ending&quot;);</div><div class="line">    &#125;</div><div class="line">    else if(test_value.bytes[0] == 0x34 &amp;&amp; test_value.bytes[1] == 0x12)</div><div class="line">    &#123;</div><div class="line">        printf(&quot;little ending&quot;);</div><div class="line">    &#125;else&#123;</div><div class="line">        printf(&quot;use test_value error&quot;);</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h3><h4 id="自定义日志的调试打印信息"><a href="#自定义日志的调试打印信息" class="headerlink" title="自定义日志的调试打印信息"></a>自定义日志的调试打印信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">#define TRACE_NONE      0</div><div class="line">#define TRACE_FATAL     1</div><div class="line">#define TRACE_ERROR     2</div><div class="line">#define TRACE_WARNING   3</div><div class="line">#define TRACE_INFO      4</div><div class="line">#define TRACE_DEBUG     5</div><div class="line"></div><div class="line">#define TRACE_LEN_MAX    64</div><div class="line"></div><div class="line">extern int  *TraceLevel;</div><div class="line">extern char TraceName[TRACE_LEN_MAX + 1];</div><div class="line"></div><div class="line">#define Log(A, format,args...) \</div><div class="line">    ((TraceLevel == NULL || TraceName == NULL || *TraceLevel &lt; (A)) ? 0 : LogMsg(A, __FILE__, __LINE__, format, ##args))</div><div class="line"></div><div class="line">#define LogFatal(format,args...) \</div><div class="line">    Log(TRACE_FATAL, format, ##args)</div><div class="line">#define LogError(format,args...) \</div><div class="line">    Log(TRACE_ERROR, format, ##args)</div><div class="line">#define LogWarning(format,args...) \</div><div class="line">    Log(TRACE_WARNING, format, ##args)</div><div class="line">#define LogInfo(format,args...) \</div><div class="line">    Log(TRACE_INFO, format, ##args)</div><div class="line">#define LogDebug(format,args...) \</div><div class="line">    Log(TRACE_DEBUG, format, ##args)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">int LogMsg(int level, const char *filename,</div><div class="line">           int line, const char *fmt, ...)</div><div class="line">&#123;</div><div class="line">    va_list      ap;</div><div class="line">    FILE         *fp;</div><div class="line">    char         sLogFile[128 + 1];</div><div class="line">    char         sCurrTime[6 + 1];</div><div class="line">    struct timeb tTimeB;</div><div class="line">    char         sMilliTM[4];</div><div class="line"></div><div class="line">    memset(sLogFile, 0, sizeof(sLogFile));</div><div class="line">    LogFile(sLogFile);</div><div class="line">    GetTime_HHMMSS(sCurrTime);</div><div class="line">    memset(&amp;tTimeB, 0, sizeof(tTimeB));    </div><div class="line">    ftime(&amp;tTimeB);</div><div class="line">    snprintf(sMilliTM, sizeof(sMilliTM), &quot;%03d&quot;, tTimeB.millitm);</div><div class="line"></div><div class="line">    fp = fopen(sLogFile, &quot;a+&quot;);</div><div class="line">    if (fp != (FILE*)NULL) &#123;</div><div class="line">        fprintf(fp, &quot;[%08d][%.6s:%.3s][%16s][%04d][%7s]&quot;,</div><div class="line">                getpid(), sCurrTime, sMilliTM, filename, line, g_LevelDsp[level]);</div><div class="line">        va_start(ap, fmt);</div><div class="line">        vfprintf(fp, fmt, ap);</div><div class="line">        va_end(ap);</div><div class="line">        fprintf(fp, &quot;\n&quot;);</div><div class="line">        fflush(fp);</div><div class="line">        fclose(fp);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>再在后台进程中设置TraceLevel和TraceName即可。</p>
-<h4 id="获取当前系统日期、时间"><a href="#获取当前系统日期、时间" class="headerlink" title="获取当前系统日期、时间"></a>获取当前系统日期、时间</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">/*****************************************************************************</div><div class="line">  **  函数名称: GetDate</div><div class="line">  **  功能描述: 取当前系统日期                           </div><div class="line">  **  当前版本: 1.0.0.0                                                    </div><div class="line">  **  作    者:                                             </div><div class="line">  **  修    改：                                                        </div><div class="line">  **  输入参数:</div><div class="line">  **  输出参数: char * psDate  -- 系统日期, 格式为yyyymmdd</div><div class="line">  **  返回结果：int</div><div class="line">                   0    ---&gt;  成功</div><div class="line">  ****************************************************************************/</div><div class="line">int GetDate(char * psDate)</div><div class="line">&#123;</div><div class="line">    time_t nSeconds;</div><div class="line">    struct tm * pTM;</div><div class="line"></div><div class="line">    time(&amp;nSeconds);</div><div class="line">    pTM = localtime(&amp;nSeconds);</div><div class="line"></div><div class="line">    /* 系统日期, 格式：YYYYMMDD */</div><div class="line">    sprintf( psDate,&quot;%04d%02d%02d&quot;,</div><div class="line">            pTM-&gt;tm_year + 1900, pTM-&gt;tm_mon + 1,pTM-&gt;tm_mday );</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">/*****************************************************************************</div><div class="line">  **  函数名称: GetTime</div><div class="line">  **  功能描述: 取当前系统时间                           </div><div class="line">  **  当前版本: 1.0.0.0                                                    </div><div class="line">  **  作    者:                                            </div><div class="line">  **  修    改：                                                        </div><div class="line">  **  输入参数:</div><div class="line">  **  输出参数: char * psTime  -- 系统时间, 格式为HHMMSS</div><div class="line">  **  返回结果：int</div><div class="line">                   0    ---&gt;  成功</div><div class="line">  ****************************************************************************/</div><div class="line">int GetTime(char * psTime)</div><div class="line">&#123;</div><div class="line">    time_t nSeconds;</div><div class="line">    struct tm * pTM;</div><div class="line"></div><div class="line">    time(&amp;nSeconds);</div><div class="line">    pTM = localtime(&amp;nSeconds);</div><div class="line"></div><div class="line">    /* 系统时间, 格式：HHMMSS */</div><div class="line">    sprintf( psTime,&quot;%02d%02d%02d&quot;,</div><div class="line">            pTM-&gt;tm_hour,pTM-&gt;tm_min, pTM-&gt;tm_sec);</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">/*****************************************************************************</div><div class="line">  **  函数名称: GetDateTime</div><div class="line">  **  功能描述: 取当前系统日期和时间                           </div><div class="line">  **  当前版本: 1.0.0.0                                                    </div><div class="line">  **  作    者:                                            </div><div class="line">  **  修    改：                                                        </div><div class="line">  **  输入参数:</div><div class="line">  **  输出参数: char * psDateTime  -- 系统日期时间, 格式为yyyymmddHHMMSS</div><div class="line">  **  返回结果：int</div><div class="line">                   0    ---&gt;  成功</div><div class="line">  ****************************************************************************/</div><div class="line">int GetDateTime(char * psDateTime)</div><div class="line">&#123;</div><div class="line">    time_t nSeconds;</div><div class="line">    struct tm * pTM;</div><div class="line"></div><div class="line">    time(&amp;nSeconds);</div><div class="line">    pTM = localtime(&amp;nSeconds);</div><div class="line"></div><div class="line">    /* 系统日期和时间, 格式：yyyymmddHHMMSS */</div><div class="line">    sprintf( psDateTime,&quot;%04d%02d%02d%02d%02d%02d&quot;,</div><div class="line">            pTM-&gt;tm_year + 1900, pTM-&gt;tm_mon + 1,pTM-&gt;tm_mday,</div><div class="line">            pTM-&gt;tm_hour,pTM-&gt;tm_min, pTM-&gt;tm_sec );</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>调用的时候定义一个char数组，大小为日期的长度大小加1，然后直接调用上面的函数，参数为数组名即可。
-　　当然，还有其他许多关于日期、时间操作的函数，比如不同日期、时间格式间的转换等。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2944,7 +2764,7 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-count">94</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
