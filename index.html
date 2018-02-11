@@ -346,7 +346,7 @@
               
                 
                 <a class="post-title-link" href="/2018/02/11/m-f-ts/" itemprop="url">
-                  m-f-ts
+                  ts格式解析
                 </a>
               
             
@@ -372,6 +372,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
+                    <span itemprop="name">音视频封装</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -400,7 +422,134 @@
       
         
           
-            
+            <p>ts是日本高清摄像机拍摄下进行的封装格式，全称为MPEG2-TS。ts即”Transport Stream”的缩写。MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。MPEG2-TS主要应用于实时传送的节目，比如实时广播的电视节目。</p>
+<h3 id="发展简要"><a href="#发展简要" class="headerlink" title="发展简要"></a>发展简要</h3><p>随着从HDTV录制的高清节目在网上的流传，发烧友们现在对TS这个名词大概已经不陌生了，但随之而来就是如何播放、如何添加字幕等等的一系列问题，本文将重点介绍一下这方面的应用操作。
+先来简要介绍一下什么是MPEG2-TS吧。MPEG2格式大家都通过对DVD的接触而多多少少了解了一些，DVD节目中的MPEG2格式，确切地说是MPEG2-PS，全称是Program Stream，而TS的全称则是Transport Stream。MPEG2-PS主要应用于存储的具有固定时长的节目，如DVD电影，而MPEG-TS则主要应用于实时传送的节目，比如实时广播的电视节目。这两种格式的主要区别是什么呢？简单地打个比喻说，你将DVD上的VOB文件的前面一截cut掉（或者干脆就是数据损坏），那么就会导致整个文件无法解码了，而电视节目是你任何时候打开电视机都能解码（收看）的，所以，MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。</p>
+<h3 id="学习多媒体容器格式的目的"><a href="#学习多媒体容器格式的目的" class="headerlink" title="学习多媒体容器格式的目的"></a>学习多媒体容器格式的目的</h3><p>主要是为了回答以下问题：</p>
+<ul>
+<li>该容器中数据是如何组织的？</li>
+<li>该容器包含哪些编码格式的数据？这些数据是如何存储的？</li>
+<li>该容器包含哪些元数据信息？包含哪些节目信息？</li>
+<li>对于支持多节目的容器格式，如何找到对应的音频流、视频流、字幕流？</li>
+<li>如何确定该容器的节目播放时长？</li>
+<li>如何从该容器中提取音频、视频、字幕数据，并交给解码器解码，有时间戳否？</li>
+<li>该容器是否支持seek？有哪些辅助信息？</li>
+<li>是否支持直接流化？</li>
+<li>哪里可以找到该容器格式最标准的文档资料？</li>
+<li>有哪些可用的工具，方便分析容器格式异常或者错误？</li>
+</ul>
+<h3 id="TS流生成和解析的过程"><a href="#TS流生成和解析的过程" class="headerlink" title="TS流生成和解析的过程"></a>TS流生成和解析的过程</h3><p>TS流的形成过程：</p>
+<ol>
+<li>将原始音视频数据压缩之后，压缩结果组成一个基本码流（ES）。</li>
+<li>对ES（基本码流）进行打包形成PES。</li>
+<li>在PES包中加入时间戳信息(PTS/DTS)。</li>
+<li>将PES包内容分配到一系列固定长度的传输包（TS Packet）中。</li>
+<li>在传输包中加入定时信息(PCR)。</li>
+<li>在传输包中加入节目专用信息(PSI) 。</li>
+<li>连续输出传输包形成具有恒定比特率的MPEG-TS流。</li>
+</ol>
+<p>TS流的解析过程，可以说是生成的逆过程：</p>
+<ol>
+<li>从复用的MPEG-TS流中解析出TS包；</li>
+<li>从TS包中获取PAT及对应的PMT（PSI中的表格）；</li>
+<li>从而获取特定节目的音视频PID；</li>
+<li>通过PID筛选出特定音视频相关的TS包，并解析出PES；</li>
+<li>从PES中读取到PTS/DTS，并从PES中解析出基本码流ES；</li>
+<li>将ES交给解码器，获得压缩前的原始音视频数据。</li>
+</ol>
+<h3 id="TS码流整体结构"><a href="#TS码流整体结构" class="headerlink" title="TS码流整体结构"></a>TS码流整体结构</h3><p>MPEG-2中规定TS传输包的长度为188 字节，包头为4个字节，负载为184个字节。但通信媒介会为包添加错误校验字节，从而有了不同于188字节的包长。例如：</p>
+<p>DVB 规定中，使用204字节作为包长:</p>
+<ol>
+<li>通过调制器时，在每个传输包后增加了16 字节的里德所罗门前向纠错码，因而形成了204字节的数据包。调制后总存在204 字节的数据包。</li>
+<li>调制之前存复用器插入RS码或虚构的RS码。</li>
+</ol>
+<p>ATSC规定中，使用208字节作为包长：添加20 字节的 RS（Reed-Solomon）前向纠错码。与DVB不同,ATSC规定RS码只能出现在调制的TS流中。</p>
+<p>所有的TS包都分为包头和净荷部分。TS包中可以填入很多东西（填入的东西都是填入到净荷部分），有：视频、音频、数据（包括PSI、SI以及其它任何形式的数据）。
+<img src="http://images.wodekouwei.com/M/F/ts-head2.jpg" alt="image"></p>
+<h4 id="1、TS包包头"><a href="#1、TS包包头" class="headerlink" title="1、TS包包头"></a>1、TS包包头</h4><p>TS包的包头提供关于传输方面的信息：同步、有无差错、有无加扰、PCR（节目参考时钟）等标志。TS包的包头长度不固定，前32比特（4个字节）固定，后面可能跟有自适应字段（适配域）。32个比特（4个字节）是最小包头。</p>
+<ul>
+<li>sync_byte （同步字节）：固定为0100 0111 (0x47)；该字节由解码器识别，使包头和有效负载可相互分离。</li>
+<li>transport_error_indicator（传输错误指示）：‘1’表示在相关的传输包中至少有一个不可纠正的错误位。当被置1后，在错误被纠正之前不能重置为0。</li>
+<li>payload_unit_start_indicator（开始指示）：为1时，在前4个字节之后会有一个调整字节，其的数值为后面调整字段的长度length。因此有效载荷开始的位置应再偏移1+[length]个字节。</li>
+<li>transport_priority（传输优先级）：‘1’表明优先级比其他具有相同PID 但此位没有被置‘1’的分组高。</li>
+<li>PID：指示存储与分组有效负载中数据的类型。PID 值 0x0000—0x000F 保留。其中0x0000为PAT保留；0x0001为CAT保留；0x1fff为分组保留，即空包。</li>
+<li>transport_scrambling_control（加扰控制）：表示TS流分组有效负载的加密模式。空包为‘00’，如果传输包包头中包括调整字段，不应被加密。</li>
+<li>adaptation_field_control（适配域控制）：表示包头是否有调整字段或有效负载。‘00’为ISO/IEC未来使用保留；‘01’仅含有效载荷，无调整字段；‘10’ 无有效载荷，仅含调整字段；‘11’ 调整字段后为有效载荷，调整字段中的前一个字节表示调整字段的长度length，有效载荷开始的位置应再偏移[length]个字节。空包应为‘10’。</li>
+<li>continuity_counter（连续性计数器）：随着每一个具有相同PID的TS流分组而增加，当它达到最大值后又回复到0。范围为0~15。</li>
+<li>adaptation_field （自适应字段 ）：根据自适应控制字段填充负载。</li>
+</ul>
+<p><img src="http://images.wodekouwei.com/M/F/ts_head.png" alt="image"></p>
+<h4 id="2、节目专用信息PSI。"><a href="#2、节目专用信息PSI。" class="headerlink" title="2、节目专用信息PSI。"></a>2、节目专用信息PSI。</h4><p>然，TS包也可以是空包。空包用来填充TS流，可能在重新进行多路复用时被插入或删除。</p>
+<p>在系统复用时，视频、音频的ES流需进行打包形成视频、音频的 PES流，辅助数据（如图文电视信息）不需要打成PES包。PES包非定长，音频的PES包小于等于64K，视频的一般为一帧一个PES包。一帧图象的PES包通常要由许多个TS包来传输。MPEG-2中规定，一个PES包必须由整数个TS包来传输。如果承载一个PES包的最后一个TS包没能装满，则用填充字节来填满；当下一个新的PES包形成时，需用新的TS包来开始传输。</p>
+<p>节目专用信息PSI(Program Specific Information）</p>
+<p>管理各种类型的TS数据包，需要有些特殊的TS包来确立各个TS数据包之间的关系。这些特殊的TS包里所包含的信息就是节目专用信息。在不同的标准中它有不同的名字：</p>
+<ul>
+<li>MPEG-2中称为PSI；</li>
+<li>DVB标准根据实际需要，对PSI扩展，称为SI信息；</li>
+<li>ATSC标准中为PSIP信息</li>
+</ul>
+<p>MPEG-2中，规定的对PSI信息的描述方法有以下几种：</p>
+<h5 id="1、表Table：-节目信息的结构性的描述；"><a href="#1、表Table：-节目信息的结构性的描述；" class="headerlink" title="1、表Table： 节目信息的结构性的描述；"></a>1、表Table： 节目信息的结构性的描述；</h5><ul>
+<li>节目关联表Program Association Table (PAT) 0x0000</li>
+<li>节目映射表Program Map Tables (PMT) PAT指定</li>
+<li>条件接收表Conditional Access Table (CAT) 0x0001</li>
+<li>网络信息表Network Information Table(NIT) 0x0010</li>
+<li>传送流描述表Transport Stream Description Table (TSDT)<h5 id="2、节Section：-将表格的内容映射到TS流中；"><a href="#2、节Section：-将表格的内容映射到TS流中；" class="headerlink" title="2、节Section： 将表格的内容映射到TS流中；"></a>2、节Section： 将表格的内容映射到TS流中；</h5>专用段 Private_ section</li>
+</ul>
+<h5 id="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"><a href="#3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；" class="headerlink" title="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"></a>3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；</h5><p>ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表可被分成一段或多段置于传输流分组中。一段就是一个语法结构，用来将 ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表映射到传输流分组中。</p>
+<h6 id="PAT表"><a href="#PAT表" class="headerlink" title="PAT表"></a>PAT表</h6><p>TS流中包含一个或者多个PAT表。PAT表由PID为0x0000的TS包传送，其作用是为复用的每一路传送流提供出所包含的节目和节目编号，以及对应节目的PMT的位置即PMT的TS包的PID值，同时还提供NIT的位置，即NIT的TS包的PID的值。</p>
+<ul>
+<li>table_id：固定为0x00，标志该表是PAT表。</li>
+<li>section_syntax_indicator：段语法标志位，固定为1。</li>
+<li>section_length：表示这个字节后面有用的字节数，包括CRC32。节目套数：（section length-9）/4</li>
+<li>transport_stream_id：16位字段，表示该TS流的ID，区别于同一个网络中其它多路复用流。</li>
+<li>version_number：表示PAT的版本号。</li>
+<li>current_next_indicator：表示发送的PAT表是当前有效还是下一个PAT有效。</li>
+<li>section_number：表示分段的号码。PAT可能分为多段传输，第一段为0，以后每个分段加1，最多可能有256个分段。</li>
+<li>last_section_number：表示PAT最后一个分段的号码。</li>
+<li>Program number：节目号</li>
+<li>network_PID：网络信息表（NIT）的PID,节目号为0时对应ID为network_PID。</li>
+<li>Program map PID：节目映射表（PMT）的PID号，节目号为大于等于1时，对应的ID为program_map_PID。一个PAT中可以有多个program_map_PID。</li>
+<li>CRC_32：32位字段，CRC32校验码Cyclic RedundancyCheck。<h6 id="PMT表"><a href="#PMT表" class="headerlink" title="PMT表"></a>PMT表</h6></li>
+</ul>
+<p>PMT在传送流中用于指示组成某一套节目的视频、音频和数据在传送流中的位置，即对应的TS包的PID值，以及每路节目的节目时钟参考（PCR）字段的位置。</p>
+<ul>
+<li>Table id ：固定为0x02，标志该表是PMT 表。</li>
+<li>Section syntax indicator：对于PMT表，设置为1 。</li>
+<li>Section length：表示这个字节后面有用的字节数，包括CRC32 。</li>
+<li>Program number：它指出该节目对应于可应用的Program map PID 。</li>
+<li>Version number：指出PMT 的版本号。</li>
+<li>Current next indicator：当该位置’1’时，当前传送的Program map section可用；当该位置’0’时，指示当前传送的Program map section不可用，下一个TS流的Programmap section 有效。</li>
+<li>Section number：总是置为0x00（因为PMT表里表示一个service的信息，一个section 的长度足够）。</li>
+<li>Last section number：该域的值总是0x00 。</li>
+<li>PCR PID：节目中包含有效PCR字段的传送流中PID 。</li>
+<li>Program info length：12bit域，前两位为00。该域指出跟随其后对节目信息的描述的byte 数。</li>
+<li>Stream type：8bit域，指示特定PID的节目元素包的类型。该处PID由elementary PID 指定。</li>
+</ul>
+<h3 id="HLS"><a href="#HLS" class="headerlink" title="HLS"></a>HLS</h3><p>HTTP Live Streaming（缩写是HLS）是一个由苹果公司提出的基于HTTP的流媒体网络传输协议。是苹果公司QuickTime X和iPhone软件系统的一部分。它的工作原理是把整个流分成一个个小的基于HTTP的文件来下载，每次只下载一些。当媒体流正在播放时，客户端可以选择从许多不同的备用源中以不同的速率下载同样的资源，允许流媒体会话适应不同的数据速率。在开始一个流媒体会话时，客户端会下载一个包含元数据的extended M3U (m3u8)playlist文件，用于寻找可用的媒体流。
+HLS只请求基本的HTTP报文，与实时传输协议（RTP)不同，HLS可以穿过任何允许HTTP数据通过的防火墙或者代理服务器。它也很容易使用内容分发网络来传输媒体流。
+苹果公司把HLS协议作为一个互联网草案（逐步提交），在第一阶段中已作为一个非正式的标准提交到IETF。但是，即使苹果偶尔地提交一些小的更新，IETF却没有关于制定此标准的有关进一步的动作。</p>
+<p>HLS协议规定：</p>
+<ul>
+<li>视频的封装格式是TS。</li>
+<li>视频的编码格式为H264,音频编码格式为MP3、AAC或者AC-3。</li>
+<li>除了TS视频文件本身，还定义了用来控制播放的m3u8文件（文本文件）。</li>
+</ul>
+<p>为什么苹果要提出HLS这个协议，其实他的主要是为了解决RTMP协议存在的一些问题。比如RTMP协议不使用标准的HTTP接口传输数据，所以在一些特殊的网络环境下可能被防火墙屏蔽掉。但是HLS由于使用的HTTP协议传输数据，不会遇到被防火墙屏蔽的情况（该不会有防火墙连80接口都不放过吧）。</p>
+<p>另外于负载，RTMP是一种有状态协议，很难对视频服务器进行平滑扩展，因为需要为每一个播放视频流的客户端维护状态。而HLS基于无状态协议（HTTP），客户端只是按照顺序使用下载存储在服务器的普通TS文件，做负责均衡如同普通的HTTP文件服务器的负载均衡一样简单。</p>
+<p>另外HLS协议本身实现了码率自适应，不同带宽的设备可以自动切换到最适合自己码率的视频播放。其实HLS最大的优势就是他的亲爹是苹果。苹果在自家的iOS设备上只提供对HLS的原生支持，并且放弃了flash。Android也迫于平果的“淫威”原生支持了HLS。这样一来flv，rtmp这些Adobe的视频方案要想在移动设备上播放需要额外下点功夫。当然flash对移动设备造成很大的性能压力确实也是自身的问题。</p>
+<p>但HLS也有一些无法跨越的坑，比如采用HLS协议直播的视频延迟时间无法下到10秒以下，而RTMP协议的延迟最低可以到3、4秒左右。所以说对直播延迟比较敏感的服务请慎用HLS。</p>
+<p><strong>播放模式</strong></p>
+<ul>
+<li>点播VOD的特点就是当前时间点可以获取到所有index文件和ts文件，二级index文件中记录了所有ts文件的地址。这种模式允许客户端访问全部内容。上面的例子中就是一个点播模式下的m3u8的结构。</li>
+<li>Live 模式就是实时生成M3u8和ts文件。它的索引文件一直处于动态变化的，播放的时候需要不断下载二级index文件，以获得最新生成的ts文件播放视频。如果一个二级index文件的末尾没有#EXT-X-ENDLIST标志，说明它是一个Live视频流。<blockquote>
+<p><a href="http://blog.csdn.net/c602273091/article/details/50372160" target="_blank" rel="external">TS码流分析</a>
+<a href="https://www.cnblogs.com/tocy/p/media_container_6-mpegts.html" target="_blank" rel="external">多媒体文件格式之TS</a>
+<a href="https://www.iso.org/standard/67331.html" target="_blank" rel="external">ISO/IEC 13818-1:2015</a></p>
+</blockquote>
+</li>
+</ul>
+
           
         
       
