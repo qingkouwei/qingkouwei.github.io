@@ -323,6 +323,158 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/media-vr-player/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/11/media-vr-player/" itemprop="url">
+                  vr播放器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T18:17:42+08:00">
+                2018-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="VR播放器的简单原理"><a href="#VR播放器的简单原理" class="headerlink" title="VR播放器的简单原理"></a>VR播放器的简单原理</h3><p>一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。</p>
+<p>之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。</p>
+<p>简单球面纹理映射讲解</p>
+<p>实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置向量来生成纹理坐标。</p>
+<p>想象一个球体，球面上每一个点的法向量，可以是从球心起到该点的线段距离。球上每一点都可以视作一个无限小的平面。</p>
+<p>Ps:法向量——垂直于平面的向量，叫做该平面的法向量</p>
+<p>问题的本质是根据球面上每个点的法向量坐标生成对应的纹理坐标，请看下图，下图中外部的方框表示二维纹理坐标，其范围是<code>(u,v)min = (0,0)</code>, <code>(u,v)max = (1,1)</code>，中间的圆形表示球面法向量坐标，其x,y分量的范围是<code>(x,y)min = (-1,-1), (x,y)max = (1,1)</code>。</p>
+<p>所以问题的本质变成了两组坐标的映射，也即将区间<code>(x,y)min - (x,y)max</code>映射到区间<code>(u,v)min - (u,v)max</code>。这里我们使用反正弦函数<code>y = acrsin(x)</code>来实现。先看一下它的函数图象。</p>
+<p>由这个图象知，它的定义域<code>x = (-1，1)</code>，值域是<code>y = (-pi / 2, pi / 2)</code>。我们稍作变型，得到下面两个公式。正好完成了由(-1, 1)到(0, 1)的映射。这里tu表示纹理的x坐标，tv表示纹理的y坐标，Nx表示顶点法向量的x轴分量，Ny表示顶点法向量的y轴分量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tu = arcsin(Nx) / PI + 0.5</div><div class="line">tv = arcsin(Ny) / PI + 0.5</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/m-f-ts/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2114,195 +2266,6 @@ PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-5/" itemprop="url">
-                  Android插件化(四)基础之文件存储
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:22:57+08:00">
-                2018-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="android文件存储解析"><a href="#android文件存储解析" class="headerlink" title="android文件存储解析"></a>android文件存储解析</h3><p>安卓中提供了Context中的方法与Environment类来操作文件。</p>
-<h4 id="Context文件操作方法"><a href="#Context文件操作方法" class="headerlink" title="Context文件操作方法"></a>Context文件操作方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public File getFileStreamPath(String name)</div><div class="line">public String[] fileList()</div><div class="line">public File getFilesDir()</div><div class="line">public File getNoBackupFilesDir()</div><div class="line">public File getExternalFilesDir(String type)</div><div class="line">public File[] getExternalFilesDirs(String type)</div><div class="line">public File getObbDir()</div><div class="line">public File[] getObbDirs()</div><div class="line">public File getCacheDir()</div><div class="line">public File getCodeCacheDir()</div><div class="line">public File getExternalCacheDir()</div><div class="line">public File[] getExternalCacheDirs()</div><div class="line">public File[] getExternalMediaDirs()</div><div class="line">public File getDir(String name, int mode)</div></pre></td></tr></table></figure>
-<p>用Log把它们都显示出来
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">Log.d(&quot;context&quot;, &quot;context.getFileStreamPath--&gt;&quot; +</div><div class="line">    this.getFileStreamPath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDir--&gt;&quot; +</div><div class="line">    this.getDir(&quot;test&quot;, Context.MODE_PRIVATE).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getFilesDir--&gt;&quot; +</div><div class="line">    this.getFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getNoBackupFilesDir&quot; +</div><div class="line">    this.getNoBackupFilesDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCacheDir--&gt;&quot; +</div><div class="line">    this.getCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getCodeCacheDir&quot; +</div><div class="line">    this.getCodeCacheDir().toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getDatabasePath--&gt;&quot; +</div><div class="line">    this.getDatabasePath(&quot;test&quot;).toString());</div><div class="line">Log.d(&quot;context&quot;, &quot;context.getObbDir--&gt;&quot; +</div><div class="line">    this.getObbDir().toString());</div><div class="line"></div><div class="line">File[] files1 = this.getObbDirs();</div><div class="line">for (File file : files1) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getObbDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line">File[] files2 = this.getExternalMediaDirs();</div><div class="line">for (File file : files2) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalMediaDirs&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalCacheDir--&gt;&quot; + this.getExternalCacheDir().toString());</div><div class="line">File[] files3 = this.getExternalCacheDirs();</div><div class="line">for (File file : files3) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalCacheDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div><div class="line"></div><div class="line">Log.d(&quot;context&quot;, &quot;context.getExternalFilesDir--&gt;&quot; + this.getExternalFilesDir(Environment.DIRECTORY_ALARMS).toString());</div><div class="line"></div><div class="line">File[] files4 = this.getExternalFilesDirs(Environment.DIRECTORY_ALARMS);</div><div class="line">for (File file : files4) &#123;</div><div class="line">    Log.d(&quot;context&quot;, &quot;context.getExternalFilesDirs--&gt;&quot; + file.toString());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>og输出结果(不同版本的安卓系统，目录可能也不相同):
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">context.getFileStreamPath--&gt;/data/data/cn.hufeifei.environmenttest/files/test</div><div class="line">context.getDir--&gt;/data/data/cn.hufeifei.environmenttest/app_test</div><div class="line">context.getFilesDir--&gt;/data/data/cn.hufeifei.environmenttest/files</div><div class="line">context.getNoBackupFilesDir/data/data/cn.hufeifei.environmenttest/no_backup</div><div class="line">context.getCacheDir--&gt;/data/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getCodeCacheDir/data/data/cn.hufeifei.environmenttest/code_cache</div><div class="line">context.getDatabasePath--&gt;/data/data/cn.hufeifei.environmenttest/databases/test</div><div class="line">context.getObbDir--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getObbDirs--&gt;/storage/emulated/0/Android/obb/cn.hufeifei.environmenttest</div><div class="line">context.getExternalMediaDirs/storage/emulated/0/Android/media/cn.hufeifei.environmenttest</div><div class="line">context.getExternalCacheDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalCacheDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/cache</div><div class="line">context.getExternalFilesDir--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div><div class="line">context.getExternalFilesDirs--&gt;/storage/emulated/0/Android/data/cn.hufeifei.environmenttest/files/Alarms</div></pre></td></tr></table></figure></p>
-<h4 id="Environment工具类中提供了以下几个方法："><a href="#Environment工具类中提供了以下几个方法：" class="headerlink" title="Environment工具类中提供了以下几个方法："></a>Environment工具类中提供了以下几个方法：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Environment.getDataDirectory();</div><div class="line">Environment.getRootDirectory();</div><div class="line">Environment.getDownloadCacheDirectory();</div><div class="line">Environment.getExternalStoragePublicDirectory(String type);</div><div class="line">Environment.getExternalStorageDirectory();</div><div class="line">Environment.getExternalStorageState();</div><div class="line">Environment.getExternalStorageState(File path)</div><div class="line">Environment.getStorageState();//已被getExternalStorageState取代</div></pre></td></tr></table></figure>
-<h5 id="1-前三个方法"><a href="#1-前三个方法" class="headerlink" title="1.前三个方法"></a>1.前三个方法</h5><p>用Log输出来：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//IS标识内部存储</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDataDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getDownloadCacheDirectory().toString());</div><div class="line">Log.d(&quot;Environment-IS&quot;, Environment.getRootDirectory().toString());</div></pre></td></tr></table></figure></p>
-<p>输出结果为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">D/Environment-IS: /data</div><div class="line">D/Environment-IS: /cache</div><div class="line">D/Environment-IS: /system</div></pre></td></tr></table></figure></p>
-<h5 id="2-getExternalStoragePublicDirectory方法"><a href="#2-getExternalStoragePublicDirectory方法" class="headerlink" title="2.getExternalStoragePublicDirectory方法"></a>2.getExternalStoragePublicDirectory方法</h5><p>getExternalStoragePublicDirectory方法用来获取安卓外部存储中系统应用经常用到的公共文件夹，
-在Environment中定义了这些文件夹的名字：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Environment.DIRECTORY_MUSIC = &quot;Music&quot;</div><div class="line">Environment.DIRECTORY_PODCASTS = &quot;Podcasts&quot;</div><div class="line">Environment.DIRECTORY_RINGTONES = &quot;Ringtones&quot;</div><div class="line">Environment.DIRECTORY_ALARMS = &quot;Alarms&quot;</div><div class="line">Environment.DIRECTORY_NOTIFICATIONS = &quot;Notifications&quot;</div><div class="line">Environment.DIRECTORY_PICTURES = &quot;Pictures&quot;</div><div class="line">Environment.DIRECTORY_MOVIES = &quot;Movies&quot;</div><div class="line">Environment.DIRECTORY_DOWNLOADS = &quot;Download&quot;</div><div class="line">Environment.DIRECTORY_DCIM = &quot;DCIM&quot;</div><div class="line">Environment.DIRECTORY_DOCUMENTS = &quot;Documents&quot;</div></pre></td></tr></table></figure></p>
-<p>它们的目录一般在/storage/emulated/0/<dir_name> (dir_name就是Environment中定义的这些字符串常量)</dir_name></p>
-<h5 id="3-最后的三个方法"><a href="#3-最后的三个方法" class="headerlink" title="3.最后的三个方法"></a>3.最后的三个方法</h5><p>最后面三个方法是用来获取挂载点的状态(在Linux中把一些特殊目录称为所谓的挂载点，有点类似于Windows中的分区)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Environment.MEDIA_REMOVED;//媒体存储已经移除了</div><div class="line">Environment.MEDIA_UNMOUNTED;//存储媒体没有挂载</div><div class="line">Environment.MEDIA_CHECKING;//正在检查存储媒体</div><div class="line">Environment.MEDIA_NOFS;//存储媒体是空白或是不支持的文件系统no_file_system</div><div class="line">Environment.MEDIA_MOUNTED;//存储媒体已经挂载，并且挂载点可读/写</div><div class="line">Environment.MEDIA_MOUNTED_READ_ONLY;//存储媒体已经挂载，挂载点只读</div><div class="line">Environment.MEDIA_SHARED;//存储媒体正在通过USB共享</div><div class="line">Environment.MEDIA_BAD_REMOVAL;//在没有挂载前存储媒体已经被移除</div><div class="line">Environment.MEDIA_UNMOUNTABLE;//存储媒体无法挂载,可能是文件系统损坏了</div><div class="line">Environment.MEDIA_EJECTING;//存储媒体正在移除</div><div class="line">Environment.MEDIA_UNKNOWN;//未知的存储状态</div></pre></td></tr></table></figure></p>
-<p>下面图片大概地概括了上面的方法
-<img src="http://images.wodekouwei.com/technology/android-storage.png" alt="image"></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h4><ul>
-<li>Context中的方法或得到的路径都与应用包名相关*</li>
-<li>Environment中的方法与整个系统有关*</li>
-</ul>
-<h3 id="storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别"><a href="#storage-sdcard0，-sdcard，-mnt-sdcard-，-storage-emulated-legacy-的区别" class="headerlink" title="/storage/sdcard0， /sdcard， /mnt/sdcard ，/storage/emulated/legacy 的区别"></a><code>/storage/sdcard0</code>， <code>/sdcard</code>， <code>/mnt/sdcard</code> ，<code>/storage/emulated/legacy</code> 的区别</h3><p>关于android的4.2的0文件夹的详解</p>
-<h4 id="android-4-0"><a href="#android-4-0" class="headerlink" title="android 4.0"></a>android 4.0</h4><p>在galaxy nexus（GN）手机上userdata分区很大，被挂在/data目录，用户的数据通常是放在sd卡上，然而gn是没有sd卡的，所以google想了一个办法，就是虚拟一个。</p>
-<p>所以，在userdata分区下有个目录叫media，是内置sd卡的数据存储位置，使用fuse技术将<code>/data/media</code>虚拟成为一个叫做<code>/dev/fuse</code>的设备，为了让程序能认出来，被同时挂载在 <code>/mnt/sdcard</code> 目录，
-又为了兼容以前的程序，做了一个快捷方式（linux系统里叫软连接） <code>/sdcard</code>指向的是 <code>/mnt/sdcard</code> .</p>
-<p>当然，这些都是4.0的做法。</p>
-<h4 id="android-4-1"><a href="#android-4-1" class="headerlink" title="android 4.1"></a>android 4.1</h4><p>在4.1里，同样也会使用fuse技术，<code>/dev/fuse</code> 会被同时挂载到<code>/storage/sdcard0</code> 目录，这个sdcard0表示第一个sd卡（如果有外置sd卡，那会多一个 <code>/storage/sdcard1</code>，比如我的xoom）， <code>/sdcard</code> 软连接会指向 <code>/storage/sdcard0</code> ，此时<code>/mnt/sdcard</code> 也是个软连接，会指向<code>/storage/sdcard0</code>。
-如果你通过otg线接U盘，会被挂载到 <code>/storage/usb0</code>目录，stickmount这个软件为了让图库、快图、mx player等软件，能看到u盘里的数据，又同时挂载到 <code>/storage/sdcard0/usStorage/sda1</code>.</p>
-<p>也许你会问，为什么不是usb0，而是sda1，这是linux的对硬盘的命名方式，如果你的u盘有多个分区，就分别是sda1,sda2这样一直排下去了。</p>
-<h4 id="android-4-2"><a href="#android-4-2" class="headerlink" title="android 4.2"></a>android 4.2</h4><p>谷歌是不是没事干啊，非要给android搞个多用户，你想想啊，在中国，可能因为经济问题，家里不是每人一个电脑，在美国，几乎需要用电脑的人，都会自己有一台或多台，一台电脑多人用的情况少之又少，这就是为什么叫PC了，顾名思义，个人电脑。像手机和平板这些东西，更加私人化了，很少公用了吧，我想在中国也是如此吧。</p>
-<p>当然，谷歌也不完全是抽风，因为他有更大的战略部署，而且平板也的确有多人用的可能。</p>
-<p>所以谷歌搞出来一个多用户，那每个人的应用、数据、个性配置都要分开吧。 应用和个性配置好弄，想想啊，通过权限控制，每人只能看自己的应用就行了，桌面也可以用自己的。</p>
-<p>那数据怎么办？？？？</p>
-<p>好吧，调整用户数据的挂载结构。android 4.2，同样也会使用fuse技术/dev/fuse 会被挂载到<code>/storage/emulated/0</code> 目录，为什么是0呢，你还记得上边的sdcard0吧，第一个的意思。（如果有第二个，应该就是<code>/storage/emulated/1</code>，我们的三儿子没有外置sd卡，所以没法验证）</p>
-<p>为了兼容以前，同时挂载到 <code>/storage/emulated/legacy</code> （故名思议，传统的），还建立三个软连接 <code>/storage/sdcard0</code> ，<code>/sdcard</code>，<code>/mnt/sdcard</code> ，都指向  <code>/storage/emulated/legacy</code></p>
-<p>还有值得一提的是，4.2刚出来，这块变动又比较大，所以stickmount要升级到2.2之后，才可以通过otg挂载u盘了。</p>
-<p>也许你会问，这个0和多用户有什么关系呢，那是因为多用户这个新特性，只在平板上才启用，在手机上会被禁用的。但是底层实现是一致的。 <code>/mnt/shell/emulated</code> 目录和 <code>/storage/emulated</code> 下的文件夹是一样的。（注意，这个<code>/mnt/shell/emulated</code>  不是挂载出来的）</p>
-<p><code>/mnt/shell/</code>是为了多用户准备的，因为linux的多用户是基于shell实现的。</p>
-<p>4.2在平板上的多用户
-我前一段时间给XOOM Wifi刷上了CM10.1的4.2.1，成功开启多用户特性。新建的用户id从10开始。</p>
-<ul>
-<li>默认用户的sdcard目录： <code>/storage/emulated/0</code></li>
-<li>新建的第一个用户的sdcard目录：  <code>/storage/emulated/10</code></li>
-<li>新建的第二个用户的sdcard目录：  <code>/storage/emulated/11</code></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2352,7 +2315,7 @@ PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">94</span>
+                <span class="site-state-item-count">95</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

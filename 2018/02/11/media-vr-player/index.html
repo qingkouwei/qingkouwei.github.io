@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="android,view,TextureView," />
+  <meta name="keywords" content="多媒体," />
 
 
 
@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
-<meta name="keywords" content="android,view,TextureView">
+<meta name="description" content="VR播放器的简单原理一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。 之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。 简单球面纹理映射讲解 实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置">
+<meta name="keywords" content="多媒体">
 <meta property="og:type" content="article">
-<meta property="og:title" content="android textureview处理预览摄像头变形问题">
-<meta property="og:url" content="http://wodekouwei.com/2017/05/04/android-view-textureview/index.html">
+<meta property="og:title" content="vr播放器">
+<meta property="og:url" content="http://wodekouwei.com/2018/02/11/media-vr-player/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
-<meta property="og:updated_time" content="2017-06-03T11:05:13.000Z">
+<meta property="og:description" content="VR播放器的简单原理一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。 之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。 简单球面纹理映射讲解 实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置">
+<meta property="og:updated_time" content="2018-02-11T10:20:01.711Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="android textureview处理预览摄像头变形问题">
-<meta name="twitter:description" content="当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪: 1234567891011121314151617181920212223242526272829303132333435363738public void sizeNotify(">
+<meta name="twitter:title" content="vr播放器">
+<meta name="twitter:description" content="VR播放器的简单原理一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。 之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。 简单球面纹理映射讲解 实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/05/04/android-view-textureview/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2018/02/11/media-vr-player/"/>
 
 
 
 
 
-  <title> android textureview处理预览摄像头变形问题 | 老司机种菜 </title>
+  <title> vr播放器 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -326,7 +326,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/04/android-view-textureview/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/media-vr-player/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -347,7 +347,7 @@
             
             
               
-                android textureview处理预览摄像头变形问题
+                vr播放器
               
             
           </h1>
@@ -362,8 +362,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T20:03:05+08:00">
-                2017-05-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T18:17:42+08:00">
+                2018-02-11
               </time>
             
 
@@ -385,8 +385,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
                   </a>
                 </span>
 
@@ -403,7 +403,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/04/android-view-textureview/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/02/11/media-vr-player/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -435,11 +435,16 @@
       
 
       
-        <p>当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public void sizeNotify(Camera.Size size) &#123;</div><div class="line">            float viewWidth = getWidth();</div><div class="line">            float viewHeight = getHeight();</div><div class="line"></div><div class="line">            float scaleX = 1.0f;</div><div class="line">            float scaleY = 1.0f;</div><div class="line">            int mPreviewWidth = size.width;</div><div class="line">            int mPreviewHeight = size.height;</div><div class="line">            if(viewWidth &lt; viewHeight) &#123;</div><div class="line">                mPreviewWidth = size.height;</div><div class="line">                mPreviewHeight = size.width;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123;</div><div class="line">                scaleX = mPreviewWidth / viewWidth;</div><div class="line">                scaleY = mPreviewHeight / viewHeight;</div><div class="line">            &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123;</div><div class="line">                scaleY = viewWidth / mPreviewWidth;</div><div class="line">                scaleX = viewHeight / mPreviewHeight;</div><div class="line">            &#125; else if (viewWidth &gt; mPreviewWidth) &#123;</div><div class="line">                scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight);</div><div class="line">            &#125; else if (viewHeight &gt; mPreviewHeight) &#123;</div><div class="line">                scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Calculate pivot points, in our case crop from center</div><div class="line">            int pivotPointX = (int) (viewWidth / 2);</div><div class="line">            int pivotPointY = (int) (viewHeight / 2);</div><div class="line"></div><div class="line">            Matrix matrix = new Matrix();</div><div class="line">            matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);</div><div class="line">            /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight +</div><div class="line">                    &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight +</div><div class="line">                    &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY +</div><div class="line">                    &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/</div><div class="line">            setTransform(matrix);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>TextureView中setTransform函数说明:
-Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content.</p>
-<p>Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.</p>
+        <h3 id="VR播放器的简单原理"><a href="#VR播放器的简单原理" class="headerlink" title="VR播放器的简单原理"></a>VR播放器的简单原理</h3><p>一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。</p>
+<p>之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。</p>
+<p>简单球面纹理映射讲解</p>
+<p>实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置向量来生成纹理坐标。</p>
+<p>想象一个球体，球面上每一个点的法向量，可以是从球心起到该点的线段距离。球上每一点都可以视作一个无限小的平面。</p>
+<p>Ps:法向量——垂直于平面的向量，叫做该平面的法向量</p>
+<p>问题的本质是根据球面上每个点的法向量坐标生成对应的纹理坐标，请看下图，下图中外部的方框表示二维纹理坐标，其范围是<code>(u,v)min = (0,0)</code>, <code>(u,v)max = (1,1)</code>，中间的圆形表示球面法向量坐标，其x,y分量的范围是<code>(x,y)min = (-1,-1), (x,y)max = (1,1)</code>。</p>
+<p>所以问题的本质变成了两组坐标的映射，也即将区间<code>(x,y)min - (x,y)max</code>映射到区间<code>(u,v)min - (u,v)max</code>。这里我们使用反正弦函数<code>y = acrsin(x)</code>来实现。先看一下它的函数图象。</p>
+<p>由这个图象知，它的定义域<code>x = (-1，1)</code>，值域是<code>y = (-pi / 2, pi / 2)</code>。我们稍作变型，得到下面两个公式。正好完成了由(-1, 1)到(0, 1)的映射。这里tu表示纹理的x坐标，tv表示纹理的y坐标，Nx表示顶点法向量的x轴分量，Ny表示顶点法向量的y轴分量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tu = arcsin(Nx) / PI + 0.5</div><div class="line">tv = arcsin(Ny) / PI + 0.5</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -490,11 +495,7 @@ Sets the transform to associate with this texture view. The specified transform 
       
         <div class="post-tags">
           
-            <a href="/tags/android/" rel="tag"># android</a>
-          
-            <a href="/tags/view/" rel="tag"># view</a>
-          
-            <a href="/tags/TextureView/" rel="tag"># TextureView</a>
+            <a href="/tags/多媒体/" rel="tag"># 多媒体</a>
           
         </div>
       
@@ -507,8 +508,8 @@ Sets the transform to associate with this texture view. The specified transform 
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/03/webrtc-nativeapis/" rel="next" title="webrtc之Native APIs">
-                <i class="fa fa-chevron-left"></i> webrtc之Native APIs
+              <a href="/2018/02/11/m-f-ts/" rel="next" title="ts格式解析">
+                <i class="fa fa-chevron-left"></i> ts格式解析
               </a>
             
           </div>
@@ -516,10 +517,6 @@ Sets the transform to associate with this texture view. The specified transform 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/06/03/gl-fbo/" rel="prev" title="OpenGL Frame Buffer Object(FBO)">
-                OpenGL Frame Buffer Object(FBO) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -574,8 +571,17 @@ Sets the transform to associate with this texture view. The specified transform 
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -696,6 +702,22 @@ Sets the transform to associate with this texture view. The specified transform 
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#VR播放器的简单原理"><span class="nav-number">1.</span> <span class="nav-text">VR播放器的简单原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

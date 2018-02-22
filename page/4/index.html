@@ -323,6 +323,181 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tool-as3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/10/31/tool-as3/" itemprop="url">
+                  tool-as3
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T19:47:42+08:00">
+                2017-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="AndroidStudio3-0新特性"><a href="#AndroidStudio3-0新特性" class="headerlink" title="AndroidStudio3.0新特性"></a>AndroidStudio3.0新特性</h3><h4 id="支持Java8语言"><a href="#支持Java8语言" class="headerlink" title="支持Java8语言"></a>支持Java8语言</h4><p>由于AS3.0默认支持Java8语言，所以我们就可以移除build.gradle里面的jackOptions了
+<del>jackOptions { true }</del></p>
+<p>然后可以在build.gradle配置为Java8
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">  ...</div><div class="line">  compileOptions &#123;</div><div class="line">    sourceCompatibility JavaVersion.VERSION_1_8</div><div class="line">    targetCompatibility JavaVersion.VERSION_1_8</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果对Java8的一些特性存在问题,我们也可以在gradle.properties里面禁用Java8
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.enableDesugar=false</div></pre></td></tr></table></figure></p>
+<h4 id="配置产品渠道"><a href="#配置产品渠道" class="headerlink" title="配置产品渠道"></a>配置产品渠道</h4><p>AS3.0以前我们常用productFlavors配置不同的渠道包，比如
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        dev&#123;</div><div class="line">            applicationIdSuffix &quot;.dev&quot;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>AS3.0得新增flavorDimensions的配置，主要有以下 12 个构建变体：
+构建变体：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minApi24, minApi23, minApi21][Demo, Full][Debug, Release]</div></pre></td></tr></table></figure></p>
+<p>对应 APK：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app-[minApi24, minApi23, minApi21]-[demo, full]-[debug, release].apk</div></pre></td></tr></table></figure></p>
+<p>比如这里创建一个构建方式
+首先得在defaultConfig通过flavorDimensions配置构建变体，如下
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">       ...</div><div class="line">        flavorDimensions &quot;debug&quot;,&quot;release&quot;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>然后productFlavors的配置就可以如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        demo &#123;</div><div class="line">            dimension &quot;debug&quot;</div><div class="line">            applicationIdSuffix &quot;.demo&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            dimension &quot;release&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="改进的Android插件"><a href="#改进的Android插件" class="headerlink" title="改进的Android插件"></a>改进的Android插件</h4><ul>
+<li>优化了多 module 的项目并行编译运行更详细Task的展示
+构建变体的从属管理，比如上文的Flavors Dimensions配置新 api ，implementation依赖（替代compile ），compileOnly（替代provided）和runtimeOnly（替代 apk）</li>
+<li>通过增量编译 优化多dex的app构建速度</li>
+<li>优化了AAPT2增量资源化处理。如果要启用AAPT2,在gradle.properties文件添加代码：<code>android.enableAapt2=true</code></li>
+<li>支持java8语言</li>
+<li>增加测试工具，可通过dependencies依赖使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies&#123;</div><div class="line">        androidTestUtil“com.linkedin.testbutler：测试管家应用：1.3.0@apk”</div><div class="line">        ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="常见出错总结"><a href="#常见出错总结" class="headerlink" title="常见出错总结"></a>常见出错总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Cause: getMainOutputFile is no longer supported.  Use getOutputFileName if you need to determine the file name of the output.</div></pre></td></tr></table></figure>
+<p>或
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Not valid.</div></pre></td></tr></table></figure></p>
+<p>主要是AndResGuard1.2.3版本还没有兼容AS3.0
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:All flavors must now belong to a named flavor dimension. The flavor &apos;prod&apos; is not assigned to a flavor dimension. Learn more at https://d.android.com/r/tools/flavorDimensions-missing-error-message.html</div></pre></td></tr></table></figure></p>
+<p>AS3.0需要通过flavorDimensions来配置产品渠道，详细看上文。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/17/tips-candcpp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1880,7 +2055,7 @@ vapth使用方法中的&lt; pattern&gt;需要包含“%”字符。“%”的意
 于是，我们可以写出[.c]文件和[.d]文件的依赖关系，并让make自动更新或自成[.d]文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。
 这里，我们给出了一个模式规则来产生[.d]文件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">%.d: %.c</div><div class="line">       @set -e; rm -f $@; \</div><div class="line">        $(CC) -M $(CPPFLAGS) $&lt; &gt; $@.</div><div class="line">; \</div><div class="line">        sed &apos;s,$∗\.o[ :]*,\1.o $@ : ,g&apos; &lt; $@.</div><div class="line">&gt; $@; \</div><div class="line">        rm -f $@.</div></pre></td></tr></table></figure></p>
-<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#x201d;&#65292;&#20063;&#x5c31;&#x662f;&#x5b;&#46;&#x63;&#93;&#x6587;&#x4ef6;&#29983;&#x6210;&#x4f9d;&#36182;&#25991;&#x4ef6;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#x8868;&#x793a;&#27169;&#x5f0f;&#8220;&#x25;&#x2e;&#100;&#x201d;&#25991;&#x4ef6;&#xff0c;&#22914;&#26524;&#26377;&#x4e00;&#x4e2a;&#67;&#x6587;&#20214;&#26159;&#110;&#x61;&#109;&#x65;&#x2e;&#99;&#xff0c;&#37027;&#20040;&#8220;&#37;&#x201d;&#23601;&#26159;&#x201c;&#x6e;&#x61;&#x6d;&#101;&#8221;&#xff0c;&#x201c;&#xa;&#x201d;&#x610f;&#20026;&#19968;&#20010;&#38543;&#x673a;&#32534;&#x53f7;&#xff0c;&#31532;&#x4e8c;&#34892;&#x751f;&#25104;&#x7684;&#25991;&#x4ef6;&#x6709;&#21487;&#33021;&#x662f;&#x201c;&#110;&#97;&#109;&#101;&#x2e;&#100;&#46;&#x31;&#x32;&#x33;&#52;&#53;&#x201d;&#65292;&#31532;&#x4e09;&#x884c;&#20351;&#x7528;&#x73;&#101;&#x64;&#x547d;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#x66ff;&#x6362;&#xff0c;&#x5173;&#20110;&#x73;&#x65;&#100;&#x547d;&#20196;&#x7684;&#x7528;&#27861;&#35831;&#21442;&#x770b;&#x76f8;&#x5173;&#x7684;&#x4f7f;&#x7528;&#25991;&#26723;&#x3002;&#31532;&#22235;&#34892;&#x5c31;&#x662f;&#x5220;&#38500;&#x4e34;&#26102;&#x6587;&#20214;&#x3002;&#10;&#x603b;&#x800c;&#x8a00;&#x4e4b;&#xff0c;&#36825;&#x4e2a;&#x6a21;&#24335;&#x8981;&#x505a;&#30340;&#x4e8b;&#x5c31;&#26159;&#22312;&#32534;&#x8bd1;&#x5668;&#29983;&#25104;&#30340;&#20381;&#36182;&#20851;&#31995;&#20013;&#x52a0;&#x5165;&#91;&#46;&#x64;&#93;&#25991;&#20214;&#30340;&#20381;&#36182;&#xff0c;&#x5373;&#x628a;&#20381;&#36182;&#20851;&#31995;&#xff1a;&#10;&#x3c;&#x21;&#45;&#x2d;&#65532;&#52;&#48;&#45;&#45;">&#x201d;&#65292;&#20063;&#x5c31;&#x662f;&#x5b;&#46;&#x63;&#93;&#x6587;&#x4ef6;&#29983;&#x6210;&#x4f9d;&#36182;&#25991;&#x4ef6;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#x8868;&#x793a;&#27169;&#x5f0f;&#8220;&#x25;&#x2e;&#100;&#x201d;&#25991;&#x4ef6;&#xff0c;&#22914;&#26524;&#26377;&#x4e00;&#x4e2a;&#67;&#x6587;&#20214;&#26159;&#110;&#x61;&#109;&#x65;&#x2e;&#99;&#xff0c;&#37027;&#20040;&#8220;&#37;&#x201d;&#23601;&#26159;&#x201c;&#x6e;&#x61;&#x6d;&#101;&#8221;&#xff0c;&#x201c;&#xa;&#x201d;&#x610f;&#20026;&#19968;&#20010;&#38543;&#x673a;&#32534;&#x53f7;&#xff0c;&#31532;&#x4e8c;&#34892;&#x751f;&#25104;&#x7684;&#25991;&#x4ef6;&#x6709;&#21487;&#33021;&#x662f;&#x201c;&#110;&#97;&#109;&#101;&#x2e;&#100;&#46;&#x31;&#x32;&#x33;&#52;&#53;&#x201d;&#65292;&#31532;&#x4e09;&#x884c;&#20351;&#x7528;&#x73;&#101;&#x64;&#x547d;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#x66ff;&#x6362;&#xff0c;&#x5173;&#20110;&#x73;&#x65;&#100;&#x547d;&#20196;&#x7684;&#x7528;&#27861;&#35831;&#21442;&#x770b;&#x76f8;&#x5173;&#x7684;&#x4f7f;&#x7528;&#25991;&#26723;&#x3002;&#31532;&#22235;&#34892;&#x5c31;&#x662f;&#x5220;&#38500;&#x4e34;&#26102;&#x6587;&#20214;&#x3002;&#10;&#x603b;&#x800c;&#x8a00;&#x4e4b;&#xff0c;&#36825;&#x4e2a;&#x6a21;&#24335;&#x8981;&#x505a;&#30340;&#x4e8b;&#x5c31;&#26159;&#22312;&#32534;&#x8bd1;&#x5668;&#29983;&#25104;&#30340;&#20381;&#36182;&#20851;&#31995;&#20013;&#x52a0;&#x5165;&#91;&#46;&#x64;&#93;&#25991;&#20214;&#30340;&#20381;&#36182;&#xff0c;&#x5373;&#x628a;&#20381;&#36182;&#20851;&#31995;&#xff1a;&#10;&#x3c;&#x21;&#45;&#x2d;&#65532;&#52;&#48;&#45;&#45;</a></p>
+<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#8221;&#xff0c;&#20063;&#23601;&#26159;&#91;&#46;&#x63;&#x5d;&#25991;&#x4ef6;&#x751f;&#x6210;&#20381;&#x8d56;&#x6587;&#20214;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#34920;&#x793a;&#x6a21;&#x5f0f;&#8220;&#x25;&#x2e;&#x64;&#8221;&#25991;&#20214;&#65292;&#22914;&#26524;&#x6709;&#x4e00;&#20010;&#67;&#25991;&#20214;&#x662f;&#110;&#x61;&#109;&#101;&#46;&#99;&#65292;&#x90a3;&#20040;&#x201c;&#x25;&#8221;&#23601;&#26159;&#x201c;&#110;&#97;&#x6d;&#101;&#8221;&#65292;&#8220;&#10;&#x201d;&#24847;&#20026;&#x4e00;&#20010;&#38543;&#x673a;&#x7f16;&#21495;&#65292;&#x7b2c;&#20108;&#34892;&#x751f;&#x6210;&#30340;&#x6587;&#20214;&#26377;&#x53ef;&#33021;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#x2e;&#x64;&#x2e;&#x31;&#50;&#x33;&#52;&#x35;&#x201d;&#xff0c;&#31532;&#19977;&#34892;&#20351;&#29992;&#x73;&#x65;&#x64;&#21629;&#x4ee4;&#x505a;&#20102;&#19968;&#20010;&#x66ff;&#x6362;&#xff0c;&#x5173;&#20110;&#x73;&#101;&#x64;&#x547d;&#20196;&#30340;&#29992;&#27861;&#35831;&#21442;&#x770b;&#x76f8;&#20851;&#30340;&#20351;&#29992;&#25991;&#x6863;&#x3002;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#21024;&#x9664;&#20020;&#x65f6;&#x6587;&#20214;&#x3002;&#10;&#x603b;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#20010;&#27169;&#24335;&#35201;&#x505a;&#x7684;&#x4e8b;&#x5c31;&#26159;&#x5728;&#x7f16;&#35793;&#22120;&#29983;&#x6210;&#x7684;&#x4f9d;&#x8d56;&#x5173;&#31995;&#20013;&#x52a0;&#20837;&#91;&#x2e;&#x64;&#93;&#25991;&#x4ef6;&#x7684;&#20381;&#x8d56;&#65292;&#x5373;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#xff1a;&#xa;&#x3c;&#x21;&#x2d;&#x2d;&#65532;&#x34;&#48;&#45;&#x2d;">&#8221;&#xff0c;&#20063;&#23601;&#26159;&#91;&#46;&#x63;&#x5d;&#25991;&#x4ef6;&#x751f;&#x6210;&#20381;&#x8d56;&#x6587;&#20214;&#xff0c;&#x201c;&#36;&#x40;&#8221;&#34920;&#x793a;&#x6a21;&#x5f0f;&#8220;&#x25;&#x2e;&#x64;&#8221;&#25991;&#20214;&#65292;&#22914;&#26524;&#x6709;&#x4e00;&#20010;&#67;&#25991;&#20214;&#x662f;&#110;&#x61;&#109;&#101;&#46;&#99;&#65292;&#x90a3;&#20040;&#x201c;&#x25;&#8221;&#23601;&#26159;&#x201c;&#110;&#97;&#x6d;&#101;&#8221;&#65292;&#8220;&#10;&#x201d;&#24847;&#20026;&#x4e00;&#20010;&#38543;&#x673a;&#x7f16;&#21495;&#65292;&#x7b2c;&#20108;&#34892;&#x751f;&#x6210;&#30340;&#x6587;&#20214;&#26377;&#x53ef;&#33021;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#x2e;&#x64;&#x2e;&#x31;&#50;&#x33;&#52;&#x35;&#x201d;&#xff0c;&#31532;&#19977;&#34892;&#20351;&#29992;&#x73;&#x65;&#x64;&#21629;&#x4ee4;&#x505a;&#20102;&#19968;&#20010;&#x66ff;&#x6362;&#xff0c;&#x5173;&#20110;&#x73;&#101;&#x64;&#x547d;&#20196;&#30340;&#29992;&#27861;&#35831;&#21442;&#x770b;&#x76f8;&#20851;&#30340;&#20351;&#29992;&#25991;&#x6863;&#x3002;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#21024;&#x9664;&#20020;&#x65f6;&#x6587;&#20214;&#x3002;&#10;&#x603b;&#x800c;&#x8a00;&#20043;&#xff0c;&#x8fd9;&#20010;&#27169;&#24335;&#35201;&#x505a;&#x7684;&#x4e8b;&#x5c31;&#26159;&#x5728;&#x7f16;&#35793;&#22120;&#29983;&#x6210;&#x7684;&#x4f9d;&#x8d56;&#x5173;&#31995;&#20013;&#x52a0;&#20837;&#91;&#x2e;&#x64;&#93;&#25991;&#x4ef6;&#x7684;&#20381;&#x8d56;&#65292;&#x5373;&#x628a;&#20381;&#x8d56;&#20851;&#31995;&#xff1a;&#xa;&#x3c;&#x21;&#x2d;&#x2d;&#65532;&#x34;&#48;&#45;&#x2d;</a></p>
 <p>转成：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">main.o main.d : main.c defs.h</div></pre></td></tr></table></figure></p>
 <p>于是，我们的[.d]文件也会自动更新了，并会自动生成了，当然，你还可以在这个[.d]文件中加入的不只是依赖关系，包括生成的命令也可一并加入，让每个[.d]文件都包含一个完赖的规则。一旦我们完成这个工作，接下来，我们就要把这些自动生成的规则放进我们的主Makefile中。我们可以使用Makefile的“include”命令，来引入别的Makefile文件（前面讲过），例如：
@@ -3590,150 +3765,6 @@ double fps, Size frameSize,bool isColor=true)</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/27/tips-android/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/27/tips-android/" itemprop="url">
-                  tips-android
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-27T10:41:33+08:00">
-                2017-09-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="1-使用Glide库提取视频帧"><a href="#1-使用Glide库提取视频帧" class="headerlink" title="1.使用Glide库提取视频帧"></a>1.使用Glide库提取视频帧</h6><p>图片加载框架Glide就可以做到获取本地视频的缩略图(不能获取网络视频文件):
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">String filePath = &quot;/storage/emulated/0/Pictures/example_video.mp4&quot;;</div><div class="line">Glide  </div><div class="line">    .with( context )</div><div class="line">    .load( Uri.fromFile( new File( filePath ) ) )</div><div class="line">    .into( imageViewGifAsBitmap );</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3783,7 +3814,7 @@ double fps, Size frameSize,bool isColor=true)</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">94</span>
+                <span class="site-state-item-count">95</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

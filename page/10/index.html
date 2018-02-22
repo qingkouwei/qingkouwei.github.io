@@ -323,6 +323,811 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/16/latex/" itemprop="url">
+                  MarkDown中嵌入LaTex
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T17:17:15+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MarkDown中使用标识符<code>$$</code>和<code>$$$$</code>即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中</p>
+<h3 id="部分希腊字母"><a href="#部分希腊字母" class="headerlink" title="部分希腊字母"></a>部分希腊字母</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\alpha</td>
+<td>α</td>
+<td></td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<td>\beta</td>
+<td>β</td>
+<td></td>
+<td>B</td>
+<td>B</td>
+</tr>
+<tr>
+<td>\gamma</td>
+<td>γ</td>
+<td></td>
+<td>\Gamma \varGamma</td>
+<td>Γ  Γ</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>δ</td>
+<td></td>
+<td>\Delta \varDelta</td>
+<td>Δ  Δ</td>
+</tr>
+<tr>
+<td>\epsilon</td>
+<td>ϵ</td>
+<td></td>
+<td>E</td>
+<td>E</td>
+</tr>
+<tr>
+<td>\eta</td>
+<td>η</td>
+<td></td>
+<td>H</td>
+<td>H</td>
+</tr>
+<tr>
+<td>\theta</td>
+<td>θ</td>
+<td></td>
+<td>\Theta \varTheta</td>
+<td>Θ  Θ</td>
+</tr>
+<tr>
+<td>\kappa</td>
+<td>κ</td>
+<td></td>
+<td>K</td>
+<td>K</td>
+</tr>
+<tr>
+<td>\lambda</td>
+<td>λ</td>
+<td></td>
+<td>\Lambda \varLambda</td>
+<td>Λ  Λ</td>
+</tr>
+<tr>
+<td>\mu</td>
+<td>μ</td>
+<td></td>
+<td>M</td>
+<td>M</td>
+</tr>
+<tr>
+<td>\nu</td>
+<td>ν</td>
+<td></td>
+<td>N</td>
+<td>N</td>
+</tr>
+<tr>
+<td>\pi</td>
+<td>π</td>
+<td></td>
+<td>\Pi \varPi</td>
+<td>Π  Π</td>
+</tr>
+<tr>
+<td>\rho</td>
+<td>ρ</td>
+<td></td>
+<td>P</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\sigma</td>
+<td>σ</td>
+<td></td>
+<td>\Sigma \varSigma</td>
+<td>Σ  Σ</td>
+</tr>
+<tr>
+<td>\tau</td>
+<td>τ</td>
+<td></td>
+<td>T</td>
+<td>T</td>
+</tr>
+<tr>
+<td>\phi \varphi</td>
+<td>ϕ  φ</td>
+<td></td>
+<td>\Phi \varPhi</td>
+<td>Φ  Φ</td>
+</tr>
+<tr>
+<td>\omega</td>
+<td>ω</td>
+<td></td>
+<td>\Omega \varOmega</td>
+<td>Ω  Ω</td>
+</tr>
+</tbody>
+</table>
+<p>全部24个字母:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>大写</th>
+<th>Tex</th>
+<th>小写</th>
+<th>Tex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alpha</td>
+<td>A</td>
+<td>A</td>
+<td>α</td>
+<td>\alpha</td>
+</tr>
+<tr>
+<td>beta</td>
+<td>B</td>
+<td>B</td>
+<td>β\</td>
+<td>beta</td>
+</tr>
+<tr>
+<td>gamma</td>
+<td>Γ</td>
+<td>\Gamma</td>
+<td>γ</td>
+<td>\gamma</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>Δ</td>
+<td>\Delta</td>
+<td>δ</td>
+<td>\delta</td>
+</tr>
+<tr>
+<td>epsilon</td>
+<td>E</td>
+<td>E</td>
+<td>ϵ</td>
+<td>\epsilon</td>
+</tr>
+<tr>
+<td>zeta</td>
+<td>Z</td>
+<td>Z</td>
+<td>ζ</td>
+<td>\zeta</td>
+</tr>
+<tr>
+<td>eta</td>
+<td>H</td>
+<td>H</td>
+<td>η</td>
+<td>\eta</td>
+</tr>
+<tr>
+<td>theta</td>
+<td>Θ</td>
+<td>\Theta</td>
+<td>θ</td>
+<td>\theta</td>
+</tr>
+<tr>
+<td>iota</td>
+<td>I</td>
+<td>I</td>
+<td>ι</td>
+<td>\iota</td>
+</tr>
+<tr>
+<td>kappa</td>
+<td>K</td>
+<td>K</td>
+<td>κ</td>
+<td>\kappa</td>
+</tr>
+<tr>
+<td>lambda</td>
+<td>Λ</td>
+<td>\Lambda</td>
+<td>λ</td>
+<td>\lambda</td>
+</tr>
+<tr>
+<td>mu</td>
+<td>M</td>
+<td>M</td>
+<td>μ</td>
+<td>\mu</td>
+</tr>
+<tr>
+<td>nu</td>
+<td>N</td>
+<td>N</td>
+<td>ν</td>
+<td>\nu</td>
+</tr>
+<tr>
+<td>xi</td>
+<td>Ξ</td>
+<td>\Xi</td>
+<td>ξ</td>
+<td>\xi</td>
+</tr>
+<tr>
+<td>omicron</td>
+<td>O</td>
+<td>O</td>
+<td>ο</td>
+<td>\omicron</td>
+</tr>
+<tr>
+<td>pi</td>
+<td>Π</td>
+<td>\Pi</td>
+<td>π</td>
+<td>\pi</td>
+</tr>
+<tr>
+<td>rho</td>
+<td>P</td>
+<td>P</td>
+<td>ρ</td>
+<td>\rho</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td>Σ</td>
+<td>\Sigma</td>
+<td>σ</td>
+<td>\sigma</td>
+</tr>
+<tr>
+<td>tau</td>
+<td>T</td>
+<td>T</td>
+<td>τ</td>
+<td>\tau</td>
+</tr>
+<tr>
+<td>upsilon</td>
+<td>Υ</td>
+<td>\Upsilon</td>
+<td>υ</td>
+<td>\upsilon</td>
+</tr>
+<tr>
+<td>phi</td>
+<td>Φ</td>
+<td>\Phi</td>
+<td>ϕ</td>
+<td>\phi</td>
+</tr>
+<tr>
+<td>chi</td>
+<td>X</td>
+<td>X</td>
+<td>χ</td>
+<td>\chi</td>
+</tr>
+<tr>
+<td>psi</td>
+<td>Ψ</td>
+<td>\Psi</td>
+<td>ψ</td>
+<td>\psi</td>
+</tr>
+<tr>
+<td>omega</td>
+<td>Ω</td>
+<td>\Omega</td>
+<td>ω</td>
+<td>\omega</td>
+</tr>
+</tbody>
+</table>
+<h3 id="部分运算符"><a href="#部分运算符" class="headerlink" title="部分运算符"></a>部分运算符</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\pm</td>
+<td>±</td>
+<td></td>
+<td>\mp</td>
+<td>∓</td>
+</tr>
+<tr>
+<td>\times</td>
+<td>×</td>
+<td></td>
+<td>\div</td>
+<td>÷</td>
+</tr>
+<tr>
+<td>\circ</td>
+<td>∘</td>
+<td></td>
+<td>\bullet</td>
+<td>∙</td>
+</tr>
+<tr>
+<td>\cdot</td>
+<td>⋅</td>
+<td></td>
+<td>\cup</td>
+<td>∪</td>
+</tr>
+<tr>
+<td>\cap</td>
+<td>∩</td>
+<td></td>
+<td>\subset</td>
+<td>⊂</td>
+</tr>
+<tr>
+<td>\supset</td>
+<td>⊃</td>
+<td></td>
+<td>\subseteq</td>
+<td>⊆</td>
+</tr>
+<tr>
+<td>\supseteq</td>
+<td>⊇</td>
+<td></td>
+<td>\leq</td>
+<td>≤</td>
+</tr>
+<tr>
+<td>\geq</td>
+<td>≥</td>
+<td></td>
+<td>\propto</td>
+<td>∝</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\cdotp</td>
+<td>⋅</td>
+<td></td>
+<td>\cdots</td>
+<td>⋯</td>
+</tr>
+<tr>
+<td>\ddots</td>
+<td>⋱</td>
+<td></td>
+<td>\infty</td>
+<td>∞</td>
+</tr>
+<tr>
+<td>\partial</td>
+<td>∂</td>
+<td></td>
+<td>\bot</td>
+<td>⊥</td>
+</tr>
+<tr>
+<td>\hat{a}</td>
+<td>â</td>
+<td></td>
+<td>\tilde{a}</td>
+<td>ã</td>
+</tr>
+<tr>
+<td>\bar{a}</td>
+<td>a¯</td>
+<td></td>
+<td>\vec{a}</td>
+<td>a⃗</td>
+</tr>
+<tr>
+<td>\dot{a}</td>
+<td>a˙</td>
+<td></td>
+<td>\sqrt{a}</td>
+<td>a‾‾√</td>
+</tr>
+<tr>
+<td>\sqrt[3]{2}</td>
+<td>a‾‾√3</td>
+<td></td>
+<td>a^{3}</td>
+<td>a3</td>
+</tr>
+<tr>
+<td>\frac{1}{a}</td>
+<td>1a</td>
+<td></td>
+<td>\lim_{x \to 0}</td>
+<td>lima→0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="集合关系符号"><a href="#集合关系符号" class="headerlink" title="集合关系符号"></a>集合关系符号</h3><table>
+<thead>
+<tr>
+<th>说明</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集合的大括号</td>
+<td>{ …   }\</td>
+</tr>
+<tr>
+<td>集合中的竖线$\mid$</td>
+<td>\mid</td>
+</tr>
+<tr>
+<td>属于</td>
+<td>\in</td>
+</tr>
+<tr>
+<td>不属于</td>
+<td>\not\in</td>
+</tr>
+<tr>
+<td>A包含于B</td>
+<td>A\subset B</td>
+</tr>
+<tr>
+<td>A真包含于B</td>
+<td>A\subsetneqq B</td>
+</tr>
+<tr>
+<td>A包含B</td>
+<td>A\supset B</td>
+</tr>
+<tr>
+<td>A真包含B</td>
+<td>A\supsetneqq B</td>
+</tr>
+<tr>
+<td>A不包含于B</td>
+<td>A\not\subset B</td>
+</tr>
+<tr>
+<td>A交B</td>
+<td>A\cap B</td>
+</tr>
+<tr>
+<td>A并B</td>
+<td>A\cup B</td>
+</tr>
+<tr>
+<td>A的闭包</td>
+<td>\overline{A}</td>
+</tr>
+<tr>
+<td>A减去B</td>
+<td>A\setminus B</td>
+</tr>
+<tr>
+<td>实数集合</td>
+<td>\mathbb{R}</td>
+</tr>
+<tr>
+<td>空集</td>
+<td>\emptyset</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>表格中竖线用<code>&amp;#124;</code></p>
+</blockquote>
+<h3 id="括号总结"><a href="#括号总结" class="headerlink" title="括号总结"></a>括号总结</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>语法</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不好看</td>
+<td><code>( \frac{1}{2} )</code></td>
+<td>$(\frac{1}{2})$</td>
+</tr>
+<tr>
+<td>好一点</td>
+<td><code>\left( \frac{1}{2} \right)</code></td>
+<td>$\left ( \frac{1}{2} \right )$</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用<code>\left</code>和<code>\right</code>来显示不同的括号：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>语法</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>圆括号，小括号</td>
+<td><code>\left( \frac{a}{b} \right)</code></td>
+<td>$\left( \frac{a}{b} \right)$</td>
+</tr>
+<tr>
+<td>方括号，中括号</td>
+<td>\left[ \frac{a}{b} \right]</td>
+<td>$\left[ \frac{a}{b} \right]$</td>
+</tr>
+<tr>
+<td>花括号，大括号</td>
+<td><code>\left\{ \frac{a}{b} \right\}</code></td>
+<td>$    \left{ \frac{a}{b} \right}$</td>
+</tr>
+<tr>
+<td>角括号</td>
+<td><code>\left \langle \frac{a}{b} \right \rangle</code></td>
+<td>$\left\langle \frac{a}{b} \right \rangle$</td>
+</tr>
+<tr>
+<td>单竖线，绝对值</td>
+<td>\left 竖线 \frac{a}{b} \right 竖线</td>
+<td></td>
+</tr>
+<tr>
+<td>双竖线，范</td>
+<td>\left \ 竖线 \frac{a}{b} \right \ 竖线</td>
+<td></td>
+</tr>
+<tr>
+<td>取整函数</td>
+<td><code>（Floor function）    \left \lfloor \frac{a}{b} \right \rfloor</code></td>
+<td>$    \left \lfloor \frac{a}{b} \right \rfloor$</td>
+</tr>
+<tr>
+<td>取顶函数</td>
+<td><code>（Ceiling function)    \left \lceil \frac{c}{d} \right \rceil</code></td>
+<td>$    \left \lceil \frac{c}{d} \right \rceil$</td>
+</tr>
+<tr>
+<td>斜线与反斜线</td>
+<td><code>\left / \frac{a}{b} \right \backslash</code></td>
+<td>$    \left / \frac{a}{b} \right \backslash$</td>
+</tr>
+<tr>
+<td>上下箭头</td>
+<td><code>\left \uparrow \frac{a}{b} \right \downarrow</code> <code>\left \Uparrow \frac{a}{b} \right \Downarrow</code> <code>\left \updownarrow \frac{a}{b} \right \Updownarrow</code></td>
+<td>$\left \uparrow \frac{a}{b} \right \downarrow$ $\left \Uparrow \frac{a}{b} \right \Downarrow$ $\left \updownarrow \frac{a}{b} \right \Updownarrow$</td>
+</tr>
+<tr>
+<td>混合括号</td>
+<td><code>\left [ 0,1 \right )</code> <code>\left \langle \psi )</code></td>
+<td>$\left [ 0,1 \right )$ $ \left \langle \psi \right)$</td>
+</tr>
+<tr>
+<td>单左括号</td>
+<td><code>\left \{ \frac{a}{b} \right .</code></td>
+<td>$\left { \frac{a}{b} \right .$</td>
+</tr>
+<tr>
+<td>单右括号</td>
+<td><code>\left . \frac{a}{b} \right \}</code></td>
+<td>$\left . \frac{a}{b} \right }$</td>
+</tr>
+</tbody>
+</table>
+<p>备注：
+可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示</p>
+<p>$$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$$</p>
+<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>$$\begin{matrix}…\end{matrix}$$</code>这样的形式来表示矩阵，在<code>\begin与\end</code>之间加入矩阵中的元素即可。矩阵的行之间使用<code>\\</code>分隔，列之间使用&amp;分隔。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">        \begin&#123;matrix&#125;</div><div class="line">        1 &amp; x &amp; x^2 \\</div><div class="line">        1 &amp; y &amp; y^2 \\</div><div class="line">        1 &amp; z &amp; z^2 \\</div><div class="line">        \end&#123;matrix&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<p>$$
+        \begin{matrix}
+        1 &amp; x &amp; x^2 \
+        1 &amp; y &amp; y^2 \
+        1 &amp; z &amp; z^2 \
+        \end{matrix}
+$$</p>
+<h3 id="加括号"><a href="#加括号" class="headerlink" title="加括号"></a>加括号</h3><p>如果要对矩阵加括号，可以像上文中提到的一样，使用<code>\left与\right</code>配合表示括号符号。也可以使用特殊的matrix。即替换<code>\begin{matrix}…\end{matrix}</code>中的matrix为pmatrix，bmatrix，Bmatrix，vmatrix,Vmatrix.</p>
+<h3 id="省略元素"><a href="#省略元素" class="headerlink" title="省略元素"></a>省略元素</h3><p>可以使用<code>\cdots ⋯
+ \ddots ⋱
+ \vdots ⋮</code>
+来省略矩阵中的元素</p>
+<h3 id="增广矩阵"><a href="#增广矩阵" class="headerlink" title="增广矩阵"></a>增广矩阵</h3><p>增广矩阵需要使用前面的array来实现
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$ \left[</div><div class="line">      \begin&#123;array&#125;&#123;cc|c&#125;</div><div class="line">        1&amp;2&amp;3\\</div><div class="line">        4&amp;5&amp;6</div><div class="line">      \end&#123;array&#125;</div><div class="line">    \right]</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<p>$$ \left[
+      \begin{array}{cc|c}
+        1&amp;2&amp;3\
+        4&amp;5&amp;6
+      \end{array}
+    \right]
+$$</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>使用<code>$$\begin{array}{列样式}…\end{array}$$</code>这样的形式来创建表格，列样式可以是clr表示居中，左，右对齐，还可以使用|表示一条竖线。表格中 各行使用<code>\\</code>分隔，各列使用&amp;分隔。使用<code>\hline</code>在本行前加入一条直线。 例如，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">\begin&#123;array&#125;&#123;c|lcr&#125;</div><div class="line">n &amp; \text&#123;Left&#125; &amp; \text&#123;Center&#125; &amp; \text&#123;Right&#125; \\</div><div class="line">\hline</div><div class="line">1 &amp; 0.24 &amp; 1 &amp; 125 \\</div><div class="line">2 &amp; -1 &amp; 189 &amp; -8 \\</div><div class="line">3 &amp; -20 &amp; 2000 &amp; 1+10i \\</div><div class="line">\end&#123;array&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<h2 id="上标与下标"><a href="#上标与下标" class="headerlink" title="上标与下标"></a>上标与下标</h2><p>上标和下标分别使用<code>^与_</code>，例如<code>x_i^2</code>：$x_i^2$
+。默认情况下，上下标符号仅仅对下一个组起作用。一个组即单个字符或者使用{..}包裹起来的内容。也就是说，如果使用<code>10^10</code>，会得到$10^10$
+，而<code>10^{10}</code>才是$10^{10}$
+。同时，大括号还能消除二义性，如<code>x^5^6</code>将得到一个错误，必须使用大括号来界定<code>^</code>的结合性，如<code>{x^5}^6</code>：${x^5}^6$
+ 或者 <code>x^{5^6}</code>：$x^{5^6}$
+。</p>
+<h2 id="对齐的公式"><a href="#对齐的公式" class="headerlink" title="对齐的公式"></a>对齐的公式</h2><h2 id="分类表达式"><a href="#分类表达式" class="headerlink" title="分类表达式"></a>分类表达式</h2><p>定义函数的时候经常需要分情况给出表达式，可使用<code>\begin{cases}…\end{cases}</code>。其中，使用<code>\</code>来分类，使用&amp;指示需要对齐的位置。如：</p>
+<h2 id="多重积分"><a href="#多重积分" class="headerlink" title="多重积分"></a>多重积分</h2><h2 id="连分数"><a href="#连分数" class="headerlink" title="连分数"></a>连分数</h2><h2 id="方程组"><a href="#方程组" class="headerlink" title="方程组"></a>方程组</h2><h2 id="颜色"><a href="#颜色" class="headerlink" title="颜色"></a>颜色</h2><h2 id="公式标记与引用"><a href="#公式标记与引用" class="headerlink" title="公式标记与引用"></a>公式标记与引用</h2><h2 id="求和与积分"><a href="#求和与积分" class="headerlink" title="求和与积分"></a>求和与积分</h2><h2 id="分式与根式"><a href="#分式与根式" class="headerlink" title="分式与根式"></a>分式与根式</h2><h2 id="特殊函数与符号"><a href="#特殊函数与符号" class="headerlink" title="特殊函数与符号"></a>特殊函数与符号</h2><h2 id="空间"><a href="#空间" class="headerlink" title="空间"></a>空间</h2><h2 id="顶部符号"><a href="#顶部符号" class="headerlink" title="顶部符号"></a>顶部符号</h2><blockquote>
+<p>参考
+<a href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/" target="_blank" rel="external">http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/13/am-function-and-limitaion/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1541,7 +2346,7 @@ View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">94</span>
+                <span class="site-state-item-count">95</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
