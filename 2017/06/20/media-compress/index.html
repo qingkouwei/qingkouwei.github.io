@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="多媒体," />
 
 
 
@@ -89,13 +89,17 @@
 
 
 
+<meta name="description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
+<meta name="keywords" content="多媒体">
 <meta property="og:type" content="article">
-<meta property="og:title" content="media-compress">
+<meta property="og:title" content="多媒体技术(五)之数字音频视频信号的压缩">
 <meta property="og:url" content="http://wodekouwei.com/2017/06/20/media-compress/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:updated_time" content="2017-06-20T15:09:04.000Z">
+<meta property="og:description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
+<meta property="og:updated_time" content="2018-03-04T15:02:51.719Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="media-compress">
+<meta name="twitter:title" content="多媒体技术(五)之数字音频视频信号的压缩">
+<meta name="twitter:description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
 
 
 
@@ -129,7 +133,7 @@
 
 
 
-  <title> media-compress | 老司机种菜 </title>
+  <title> 多媒体技术(五)之数字音频视频信号的压缩 | 老司机种菜 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -343,7 +347,7 @@
             
             
               
-                media-compress
+                多媒体技术(五)之数字音频视频信号的压缩
               
             
           </h1>
@@ -368,6 +372,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -409,7 +435,40 @@
       
 
       
-        
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><blockquote>
+<p><a href="http://blog.csdn.net/u013354805/article/details/50112353" target="_blank" rel="external">数字视频编码概述(熵编码/Huffman编码)</a></p>
+<h4 id="1-数字视频压缩的必要性和可能性"><a href="#1-数字视频压缩的必要性和可能性" class="headerlink" title="1. 数字视频压缩的必要性和可能性"></a>1. 数字视频压缩的必要性和可能性</h4><p>按ITU-R BT. 601建议，数字化后的输入图像格式为720<em>576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit，
+则数码率：(720 </em> 576 + 360 <em> 576 + 360 </em> 576) <em> 25帧/s </em> 8bit = 165.888Mbit/s。
+如果视频信号数字化后直接存放在650MB的光盘中，在不考虑音频信号的情况下，每张光盘只能存储31s的视频信号。
+数据压缩的理论基础是信息论。从信息论的角度来看，压缩就是去掉数据中的冗余，即保留不确定的信息，去掉确定的信息（可推知的），也就是用一种更接近信息本质的描述来代替原有冗余的描述。数据图像和视频数据中存在着大量的数据冗余和主观视觉冗余，因此图像和视频数据压缩不仅是必要的，而且也是可能的。</p>
+</blockquote>
+<h5 id="1-1-空间冗余"><a href="#1-1-空间冗余" class="headerlink" title="1.1 空间冗余"></a>1.1 空间冗余</h5><p>空间冗余也称空域冗余，是一种与像素间相关性直接联系的数据冗余。例如：数字图像的亮度信号和色度信号在空间域（X，Y坐标系）虽然属于一个随机场分布，但是他们可以看成为一个平稳的马尔可夫场。通俗讲，图像像素点在空间域中的亮度值和色度信号值，除了边界轮毂外，都是缓慢变化。因此，图像的帧内编码，即以减少空间冗余进行数据压缩。</p>
+<h5 id="1-2-时间冗余"><a href="#1-2-时间冗余" class="headerlink" title="1.2 时间冗余"></a>1.2 时间冗余</h5><p>时间冗余也称为时域冗余，它是针对视频序列图像而言的。视频序列每秒有25 ~ 30帧图像，相邻帧之间的时间间隔很小（例如，帧频为25Hz的电视信号，期帧间间隔只有 0.04s）,使得图像有很强的相关性。因此，对于视频压缩而言，通常采用运动估值和运动补偿预测技术来消除时间冗余。</p>
+<h5 id="1-3-统计冗余"><a href="#1-3-统计冗余" class="headerlink" title="1.3 统计冗余"></a>1.3 统计冗余</h5><p>统计冗余也称编码表示冗余或符合冗余。由信息论的有关原来可知，为了表示图像数据的一个像素点，只要按其信息熵的大小分配相应的比特数即可。若用相同码长表示不同出现概率的符号，则会造成比特数的浪费。如果采用可变长编码技术，对出现概率大的符号用短码字表示，对出现概率小的符号用长码字表示，则可去除符号冗余，从而节约码字，这就是熵编码的思想。</p>
+<h5 id="1-4-结构冗余"><a href="#1-4-结构冗余" class="headerlink" title="1.4 结构冗余"></a>1.4 结构冗余</h5><p>在有些图像的部分区域内有着很相似的纹理结构，或是图像的各个部分之间存在着某种关系，例如自相似性等，这些都是结构冗余的表现。分形图像编码的基本思想就是利用了结构冗余。</p>
+<h5 id="1-5-知识冗余"><a href="#1-5-知识冗余" class="headerlink" title="1.5 知识冗余"></a>1.5 知识冗余</h5><p>在某些特定的应用场合，编码对象中包含的信息与某些先验的基本知识有关。这时，可以利用这些先验知识为编码对象建立模型。通过提取模型参数，对参数进行编码，而不是对图像像素值直接进行编码，可以达到非常高的压缩比。这是模型基编码（或称知识基编码、语义基编码）的基本思想。</p>
+<h5 id="1-6-人眼的视觉冗余"><a href="#1-6-人眼的视觉冗余" class="headerlink" title="1.6 人眼的视觉冗余"></a>1.6 人眼的视觉冗余</h5><p>视觉冗余度是相对于人眼的视觉特性而言。压缩视觉冗余的核心思想是去掉那些相对人眼而言是看不到的或可有可无的图像数据。对视觉冗余的压缩通常反映在各种具体的压缩编码中。如对于离散余弦变换（DCT）系数的直流与低频部分采用细量化，而对高频部分采用粗量化。在帧间预测编码中，高压缩比的预测帧及双向预测帧的采用，也是利用了人眼对运动图像细节不敏感的特性。</p>
+<h4 id="2-无失真编码和限失真编码"><a href="#2-无失真编码和限失真编码" class="headerlink" title="2. 无失真编码和限失真编码"></a>2. 无失真编码和限失真编码</h4><p>从信息论的角度出发，根据解码后还原的数据是否与原始数据完全相同，可将数据压缩方法分为两大类：无失真编码和限失真编码。</p>
+<h5 id="无失真编码："><a href="#无失真编码：" class="headerlink" title="无失真编码："></a>无失真编码：</h5><p>无失真编码又称无损编码、信息保持编码、熵编码。</p>
+<p>熵指的是具体数据所含的平均信息量，定义为在不丢失信息的前提下描述该信息内容所需的最小比特数。</p>
+<p>熵编码事纯粹基于信号统计特性的一种编码方法，他利用信源概率分布的不均匀性，通过变长编码来减少信源数据冗余，解码后还原的数据与压缩编码前的原始数据完全相同而不引入任何失真。</p>
+<p>但无失真编码的压缩比较低，可达到的最高压缩比受到信源熵的理论限制：一般是2:1到5:1。最常用的无失真编码方法有哈夫曼（Huffman）编码、算术编码和游程编码（Run-Length Encoding，RLE）等。</p>
+<h5 id="限失真编码："><a href="#限失真编码：" class="headerlink" title="限失真编码："></a>限失真编码：</h5><p>限失真编码也称有损编码、非信息保持编码、熵压缩编码。也就是说，解码后还原的数据与压缩编码前的原始数据有差别的，编码会一定程度的失真。</p>
+<p>限失真编码方法利用了人类视觉的感知特性，允许压缩过程中损失一部分信息，虽然在解码时不能完全恢复原始数据，但是如果把失真控制在视觉阈值一下或者控制在可容忍的限度你，则不影响人们对图像的理解，却换来了高压缩比。在限失真编码中，允许的是真愈大，则可达到的压缩比愈高。</p>
+<p>常见的限失真编码方法：预测编码、变化编码、矢量量化、基于模型编码等。</p>
+<h4 id="3-熵编码"><a href="#3-熵编码" class="headerlink" title="3. 熵编码"></a>3. 熵编码</h4><h5 id="3-1-熵-Entropy-：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。"><a href="#3-1-熵-Entropy-：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。" class="headerlink" title="3.1 熵(Entropy)：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。"></a>3.1 熵(Entropy)：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。</h5><ul>
+<li>信源编码要尽可能的减少信源的冗余，使之接近熵</li>
+<li>用更少的比特传递更多的信源信息</li>
+</ul>
+<h4 id="3-2-熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化"><a href="#3-2-熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化" class="headerlink" title="3.2 熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化"></a>3.2 熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化</h4><ul>
+<li>无损压缩</li>
+<li>变长压缩</li>
+</ul>
+<h3 id="压缩编码基础"><a href="#压缩编码基础" class="headerlink" title="压缩编码基础"></a>压缩编码基础</h3><h4 id="H-264中普通I帧和IDR帧究竟有什么区别"><a href="#H-264中普通I帧和IDR帧究竟有什么区别" class="headerlink" title="H.264中普通I帧和IDR帧究竟有什么区别"></a>H.264中普通I帧和IDR帧究竟有什么区别</h4><p>在MPEG2中，有个重要的概念叫GOP(group of pictures)，假设编码的帧类型为：IBBPBBPBBPBBIBBPBBPBBPBBI…, 那么这个IBBPBBPBBPBB就叫一个GOP. 由于误差会积累，但MPEG2中的I帧可以阻断误差的积累，也就是说，在MPEG中I帧后面的帧永远不会参考I帧前面的帧，也就是说，一个GOP中的帧永远不会参考前一个GOP中的帧.(另外说句题外话：B帧可以参考下一个GOP的I帧，但在MPEG2中，B帧不会作为参考帧，所以B帧不会导致误差积累)</p>
+<p>在H.264中就不同了.很多人说，在H.264中没有I帧这个概念了，当然这也是有道理的，标准中的确没有这么叫，但是，为了方便，也可以延续I帧这个概念，那么H.264中什么叫I帧呢？
+定义：H.264中的I帧是指帧中的宏块都是采用帧内预测方式，在H.264中有两种I帧: 普通I帧和IDR帧（特殊I帧）.</p>
+<p>在H.264中，是IDR帧阻断了误差的积累, IDR帧后面的帧都不能参考该IDR帧前面的帧. 在H.264中，普通的I帧并没有阻断误差的积累，那就是说普通I帧后面的帧就可以参考该I帧之前的帧么？</p>
+
       
     </div>
 
@@ -457,6 +516,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/多媒体/" rel="tag"># 多媒体</a>
+          
+        </div>
+      
 
       
         
@@ -466,8 +531,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/20/media-video/" rel="next" title="media-video">
-                <i class="fa fa-chevron-left"></i> media-video
+              <a href="/2017/06/20/media-video/" rel="next" title="多媒体技术(三)之视频">
+                <i class="fa fa-chevron-left"></i> 多媒体技术(三)之视频
               </a>
             
           </div>
@@ -476,8 +541,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/06/20/media-storage-and-transfer/" rel="prev" title="media-storage-and-transfer">
-                media-storage-and-transfer <i class="fa fa-chevron-right"></i>
+              <a href="/2017/06/20/media-storage-and-transfer/" rel="prev" title="多媒体技术(三)之多媒体信息的存储与传输编码">
+                多媒体技术(三)之多媒体信息的存储与传输编码 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -533,8 +598,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -549,7 +623,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">95</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -655,6 +729,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-数字视频压缩的必要性和可能性"><span class="nav-number">1.1.</span> <span class="nav-text">1. 数字视频压缩的必要性和可能性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-空间冗余"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 空间冗余</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-时间冗余"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 时间冗余</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-统计冗余"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 统计冗余</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-结构冗余"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 结构冗余</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5-知识冗余"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.5 知识冗余</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-6-人眼的视觉冗余"><span class="nav-number">1.1.6.</span> <span class="nav-text">1.6 人眼的视觉冗余</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-无失真编码和限失真编码"><span class="nav-number">1.2.</span> <span class="nav-text">2. 无失真编码和限失真编码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#无失真编码："><span class="nav-number">1.2.1.</span> <span class="nav-text">无失真编码：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#限失真编码："><span class="nav-number">1.2.2.</span> <span class="nav-text">限失真编码：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-熵编码"><span class="nav-number">1.3.</span> <span class="nav-text">3. 熵编码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-熵-Entropy-：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 熵(Entropy)：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化"><span class="nav-number">1.4.</span> <span class="nav-text">3.2 熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩编码基础"><span class="nav-number">2.</span> <span class="nav-text">压缩编码基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#H-264中普通I帧和IDR帧究竟有什么区别"><span class="nav-number">2.1.</span> <span class="nav-text">H.264中普通I帧和IDR帧究竟有什么区别</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

@@ -323,6 +323,573 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/15/docker-env-create/" itemprop="url">
+                  docker简介及环境搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:00:03+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="docker是什么"><a href="#docker是什么" class="headerlink" title="docker是什么"></a>docker是什么</h3><p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
+Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
+<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<h3 id="Docker-三个基本概念"><a href="#Docker-三个基本概念" class="headerlink" title="Docker 三个基本概念"></a>Docker 三个基本概念</h3><ul>
+<li>镜像（Image）:Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</li>
+<li>容器（Container）:镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</li>
+<li>仓库（Repository）:镜像构建完成后，可以很容易的在当前宿主上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest作为默认标签。用 Docker 的时候，需要经常从官方获取镜像，但是由于显而易见的网络原因，拉取镜像的过程非常耗时，严重影响使用 Docker 的体验。因此 DaoCloud等加速器服务商 推出了加速器工具解决这个难题，通过智能路由和缓存机制，极大提升了国内网络访问 Docker Hub 的速度，目前已经拥有了广泛的用户群体，并得到了 Docker 官方的大力推荐。如果您是在国内的网络环境使用 Docker，那么 Docker 加速器一定能帮助到您。docker常用仓库:<a href="https://hub.docker.com/explore/" target="_blank" rel="external">https://hub.docker.com/explore/</a></li>
+</ul>
+<blockquote>
+<p><a href="https://www.daocloud.io/mirror#accelerator-doc" target="_blank" rel="external">docker daocloud加速器</a>:</p>
+<ul>
+<li>linux:<code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://311e425f.m.daocloud.io</code>,该脚本可以将 –registry-mirror 加入到你的 Docker 配置文件 /etc/docker/daemon.json 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同</li>
+<li>Mac:右键点击桌面顶栏的 docker 图标，选择 Preferences ，在 Daemon 标签（Docker 17.03 之前版本为 Advanced 标签）下的 Registry mirrors 列表中加入下面的镜像地址:<code>http://311e425f.m.daocloud.io</code>,点击 Apply &amp; Restart 按钮使设置生效。</li>
+<li>Windows: 在桌面右下角状态栏中右键 docker 图标，修改在 Docker Daemon 标签页中的 json ，把下面的地址:<code>http://311e425f.m.daocloud.io</code>,加到”registry-mirrors”的数组里。点击 Apply 。</li>
+</ul>
+</blockquote>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="mac下安装docker"><a href="#mac下安装docker" class="headerlink" title="mac下安装docker"></a>mac下安装docker</h4><p><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="external">官方mac的安装步骤</a>
+下载<a href="https://link.jianshu.com/?t=https://download.docker.com/mac/stable/Docker.dmg" target="_blank" rel="external">docker.dmg</a>文件，然后点击，一步步操作</p>
+<p>检测Docker Engine, Docker Compose, 和Docker Machine的版本:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">docker version</div><div class="line">Client:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Tue Mar 28 00:40:02 2017</div><div class="line"> OS/Arch:      darwin/amd64</div><div class="line"></div><div class="line">Server:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27 (minimum version 1.12)</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Fri Mar 24 00:00:50 2017</div><div class="line"> OS/Arch:      linux/amd64</div><div class="line"> Experimental: true</div><div class="line"></div><div class="line">docker-compose --version</div><div class="line">docker-compose version 1.11.2, build dfed245</div><div class="line"></div><div class="line">docker-machine --version</div><div class="line">docker-machine version 0.10.0, build 76ed2a6</div></pre></td></tr></table></figure></p>
+<h3 id="运行官网提供的二个简单列子"><a href="#运行官网提供的二个简单列子" class="headerlink" title="运行官网提供的二个简单列子"></a>运行官网提供的二个简单列子</h3><p>拉取hello-world镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull hello-world</div></pre></td></tr></table></figure></p>
+<p>查看hello-world镜像信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker images hello-world</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">hello-world         latest              1815c82652c0        5 days ago          1.84 kB</div></pre></td></tr></table></figure></p>
+<p>根据镜像生成对应容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run hello-world</div></pre></td></tr></table></figure></p>
+<p>ps不加参数只会把当前运行的Community打印出来，查看当前所有的Community，加上-a参数。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure></p>
+<p>当然也可以根据镜像生成一个具体名称的镜像，先删除当前容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 60</div></pre></td></tr></table></figure></p>
+<p>当然如果当前容器正在运行，要删除这个容器，则使用命令
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm -f 60</div></pre></td></tr></table></figure></p>
+<p>使用镜像生成具体名称的容器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name miaozhihao hello-world</div></pre></td></tr></table></figure></p>
+<p>于更多的docker run的命令可以使用来查看
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --help</div></pre></td></tr></table></figure></p>
+<p><strong>第二个examples，启动docker的web服务</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
+<p>-p参数是使用宿主机的80映射容器的80端口
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">curl localhost:80</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</div><div class="line">&lt;style&gt;</div><div class="line">    body &#123;</div><div class="line">        width: 35em;</div><div class="line">        margin: 0 auto;</div><div class="line">        font-family: Tahoma, Verdana, Arial, sans-serif;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</div><div class="line">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</div><div class="line">working. Further configuration is required.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;For online documentation and support please refer to</div><div class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</div><div class="line">Commercial support is available at</div><div class="line">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>交互式终端方式进入 webserver容器，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec -it webserver bash</div></pre></td></tr></table></figure></p>
+<p>修改nginx的显示页面：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@41b6804c716e:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</div><div class="line">root@41b6804c716e:/# exit</div><div class="line">exit</div></pre></td></tr></table></figure></p>
+<p>修改了容器的文件，也就是改动了容器的存储层。我们可以通过 docker diff
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">docker diff webserver</div><div class="line">C /root</div><div class="line">A /root/.bash_history</div><div class="line">C /run</div><div class="line">A /run/nginx.pid</div><div class="line">C /usr/share/nginx/html/index.html</div><div class="line">C /var/cache/nginx</div><div class="line">A /var/cache/nginx/client_temp</div><div class="line">A /var/cache/nginx/fastcgi_temp</div><div class="line">A /var/cache/nginx/proxy_temp</div><div class="line">A /var/cache/nginx/scgi_temp</div><div class="line">A /var/cache/nginx/uwsgi_temp</div></pre></td></tr></table></figure></p>
+<p>使用docker commit生成镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker commit --author &quot;zhihao.miao &lt;1026145686@qq.com&gt;&quot; --message &quot;修改了默认网页&quot; webserver nginx:v2</div><div class="line">sha256:0a34c054b8a826d85dddf4d1dbdd3028ab890feff4c8a0844e9b98dd146c2e07</div></pre></td></tr></table></figure></p>
+<p>–autho 指定作者 –message表示容器的一些信息
+查看当前nginx镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker images nginx</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">nginx               v2                  0a34c054b8a8        11 seconds ago      109 MB</div><div class="line">nginx               latest              958a7ae9e569        4 weeks ago         109 MB</div></pre></td></tr></table></figure></p>
+<p>查看当前所有的容器，包括运行的和停止的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div><div class="line">\CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                    PORTS                NAMES</div><div class="line">41b6804c716e        nginx                                 &quot;nginx -g &apos;daemon ...&quot;   3 minutes ago       Up 3 minutes              0.0.0.0:80-&gt;80/tcp   webserver</div><div class="line">85612b405cda        miaozhihao001dockerhub/commit_test1   &quot;nginx -g &apos;daemon ...&quot;   20 hours ago        Exited (0) 3 hours ago                         nginx_web</div><div class="line">9ef1fb35d7aa        ubuntu:14.04                          &quot;/bin/bash&quot;              20 hours ago        Exited (0) 20 hours ago                        commit_test</div><div class="line">bf8320b9e445        ubuntu:14.04                          &quot;/bin/bash&quot;              24 hours ago        Exited (0) 24 hours ago                        sharp_curie</div><div class="line">9f9767eb8aaf        hello-world                           &quot;/hello&quot;                 10 days ago         Exited (0) 10 days ago                         miaozhihao</div></pre></td></tr></table></figure></p>
+<p>启动新的容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker run --name newwebserver -d -p 80:80 nginx:v2</div><div class="line">3619b34ed347cf1ae2ee3ab32c419140871f3084b9a1325ab5d8c6155d43bf06</div><div class="line">➜ curl localhost:80</div><div class="line">&lt;h1&gt;Hello, Docker!&lt;/h1&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="创建自己的docker镜像"><a href="#创建自己的docker镜像" class="headerlink" title="创建自己的docker镜像"></a>创建自己的docker镜像</h3><p>编辑Dockerfile文件，填入以下内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM docker/whalesay:latest</div><div class="line">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</div><div class="line">CMD /usr/games/fortune -a | cowsay</div></pre></td></tr></table></figure></p>
+<p>运行以下命令创建名为docker-whale的镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-whale .</div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>-t</code>： 给tag命令</li>
+<li><code>.</code>： Dockerfile文件所在路径</li>
+</ul>
+<h4 id="docker-tag-push-pull"><a href="#docker-tag-push-pull" class="headerlink" title="docker tag push pull"></a>docker tag push pull</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 8e15421920b1 xulingfeng/docker-whale:latest</div></pre></td></tr></table></figure>
+<p>上传操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push xulingfeng/docker-whale</div></pre></td></tr></table></figure></p>
+<p>下载操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull centos</div></pre></td></tr></table></figure></p>
+<h4 id="交互式的操作"><a href="#交互式的操作" class="headerlink" title="交互式的操作"></a>交互式的操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -t -i ubuntu /bin/bash</div></pre></td></tr></table></figure>
+<ul>
+<li>t 分配了一个终端在新的容器中</li>
+<li><code>-i</code> 允许你和容器进行交互操作</li>
+<li><code>/bin/bash</code> 启动容器中的Bash shell</li>
+</ul>
+<h4 id="docker的守护状态，也就是后台运行"><a href="#docker的守护状态，也就是后台运行" class="headerlink" title="docker的守护状态，也就是后台运行"></a>docker的守护状态，也就是后台运行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d ubuntu /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li>docker run 运行容器</li>
+<li>-d 让容器在后台运行</li>
+<li>ubuntu 你希望运行容器的镜像</li>
+</ul>
+<h4 id="查看docker容器运行日志"><a href="#查看docker容器运行日志" class="headerlink" title="查看docker容器运行日志"></a>查看docker容器运行日志</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 容器名</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-f</code> 类似与 <code>tail -f</code></li>
+</ul>
+<h4 id="使用docker运行web应用"><a href="#使用docker运行web应用" class="headerlink" title="使用docker运行web应用"></a>使用docker运行web应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-d</code>：代表后台运行该容器</li>
+<li><code>-P</code>：映射容器中的web应用端口号到你的主机上32768-61000中的某一个端口。这样你可以访问该容器中的web应用</li>
+<li><code>training/webapp</code>： 一个已经构建好的镜像，包含一个简单的python flask框架web应用</li>
+<li><code>python app.py</code>：这个命令用来启动容器中的web</li>
+</ul>
+<p>成功运行以上命令后，运行：
+<code>docker ps</code>
+查看到容器的5000端口号映射到了本地的32768，浏览器访问<a href="http://127.0.0.1:32768" target="_blank" rel="external">http://127.0.0.1:32768</a> 看到helloworld 成功提示</p>
+<h4 id="自定义主机端口号"><a href="#自定义主机端口号" class="headerlink" title="自定义主机端口号"></a>自定义主机端口号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:5000 training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li>-p 80:5000 将本机的80端口绑定容器内的5000端口，本地直接访问 <code>http://127.0.0.1</code> 即可</li>
+</ul>
+<h4 id="查看容器的进程"><a href="#查看容器的进程" class="headerlink" title="查看容器的进程"></a>查看容器的进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker top 容器名</div></pre></td></tr></table></figure>
+<h4 id="检查容器的状态信息"><a href="#检查容器的状态信息" class="headerlink" title="检查容器的状态信息"></a>检查容器的状态信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 容器名</div></pre></td></tr></table></figure>
+<h4 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search 内容</div></pre></td></tr></table></figure>
+<h4 id="创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson"><a href="#创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson" class="headerlink" title="创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson"></a>创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson</h4><p><strong>centos镜像，分解步骤如下</strong></p>
+<ul>
+<li>首先添加额外源:<code>yum install -y epel-release</code></li>
+<li>安装编译环境:<code>yum install -y gcc automake autoconf libtool make gcc-c++</code></li>
+<li>安装wget命令:<code>yum install -y wget</code></li>
+<li>安装openssl-devel python的pip命令依赖:<code>yum install -y openssl-devel</code></li>
+<li>下载python3.5.2最新包:<code>wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</code></li>
+<li>解压python3.5.2压缩包并编译安装:<code>tar -zxvf /software/Python-3.5.2.tgz -C /software/</code>与<code>./configure &amp;&amp; make -j2&amp;&amp; make install -j2</code></li>
+<li>更新pip:<code>pip install --upgrade pip</code>与<code>pip install --upgrade setuptools</code></li>
+<li>安装所需的第三方包:<code>pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</code></li>
+</ul>
+<h4 id="通过Dockerfile构建镜像"><a href="#通过Dockerfile构建镜像" class="headerlink" title="通过Dockerfile构建镜像"></a>通过Dockerfile构建镜像</h4><p>Dockerfile:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">FROM centos:latest</div><div class="line">RUN yum install -y epel-release</div><div class="line">RUN yum install -y gcc automake autoconf libtool make gcc-c++</div><div class="line">RUN yum install -y wget</div><div class="line">RUN yum install -y openssl-devel</div><div class="line">RUN wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</div><div class="line">RUN tar -zxvf /software/Python-3.5.2.tgz -C /software/</div><div class="line">RUN cd /software/Python-3.5.2/ &amp;&amp; ./configure python3 &amp;&amp; make -j2&amp;&amp; make install -j2</div><div class="line">RUN pip install --upgrade pip</div><div class="line">RUN pip install --upgrade setuptools</div><div class="line">RUN pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</div></pre></td></tr></table></figure></p>
+<p>在Dockerfile目录中执行：<code>docker build -t 名字:版本 .</code></p>
+<h4 id="兼容docker-for-mac-和-pycharm"><a href="#兼容docker-for-mac-和-pycharm" class="headerlink" title="兼容docker for mac 和 pycharm"></a>兼容docker for mac 和 pycharm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install socat</div><div class="line">socat TCP-LISTEN:2376,reuseaddr,fork,bind=127.0.0.1 UNIX-CLIENT:/var/run/docker.sock</div></pre></td></tr></table></figure>
+<h3 id="一些docker命令总结"><a href="#一些docker命令总结" class="headerlink" title="一些docker命令总结"></a>一些docker命令总结</h3><ul>
+<li>docker images :查看当前宿主机的所有镜像。</li>
+<li>docker images ubuntu：根据仓库名列出镜像</li>
+<li>docker images ubuntu:14.04:指定仓库名和标签</li>
+<li>docker build -t webservice .:表示使用当前目录下的DockerFile来生成镜像，-t参数的值表示镜像的tagname，如果DockerFile在当前路径下则使用.，如果不在当前路径下则使用相对路径。</li>
+<li>docker ps -a: 没有-a参数表示显示当前宿主机的正在运行的容器，加上-a表示显示当前宿主机所有的容器，包括已经退出的容器。</li>
+<li>docker run -d -p 2222:22 –name base centos:7.1
+表示根据指定的镜像后台运行容器，容器的名字是base（–name就是指定容器的名字)，centos:7.1表示镜像的名字，-p参数表示当前宿主机的2222端口对应容器的22端口。-d参数表示（Run container in background and print container ID）</li>
+<li>docker exec -it base /bin/bash
+以交互式命令进入base容器并且执行/bin/bash命令</li>
+<li>docker rmi webservice:删除webservice镜像</li>
+<li>docker rm base: 删除base容器，如果base正在运行，则可以使用docker rm -f base进行强行删除</li>
+<li>docker start 启动容器</li>
+<li>docker stop 停止容器</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/14/tips-android-pluggable-7/" itemprop="url">
+                  Android插件化(六)基础之Binder
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-14T13:47:58+08:00">
+                2018-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-6/" itemprop="url">
+                  Android插件化(五)基础之用到Android源码类探讨
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:23:00+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="PackageManager"><a href="#PackageManager" class="headerlink" title="PackageManager"></a>PackageManager</h6><p>获取:通过Context的getPackageManager()
+常用方法:</p>
+<ol>
+<li><code>getInstalledPackages(int flags)</code>:可以得到所有安装在机器上的程序的包信息类对象List<packageinfo>，PackageInfo类中有一值applicationInfo可以得到Application的对象。</packageinfo></li>
+<li><code>getPackageArchiveInfo(dexPath,
+PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应用以外其他apk的信息方法</li>
+<li><code>getInstalledApplications(int flags)</code>:得到所有安装在机器上的程序的application对象List<applicationinfo>；</applicationinfo></li>
+<li><code>getApplicationIcon(String packageName)</code>,<code>getApplicationIcon(ApplicationInfo info)</code>:获得应用程序的图片</li>
+<li><code>getApplicationLabel(ApplicationInfo info)</code>:方法可以获得应用程序的名字</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2095,1064 +2662,6 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/29/tips-ml-res/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/29/tips-ml-res/" itemprop="url">
-                  机器学习资源
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-29T09:59:09+08:00">
-                2017-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://github.com/andabi/deep-voice-conversion" target="_blank" rel="external">deep-voice-conversion</a>:Deep neural networks for voice conversion (voice style transfer) in Tensorflow</p>
-<p><a href="https://prismalabs.ai/" target="_blank" rel="external">Prisma</a></p>
-<p><a href="https://techcrunch.com/2017/08/19/prisma-shifts-focus-to-b2b-with-an-api-for-ai-powered-mobile-effects/" target="_blank" rel="external">Prisma shifts focus to b2b with an API for AI-powered mobile effects</a></p>
-<p><a href="http://techcrunch.cn/2017/07/11/prismas-next-ai-project-is-a-fun-selfie-sticker-maker-called-sticky/" target="_blank" rel="external">Prisma 团队推出基于人工智能的贴纸制作应用 Sticky</a></p>
-<p><a href="https://techcrunch.com/2016/12/20/prisma-launches-a-social-feed-to-see-if-style-can-transfer-into-a-platform/" target="_blank" rel="external">Prisma launches a social feed to see if style can transfer into a platform</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/20/m-f-flv/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/20/m-f-flv/" itemprop="url">
-                  FLV格式解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-20T14:49:06+08:00">
-                2017-12-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
-                    <span itemprop="name">音视频封装</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>FLV（Flash Video）是现在非常流行的流媒体格式，由于其视频文件体积轻巧、封装播放简单等特点，使其很适合在网络上进行应用，目前主流的视频网站无一例外地使用了FLV格式。另外由于当前浏览器与Flash Player紧密的结合，使得网页播放FLV视频轻而易举，也是FLV流行的原因之一。</p>
-<p>FLV是流媒体封装格式，我们可以将其数据看为二进制字节流。总体上看，FLV包括文件头（File Header）和文件体（File Body）两部分，其中文件体由一系列的Tag及Tag Size对组成。
-<img src="http://images.wodekouwei.com/M/F/flv-struct.jpg" alt="flv-struct"></p>
-<h3 id="FLV格式解析"><a href="#FLV格式解析" class="headerlink" title="FLV格式解析"></a>FLV格式解析</h3><p>先来一张图，这是《科比退役演讲》下载）的一个FLV视频。我使用的是UltraEdit的二进制查看工具。
-<img src="http://images.wodekouwei.com/M/F/flv1.png" alt="flv-head"></p>
-<h4 id="header"><a href="#header" class="headerlink" title="header"></a>header</h4><p>头部分由一下几部分组成
-Signature(3 Byte)+Version(1 Byte)+Flags(1 Bypte)+DataOffset(4 Byte)</p>
-<ul>
-<li>signature 占3个字节 固定FLV三个字符作为标示。一般发现前三个字符为FLV时就认为他是flv文件。图中0x46 0x4C 0x56,代表FLV</li>
-<li>Version 占1个字节 标示FLV的版本号。这里我们看到是1</li>
-<li>Flags 占1个字节 内容标示。第0位和第2位,分别表示 video 与 audio 存在的情况.(1表示存在,0表示不存在)。截图看到是0x05，也就是00000101，代表既有视频，也有音频。</li>
-<li>DataOffset 4个字节 表示FLV的header长度。这里可以看到固定是9</li>
-</ul>
-<h4 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h4><p>FLV的body部分是一系列的back-pointers+tag构成的</p>
-<ul>
-<li>back-pointers固定4个字节,表示前一个tag的size</li>
-<li><p>tag分三种类型:video,audio,scripts.</p>
-<h5 id="tag组成"><a href="#tag组成" class="headerlink" title="tag组成"></a>tag组成</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tag type+tag data size+Timestamp+TimestampExtended+stream id+ tag data</div></pre></td></tr></table></figure>
-</li>
-<li><p>type 1个字节。8为Audio,9为Video,18为scripts</p>
-</li>
-<li>tag data size 3个字节。表示tag data的长度。从streamd id 后算起。</li>
-<li>Timestreamp 3个字节。时间戳</li>
-<li>TimestampExtended 1个字节。时间戳扩展字段</li>
-<li>stream id 3个字节。总是0</li>
-<li>tag data 数据部分</li>
-</ul>
-<p>图上第一个tag:</p>
-<ul>
-<li>type=0x12=18,表示是一个scripts,FLV中,header后的第一个tag是script tag,script tag内容是amf格式数据,包含两个amf.</li>
-<li>size=0x00 0x01 0x74 = 372</li>
-<li>timpestreamp = 0x00 0x00 0x00</li>
-<li>TimestampExtended=0x00</li>
-<li>streamid=0x00 0x00 0x00</li>
-<li>tag data部分:
-<img src="http://images.wodekouwei.com/M/F/flv2.png" alt="FLV-TAG"></li>
-</ul>
-<h5 id="tag的划分"><a href="#tag的划分" class="headerlink" title="tag的划分"></a>tag的划分</h5><p>图中红色部分是我标出”(“与”)”前后的的两个back-pointers，都是4个字节。而括号中间就是第一个TAG。那是怎么计算的呢？我们就以这个做个示例。</p>
-<ul>
-<li>首先第一个back-pointers是0x00000000，那是因为后面是第一个TAG。所以他为0。</li>
-<li>然后根据我们我们前面格式获取到size是0x00 0x01 0x74 = 372。也就是说从stream id后面再加上372个字节就到了第一个TAG的末尾，我们数一下。tag header有11个字节。那么到第一个TAG，总共有372+11=383=0x17f。</li>
-<li>接下来我们找到0x17f的地址，从工具上很容易找到，正好就是后括号”)”的前面。红0x00 0x00 0x01 0x7F=372，这代表的是上一个TAG的大小。</li>
-<li>最后我们计算一下，上一个TAG数据部分是372个字节，前面type、stream id等字段占了11个字节。正好是匹配的。
-上面我们已经知道了怎么取划分每个TAG。接下来我们就看TAG的具体内容:</li>
-</ul>
-<h5 id="tag的内容"><a href="#tag的内容" class="headerlink" title="tag的内容"></a>tag的内容</h5><p>前面已经提到tag分3种。我们一个个看</p>
-<h6 id="script"><a href="#script" class="headerlink" title="script"></a>script</h6><p>脚本Tag一般只有一个，是flv的第一个Tag，用于存放flv的信息，比如duration、audiodatarate、creator、width等。
-首先介绍下脚本的数据类型。所有数据都是以数据类型+（数据长度）+数据的格式出现的，数据类型占1byte，数据长度看数据类型是否存在，后面才是数据。</p>
-<p>一般来说，该Tag Data结构包含两个AMF包。AMF（Action Message Format）是Adobe设计的一种通用数据封装格式，在Adobe的很多产品中应用，简单来说，AMF将不同类型的数据用统一的格式来描述。第一个AMF包封装字符串类型数据，用来装入一个“onMetaData”标志，这个标志与Adobe的一些API调用有，在此不细述。第二个AMF包封装一个数组类型(srs返回为object类型)，这个数组中包含了音视频信息项的名称和值。具体说明如下</p>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>Number type</td>
-<td>8 Bypte Double</td>
-</tr>
-<tr>
-<td>1</td>
-<td>Boolean type</td>
-<td>1 Bypte bool</td>
-</tr>
-<tr>
-<td>2</td>
-<td>String type</td>
-<td>后面2个字节为长度</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Object type</td>
-<td></td>
-</tr>
-<tr>
-<td>4</td>
-<td>MovieClip type</td>
-<td></td>
-</tr>
-<tr>
-<td>5</td>
-<td>Null type</td>
-<td></td>
-</tr>
-<tr>
-<td>6</td>
-<td>Undefined type</td>
-<td></td>
-</tr>
-<tr>
-<td>7</td>
-<td>Reference type</td>
-<td></td>
-</tr>
-<tr>
-<td>8</td>
-<td>ECMA array type</td>
-<td>数组,类似Map</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Strict array type</td>
-<td></td>
-</tr>
-<tr>
-<td>11</td>
-<td>Date type</td>
-<td></td>
-</tr>
-<tr>
-<td>12</td>
-<td>Long string type</td>
-<td>后面4个字节为长度</td>
-</tr>
-</tbody>
-</table>
-<p><img src="http://images.wodekouwei.com/M/F/flv3.png" alt="FLV-script-1.png">
-上图为第一个AMF包</p>
-<ul>
-<li>type=0x02对应String</li>
-<li>size=0A=10</li>
-<li>value=onMetaData 正好是10个字节。</li>
-</ul>
-<p><img src="http://images.wodekouwei.com/M/F/flv4.png" alt="FLV_script-2.png">
-上图为第二个AMF</p>
-<ul>
-<li>type=0x08 对应ECMA array type。</li>
-</ul>
-<blockquote>
-<p>表示数组，类似Map。后面4个字节为数组的个数。然后是键值对，第一个为键，2个字节为长度。后面跟具体的内容。接着3个字节表示值的类型，然后根据类型判断长度。
-上图我们可以判断，总共有13个键值对。
-第一个长度为8个字节是duration。值类型是0x004073，第一个字节是00，所以是double，8个字节。
-第二个长度5个字节是width。值也是double类型，8个字节。
-依次解析下去…</p>
-</blockquote>
-<h6 id="Audio"><a href="#Audio" class="headerlink" title="Audio"></a>Audio</h6><p><img src="http://images.wodekouwei.com/M/F/flv5.png" alt="flv-audio1">
-<img src="http://images.wodekouwei.com/M/F/flv6.png" alt="flv-audio2">
-<img src="http://images.wodekouwei.com/M/F/flv7.png" alt="flv-audio3">
-<img src="http://images.wodekouwei.com/M/F/flv8.png" alt="flv-audio4">
-视频中第二个tag为音频tag</p>
-<p>stream-id之后:</p>
-<ul>
-<li>前4位为音频格式</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>Linear PCM, platform endian</td>
-</tr>
-<tr>
-<td>1</td>
-<td>ADPCM</td>
-</tr>
-<tr>
-<td>2</td>
-<td>MP3</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Linear PCM, little endian</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Nellymoser 16-kHz mono</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Nellymoser 8-kHz mono</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Nellymoser</td>
-</tr>
-<tr>
-<td>7</td>
-<td>G.711 A-law logarithmic PCM</td>
-</tr>
-<tr>
-<td>8</td>
-<td>G.711 mu-law logarithmic PCM</td>
-</tr>
-<tr>
-<td>9</td>
-<td>reserved</td>
-</tr>
-<tr>
-<td>10</td>
-<td>AAC</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Speex</td>
-</tr>
-<tr>
-<td>14</td>
-<td>MP3 8-Khz</td>
-</tr>
-<tr>
-<td>15</td>
-<td>Device-specific sound</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着2位为采样率(对于AAC总是3)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>5.5-kHz</td>
-</tr>
-<tr>
-<td>1</td>
-<td>11-kHz</td>
-</tr>
-<tr>
-<td>2</td>
-<td>22-kHz</td>
-</tr>
-<tr>
-<td>3</td>
-<td>44-kHz</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着1位为采样的长度(压缩过的音视频都是16bit)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>snd8Bit</td>
-</tr>
-<tr>
-<td>1</td>
-<td>snd16Bit</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>接着1位为音频类型(对于AAC总是1)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>sndMono</td>
-</tr>
-<tr>
-<td>1</td>
-<td>sndStereo</td>
-</tr>
-</tbody>
-</table>
-<h6 id="video"><a href="#video" class="headerlink" title="video"></a>video</h6><p>由于kobe视频音频编码是pcm,查找视频tag太难,使用&lt;&lt;东风破&gt;&gt; mv视频
-<img src="http://images.wodekouwei.com/M/F/flv9.png" alt="flv-video1"></p>
-<ul>
-<li>type=0x09=9。这里应该是一个video。</li>
-<li>size=0x000030=48。长度为48。</li>
-<li>timestreamp=0x000000。</li>
-<li>TimestampExtended =0x00。</li>
-<li>stream id =0x000000</li>
-</ul>
-<p>我们看到数据部分：
-视频信息+数据
-视频信息，1个字节。</p>
-<blockquote>
-<p>StreamId之后的数据就表示是VideoTagHeader,如果是avc,VideoTagHeader会多出4个字节的信息就是AVCPacketType和CompositionTime</p>
-</blockquote>
-<ul>
-<li>前4位为帧类型Frame Type</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>keyframe (for AVC, a seekable frame) 关键帧</td>
-</tr>
-<tr>
-<td>2</td>
-<td>inter frame (for AVC, a non-seekable frame)</td>
-</tr>
-<tr>
-<td>3</td>
-<td>disposable inter frame (H.263 only)</td>
-</tr>
-<tr>
-<td>4</td>
-<td>generated keyframe (reserved for server use only)</td>
-</tr>
-<tr>
-<td>5</td>
-<td>video info/command frame</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>后4位为编码ID (CodecID)</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>JPEG (currently unused)</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Sorenson H.263</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Screen video</td>
-</tr>
-<tr>
-<td>4</td>
-<td>On2 VP6</td>
-</tr>
-<tr>
-<td>5</td>
-<td>On2 VP6 with alpha channel</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Screen video version 2</td>
-</tr>
-<tr>
-<td>7</td>
-<td>AVC</td>
-</tr>
-</tbody>
-</table>
-<p>特殊情况
-视频的格式(CodecID)是AVC（H.264）的话，VideoTagHeader会多出4个字节的信息，AVCPacketType 和CompositionTime。</p>
-<ul>
-<li>AVCPacketType 占1个字节</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>值</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>AVCDecoderConfigurationRecord(AVC sequence header)</td>
-</tr>
-<tr>
-<td>1</td>
-<td>AVC NALU</td>
-</tr>
-<tr>
-<td>2</td>
-<td>AVC end of sequence (lower level NALU sequence ender is not required or supported)</td>
-</tr>
-</tbody>
-</table>
-<p>AVCDecoderConfigurationRecord.包含着是H.264解码相关比较重要的sps和pps信息，再给AVC解码器送数据流之前一定要把sps和pps信息送出，否则的话解码器不能正常解码。而且在解码器stop之后再次start之前，如seek、快进快退状态切换等，都需要重新送一遍sps和pps的信息.AVCDecoderConfigurationRecord在FLV文件中一般情况也是出现1次，也就是第一个video tag.</p>
-<ul>
-<li>CompositionTime 占3个字节</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>条件</th>
-<th>值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>AVCPacketType ==1</td>
-<td>Composition time offset</td>
-</tr>
-<tr>
-<td>AVCPacketType !=1</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<p>再看到第二个video tag
-<img src="http://images.wodekouwei.com/M/F/flv10.png" alt="flv-video"></p>
-<p>我们看到 AVCPacketType =1，而后面三个字节为000043。这是一个视频帧数据。
-解析到的数据完全符合上面的理论。</p>
-<p>sps pps
-前面我们提到第一个video 一般存放的是sps和pps。这里我们具体解析下sps和pps内容。先看下存储的格）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x01+sps[1]+sps[2]+sps[3]+0xFF+0xE1+sps size+sps+01+pps size+pps</div></pre></td></tr></table></figure></p>
-<p>sps[1]=0x64
-sps[2]=00
-sps[3]=0D
-sps size=0x001B=27(占两个字节)
-跳过27个字节后，是0x01
-pps size=0x0005=118(占两个字节)
-跳过5个字节，就到了back-pointers。</p>
-<p>视频帧数据
-解析出sps和pps tag后，后面的video tag就是真正的视频数据内容了
-<img src="http://images.wodekouwei.com/M/F/flv11.png" alt="flv-video3">
-这是第二个video tag其实和之前图一样，只是我圈出来关键信息。先看下格式
-frametype=0x17=00010111
-AVCPacketType =1
-Composition Time=0x000043
-后面就是NALU DATA</p>
-<blockquote>
-<p>引用:</p>
-<p><a href="http://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="external">flv格式详解+实例剖析</a></p>
-<p><a href="http://blog.csdn.net/bsplover/article/details/7426511" target="_blank" rel="external">FLV视频封装格式详解</a></p>
-<p><a href="https://blog.evanxia.com/2017/07/1378" target="_blank" rel="external">【总结】FLV（AAC/AVC）学习笔记</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932368" target="_blank" rel="external">将h.264视频流封装成flv格式文件（一.flv格式）</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932431" target="_blank" rel="external">将h.264视频流封装成flv格式文件（二.开始动手）</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/7932585" target="_blank" rel="external">RTMP协议中的AMF数据</a></p>
-<p><a href="http://blog.csdn.net/yeyumin89/article/details/8011362" target="_blank" rel="external">rtmp协议简单解析以及用其发送h264的flv文件</a></p>
-<p><a href="https://chensi.moe/blog/2015/11/20/flv-format/" target="_blank" rel="external">FLV 文件格式解析</a></p>
-<p><a href="http://www.cnblogs.com/lihaiping/p/5285166.html" target="_blank" rel="external">(原)从mp4,flv文件中解析出h264和aac,送解码器解码失败</a>:,avc1与H264区别在这里其实有人遇到了和我一样的问题：<a href="http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data" target="_blank" rel="external">http://stackoverflow.com/questions/11330764/ffmpeg-cant-decode-h264-stream-frame-data</a></p>
-<p><a href="https://gitee.com/leixiaohua1020/simplest_mediadata_test" target="_blank" rel="external">simplest_mediadata_test</a></p>
-<p><a href="https://github.com/runner365/rtmp_relay" target="_blank" rel="external">rtmp_relay</a>
-<a href="https://github.com/gezhaoyou/RtmpMindmap" target="_blank" rel="external">RtmpMindmap</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-review/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/05/tips-android-review/" itemprop="url">
-                  (转)总结Android开发中必备的代码Review清单
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T14:11:25+08:00">
-                2017-12-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
-<p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
-<h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
-<li>页面退出时，是否完成必要的清理操作<ol>
-<li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
-<li>是否取消了还没完成的请求；</li>
-<li>在页面里注册的监听，是否反注册；</li>
-<li>假如自己用到观察者模式，是否反注册；</li>
-<li>假如用了RxJava的话，是否解除订阅；</li>
-</ol>
-</li>
-<li><p>数据库的游标是否已经关闭
-这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
-所以数据库的操作需要加上同步代码块
-详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
-</li>
-<li><p>打开过的文件流是否关闭</p>
-</li>
-<li><p>Android 3.0以下的版本，使用完的Bitmap是否调用recycle()，否则会一直占用内存
-而Android 3.0及以上的版本不需要调用recycle()，因为这些版本的Bitmap全部放到虚拟机的堆内存中，让GC自动回收。</p>
-</li>
-<li><p>WebView使用完是否调用了其destory()函数</p>
-</li>
-</ol>
-<h3 id="是否能进一步优化自己的代码"><a href="#是否能进一步优化自己的代码" class="headerlink" title="是否能进一步优化自己的代码"></a>是否能进一步优化自己的代码</h3><ol>
-<li><p>保存在内存中的图片，是否做过压缩处理再保存在内存里
-否则可能由于图片质量太高，导致OOM</p>
-</li>
-<li><p>Intent传递的数据太大，会导致页面跳转过慢。太大的数据可以通过持久化的形式传递，例如读写文件</p>
-</li>
-<li><p>频繁地操作同一个文件或者执行同一个数据库操作，是否考虑把它用静态变量或者局部变量的形式缓存在内存里。用空间换时间</p>
-</li>
-<li><p>放在主页面的控件，是否可以考虑用ViewStub来优化启动速度</p>
-</li>
-</ol>
-<h3 id="要小心第三方包"><a href="#要小心第三方包" class="headerlink" title="要小心第三方包"></a>要小心第三方包</h3><ol>
-<li><p>build.gradle远程依赖第三方包时，版本号建议写死，不要使用+号
-避免由于新版本的第三方包引入了新的问题</p>
-</li>
-<li><p>导入第三方工程时，记得把编码转换成自己工程当前是用的编码</p>
-</li>
-<li><p>调用第三方的包或者JDK的方法时，要跳进他们的源码，看要不要加 try-catch
-否则可能会导致自己应用的崩溃</p>
-</li>
-<li><p>使用第三方包时，是否加上其混淆规则
-若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
-</li>
-<li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
-<li><p>系统的、自己写的，注册和反注册的方法，是否成对出现</p>
-</li>
-<li><p>在生命周期的回调里，创建和销毁的代码是否对应起来
-比如：onCreate()里面创建了Adapter，那么对应Adapter的退出处理操作(比如清空Image缓存)，一般就要写在onDestory()，而不能写在onDestoryView()。</p>
-</li>
-</ol>
-<p>类似的生命周期对应的代码有：
-onStart()、onStop();
-onCreate()、onDestory();
-onResume()、onPause();
-onCreateView()、onDestoryView()</p>
-<ol>
-<li>若ListView的item复用了，对Item里View的操作是否成对出现
-比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
-<h3 id="防内存泄漏"><a href="#防内存泄漏" class="headerlink" title="防内存泄漏"></a>防内存泄漏</h3><ol>
-<li><p>内部类，比如Handler、Listener、Callback是否是成static class
-因为非静态内部类会持有外部类的引用。</p>
-</li>
-<li><p>假如子线程持有了Activity，要用弱引用来持有
-比如Request的Activity就应该用弱引用的形式，防止内存泄漏。</p>
-</li>
-<li><p>要求传入Activity作为参数的函数，是否可以改用getApplicationContext()来作为参数</p>
-</li>
-</ol>
-<h3 id="Handler相关"><a href="#Handler相关" class="headerlink" title="Handler相关"></a>Handler相关</h3><ol>
-<li>使用View.post()是否会有问题
-因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
-</ol>
-<p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
-<ol>
-<li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
-如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
-<li><p>多思考某些情况下，某变量是否会为空
-而且在函数体内，处理参数前，必须加上判空语句</p>
-</li>
-<li><p>回调函数是否处理好
-回调函数很容易出问题。比如网络请求的回调，需要判断此时的Aciivity等是否还存在，再进行调用。因为异步操作回来，Activity可能就消失不存在了。
-而且还要对一些可能被回收的变量进行判空。</p>
-</li>
-<li><p>修改数据库后，是否把数据库的版本号+1</p>
-</li>
-<li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
-<ol>
-<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
-可能导致的问题：</p>
-<ul>
-<li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
-<li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
-</ul>
-<ol>
-<li><p>除数是否做了非0判断</p>
-</li>
-<li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
-</li>
-</ol>
-<h3 id="功能完成后，自测时的检查点"><a href="#功能完成后，自测时的检查点" class="headerlink" title="功能完成后，自测时的检查点"></a>功能完成后，自测时的检查点</h3><ol>
-<li>思考某些情况下，某个变量是否会造成空指针问题</li>
-<li>把手机横屏，检查布局是否有Bug</li>
-<li>在不同分辨率的机型上，检查布局是否有Bug</li>
-<li>切换到英文等外文字体下，检查外文是否能完整显示</li>
-<li>从低版本升级上来，会不会有问题,比如可能会出现数据库不兼容的问题</li>
-<li>按下Home再返回是否正常</li>
-<li>熄灭屏幕再打开是否正常</li>
-<li>切换成其它应用再切换回来会怎样</li>
-<li>利用手机的开发者选项中的 “调试GPU过度绘制” ，“GPU呈现模式分析” 和 “显示FPS和功耗” 功能，看自己的新功能是否会导致过度绘制、是否会掉帧</li>
-<li>测试看是否影响启动速度<code>adb shell am start -W 包名/Activity</code></li>
-<li>对比看APK大小是否有增大</li>
-<li>跑1小时Monkey，测试其稳定性</li>
-</ol>
-<blockquote>
-<p>转自:
-<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
-</blockquote>
-<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
-<p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
-<h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
-<h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
-<li>强烈建议先跑30分钟Monkey测试</li>
-<li>使用eclipse的ddms找到对应的进程，触发一次gc后，dump出里面的内存快照hprof文件以分析当前应用内存的堆有什么东西</li>
-<li>使用Android SDK 里的platform-tools文件夹的 hprof-conv工具，对刚才 hprof 文件进行转换，以至于 后面MAT工具能正常打开</li>
-<li>使用MAT打开hprof文件，进入Histogram。输入自己猜测可能泄漏的Activity（项目中Activity不多时，可每个Activity都重复以下3、4、5步骤）</li>
-<li>键该其中一项，打开菜单选择list objects -&gt;with incoming refs将列出该类的实例</li>
-<li>右健Path to GC Roots–&gt;exclue all phantom/weak/soft etc. reference，找出这个实例GC后，还会存在什么对象的引用关系。</li>
-</ul>
-<h3 id="常见导致内存泄漏的几个点"><a href="#常见导致内存泄漏的几个点" class="headerlink" title="常见导致内存泄漏的几个点"></a>常见导致内存泄漏的几个点</h3><h4 id="生命周期的原因"><a href="#生命周期的原因" class="headerlink" title="生命周期的原因"></a>生命周期的原因</h4><p>比如：Activity中关联了一个生命周期超过Activity的Thread，这个Thread 若持有该Activity的引用，就会导致内存泄漏。</p>
-<h4 id="内部类的原因"><a href="#内部类的原因" class="headerlink" title="内部类的原因"></a>内部类的原因</h4><p>因为内部类会隐式地持有外部类的引用，若内部类不被释放，外部类也是无法释放。常见的有内部的Listener、Callback、Handler等导致。</p>
-<p>情景1：若外部类应该释放的时候，内部类还在执行里面的函数，会导致外部类无法释放。</p>
-<p>情景2：若一个异步操作，会回调内部类的Listener、Callback、Handler。当外部类应该释放的时候，但是这个异步操作还存在，而这个异步操作类又持有了Listener、Callback、Handler，导致外部类无法被释放。PS：这个原因也属于生命周期的原因。</p>
-<h4 id="静态变量的原因"><a href="#静态变量的原因" class="headerlink" title="静态变量的原因"></a>静态变量的原因</h4><p>单例类里包含Activity</p>
-<p>静态变量的类里引用到Activity</p>
-<h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
-<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
-<ol>
-<li>使用静态内部类 + weakReference
-静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
-<h4 id="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><a href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期" class="headerlink" title="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"></a>单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</h4><h4 id="对象的注册与反注册要成对出现"><a href="#对象的注册与反注册要成对出现" class="headerlink" title="对象的注册与反注册要成对出现"></a>对象的注册与反注册要成对出现</h4><h4 id="不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><a href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存" class="headerlink" title="不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存"></a>不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</h4><h4 id="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><a href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View" class="headerlink" title="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"></a>因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</h4>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3202,7 +2711,7 @@ onCreateView()、onDestoryView()</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">95</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
