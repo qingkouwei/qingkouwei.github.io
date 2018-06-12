@@ -323,6 +323,206 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/25/server-git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/25/server-git/" itemprop="url">
+                  git服务搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T16:36:53+08:00">
+                2017-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="纯git-server"><a href="#纯git-server" class="headerlink" title="纯git server"></a>纯git server</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><p>环境:ubuntu16.0.4</p>
+<ol>
+<li>安装Git-Core:<code>sudo apt-get install python-setuptools</code></li>
+<li>安装openssh-server和openssh-client:<code>sudo apt-get install openssh-server openssh-client</code></li>
+<li>安装python tool:<code>sudo apt-get install python-setuptools</code></li>
+<li>安装gitosis:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/res0nat0r/gitosis.git</div><div class="line"></div><div class="line">cd gitosis/</div><div class="line"></div><div class="line">sudo python setup.py install</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="添加管理账号"><a href="#添加管理账号" class="headerlink" title="添加管理账号"></a>添加管理账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo adduser \</div><div class="line">    --system \</div><div class="line">    --shell /bin/sh \</div><div class="line">    --gecos &apos;git version control&apos; \</div><div class="line">    --group \</div><div class="line">    --disabled-password \</div><div class="line">    --home /home/git \</div><div class="line">    git</div></pre></td></tr></table></figure>
+<p>如果已有git账户,可以替换成gitmanager</p>
+<h4 id="创建链接映射"><a href="#创建链接映射" class="headerlink" title="创建链接映射"></a>创建链接映射</h4><p>由于gitosis默认状态下会将仓库放在用户的repositories目录下，例如gitmanager用户的仓库地址默认在
+/home/gitmanager/repositories/目录下，这里我们需要创建一个链接映射。让他指向我们前面创建的专门用于存放项目的仓库目录/home/gitrepository。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /home/gitrepository /home/gitmanager/repositories</div></pre></td></tr></table></figure></p>
+<h4 id="初始化管理用户"><a href="#初始化管理用户" class="headerlink" title="初始化管理用户"></a>初始化管理用户</h4><ol>
+<li><p>拷贝管理用户公钥到<code>/tmp/</code>下,如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub gitmanager@192.168.0.68:/tmp/</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用拷贝来的公钥初始化gitosis:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H -u gitmanager gitosis-init &lt; /tmp/id_ras.pub</div><div class="line">sudo chmod 755 /home/gitmanager/repositories/gitosis-admin.git/hooks/post-update</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="配置账号"><a href="#配置账号" class="headerlink" title="配置账号"></a>配置账号</h4><ol>
+<li>验证ssh<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ssh gitmanager@192.168.0.68</div><div class="line">TY allocation request failed on channel 0</div><div class="line">ERROR:gitosis.serve.main:Need SSH_ORIGINAL_COMMAND in environment.</div><div class="line">  Connection to gitserver closed.</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>说明 Gitosis 认出了该用户的身份，但由于没有运行任何 Git 命令，所以它切断了连接。</p>
+<ol>
+<li>克隆gitosis管理仓库:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone gitmanager@192.168.0.68:gitosis-admin.git</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这会得到一个名为 gitosis-admin 的工作目录，主要由两部分组成：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./gitosis.conf</div><div class="line">./keydir</div></pre></td></tr></table></figure></p>
+<p>gitosis.conf 文件是用来设置用户、仓库和权限的控制文件。keydir 目录则是保存所有具有访问权限用户公钥的地方— 每人一个。在 keydir 里的文件名（比如上面的 qingkouwei.pub） 会自动从使用 gitosis-init 脚本导入的公钥尾部的描述中获取该名字。</p>
+<p>看一下 gitosis.conf 文件的内容，它应该只包含与刚刚克隆的 gitosis-admin 相关的信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[gitosis]</div><div class="line"></div><div class="line">[group gitosis-admin]</div><div class="line">members = qingkouwei</div><div class="line">writable = gitosis-admin</div></pre></td></tr></table></figure></p>
+<p>要创建项目demo,在里面加入:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
+<p>要为demo项目添加用户user1:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
+<p>并将用户user1的公钥计入到keydir,并且公钥名.pub和members里面的名字对应.
+要添加对demo项目只读的用户:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div><div class="line"></div><div class="line">[group demo]</div><div class="line">members = user2</div><div class="line">readonly = demo</div></pre></td></tr></table></figure></p>
+<p>修改完配置文件和keydir,使用git push到gitosis-admin服务器.即可直接<code>git add remote add suervename gitmanager@192.168.0.68:demo.git</code>,然后直接将本地目录推送到demo仓库,不需要再服务器手动创建demo仓库,gitosis会帮忙自动创建.</p>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
+<li><code>ERROR:gitosis.serve.main:Repository read access denied</code>
+原因:
+gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub</li>
+</ol>
+<p>解决方法:
+使keydir的名称与gitosis中members所指的名称一致。 改为members = foo 或 公密名称改为foo@bar.pub</p>
+<ol>
+<li>clone时报does not appear to be a git repository</li>
+</ol>
+<p>原因:
+clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
+<blockquote>
+<p>参考:<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis</a></p>
+</blockquote>
+<h3 id="gitlab服务搭建"><a href="#gitlab服务搭建" class="headerlink" title="gitlab服务搭建"></a>gitlab服务搭建</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/vmware-network-mode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2979,7 +3179,7 @@ View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

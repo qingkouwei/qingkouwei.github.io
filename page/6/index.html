@@ -323,6 +323,163 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/30/at-android-start/" itemprop="url">
+                  android自动化测试(一):UiAutomator官方介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:43:15+08:00">
+                2017-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/autotest/" itemprop="url" rel="index">
+                    <span itemprop="name">autotest</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>了解android测试需要查询android官方文档,android官方培训教程<a href="https://developer.android.com/training/testing/start/index.html" target="_blank" rel="external">Getting Started with Testing</a>介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确.</p>
+<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型.
+<img src="http://images.wodekouwei.com/technology/at_sum.png" alt="image"></p>
+<h4 id="本地单元测试-Local-unit-tests"><a href="#本地单元测试-Local-unit-tests" class="headerlink" title="本地单元测试(Local unit tests)"></a>本地单元测试(Local unit tests)</h4><p>位于<code>module-name/src/test/java/.</code>下,运行在PC端本地的JVM虚拟机上,并且不能访问Android框架的接口.
+参考<a href="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html" target="_blank" rel="external">Building Local Tests</a></p>
+<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.
+参考<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a></p>
+<p>Instrumented unit tests are tests that run on physical devices and emulators, and they can take advantage of the Android framework APIs and supporting APIs, such as the Android Testing Support Library. You should create instrumented unit tests if your tests need access to instrumentation information (such as the target app’s Context) or if they require the real implementation of an Android framework component (such as a Parcelable or SharedPreferences object).</p>
+<p>Using instrumented unit tests also helps to reduce the effort required to write and maintain mock code. You are still free to use a mocking framework, if you choose, to simulate any dependency relationships.</p>
+<p>设备化单元测试分为:</p>
+<ul>
+<li>设备化单元测试(Instrumented Unit Test):<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a>: Build complex unit tests with Android dependencies that cannot be satisfied with mock objects.</li>
+<li>组件集成测试:<a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a>: Create tests to verify that the user interface behaves correctly for user interactions within a single app or for interactions across multiple apps.</li>
+<li>app集成测试:<a href="https://developer.android.com/training/testing/integration-testing/index.html" target="_blank" rel="external">Testing App Component Integrations</a>: Verify the behavior of components that users do not directly interact with, such as a Service or aContent Provider.</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-uiautomator-official/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2295,183 +2452,6 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/23/tips-androidstudio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/23/tips-androidstudio/" itemprop="url">
-                  AndroidStudio常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-23T08:09:17+08:00">
-                2017-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="如何解决Unsupported-major-minor-version-52-0问题？"><a href="#如何解决Unsupported-major-minor-version-52-0问题？" class="headerlink" title="如何解决Unsupported major.minor version 52.0问题？"></a>如何解决Unsupported major.minor version 52.0问题？</h4><blockquote>
-<p><a href="http://www.jianshu.com/p/5eebd3c609d6" target="_blank" rel="external">http://www.jianshu.com/p/5eebd3c609d6</a></p>
-</blockquote>
-<p>运行./gradlew :PandaAndroidDemo:release出现如下错误：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">FAILURE: Build failed with an exception.</div><div class="line"></div><div class="line">* Where:</div><div class="line">Build file &apos;/Users/shitianci/work/Lab/panda.android/PandaAndroidDemo/build.gradle&apos; line: 1</div><div class="line"></div><div class="line">* What went wrong:</div><div class="line">A problem occurred evaluating project &apos;:PandaAndroidDemo&apos;.</div><div class="line">&gt; java.lang.UnsupportedClassVersionError: com/android/build/gradle/AppPlugin : Unsupported major.minor version 52.0</div><div class="line"></div><div class="line">* Try:</div><div class="line">Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.</div><div class="line"></div><div class="line">BUILD FAILED</div></pre></td></tr></table></figure></p>
-<p>直接点击 run按钮 或者 Build→Generate Build APK 却运行正常。</p>
-<p>这里面有两个问题：</p>
-<p>为什么出现Unsupported major.minor version 52.0？
-为什么gradle命令和android studio按钮运行结果不一样？</p>
-<h5 id="问题一：为什么出现Unsupported-major-minor-version-52-0？"><a href="#问题一：为什么出现Unsupported-major-minor-version-52-0？" class="headerlink" title="问题一：为什么出现Unsupported major.minor version 52.0？"></a>问题一：为什么出现Unsupported major.minor version 52.0？</h5><p>在网上找了一圈，最后在stackoverflow找到了本质原因
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">You get this error because a Java 7 VM tries to load a class compiled for Java 8</div><div class="line"></div><div class="line">Java 8 has the class file version 52.0 but a Java 7 VM can only load class files up to version 51.0</div><div class="line"></div><div class="line">In your case the Java 7 VM is your gradle build and the class is com.android.build.gradle.AppPlugin</div></pre></td></tr></table></figure></p>
-<p>简单来说，就是java的编译环境版本太低，java 8 class file的版本是52，Java 7虚拟机只能支持到51。所以需要升级到java 8 vm才行。</p>
-<h5 id="问题二：为什么gradle命令和android-studio按钮运行结果不一样？"><a href="#问题二：为什么gradle命令和android-studio按钮运行结果不一样？" class="headerlink" title="问题二：为什么gradle命令和android studio按钮运行结果不一样？"></a>问题二：为什么gradle命令和android studio按钮运行结果不一样？</h5><p>从问题1来看，肯定Android Studio按钮调用的是java 8 vm，所以查找一下系统配置，最终在Project Structure找到了如下设置：
-Android Studio 2.2.2使用了自带的JDK环境，其地址为
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
-<p>而gradle命令的执行环境是在gradle.properties配置的，其指向为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/home</div></pre></td></tr></table></figure></p>
-<p>将其修改为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.java.home=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home</div></pre></td></tr></table></figure></p>
-<h4 id="INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题"><a href="#INSTALL-PARSE-FAILED-NO-CERTIFICATES安装问题" class="headerlink" title="INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题"></a>INSTALL_PARSE_FAILED_NO_CERTIFICATES安装问题</h4><p>Android studio
-更新到25后打包问题，打包后的应用安装提示：INSTALL_PARSE_FAILED_NO_CERTIFICATES
-Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能提供更快的应用安装时间和更多针对未授权</p>
-<p>APK 文件更改的保护。 在默认情况下，Android Studio 2.2 和 Android Gradle 2.2 插件会使用 APK</p>
-<p>Signature Scheme v2 和传统签名方案来签署您的应用。</p>
-<p>脏的解决方式：使用v1打包</p>
-<h4 id="INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案"><a href="#INSTALL-FAILED-CONFLICTING-PROVIDER问题完美解决方案" class="headerlink" title="INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案"></a>INSTALL FAILED CONFLICTING PROVIDER问题完美解决方案</h4><p>在安装Android应用时出现INSTALL FAILED CONFLICTING PROVIDER问题，是不是感觉很抓狂呢，下面就跟大家分享一下出现这个问题的原因及解决方案。
-<strong>问题原因:</strong>
-在Android中authority要求必须是唯一的，比如你在定义一个provider时需要为它指定一个唯一的authority。如果你在安装一个带有provider的应用时，系统会检查当前已安装应用的authority是否和你要安装应用的authority相同，如果相同则会弹出上述警告，并且安装失败。
-<strong>解决方案</strong>
-在定义provider是，使用软编码的形式，如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;provider</div><div class="line">    android:name=&quot;android.support.v4.content.FileProvider&quot;</div><div class="line">    android:authorities=&quot;$&#123;applicationId&#125;.fileprovider&quot;</div><div class="line">    android:grantUriPermissions=&quot;true&quot;</div><div class="line">    android:exported=&quot;false&quot;&gt;</div><div class="line">    &lt;meta-data</div><div class="line">        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;</div><div class="line">        android:resource=&quot;@xml/file_paths&quot; /&gt;</div><div class="line">&lt;/provider&gt;</div></pre></td></tr></table></figure></p>
-<p>上述代码中通过${applicationId}.fileprovider的形式来指定provider的authorities，所以该provider的authorities会根据applicationId的不同而不同，从而避免了authorities的冲突问题。
-<strong>那么如何使用刚才定义的authorities呢？</strong>
-我们在定义authorities是采用了applicationId+fileprovider的形式，在获取authorities的时候，我们就可以通过包名+fileprovider来获取，代码如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public final static String getFileProviderName(Context context)&#123;</div><div class="line">    return context.getPackageName()+&quot;.fileprovider&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2521,7 +2501,7 @@ Android N 引入一项新的应用签名方案 APK Signature Scheme v2，它能�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

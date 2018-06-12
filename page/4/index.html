@@ -323,6 +323,195 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/01/issue-ndk-compile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/01/issue-ndk-compile/" itemprop="url">
+                  ndk编译常见问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-01T10:27:28+08:00">
+                2017-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="depends-on-undefined-modules"><a href="#depends-on-undefined-modules" class="headerlink" title="depends on undefined modules"></a>depends on undefined modules</h4><p>问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:687: Android NDK: Module magicsdk_fmod depends on undefined modules: cutils</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:700: *** Android NDK: Aborting (set APP_ALLOW_MISSING_DEPS=true to allow missing dependencies)    .  Stop.</div></pre></td></tr></table></figure></p>
+<p>解决方案:
+Android.mk中增加<code>APP_ALLOW_MISSING_DEPS=true</code></p>
+<h4 id="shared-library-text-segment-is-not-shareable"><a href="#shared-library-text-segment-is-not-shareable" class="headerlink" title="shared library text segment is not shareable"></a>shared library text segment is not shareable</h4><p>问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: warning: shared library text segment is not shareable</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: error: treating warnings as errors</div><div class="line">clang++: error: linker command failed with exit code 1 (use -v to see invocation)</div><div class="line">make: *** [/Users/shenjunwei/Documents/repository/wonxing/normandy_android_app/modules-int/magicsdk_core/src/main/obj/local/armeabi-v7a/libmagicsdk_ex.so] Error 1</div></pre></td></tr></table></figure></p>
+<p>解决:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from Android NDK r11 you can use</div><div class="line"></div><div class="line">LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel</div><div class="line">You can also use</div><div class="line"></div><div class="line">LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/19986523/shared-library-text-segment-is-not-shareable" target="_blank" rel="external">shared library text segment is not shareable</a></p>
+</blockquote>
+<h4 id="has-text-relocations"><a href="#has-text-relocations" class="headerlink" title="has text relocations"></a>has text relocations</h4><p>问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">E/FileUtil: access inferno failed! /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so</div><div class="line">                                                             java.lang.UnsatisfiedLinkError: dlopen failed: /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">                                                                 at java.lang.Runtime.load0(Runtime.java:897)</div><div class="line">                                                                 at java.lang.System.load(System.java:1505)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.util.FileUtil$EXLibUtil.load(FileUtil.java:465)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.loadEXLibrary(MagicRecorder.java:280)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:471)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:352)</div><div class="line">                                                                 at com.wonxing.touchfa.ui.activity.VideoImportActivity.preparePlaySDK(VideoImportActivity.java:144)</div></pre></td></tr></table></figure></p>
+<p>解决:</p>
+<ol>
+<li>方案一
+This issue could be solved by checking the targetSDKVersion in the manifest file.</li>
+</ol>
+<p>Using “22” and not “23” as targetSDKVersion solved it. (See below)
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;uses-sdk</div><div class="line">        android:minSdkVersion=&quot;15&quot;</div><div class="line">        android:targetSdkVersion=&quot;22&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>I also checked the build.gradle files for compile version and targetSDKversion:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion 22</div><div class="line">    buildToolsVersion &apos;22.0.1&apos;</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        minSdkVersion 15</div><div class="line">        targetSdkVersion 22</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>方案二
+It was caused by the ffmpeg, and it could also be solved by patching the latest ffmpeg code<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">libavcodec\arm\fft_fixed_neon.S</div><div class="line">libavcodec\arm\fft_neon.S</div><div class="line">libavcodec\arm\fft_vfp.S</div><div class="line">libavcodec\arm\mlpdsp_armv5te.S</div><div class="line">libutil\arm\asm.S</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>I took the latest from <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">https://github.com/FFmpeg/FFmpeg</a></p>
+<p>You will also need HAVE_SECTION_DATA_REL_RO declared somewhere in your build for the macro in asm.S to use the dynamic relocations option.</p>
+<ol>
+<li>方案三(Further informations:)
+Previous versions of Android would warn if asked to load a shared library with text relocations:</li>
+</ol>
+<p>“libfoo.so has text relocations. This is wasting memory and prevents security hardening. Please fix.”.</p>
+<p>Despite this, the OS will load the library anyway. Marshmallow rejects library if your app’s target SDK version is &gt;= 23. System no longer logs this because it assumes that your app will log the dlopen(3) failure itself, and include the text from dlerror(3) which does explain the problem. Unfortunately, lots of apps seem to catch and hide the UnsatisfiedLinkError throw by System.loadLibrary in this case, often leaving no clue that the library failed to load until you try to invoke one of your native methods and the VM complains that it’s not present.</p>
+<p>You can use the command-line scanelf tool to check for text relocations. You can find advice on the subject on the internet; for example <a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide" target="_blank" rel="external">https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide</a> is a useful guide.</p>
+<p>And you can check if your shared lbirary has text relocations by doing this:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">readelf -a path/to/yourlib.so | grep TEXTREL</div></pre></td></tr></table></figure></p>
+<p>If it has text relocations, it will show you something like this:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00000016 (TEXTREL)                    0x0</div></pre></td></tr></table></figure></p>
+<p>If this is the case, you may recompile your shared library with the latest NDK version available:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -B -j 8</div></pre></td></tr></table></figure>
+<p>And if you check it again, the grep command will return nothing.</p>
+<blockquote>
+<p><a href="https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html" target="_blank" rel="external">Android Developers Blog</a>
+<a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide#Introduction" target="_blank" rel="external">Hardened/Textrels Guide</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tips-android-application-recent/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2621,7 +2810,7 @@ vapth使用方法中的&lt; pattern&gt;需要包含“%”字符。“%”的意
 于是，我们可以写出[.c]文件和[.d]文件的依赖关系，并让make自动更新或自成[.d]文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。
 这里，我们给出了一个模式规则来产生[.d]文件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">%.d: %.c</div><div class="line">       @set -e; rm -f $@; \</div><div class="line">        $(CC) -M $(CPPFLAGS) $&lt; &gt; $@.</div><div class="line">; \</div><div class="line">        sed &apos;s,$∗\.o[ :]*,\1.o $@ : ,g&apos; &lt; $@.</div><div class="line">&gt; $@; \</div><div class="line">        rm -f $@.</div></pre></td></tr></table></figure></p>
-<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#8221;&#65292;&#20063;&#23601;&#x662f;&#91;&#x2e;&#x63;&#93;&#x6587;&#20214;&#x751f;&#25104;&#x4f9d;&#x8d56;&#25991;&#x4ef6;&#xff0c;&#8220;&#x24;&#64;&#x201d;&#x8868;&#x793a;&#x6a21;&#x5f0f;&#x201c;&#37;&#46;&#100;&#8221;&#x6587;&#20214;&#xff0c;&#22914;&#x679c;&#x6709;&#19968;&#x4e2a;&#x43;&#25991;&#20214;&#x662f;&#110;&#x61;&#109;&#101;&#x2e;&#x63;&#65292;&#37027;&#x4e48;&#x201c;&#37;&#x201d;&#23601;&#x662f;&#8220;&#110;&#x61;&#x6d;&#101;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#20026;&#x4e00;&#20010;&#38543;&#x673a;&#x7f16;&#x53f7;&#65292;&#31532;&#x4e8c;&#x884c;&#29983;&#x6210;&#30340;&#x6587;&#20214;&#26377;&#x53ef;&#33021;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#46;&#100;&#46;&#49;&#x32;&#51;&#52;&#53;&#8221;&#xff0c;&#x7b2c;&#x4e09;&#x884c;&#20351;&#29992;&#x73;&#101;&#100;&#x547d;&#x4ee4;&#x505a;&#x4e86;&#19968;&#20010;&#x66ff;&#25442;&#65292;&#20851;&#x4e8e;&#115;&#x65;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#x8bf7;&#21442;&#30475;&#x76f8;&#x5173;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#12290;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#21024;&#38500;&#x4e34;&#26102;&#x6587;&#x4ef6;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#27169;&#x5f0f;&#35201;&#20570;&#30340;&#20107;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#22120;&#x751f;&#x6210;&#30340;&#x4f9d;&#x8d56;&#x5173;&#31995;&#20013;&#21152;&#20837;&#x5b;&#46;&#x64;&#x5d;&#x6587;&#x4ef6;&#x7684;&#x4f9d;&#x8d56;&#65292;&#x5373;&#x628a;&#x4f9d;&#x8d56;&#x5173;&#31995;&#xff1a;&#10;&#x3c;&#33;&#x2d;&#x2d;&#65532;&#x34;&#48;&#x2d;&#45;">&#8221;&#65292;&#20063;&#23601;&#x662f;&#91;&#x2e;&#x63;&#93;&#x6587;&#20214;&#x751f;&#25104;&#x4f9d;&#x8d56;&#25991;&#x4ef6;&#xff0c;&#8220;&#x24;&#64;&#x201d;&#x8868;&#x793a;&#x6a21;&#x5f0f;&#x201c;&#37;&#46;&#100;&#8221;&#x6587;&#20214;&#xff0c;&#22914;&#x679c;&#x6709;&#19968;&#x4e2a;&#x43;&#25991;&#20214;&#x662f;&#110;&#x61;&#109;&#101;&#x2e;&#x63;&#65292;&#37027;&#x4e48;&#x201c;&#37;&#x201d;&#23601;&#x662f;&#8220;&#110;&#x61;&#x6d;&#101;&#8221;&#65292;&#8220;&#xa;&#x201d;&#x610f;&#20026;&#x4e00;&#20010;&#38543;&#x673a;&#x7f16;&#x53f7;&#65292;&#31532;&#x4e8c;&#x884c;&#29983;&#x6210;&#30340;&#x6587;&#20214;&#26377;&#x53ef;&#33021;&#x662f;&#x201c;&#x6e;&#97;&#109;&#x65;&#46;&#100;&#46;&#49;&#x32;&#51;&#52;&#53;&#8221;&#xff0c;&#x7b2c;&#x4e09;&#x884c;&#20351;&#29992;&#x73;&#101;&#100;&#x547d;&#x4ee4;&#x505a;&#x4e86;&#19968;&#20010;&#x66ff;&#25442;&#65292;&#20851;&#x4e8e;&#115;&#x65;&#x64;&#21629;&#20196;&#30340;&#x7528;&#27861;&#x8bf7;&#21442;&#30475;&#x76f8;&#x5173;&#x7684;&#x4f7f;&#29992;&#x6587;&#x6863;&#12290;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#21024;&#38500;&#x4e34;&#26102;&#x6587;&#x4ef6;&#12290;&#10;&#x603b;&#32780;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#20010;&#27169;&#x5f0f;&#35201;&#20570;&#30340;&#20107;&#x5c31;&#x662f;&#22312;&#x7f16;&#35793;&#22120;&#x751f;&#x6210;&#30340;&#x4f9d;&#x8d56;&#x5173;&#31995;&#20013;&#21152;&#20837;&#x5b;&#46;&#x64;&#x5d;&#x6587;&#x4ef6;&#x7684;&#x4f9d;&#x8d56;&#65292;&#x5373;&#x628a;&#x4f9d;&#x8d56;&#x5173;&#31995;&#xff1a;&#10;&#x3c;&#33;&#x2d;&#x2d;&#65532;&#x34;&#48;&#x2d;&#45;</a></p>
+<p>这个规则的意思是，所有的[.d]文件依赖于[.c]文件，<code>rm-f $@</code>的意思是删除所有的目标，也就是[.d]文件，第二行的意思是，为每个依赖文件“$<a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x201d;&#65292;&#x4e5f;&#23601;&#26159;&#x5b;&#46;&#x63;&#93;&#x6587;&#x4ef6;&#x751f;&#25104;&#20381;&#x8d56;&#x6587;&#20214;&#xff0c;&#8220;&#36;&#x40;&#8221;&#34920;&#x793a;&#27169;&#24335;&#x201c;&#x25;&#x2e;&#x64;&#x201d;&#x6587;&#20214;&#xff0c;&#x5982;&#26524;&#x6709;&#19968;&#20010;&#x43;&#25991;&#x4ef6;&#x662f;&#110;&#97;&#x6d;&#x65;&#x2e;&#x63;&#xff0c;&#x90a3;&#20040;&#8220;&#37;&#8221;&#x5c31;&#x662f;&#8220;&#110;&#x61;&#109;&#x65;&#x201d;&#xff0c;&#8220;&#10;&#8221;&#x610f;&#x4e3a;&#19968;&#x4e2a;&#38543;&#26426;&#32534;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#x884c;&#x751f;&#25104;&#30340;&#25991;&#x4ef6;&#x6709;&#21487;&#33021;&#26159;&#x201c;&#x6e;&#97;&#109;&#x65;&#x2e;&#x64;&#x2e;&#49;&#50;&#51;&#52;&#53;&#x201d;&#xff0c;&#x7b2c;&#x4e09;&#34892;&#x4f7f;&#29992;&#x73;&#x65;&#x64;&#21629;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#26367;&#x6362;&#xff0c;&#x5173;&#x4e8e;&#115;&#x65;&#x64;&#x547d;&#x4ee4;&#30340;&#x7528;&#x6cd5;&#35831;&#21442;&#30475;&#30456;&#x5173;&#x7684;&#x4f7f;&#29992;&#25991;&#x6863;&#12290;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#x5220;&#x9664;&#20020;&#26102;&#25991;&#20214;&#x3002;&#10;&#24635;&#x800c;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#x4e2a;&#27169;&#x5f0f;&#x8981;&#20570;&#30340;&#x4e8b;&#x5c31;&#26159;&#22312;&#x7f16;&#x8bd1;&#x5668;&#x751f;&#25104;&#x7684;&#20381;&#36182;&#x5173;&#31995;&#x4e2d;&#21152;&#20837;&#91;&#46;&#100;&#x5d;&#x6587;&#x4ef6;&#x7684;&#x4f9d;&#36182;&#65292;&#21363;&#x628a;&#x4f9d;&#x8d56;&#x5173;&#31995;&#xff1a;&#10;&#60;&#33;&#45;&#45;&#xfffc;&#52;&#48;&#45;&#45;">&#x201d;&#65292;&#x4e5f;&#23601;&#26159;&#x5b;&#46;&#x63;&#93;&#x6587;&#x4ef6;&#x751f;&#25104;&#20381;&#x8d56;&#x6587;&#20214;&#xff0c;&#8220;&#36;&#x40;&#8221;&#34920;&#x793a;&#27169;&#24335;&#x201c;&#x25;&#x2e;&#x64;&#x201d;&#x6587;&#20214;&#xff0c;&#x5982;&#26524;&#x6709;&#19968;&#20010;&#x43;&#25991;&#x4ef6;&#x662f;&#110;&#97;&#x6d;&#x65;&#x2e;&#x63;&#xff0c;&#x90a3;&#20040;&#8220;&#37;&#8221;&#x5c31;&#x662f;&#8220;&#110;&#x61;&#109;&#x65;&#x201d;&#xff0c;&#8220;&#10;&#8221;&#x610f;&#x4e3a;&#19968;&#x4e2a;&#38543;&#26426;&#32534;&#21495;&#xff0c;&#x7b2c;&#x4e8c;&#x884c;&#x751f;&#25104;&#30340;&#25991;&#x4ef6;&#x6709;&#21487;&#33021;&#26159;&#x201c;&#x6e;&#97;&#109;&#x65;&#x2e;&#x64;&#x2e;&#49;&#50;&#51;&#52;&#53;&#x201d;&#xff0c;&#x7b2c;&#x4e09;&#34892;&#x4f7f;&#29992;&#x73;&#x65;&#x64;&#21629;&#20196;&#x505a;&#20102;&#x4e00;&#20010;&#26367;&#x6362;&#xff0c;&#x5173;&#x4e8e;&#115;&#x65;&#x64;&#x547d;&#x4ee4;&#30340;&#x7528;&#x6cd5;&#35831;&#21442;&#30475;&#30456;&#x5173;&#x7684;&#x4f7f;&#29992;&#25991;&#x6863;&#12290;&#x7b2c;&#22235;&#x884c;&#23601;&#26159;&#x5220;&#x9664;&#20020;&#26102;&#25991;&#20214;&#x3002;&#10;&#24635;&#x800c;&#x8a00;&#x4e4b;&#65292;&#x8fd9;&#x4e2a;&#27169;&#x5f0f;&#x8981;&#20570;&#30340;&#x4e8b;&#x5c31;&#26159;&#22312;&#x7f16;&#x8bd1;&#x5668;&#x751f;&#25104;&#x7684;&#20381;&#36182;&#x5173;&#31995;&#x4e2d;&#21152;&#20837;&#91;&#46;&#100;&#x5d;&#x6587;&#x4ef6;&#x7684;&#x4f9d;&#36182;&#65292;&#21363;&#x628a;&#x4f9d;&#x8d56;&#x5173;&#31995;&#xff1a;&#10;&#60;&#33;&#45;&#45;&#xfffc;&#52;&#48;&#45;&#45;</a></p>
 <p>转成：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">main.o main.d : main.c defs.h</div></pre></td></tr></table></figure></p>
 <p>于是，我们的[.d]文件也会自动更新了，并会自动生成了，当然，你还可以在这个[.d]文件中加入的不只是依赖关系，包括生成的命令也可一并加入，让每个[.d]文件都包含一个完赖的规则。一旦我们完成这个工作，接下来，我们就要把这些自动生成的规则放进我们的主Makefile中。我们可以使用Makefile的“include”命令，来引入别的Makefile文件（前面讲过），例如：
@@ -3561,206 +3750,6 @@ ar r lib $?</code></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/30/tips-makefile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/30/tips-makefile/" itemprop="url">
-                  makefile语法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T12:22:14+08:00">
-                2017-09-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/makefile/" itemprop="url" rel="index">
-                    <span itemprop="name">makefile</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一个自定义模式规则示例"><a href="#一个自定义模式规则示例" class="headerlink" title="一个自定义模式规则示例"></a>一个自定义模式规则示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">CC=gcc</div><div class="line">SRCPATH=src</div><div class="line">OUTPATH=objs</div><div class="line"></div><div class="line">SRCS_TEST_SORT=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/XSort.c\</div><div class="line">	$(SRCPATH)/Test_Sort.c</div><div class="line">#OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</div><div class="line">OBJS_TEST_SORT=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_SORT))</div><div class="line">EXERC_TEST_SORT=TestSort</div><div class="line"></div><div class="line">SRCS_TEST_LIST=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/alist.c\</div><div class="line">	$(SRCPATH)/llist.c\</div><div class="line">	$(SRCPATH)/sllist.c\</div><div class="line">	$(SRCPATH)/linkedlist.c\</div><div class="line">	$(SRCPATH)/Test_List.c\</div><div class="line">	$(SRCPATH)/polynomial.c</div><div class="line"></div><div class="line">#OBJS_TEST_LIST=$(SRCS_TEST_LIST:.c=.o)</div><div class="line">OBJS_TEST_LIST=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_LIST))</div><div class="line">EXERC_TEST_LIST=TestList</div><div class="line"></div><div class="line">start:$(OBJS_TEST_SORT) $(OBJS_TEST_LIST)</div><div class="line">	$(CC) -o $(EXERC_TEST_SORT) $(OBJS_TEST_SORT)</div><div class="line">	$(CC) -o $(EXERC_TEST_LIST) $(OBJS_TEST_LIST)</div><div class="line">	@echo ---------------SUCCESS----------------</div><div class="line">$(OUTPATH)/%.o:src/%.c</div><div class="line">	$(CC) -g -fstack-protector -fstack-protector-all -o $@ -c $&lt;</div><div class="line">clean:</div><div class="line">	rm -rf $(OBJS_TEST_SORT) $(EXERC_TEST_SORT)</div><div class="line">	rm -rf $(OBJS_TEST_LIST) $(EXEC_TEST_LIST)</div></pre></td></tr></table></figure>
-<ol>
-<li>使用VPATH设置搜索路径<code>VPATH = path1:path2:...</code>,make 会自动找到指定文件的目录并添加到文件上</li>
-<li>可以指定文件输入/输出路径,<code>OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</code>使用源文件集合推到编译输出文件名,当源文件增加路径后,如<code>src/Common.c</code>后,输出路径也变为<code>src/Common.o</code>,不是需要的<code>bin/Common.o</code>,使用函数<code>patsubst</code>替换输出文件集合中文件路径.</li>
-<li>使用模式匹配<code>%.o:%.c</code>替换后缀规则<code>.c.o:</code></li>
-<li>patsubst ( patten substitude,匹配替换的缩写)函数。它需要3个参数——第一个是一个需要匹配的式样，第二个表示用什么来替换它，第三个是一个需要处理由空格分隔的序列。我们将两个函数合起来用：<code>objects := $(patsubst %.c,%.o,$(wildcard *.c))</code>会被处理为: <code>objects := a.o b.o</code>同理： <code>executables := $(patsubst %.c,%,$(wildcard *.c))</code>会被处理为： <code>executables := a b</code>.<code>%o：</code>所有以“.o”结尾的目标，也就是如Common.o alist.o等,依赖模式<code>“%.c”</code>：取模式<code>“%.o”</code>的<code>%</code>Common alist，并为其加上<code>.c</code>后缀，即<code>Common.c</code>，<code>alist.c</code></li>
-<li><code>$&lt;：</code>表示所有依赖目标集，也就是<code>Common.c alist.c</code>,<code>$@：</code>表示目标集，也就是<code>Common.o alist.o</code>.命令前加<code>@</code>，表示在终端中不打印，如<code>@mkdir -p ./bin</code></li>
-</ol>
-<h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
- 一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">main.o: main.h stack.h maze.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
-<p> 就相当于：
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main.o: main.c main.h stack.h maze.h  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
-<p>如果一个目标拆开写多条规则，其中只有一条规则允许有命令列表，其它规则应该没有命令列表，否则make会报警告并且采用最后一条规则的命令列表。</p>
-<p>这样我们的例子可以改写成：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o: main.h stack.h maze.h  </div><div class="line">stack.o: stack.h main.h  </div><div class="line">maze.o: maze.h main.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c  </div><div class="line"></div><div class="line">stack.o: stack.c  </div><div class="line">         gcc-c stack.c  </div><div class="line"></div><div class="line">maze.o: maze.c  </div><div class="line">         gcc-c maze.c  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
-<p>这不是比原来更繁琐了吗？现在可以把提出来的三条规则删去，写成：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o: main.h stack.h maze.h  </div><div class="line">stack.o: stack.h main.h  </div><div class="line">maze.o: maze.h main.h  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
-<p>这就比原来简单多了。可是现在main.o、stack.o和maze.o这三个目标连编译命令都没有了，怎么编译的呢？试试看：
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ make  </div><div class="line">cc   -c -o main.o main.c  </div><div class="line">cc   -c -o stack.o stack.c  </div><div class="line">cc   -c -o maze.o maze.c  </div><div class="line">gcc main.o stack.o maze.o -o main</div></pre></td></tr></table></figure></p>
-<p>现在解释一下前三条编译命令是怎么来。如果一个目标在Makefile中的所有规则都没有命令列表，make会尝试在内建的隐含规则（Implicit Rule）数据库中查找适用的规则。make的隐含规则数据库可以用make -p命令打印，打印出来的格式也是Makefile的格式，包括很多变量和规则，其中和我们这个例子有关的隐含规则有：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># default  </div><div class="line">OUTPUT_OPTION = -o $@  </div><div class="line"></div><div class="line"># default  </div><div class="line">CC = cc  </div><div class="line"></div><div class="line"># default  </div><div class="line">COMPILE.c = $(CC) $(CFLAGS) $(CPPFLAGS)$(TARGET_ARCH) -c  </div><div class="line"></div><div class="line">%.o: %.c  </div><div class="line"># commands to execute (built-in):  </div><div class="line">       $(COMPILE.c) $(OUTPUT_OPTION) $&lt;</div></pre></td></tr></table></figure></p>
-<p><code>#</code>号在Makefile中表示单行注释，就像C语言的//注释一样。CC是一个Makefile变量，用<code>CC = cc</code>定义和赋值，用<code>$(CC)</code>取它的值，其值应该是cc。Makefile变量像C的宏定义一样，代表一串字符，在取值的地方展开。cc是一个符号链接，通常指向gcc，在有些UNIX系统上可能指向另外一种C编译器。</p>
-<p>CFLAGS这个变量没有定义，<code>$(CFLAGS)</code>展开是空，CPPFLAGS和TARGET_ARCH也是如此。这样<code>$(COMPILE.c)</code>展开应该是cc 空 空 空 -c，去掉“空”得到cc -c，注意中间留下4个空格，所以<code>%.o:%.c</code>规则的命令<code>$(COMPILE.c) $(OUTPUT_OPTION) $&lt;</code>展开之后是<code>cc -c -o $@$&lt;</code>，和上面的编译命令已经很接近了。</p>
-<p><code>$@</code>和<code>$&lt;</code>是两个特殊的变量，<code>$@</code>的取值为规则中的目标，<code>$&lt;</code>的取值为规则中的第一个条件。<code>%.o: %.c</code>是一种特殊的规则，称为模式规则（Pattern Rule）。现在回顾一下整个过程，在我们的Makefile中以main.o为目标的规则都没有命令列表，所以make会查找隐含规则，发现隐含规则中有这样一条模式规则适用，main.o符合<code>%.o</code>的模式，现在%就代表main（称为main.o这个名字的Stem），再替换到%.c中就是main.c。所以这条模式规则相当于：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main.o: main.c  </div><div class="line">         cc    -c -o main.o main.c</div></pre></td></tr></table></figure></p>
-<p>随后，在处理stack.o目标时又用到这条模式规则，这时又相当于：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">stack.o: stack.c  </div><div class="line">         cc    -c -o stack.o stack.c</div></pre></td></tr></table></figure></p>
-<p>maze.o也同样处理。这三条规则可以由make的隐含规则推导出来，所以不必写在Makefile中。</p>
-<p>先前我们写Makefile都是以目标为中心，一个目标依赖于若干条件，现在换个角度，以条件为中心，Makefile还可以这么写：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o stack.o maze.o: main.h  </div><div class="line">main.o maze.o: maze.h  </div><div class="line">main.o stack.o: stack.h  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
-<p>我们知道，写规则的目的是让make建立依赖关系图，不管怎么写，只要把所有的依赖关系都描述清楚了就行。对于多目标的规则，make会拆成几条单目标的规则来处理，例如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target1 target2: prerequisite1prerequisite2  </div><div class="line">         command$&lt; -o $@</div></pre></td></tr></table></figure></p>
-<p>这样一条规则相当于：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">target1: prerequisite1 prerequisite2  </div><div class="line">         commandprerequisite1 -o target1  </div><div class="line"></div><div class="line">target2: prerequisite1 prerequisite2  </div><div class="line">         commandprerequisite1 -o target2</div></pre></td></tr></table></figure></p>
-<p>注意两条规则的命令列表是一样的，但$@的取值不同。</p>
-<h3 id="Linux-Makefile与shell脚本区别"><a href="#Linux-Makefile与shell脚本区别" class="headerlink" title="Linux Makefile与shell脚本区别"></a>Linux Makefile与shell脚本区别</h3><p>在Makefile可以调用shell脚本，但是Makefile和shell脚本是不同的。本文试着归纳一下Makefile和shell脚本的不同。</p>
-<h4 id="1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。"><a href="#1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。" class="headerlink" title="1. shell中所有引用以$打头的变量其后要加{},而在Makefile中的变量是以$打头的后加()。"></a>1. shell中所有引用以<code>$</code>打头的变量其后要加{},而在Makefile中的变量是以<code>$</code>打头的后加()。</h4><p>实例如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Makefile:</div><div class="line">PATH=&quot;/data/&quot;</div><div class="line">SUBPATH=$(PATH)</div><div class="line">Shell:</div><div class="line">PATH=&quot;/data/&quot;</div><div class="line">SUBPATH=$&#123;PATH&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。"><a href="#2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。" class="headerlink" title="2. Makefile中所有以$打头的单词都会被解释成Makefile中的变量。"></a>2. Makefile中所有以<code>$</code>打头的单词都会被解释成Makefile中的变量。</h4><p>如果你需要调用shell中的变量（或者正则表达式中锚定句位<code>$</code>），都需要加两个<code>$</code>符号（<code>$$</code>）。
-Makfile实例如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">PATH=&quot;/data/&quot;</div><div class="line">all:</div><div class="line">    echo $&#123;PATH&#125;</div><div class="line">    echo $$PATH</div></pre></td></tr></table></figure></p>
-<p>例子中的第一个<code>${PATH}</code>引用的是Makefile中的变量，而不是shell中的PATH环境变量，后者引用的是Shell中的PATH环境变量。</p>
-<p>####3. 通配符区别
-shell 中通配符<code>*</code>表示所有的字符
-Makefile 中通配符<code>%</code>表示所有的字符</p>
-<p>####4. 在Makefile中只能在target中调用Shell脚本，其他地方是不能输出的。比如如下代码就是没有任何输出：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VAR=&quot;Hello&quot;</div><div class="line">echo &quot;$VAR&quot;  </div><div class="line">all:</div><div class="line">   .....</div></pre></td></tr></table></figure></p>
-<p>以上代码任何时候都不会输出，而且还会报错，如下：<code>Makefile:*** command commence before first target.Stop</code>,因为没有在target内。如果上述代码改为如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VAR=&quot;Hello&quot;</div><div class="line">all:</div><div class="line">    echo &quot;$VAR&quot;   </div><div class="line">    .....</div></pre></td></tr></table></figure></p>
-<p>以上代码，在make all的时候将会执行echo命令，同时必须注意<code>echo &quot;$VAR&quot;</code>之前必须有一个table，这样Makefile才会认为其为一条command，如果没有table会报错如下：<code>Makefile:*** missing separator.Stop.</code></p>
-<p>####5. 在Makefile中执行shell命令，一行创建一个进程来执行。
-这也是为什么很多Makefile中有很多行的末尾都是<code>“;  \”</code>，以此来保证代码是一行而不是多行，这样Makefile可以在一个进程中执行，例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SUBDIR=src example</div><div class="line">all:</div><div class="line">    @for subdir in $(SUBDIR); \</div><div class="line">    do\</div><div class="line">        echo &quot;building &quot;; \</div><div class="line">    done</div></pre></td></tr></table></figure></p>
-<p>上述可以看出for循环中每行都是以”; \”结尾的。</p>
-<p>####6. 获取当前目录
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PATH=`pwd` 注意是``,不是&apos;&apos;</div></pre></td></tr></table></figure></p>
-<p>####7. shell总=两边不允许有空格，Makfile中=两边允许有空格。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3810,7 +3799,7 @@ Makefile 中通配符<code>%</code>表示所有的字符</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

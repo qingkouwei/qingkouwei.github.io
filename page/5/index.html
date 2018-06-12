@@ -323,6 +323,206 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/30/tips-makefile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/30/tips-makefile/" itemprop="url">
+                  makefile语法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T12:22:14+08:00">
+                2017-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/makefile/" itemprop="url" rel="index">
+                    <span itemprop="name">makefile</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一个自定义模式规则示例"><a href="#一个自定义模式规则示例" class="headerlink" title="一个自定义模式规则示例"></a>一个自定义模式规则示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">CC=gcc</div><div class="line">SRCPATH=src</div><div class="line">OUTPATH=objs</div><div class="line"></div><div class="line">SRCS_TEST_SORT=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/XSort.c\</div><div class="line">	$(SRCPATH)/Test_Sort.c</div><div class="line">#OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</div><div class="line">OBJS_TEST_SORT=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_SORT))</div><div class="line">EXERC_TEST_SORT=TestSort</div><div class="line"></div><div class="line">SRCS_TEST_LIST=$(SRCPATH)/Common.c \</div><div class="line">	$(SRCPATH)/alist.c\</div><div class="line">	$(SRCPATH)/llist.c\</div><div class="line">	$(SRCPATH)/sllist.c\</div><div class="line">	$(SRCPATH)/linkedlist.c\</div><div class="line">	$(SRCPATH)/Test_List.c\</div><div class="line">	$(SRCPATH)/polynomial.c</div><div class="line"></div><div class="line">#OBJS_TEST_LIST=$(SRCS_TEST_LIST:.c=.o)</div><div class="line">OBJS_TEST_LIST=$(patsubst src/%.c,$(OUTPATH)/%.o,$(SRCS_TEST_LIST))</div><div class="line">EXERC_TEST_LIST=TestList</div><div class="line"></div><div class="line">start:$(OBJS_TEST_SORT) $(OBJS_TEST_LIST)</div><div class="line">	$(CC) -o $(EXERC_TEST_SORT) $(OBJS_TEST_SORT)</div><div class="line">	$(CC) -o $(EXERC_TEST_LIST) $(OBJS_TEST_LIST)</div><div class="line">	@echo ---------------SUCCESS----------------</div><div class="line">$(OUTPATH)/%.o:src/%.c</div><div class="line">	$(CC) -g -fstack-protector -fstack-protector-all -o $@ -c $&lt;</div><div class="line">clean:</div><div class="line">	rm -rf $(OBJS_TEST_SORT) $(EXERC_TEST_SORT)</div><div class="line">	rm -rf $(OBJS_TEST_LIST) $(EXEC_TEST_LIST)</div></pre></td></tr></table></figure>
+<ol>
+<li>使用VPATH设置搜索路径<code>VPATH = path1:path2:...</code>,make 会自动找到指定文件的目录并添加到文件上</li>
+<li>可以指定文件输入/输出路径,<code>OBJS_TEST_SORT=$(SRCS_TEST_SORT:.c=.o)</code>使用源文件集合推到编译输出文件名,当源文件增加路径后,如<code>src/Common.c</code>后,输出路径也变为<code>src/Common.o</code>,不是需要的<code>bin/Common.o</code>,使用函数<code>patsubst</code>替换输出文件集合中文件路径.</li>
+<li>使用模式匹配<code>%.o:%.c</code>替换后缀规则<code>.c.o:</code></li>
+<li>patsubst ( patten substitude,匹配替换的缩写)函数。它需要3个参数——第一个是一个需要匹配的式样，第二个表示用什么来替换它，第三个是一个需要处理由空格分隔的序列。我们将两个函数合起来用：<code>objects := $(patsubst %.c,%.o,$(wildcard *.c))</code>会被处理为: <code>objects := a.o b.o</code>同理： <code>executables := $(patsubst %.c,%,$(wildcard *.c))</code>会被处理为： <code>executables := a b</code>.<code>%o：</code>所有以“.o”结尾的目标，也就是如Common.o alist.o等,依赖模式<code>“%.c”</code>：取模式<code>“%.o”</code>的<code>%</code>Common alist，并为其加上<code>.c</code>后缀，即<code>Common.c</code>，<code>alist.c</code></li>
+<li><code>$&lt;：</code>表示所有依赖目标集，也就是<code>Common.c alist.c</code>,<code>$@：</code>表示目标集，也就是<code>Common.o alist.o</code>.命令前加<code>@</code>，表示在终端中不打印，如<code>@mkdir -p ./bin</code></li>
+</ol>
+<h3 id="makefile之隐含规则和模式规则"><a href="#makefile之隐含规则和模式规则" class="headerlink" title="makefile之隐含规则和模式规则"></a>makefile之隐含规则和模式规则</h3><p>Makefile有很多灵活的写法，可以写得更简洁，同时减少出错的可能。本节我们来看看这样一个例子还有哪些改进的余地。
+ 一个目标依赖的所有条件不一定非得写在一条规则中，也可以拆开写，例如：
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">main.o: main.h stack.h maze.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
+<p> 就相当于：
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main.o: main.c main.h stack.h maze.h  </div><div class="line">         gcc-c main.c</div></pre></td></tr></table></figure></p>
+<p>如果一个目标拆开写多条规则，其中只有一条规则允许有命令列表，其它规则应该没有命令列表，否则make会报警告并且采用最后一条规则的命令列表。</p>
+<p>这样我们的例子可以改写成：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o: main.h stack.h maze.h  </div><div class="line">stack.o: stack.h main.h  </div><div class="line">maze.o: maze.h main.h  </div><div class="line"></div><div class="line">main.o: main.c  </div><div class="line">         gcc-c main.c  </div><div class="line"></div><div class="line">stack.o: stack.c  </div><div class="line">         gcc-c stack.c  </div><div class="line"></div><div class="line">maze.o: maze.c  </div><div class="line">         gcc-c maze.c  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
+<p>这不是比原来更繁琐了吗？现在可以把提出来的三条规则删去，写成：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o: main.h stack.h maze.h  </div><div class="line">stack.o: stack.h main.h  </div><div class="line">maze.o: maze.h main.h  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
+<p>这就比原来简单多了。可是现在main.o、stack.o和maze.o这三个目标连编译命令都没有了，怎么编译的呢？试试看：
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ make  </div><div class="line">cc   -c -o main.o main.c  </div><div class="line">cc   -c -o stack.o stack.c  </div><div class="line">cc   -c -o maze.o maze.c  </div><div class="line">gcc main.o stack.o maze.o -o main</div></pre></td></tr></table></figure></p>
+<p>现在解释一下前三条编译命令是怎么来。如果一个目标在Makefile中的所有规则都没有命令列表，make会尝试在内建的隐含规则（Implicit Rule）数据库中查找适用的规则。make的隐含规则数据库可以用make -p命令打印，打印出来的格式也是Makefile的格式，包括很多变量和规则，其中和我们这个例子有关的隐含规则有：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># default  </div><div class="line">OUTPUT_OPTION = -o $@  </div><div class="line"></div><div class="line"># default  </div><div class="line">CC = cc  </div><div class="line"></div><div class="line"># default  </div><div class="line">COMPILE.c = $(CC) $(CFLAGS) $(CPPFLAGS)$(TARGET_ARCH) -c  </div><div class="line"></div><div class="line">%.o: %.c  </div><div class="line"># commands to execute (built-in):  </div><div class="line">       $(COMPILE.c) $(OUTPUT_OPTION) $&lt;</div></pre></td></tr></table></figure></p>
+<p><code>#</code>号在Makefile中表示单行注释，就像C语言的//注释一样。CC是一个Makefile变量，用<code>CC = cc</code>定义和赋值，用<code>$(CC)</code>取它的值，其值应该是cc。Makefile变量像C的宏定义一样，代表一串字符，在取值的地方展开。cc是一个符号链接，通常指向gcc，在有些UNIX系统上可能指向另外一种C编译器。</p>
+<p>CFLAGS这个变量没有定义，<code>$(CFLAGS)</code>展开是空，CPPFLAGS和TARGET_ARCH也是如此。这样<code>$(COMPILE.c)</code>展开应该是cc 空 空 空 -c，去掉“空”得到cc -c，注意中间留下4个空格，所以<code>%.o:%.c</code>规则的命令<code>$(COMPILE.c) $(OUTPUT_OPTION) $&lt;</code>展开之后是<code>cc -c -o $@$&lt;</code>，和上面的编译命令已经很接近了。</p>
+<p><code>$@</code>和<code>$&lt;</code>是两个特殊的变量，<code>$@</code>的取值为规则中的目标，<code>$&lt;</code>的取值为规则中的第一个条件。<code>%.o: %.c</code>是一种特殊的规则，称为模式规则（Pattern Rule）。现在回顾一下整个过程，在我们的Makefile中以main.o为目标的规则都没有命令列表，所以make会查找隐含规则，发现隐含规则中有这样一条模式规则适用，main.o符合<code>%.o</code>的模式，现在%就代表main（称为main.o这个名字的Stem），再替换到%.c中就是main.c。所以这条模式规则相当于：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main.o: main.c  </div><div class="line">         cc    -c -o main.o main.c</div></pre></td></tr></table></figure></p>
+<p>随后，在处理stack.o目标时又用到这条模式规则，这时又相当于：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">stack.o: stack.c  </div><div class="line">         cc    -c -o stack.o stack.c</div></pre></td></tr></table></figure></p>
+<p>maze.o也同样处理。这三条规则可以由make的隐含规则推导出来，所以不必写在Makefile中。</p>
+<p>先前我们写Makefile都是以目标为中心，一个目标依赖于若干条件，现在换个角度，以条件为中心，Makefile还可以这么写：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">main: main.o stack.o maze.o  </div><div class="line">         gccmain.o stack.o maze.o -o main  </div><div class="line"></div><div class="line">main.o stack.o maze.o: main.h  </div><div class="line">main.o maze.o: maze.h  </div><div class="line">main.o stack.o: stack.h  </div><div class="line"></div><div class="line">clean:  </div><div class="line">         -rmmain *.o  </div><div class="line"></div><div class="line">.PHONY: clean</div></pre></td></tr></table></figure></p>
+<p>我们知道，写规则的目的是让make建立依赖关系图，不管怎么写，只要把所有的依赖关系都描述清楚了就行。对于多目标的规则，make会拆成几条单目标的规则来处理，例如
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">target1 target2: prerequisite1prerequisite2  </div><div class="line">         command$&lt; -o $@</div></pre></td></tr></table></figure></p>
+<p>这样一条规则相当于：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">target1: prerequisite1 prerequisite2  </div><div class="line">         commandprerequisite1 -o target1  </div><div class="line"></div><div class="line">target2: prerequisite1 prerequisite2  </div><div class="line">         commandprerequisite1 -o target2</div></pre></td></tr></table></figure></p>
+<p>注意两条规则的命令列表是一样的，但$@的取值不同。</p>
+<h3 id="Linux-Makefile与shell脚本区别"><a href="#Linux-Makefile与shell脚本区别" class="headerlink" title="Linux Makefile与shell脚本区别"></a>Linux Makefile与shell脚本区别</h3><p>在Makefile可以调用shell脚本，但是Makefile和shell脚本是不同的。本文试着归纳一下Makefile和shell脚本的不同。</p>
+<h4 id="1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。"><a href="#1-shell中所有引用以-打头的变量其后要加-而在Makefile中的变量是以-打头的后加-。" class="headerlink" title="1. shell中所有引用以$打头的变量其后要加{},而在Makefile中的变量是以$打头的后加()。"></a>1. shell中所有引用以<code>$</code>打头的变量其后要加{},而在Makefile中的变量是以<code>$</code>打头的后加()。</h4><p>实例如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Makefile:</div><div class="line">PATH=&quot;/data/&quot;</div><div class="line">SUBPATH=$(PATH)</div><div class="line">Shell:</div><div class="line">PATH=&quot;/data/&quot;</div><div class="line">SUBPATH=$&#123;PATH&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。"><a href="#2-Makefile中所有以-打头的单词都会被解释成Makefile中的变量。" class="headerlink" title="2. Makefile中所有以$打头的单词都会被解释成Makefile中的变量。"></a>2. Makefile中所有以<code>$</code>打头的单词都会被解释成Makefile中的变量。</h4><p>如果你需要调用shell中的变量（或者正则表达式中锚定句位<code>$</code>），都需要加两个<code>$</code>符号（<code>$$</code>）。
+Makfile实例如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">PATH=&quot;/data/&quot;</div><div class="line">all:</div><div class="line">    echo $&#123;PATH&#125;</div><div class="line">    echo $$PATH</div></pre></td></tr></table></figure></p>
+<p>例子中的第一个<code>${PATH}</code>引用的是Makefile中的变量，而不是shell中的PATH环境变量，后者引用的是Shell中的PATH环境变量。</p>
+<p>####3. 通配符区别
+shell 中通配符<code>*</code>表示所有的字符
+Makefile 中通配符<code>%</code>表示所有的字符</p>
+<p>####4. 在Makefile中只能在target中调用Shell脚本，其他地方是不能输出的。比如如下代码就是没有任何输出：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VAR=&quot;Hello&quot;</div><div class="line">echo &quot;$VAR&quot;  </div><div class="line">all:</div><div class="line">   .....</div></pre></td></tr></table></figure></p>
+<p>以上代码任何时候都不会输出，而且还会报错，如下：<code>Makefile:*** command commence before first target.Stop</code>,因为没有在target内。如果上述代码改为如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VAR=&quot;Hello&quot;</div><div class="line">all:</div><div class="line">    echo &quot;$VAR&quot;   </div><div class="line">    .....</div></pre></td></tr></table></figure></p>
+<p>以上代码，在make all的时候将会执行echo命令，同时必须注意<code>echo &quot;$VAR&quot;</code>之前必须有一个table，这样Makefile才会认为其为一条command，如果没有table会报错如下：<code>Makefile:*** missing separator.Stop.</code></p>
+<p>####5. 在Makefile中执行shell命令，一行创建一个进程来执行。
+这也是为什么很多Makefile中有很多行的末尾都是<code>“;  \”</code>，以此来保证代码是一行而不是多行，这样Makefile可以在一个进程中执行，例如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SUBDIR=src example</div><div class="line">all:</div><div class="line">    @for subdir in $(SUBDIR); \</div><div class="line">    do\</div><div class="line">        echo &quot;building &quot;; \</div><div class="line">    done</div></pre></td></tr></table></figure></p>
+<p>上述可以看出for循环中每行都是以”; \”结尾的。</p>
+<p>####6. 获取当前目录
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PATH=`pwd` 注意是``,不是&apos;&apos;</div></pre></td></tr></table></figure></p>
+<p>####7. shell总=两边不允许有空格，Makfile中=两边允许有空格。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/30/tips-shell-language/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2269,163 +2469,6 @@ AAC-LC是标准化AAC中AOT为2的一种音频编解码，它的特点是运算�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/08/30/at-android-start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/30/at-android-start/" itemprop="url">
-                  android自动化测试(一):UiAutomator官方介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:43:15+08:00">
-                2017-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>了解android测试需要查询android官方文档,android官方培训教程<a href="https://developer.android.com/training/testing/start/index.html" target="_blank" rel="external">Getting Started with Testing</a>介绍了android提供的测试类型,测试接口等,相较与网上总结的android自动化测试框架,官方文档显然分类更合理,定位更准确.</p>
-<h3 id="两种测试类型"><a href="#两种测试类型" class="headerlink" title="两种测试类型"></a>两种测试类型</h3><p>在使用Android Studio创建模块时会在<code>src</code>下生成<code>androidTest</code>和<code>test</code>两个用于测试的的目录,对应下面两种测试类型.
-<img src="http://images.wodekouwei.com/technology/at_sum.png" alt="image"></p>
-<h4 id="本地单元测试-Local-unit-tests"><a href="#本地单元测试-Local-unit-tests" class="headerlink" title="本地单元测试(Local unit tests)"></a>本地单元测试(Local unit tests)</h4><p>位于<code>module-name/src/test/java/.</code>下,运行在PC端本地的JVM虚拟机上,并且不能访问Android框架的接口.
-参考<a href="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html" target="_blank" rel="external">Building Local Tests</a></p>
-<h4 id="设备化测试"><a href="#设备化测试" class="headerlink" title="设备化测试"></a>设备化测试</h4><p>位于<code>module-name/src/androidTest/java/.</code>下,必须运行在Android物理设备和虚拟机上.
-参考<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a></p>
-<p>Instrumented unit tests are tests that run on physical devices and emulators, and they can take advantage of the Android framework APIs and supporting APIs, such as the Android Testing Support Library. You should create instrumented unit tests if your tests need access to instrumentation information (such as the target app’s Context) or if they require the real implementation of an Android framework component (such as a Parcelable or SharedPreferences object).</p>
-<p>Using instrumented unit tests also helps to reduce the effort required to write and maintain mock code. You are still free to use a mocking framework, if you choose, to simulate any dependency relationships.</p>
-<p>设备化单元测试分为:</p>
-<ul>
-<li>设备化单元测试(Instrumented Unit Test):<a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html" target="_blank" rel="external">Building Instrumented Unit Tests</a>: Build complex unit tests with Android dependencies that cannot be satisfied with mock objects.</li>
-<li>组件集成测试:<a href="https://developer.android.com/training/testing/ui-testing/index.html" target="_blank" rel="external">Automating User Interface Tests</a>: Create tests to verify that the user interface behaves correctly for user interactions within a single app or for interactions across multiple apps.</li>
-<li>app集成测试:<a href="https://developer.android.com/training/testing/integration-testing/index.html" target="_blank" rel="external">Testing App Component Integrations</a>: Verify the behavior of components that users do not directly interact with, such as a Service or aContent Provider.</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2475,7 +2518,7 @@ AAC-LC是标准化AAC中AOT为2的一种音频编解码，它的特点是运算�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

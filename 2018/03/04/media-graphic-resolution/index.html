@@ -89,17 +89,21 @@
 
 
 
-<meta name="description" content="基本概念像素单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。 图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。 分辨率是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个">
+<meta name="description" content="「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。  相机的分辨率，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机">
 <meta name="keywords" content="多媒体">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多媒体技术(1.1)之图像分辨率">
 <meta property="og:url" content="http://wodekouwei.com/2018/03/04/media-graphic-resolution/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="基本概念像素单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。 图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。 分辨率是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个">
-<meta property="og:updated_time" content="2018-03-04T15:04:34.328Z">
+<meta property="og:description" content="「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。  相机的分辨率，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机">
+<meta property="og:image" content="http://images.wodekouwei.com/media/resolution1.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/media/resolution2.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/media/resolution3.jpg">
+<meta property="og:updated_time" content="2018-03-05T05:46:50.854Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多媒体技术(1.1)之图像分辨率">
-<meta name="twitter:description" content="基本概念像素单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。 图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。 分辨率是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个">
+<meta name="twitter:description" content="「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。  相机的分辨率，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机">
+<meta name="twitter:image" content="http://images.wodekouwei.com/media/resolution1.jpg">
 
 
 
@@ -435,12 +439,57 @@
       
 
       
-        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="像素"><a href="#像素" class="headerlink" title="像素"></a>像素</h4><p>单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。
+        <p>「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。</p>
+<ul>
+<li><strong>相机的分辨率</strong>，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机来说，把像素和图片物理尺寸联系起来是没有什么意义的，因为相机总是在缩放物体的图像。</li>
+<li><strong>扫描仪和打印机的分辨率</strong>，往往是它们能在单位物理面积内扫描/打印多少个微小的点（像素或墨点），单位一般分别是 PPI（像素/每英寸）和 DPI（点/英寸）──因为把它们的像素/点和物理尺寸联系起来是有意义的。为什么不写它们能扫描/打印包含多少像素/点的图片呢？因为它们扫描/打印的图片尺寸不定呀！所以我们只能以单位面积来描述。</li>
+<li><strong>显示器</strong> 能显示包含多少像素的图像的能力是固定的，所以我们可以像描述相机一样说它「1440 × 900 像素」。而它的物理尺寸是有意义的，所以也可以像描述扫描仪一样说它有多少 PPI，此时我们经常用「像素密度」来特指这个 PPI 参数。</li>
+<li>为什么上面说了这么多，却一直不说图片？因为图片是穿梭在上面说的这些设备之间的东西，它的「分辨率」概念和相机、扫描仪、打印机、显示器都有关。图片的分辨率一般有两种，一种是像相机一样描述总共有多少个像素（如「10 M」）或写成像素数量的乘法（如「4000 × 2672 像素」），另一种是像打印机一样使用 DPI 来确定图片的每一个像素（视作一个「点」）和实际的一个长度单位（英寸）之间的大小比例（比如「300 DPI」）。<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="像素"><a href="#像素" class="headerlink" title="像素"></a>像素</h4></li>
+</ul>
+<p><img src="http://images.wodekouwei.com/media/resolution1.jpg" alt="image">
+组成这张图的单位是一个格子一个格子的颜色小方块组成的，这种小方块就叫做像素。像素就是图像显示的基本元素。</p>
+<p>通过一点的排列，最终就会形式我们看到的图片，这类图片我们把它叫做“栅格图”、“点阵图”，所以你现在懂PS里图片拖进去后为什么要右键图层栅格化对象吧。</p>
+<p>像素都是正方形?
+不一定，我们看一张图:
+<img src="http://images.wodekouwei.com/media/resolution2.jpg" alt="image"></p>
+<p>根据显示媒介的不同可能会对像素值进行压缩或者扩大。大家在PS中新建画布的时候最下面有一个选择：
+<img src="http://images.wodekouwei.com/media/resolution3.jpg" alt="image"></p>
+<p>单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。
 图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。</p>
 <h4 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h4><p>是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个像素来反映红黄过渡和30个像素来反映，自然30个像素反映色阶细腻，多20个来过渡。。
 放大像素就是插值，如原来1英寸里10像素，放大到30个，那新增加的20个像素哪里来，是软件根据像素周围取样来加出来，因为加出来的像素颜色不能准确到位，就会不清晰，模糊了。。
 如分辨率减小，尺寸不变，像素会被拿掉，那就是像素连续色调产生断层了，模糊自然产生。。
 还有个概念，72分辨率是显示器的物理分辨率，图片像素尺寸和显示器尺寸同比显示，大了，图片会超出屏幕来显示，所以有显示大小和实际大小。。</p>
+<p>分辨率其实包含两个概念的：</p>
+<ol>
+<li>图像分辨率:就是说该图像的宽高上的像素点数。这个值在一开始图案生成的时候就已经确定下来。</li>
+<li>显示（单位）分辨率：在显示媒介上在单位长度内显示多少像素（相对值，这个和你的显示终端的分辨率有关）</li>
+</ol>
+<p>在单位上，分辨率是以DPI和PPI来作为单位的</p>
+<ul>
+<li>像素/英寸 Dots Per Inch</li>
+<li>像素/厘米 Pixel Per Inch</li>
+</ul>
+<p>图像清晰有两个因素决定：</p>
+<ul>
+<li>显示媒介的分辨率</li>
+<li>图片的分辨率</li>
+<li>查看的空间距离</li>
+</ul>
+<p>根据行业里的规则，一般来说，打印的出图DPI一般300即可满足需求。还记得乔布斯给苹果定义的视网膜屏幕吗？它将960×640的像素压缩到一个3.5英寸的显示屏内。也就是说，该屏幕的像素密度达到326像素/英寸（ppi），称之为“视网膜屏幕”。但是，如果你隔老远看手机屏幕，基本上你就告别视网膜屏幕了.一般来说，电子设备在0.3-0.4米的范围内使用300dpi即可很清晰.所以你可以推，你家里的电视如果观赏距离是3-4m那么像素值30dpi即可。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>图片大小的4个容易混淆的概念</p>
+<ul>
+<li>像素数目(Pixels):宽1024px,高768px</li>
+<li>实际尺寸(Print Size):厘米,英尺Inch</li>
+<li>分辨率(Resolution):DPI(dots per inch)</li>
+<li><p>占用磁盘空间:几兆M,几k</p>
+</li>
+<li><p>像素数目(垂直或水平)=分辨率*实际尺寸</p>
+</li>
+<li>Pixels = Resolution(DPI)x Print size(in inches)</li>
+<li>图片质量取决于:像素数目;颜色种类(位深度)</li>
+<li>平时所说的屏幕分辨率,相机分辨率,其实指的是像素数目</li>
+</ul>
 
       
     </div>
@@ -596,7 +645,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -712,7 +761,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#像素"><span class="nav-number">1.1.</span> <span class="nav-text">像素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分辨率"><span class="nav-number">1.2.</span> <span class="nav-text">分辨率</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#像素"><span class="nav-number">1.1.</span> <span class="nav-text">像素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分辨率"><span class="nav-number">1.2.</span> <span class="nav-text">分辨率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
             
 
           </div>

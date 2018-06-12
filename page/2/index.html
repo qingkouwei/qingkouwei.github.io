@@ -323,6 +323,173 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/tips-android-inject1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/tips-android-inject1/" itemprop="url">
+                  android逆向(1)之root方式注入apk
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:06:20+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="第一步-注入动态库到目标进程"><a href="#第一步-注入动态库到目标进程" class="headerlink" title="第一步,注入动态库到目标进程"></a>第一步,注入动态库到目标进程</h3><ol>
+<li>启动注入程序,入口main函数中输入将被注入的进程名称以及欲注入动态库路径;</li>
+<li>根据进程名获取进程id:打开<code>/proc</code>目录,读取<code>/proc/%d/cmdline</code>;</li>
+<li>attach到目标进程:<code>ptrace(PTRACE_ATTACH, pid, NULL, 0)</code>并暂停目前进程;</li>
+<li>读取寄存器值:<code>ptrace(PTRACE_GETREGS, pid, NULL, regs)</code>,并保持读取到的寄存器;</li>
+<li>获取被加载的动态库中mmap函数地址,获取被加载动态库中函数地址的方法是,获取本地libc.so模块和被加载动态库中libc.so模块中各自起始地址,local_addr-local_handle的值为指定函数(如mmap)在该模块中的偏移量，然后再加上remote_handle，结果就为指定函数在目的进程的虚拟地址,获取模块起始地址的方法是读取进程对应的<code>/proc/self/maps</code>或<code>/proc/%d/maps</code>文件;</li>
+<li>调用被加载库的mmap方法申请空间:<code>ptrace_call(target_pid, (uint32_t)func_addr, parameters, param_num, regs)</code>;</li>
+<li>获取申请空间时的R0寄存器,arm中R0~R3作为传递参数的寄存器,R0可以获取到申请空间的起始地址;</li>
+<li>获取被加载库中dlopen,dlsym,dlclose,dlerror函数地址;</li>
+<li>将被加载动态库的路径写入到mmap分配的栈空间:<code>ptrace(PTRACE_PEEKTEXT, pid, dest, 0);</code>;</li>
+<li>调用远程函数的dlopen函数打开要被注入的动态库;</li>
+<li>调用<code>dlsym</code>获取加载动态库目标函数符号对应地址,并调用目标函数,完成注入;</li>
+<li>调用dlclose关闭被注入库;</li>
+<li>完成注入;</li>
+</ol>
+<h3 id="动态库中加载目标apk-aar"><a href="#动态库中加载目标apk-aar" class="headerlink" title="动态库中加载目标apk(aar)"></a>动态库中加载目标apk(aar)</h3><ol>
+<li>入口函数中启动新线程,并调用<code>pthread_detach(tid)</code>将新线程设置为detach状态,可自动回收资源;</li>
+<li>新线程中调用<code>AndroidRuntime::getJavaVM();</code>获取JavaVM对象并Attach当前线程到JavaVM:<code>jvm-&gt;AttachCurrentThread(&amp;jni_env, NULL);</code>获取到jni env;</li>
+<li>找到<code>dalvik/system/DexClassLoader</code>类,并获取其构造方法<code>public DexClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</code>的methodid及<code>public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException</code>的methodid;</li>
+<li>找到类<code>java/lang/ClassLoader</code>,获取其静态方法<code>Gpublic static ClassLoader getSystemClassLoader()</code>的MethodID,调用静态方法getSystemClassLoader获取系统ClassLoader;</li>
+<li>基于系统ClassLoader,以及DexClassClassLoader构造方法MethodID创建DexClassLoader对象:<code>jni_env-&gt;NewObject(dexloader_claxx, dexloader_init_method, apk_path, dex_out_path, lib_path, class_loader);</code>,要传入DexClassloader jclass,DexClassLoader构造方法id,要被加载的apk路径,dex输出路径,动态库路径,以及父(即系统)ClassLoader;</li>
+<li>调用DexClassLoader的loadClass方法id加载apk中被调起的类:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>调用动态加载到的apk中类的方法:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>线程与JavaVM脱离:<code>jvm-&gt;DetachCurrentThread();</code>;</li>
+</ol>
+<h3 id="java中获取context"><a href="#java中获取context" class="headerlink" title="java中获取context"></a>java中获取context</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2466,202 +2633,6 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/08/tips-ml-mle-map/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/08/tips-ml-mle-map/" itemprop="url">
-                  (转)聊一聊机器学习的MLE和MAP:最大似然估计和最大后验估计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T17:36:01+08:00">
-                2018-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="TLDR-or-the-take-away"><a href="#TLDR-or-the-take-away" class="headerlink" title="TLDR (or the take away)"></a>TLDR (or the take away)</h3><ul>
-<li>概率学派 - Frequentist - Maximum Likelihood Estimation(MLE,最大似然估计)</li>
-<li>贝叶斯学派 - Baysesian - Maximum A Posteriori(MAP, 最大后验估计)</li>
-</ul>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>有时候和别人聊天，对方会说自己有很多机器学习经验，深入一聊发现，对方竟然对MLE和MAP一知半解，至少在我看来，这位同学的机器学习基础并不扎实。难道在这个深度学习盛行的年代，不少同学都只注重调参数？</p>
-<p>现代机器学习的终极问题都会转化为解目标函数的优化问题，MLE和MAP是生成这个函数的很基本的思想，因此我们对二者的认知是非常重要的。这次就和大家认真聊一聊MLE和MAP这两种estimator。</p>
-<h3 id="两大学派的争论"><a href="#两大学派的争论" class="headerlink" title="两大学派的争论"></a>两大学派的争论</h3><p>抽象一点来讲，频率学派和贝叶斯学派对世界的认知有本质不同：频率学派认为世界是确定的，有一个本体，这个本体的真值是不变的，我们的目标就是要找到这个真值或真值所在的范围；而贝叶斯学派认为世界是不确定的，人们对世界先有一个预判，而后通过观测数据对这个预判做调整，我们的目标是要找到最优的描述这个世界的概率分布。</p>
-<p>在对事物建模时，用 θ  表示模型的参数，请注意，解决问题的本质就是求θ 。那么：
-<strong>(1) 频率学派：</strong> 存在唯一真值 θ  。举一个简单直观的例子–抛硬币，我们用 P(head) 来表示硬币的bias。抛一枚硬币100次，有20次正面朝上，要估计抛硬币正面朝上的bias P(head)=θ。在频率学派来看，θ = 20 / 100 = 0.2，很直观。当数据量趋于无穷时，这种方法能给出精准的估计；然而缺乏数据时则可能产生严重的偏差。例如，对于一枚均匀硬币，即 θ = 0.5，抛掷5次，出现5次正面 (这种情况出现的概率是1/2^5=3.125%)，频率学派会直接估计这枚硬币 θ = 1，出现严重错误。</p>
-<p><strong>(2) 贝叶斯学派：</strong> θ 是一个随机变量，符合一定的概率分布。在贝叶斯学派里有两大输入和一大输出，输入是先验 (prior)和似然 (likelihood)，输出是后验 (posterior)。先验，即 P(θ) ，指的是在没有观测到任何数据时对 θ 的预先判断，例如给我一个硬币，一种可行的先验是认为这个硬币有很大的概率是均匀的，有较小的概率是是不均匀的；似然，即 P(X|θ) ，是假设 θ 已知后我们观察到的数据应该是什么样子的；后验，即 P(θ|X) ，是最终的参数分布。贝叶斯估计的基础是贝叶斯公式，如下：</p>
-<p>$P(\theta|X)=\frac{P(X|\theta) \times P(\theta)}{P(X)}$</p>
-<p>同样是抛硬币的例子，对一枚均匀硬币抛5次得到5次正面，那么 P(head) ，即 P(θ|X) ，是一个distribution，最大值会介于0.5~1之间，而不是武断的 θ = 1。</p>
-<p>这里有两点值得注意的地方：</p>
-<p>随着数据量的增加，参数分布会越来越向数据靠拢，先验的影响力会越来越小
-如果先验是uniform distribution，则贝叶斯方法等价于频率方法。因为直观上来讲，先验是uniform distribution本质上表示对事物没有任何预判</p>
-<h3 id="MLE-最大似然估计"><a href="#MLE-最大似然估计" class="headerlink" title="MLE - 最大似然估计"></a>MLE - 最大似然估计</h3><p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
-<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
-<p>Maximum Likelihood Estimation, MLE是频率学派常用的估计方法！</p>
-<p>假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。其中i.i.d.表示Independent and identical distribution，独立同分布。那么MLE对 $\theta$ 的估计方法可以如下推导：</p>
-<p>最后这一行所优化的函数被称为Negative Log Likelihood (NLL)，这个概念和上面的推导是非常重要的！</p>
-<p>我们经常在不经意间使用MLE，例如</p>
-<ul>
-<li>上文中关于频率学派求硬币概率的例子，其方法其实本质是由优化NLL得出。本文末尾附录中给出了具体的原因 :-)</li>
-<li>给定一些数据，求对应的高斯分布时，我们经常会算这些数据点的均值和方差然后带入到高斯分布的公式，其理论依据是优化NLL</li>
-<li>深度学习做分类任务时所用的cross entropy loss，其本质也是MLE</li>
-</ul>
-<h3 id="MAP-最大后验估计"><a href="#MAP-最大后验估计" class="headerlink" title="MAP - 最大后验估计"></a>MAP - 最大后验估计</h3><p>Maximum A Posteriori, MAP是贝叶斯学派常用的估计方法！</p>
-<p>同样的，假设数据 x_1, x_2, …, x_n  是i.i.d.的一组抽样，X = (x_1, x_2, …, x_n) 。那么MLE对 $\theta$ 的估计方法可以如下推导：
-其中，第二行到第三行使用了贝叶斯定理，第三行到第四行P(X) 可以丢掉因为与 $\theta$ 无关。注意 $-\log P(X|\theta )$ 其实就是NLL，所以MLE和MAP在优化时的不同就是在于先验项 - $\log P(\theta) $。好的，那现在我们来研究一下这个先验项，假定先验是一个高斯分布，即</p>
-<p>$P(\theta) = \text{constant} \times e^{-\frac{\theta^2}{2\sigma^2}}$</p>
-<p>那么， $-\log P(\theta) = \text{constant} + \frac{\theta^2}{2\sigma^2} $。至此，一件神奇的事情发生了 – 在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的regularizaton！</p>
-<p>再稍微补充几点：</p>
-<ul>
-<li>我们不少同学大学里学习概率论时，最主要的还是频率学派的思想，其实贝叶斯学派思想也非常流行，而且实战性很强</li>
-<li>CMU的很多老师都喜欢用贝叶斯思想解决问题；我本科时的导师朱军老师也在做<a href="https://arxiv.org/abs/1709.05870" target="_blank" rel="external">贝叶斯深度学习</a>的工作，有兴趣可以关注一下。</li>
-</ul>
-<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>有的同学说：“了解这些没用，现在大家都不用了。”这种想法是不对的，因为这是大家常年在用的知识，是推导优化函数的核心，而优化函数又是机器学习 (包含深度学习) 的核心之一。这位同学有这样的看法，说明对机器学习的本质并没有足够的认识，而让我吃惊的是，竟然有不少其他同学为这种看法点赞。内心感到有点儿悲凉，也引发了我写这篇文章的动力，希望能帮到一些朋友 :-)</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><p>[1] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">Bayesian Method Lecture</a>, UT Dallas.</p>
-</li>
-<li><p>[2] <a href="http://link.zhihu.com/?target=http%3A//www.utdallas.edu/%7Enrr150130/cs7301/2016fa/lects/Lecture_14_Bayes.pdf" target="_blank" rel="external">MLE, MAP, Bayes classification Lecture</a>, CMU.</p>
-</li>
-</ul>
-<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>为什么说频率学派求硬币概率的算法本质是在优化NLL？</p>
-<p>因为抛硬币可以表示为参数为 $\theta$  的Bernoulli分布，即</p>
-<p>$P(x_i; \theta) =\left{ \begin{array}{ll} \theta &amp; x_i = 1 \ 1 - \theta &amp; x_i = 0 \ \end{array} \right. \ = \theta^{x_i} (1- \theta)^{1-x_i}$</p>
-<p>其中 x_i = 1 表示第 i 次抛出正面。那么，</p>
-<p>$\text{NLL} = -\sum_{i=1}^n \log P(x<em>i; \theta) = -\sum</em>{i=1}^n \log \theta^{x_i} (1- \theta)^{1-x_i}$</p>
-<p>求导数并使其等于零，得到</p>
-<p>$\text{NLL}’ = -\sum_{i=1}^n\Big(\frac{x_i}{\theta} + (1-x_i)\frac{-1}{1-\theta}\Big) = 0$</p>
-<p>即 $\hat{\theta} = \frac{\sum_{i=1}^n x_i}{n}$ ，也就是出现正面的次数除以总共的抛掷次数。</p>
-<blockquote>
-<p>转自<a href="https://zhuanlan.zhihu.com/p/32480810" target="_blank" rel="external">聊一聊机器学习的MLE和MAP：最大似然估计和最大后验估计</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2711,7 +2682,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-count">99</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
