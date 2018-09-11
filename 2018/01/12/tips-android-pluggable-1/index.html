@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1.什么是ClassLoader当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/classloader.gif">
-<meta property="og:updated_time" content="2018-01-12T12:25:31.663Z">
+<meta property="og:updated_time" content="2018-07-24T04:01:19.598Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android插件化(二)基础之类加载器">
 <meta name="twitter:description" content="1.什么是ClassLoader当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候">
@@ -499,6 +499,9 @@
 <li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
 </ul>
 </blockquote>
+<p>关于jar、dex和apk，dex和apk是可以直接加载的，因为它们都是或者内部有dex文件，而原始的jar是不行的，必须转换成dalvik所能识别的字节码文件，转换工具可以使用android sdk中platform-tools目录下的dx
+转换命令 ：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dx --dex --output=dest.jar src.jar</div></pre></td></tr></table></figure></p>
 <p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
 <ol>
 <li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
@@ -665,7 +668,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">99</span>
+                <span class="site-state-item-count">110</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -676,7 +679,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -687,7 +690,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
