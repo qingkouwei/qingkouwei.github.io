@@ -323,6 +323,154 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/13/ffmpeg-util/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/13/ffmpeg-util/" itemprop="url">
+                  FFMPEG工具方法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-13T10:03:27+08:00">
+                2017-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
+                    <span itemprop="name">FFMPEG</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="av-strerror"><a href="#av-strerror" class="headerlink" title="av_strerror"></a>av_strerror</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int av_strerror	(	int 	errnum,</div><div class="line">char * 	errbuf,</div><div class="line">size_t 	errbuf_size</div><div class="line">)</div></pre></td></tr></table></figure>
+<h4 id="ffmpeg获取与设置mp4文件旋转方向方法"><a href="#ffmpeg获取与设置mp4文件旋转方向方法" class="headerlink" title="ffmpeg获取与设置mp4文件旋转方向方法"></a>ffmpeg获取与设置mp4文件旋转方向方法</h4><p>设置与获取都是对AVStream的dict操作.
+<strong>设置</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">for (i = 0; i &lt; ifmt_ctx_v-&gt;nb_streams; i++) &#123;  </div><div class="line">        //Create output AVStream according to input AVStream  </div><div class="line">        if(ifmt_ctx_v-&gt;streams[i]-&gt;codec-&gt;codec_type==AVMEDIA_TYPE_VIDEO)&#123;  </div><div class="line">            AVStream *in_stream = ifmt_ctx_v-&gt;streams[i];  </div><div class="line">            AVStream *out_stream = avformat_new_stream(ofmt_ctx, in_stream-&gt;codec-&gt;codec);  </div><div class="line">            videoindex_v=i;  </div><div class="line">            if (!out_stream) &#123;  </div><div class="line">                printf( &quot;Failed allocating output stream\n&quot;);  </div><div class="line">                ret = AVERROR_UNKNOWN;  </div><div class="line">                goto end;  </div><div class="line">            &#125;  </div><div class="line">            videoindex_out=out_stream-&gt;index;  </div><div class="line">            //Copy the settings of AVCodecContext  </div><div class="line">            ret = av_dict_set(&amp;out_stream-&gt;metadata,&quot;rotate&quot;,&quot;90&quot;,0); //设置旋转角度  </div><div class="line">            if(ret&gt;=0)  </div><div class="line">            &#123;  </div><div class="line">                printf(&quot;=========yes=====set rotate success!===\n&quot;);  </div><div class="line">            &#125;  </div><div class="line"></div><div class="line">            if (avcodec_copy_context(out_stream-&gt;codec, in_stream-&gt;codec) &lt; 0) &#123;  </div><div class="line">                printf( &quot;Failed to copy context from input to output stream codec context\n&quot;);  </div><div class="line">                goto end;  </div><div class="line">            &#125;  </div><div class="line">            out_stream-&gt;codec-&gt;codec_tag = 0;  </div><div class="line">            if (ofmt_ctx-&gt;oformat-&gt;flags &amp; AVFMT_GLOBALHEADER)  </div><div class="line">                out_stream-&gt;codec-&gt;flags |= CODEC_FLAG_GLOBAL_HEADER;  </div><div class="line">            break;  </div><div class="line">        &#125;  </div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p><strong>读取</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">for (i = 0; i &lt; ifmt_ctx_v-&gt;nb_streams; i++) &#123;  </div><div class="line">        //Create output AVStream according to input AVStream  </div><div class="line">        if(ifmt_ctx_v-&gt;streams[i]-&gt;codec-&gt;codec_type==AVMEDIA_TYPE_VIDEO)&#123;  </div><div class="line">            AVStream *in_stream = ifmt_ctx_v-&gt;streams[i];  </div><div class="line">            AVStream *out_stream = avformat_new_stream(ofmt_ctx, in_stream-&gt;codec-&gt;codec);  </div><div class="line">            videoindex_v=i;  </div><div class="line">            if (!out_stream) &#123;  </div><div class="line">                printf( &quot;Failed allocating output stream\n&quot;);  </div><div class="line">                ret = AVERROR_UNKNOWN;  </div><div class="line">                goto end;  </div><div class="line">            &#125;  </div><div class="line">            videoindex_out=out_stream-&gt;index;  </div><div class="line">            //Copy the settings of AVCodecContext  </div><div class="line">            ret = av_dict_set(&amp;out_stream-&gt;metadata,&quot;rotate&quot;,&quot;90&quot;,0); //设置旋转角度  </div><div class="line">            if(ret&gt;=0)  </div><div class="line">            &#123;  </div><div class="line">                printf(&quot;=========yes=====set rotate success!===\n&quot;);  </div><div class="line">            &#125;  </div><div class="line"></div><div class="line">            if (avcodec_copy_context(out_stream-&gt;codec, in_stream-&gt;codec) &lt; 0) &#123;  </div><div class="line">                printf( &quot;Failed to copy context from input to output stream codec context\n&quot;);  </div><div class="line">                goto end;  </div><div class="line">            &#125;  </div><div class="line">            out_stream-&gt;codec-&gt;codec_tag = 0;  </div><div class="line">            if (ofmt_ctx-&gt;oformat-&gt;flags &amp; AVFMT_GLOBALHEADER)  </div><div class="line">                out_stream-&gt;codec-&gt;flags |= CODEC_FLAG_GLOBAL_HEADER;  </div><div class="line">            break;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line"></div><div class="line">double g_rotate_theta = get_rotation(decoder-&gt;is_video);//is_video是video的AVStream</div><div class="line">        int rotate = 0;</div><div class="line">        if (fabs(g_rotate_theta - 90) &lt; 1.0)</div><div class="line">        &#123;</div><div class="line">            rotate = 90;</div><div class="line">        &#125;</div><div class="line">        else if(fabs(g_rotate_theta - 180) &lt; 1.0||fabs(g_rotate_theta + 180) &lt; 1.0)</div><div class="line">        &#123;</div><div class="line">            rotate = 180;</div><div class="line">        &#125;</div><div class="line">        else if(fabs(g_rotate_theta - 270) &lt; 1.0||fabs(g_rotate_theta + 90) &lt; 1.0)</div><div class="line">        &#123;</div><div class="line">            rotate = 270;</div><div class="line">        &#125;</div><div class="line">        LOGI(&quot;get rotate is : %d&quot; , rotate);</div><div class="line">        metadata-&gt;rotate = rotate;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/09/12/tips-media-profile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2748,139 +2896,11 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/07/25/FQA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/25/FQA/" itemprop="url">
-                  FQA
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-25T20:42:03+08:00">
-                2017-07-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="ssh连接服务器出错"><a href="#ssh连接服务器出错" class="headerlink" title="ssh连接服务器出错"></a>ssh连接服务器出错</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</div><div class="line">@ WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! @</div><div class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</div><div class="line">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!</div><div class="line">Someone could be eavesdropping on you right now (man-in-the-middle attack)!</div><div class="line">It is also possible that a host key has just been changed.</div><div class="line">The fingerprint for the RSA key sent by the remote host is</div><div class="line">da:f7:3e:ba:f7:00:e6:44:76:f2:58:6e:48:**.</div><div class="line">Please contact your system administrator.</div><div class="line">Add correct host key in /用户home目录/.ssh/known_hosts to get rid of this message.</div><div class="line">Offending RSA key in /用户home目录/.ssh/known_hosts:1</div><div class="line">RSA host key for ip地址 has changed and you have requested strict checking.</div><div class="line">Host key verification failed.</div></pre></td></tr></table></figure>
-<p>出现这个问题的原因是,第一次使用SSH连接时，会生成一个认证，储存在客户端的known_hosts中.</p>
-<p>可使用以下指令查看:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -l -f ~/.ssh/known_hosts</div></pre></td></tr></table></figure></p>
-<p>由于服务器重新安装系统了，所以会出现以上错误。
-解决办法:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -R 服务器端的ip地址</div></pre></td></tr></table></figure></p>
-<p>或者直接在known_hosts中删除对应ip的行</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2925,7 +2945,7 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2936,7 +2956,7 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2947,7 +2967,7 @@ TIME 宏指令包含程序编译的时间。时间用字符串表示，其形式
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-count">55</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

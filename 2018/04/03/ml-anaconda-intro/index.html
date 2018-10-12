@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/04/03/ml-anaconda-intro/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！ 官网下载地址为：https://www.anaconda.com/download/ 安装anaconda对于Mac、Linux系统">
-<meta property="og:updated_time" content="2018-04-05T12:22:39.545Z">
+<meta property="og:updated_time" content="2018-09-17T08:47:16.136Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="anaconda环境搭建">
 <meta name="twitter:description" content="anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！ 官网下载地址为：https://www.anaconda.com/download/ 安装anaconda对于Mac、Linux系统">
@@ -455,6 +455,20 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 更新conda，保持conda最新</div><div class="line">conda update conda</div><div class="line"></div><div class="line"># 更新anaconda</div><div class="line">conda update anaconda</div><div class="line"></div><div class="line"># 更新python</div><div class="line">conda update python</div><div class="line"># 假设当前环境是python 3.4, conda会将python升级为3.4.x系列的当前最新版本</div></pre></td></tr></table></figure>
 <p>补充：如果创建新的python环境，比如3.4，运行conda create -n python34 python=3.4之后，conda仅安装python 3.4相关的必须项，如python, pip等，如果希望该环境像默认环境那样，安装anaconda集合包，只需要：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在当前环境下安装anaconda包集合</div><div class="line">conda install anaconda</div><div class="line"></div><div class="line"># 结合创建环境的命令，以上操作可以合并为</div><div class="line">conda create -n python34 python=3.4 anaconda</div><div class="line"># 也可以不用全部安装，根据需求安装自己需要的package即可</div></pre></td></tr></table></figure></p>
+<h5 id="通过pip将packages安装到Conda环境中"><a href="#通过pip将packages安装到Conda环境中" class="headerlink" title="通过pip将packages安装到Conda环境中"></a>通过pip将packages安装到Conda环境中</h5><p>发行版Anaconda附带安装了200多个Python软件包，还可以使用conda install 命令快速轻松地安装许多软件包。</p>
+<p>除了安装和管理软件包的实用程序外，conda还拥有创建虚拟环境的能力，这些虚拟环境是在没有任何Python包预先加载的情况下创建的。
+但是不是所有的软件包都可以通过 conda 安装，如果你想要一个不可用的软件，那么你将不得不使用备用软件包管理器pip。Anaconda的软件包管理器conda和pip如何相互交互？
+目前有两种方法:</p>
+<h6 id="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><a href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：" class="headerlink" title="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："></a>一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</h6><ol>
+<li>使用conda create - name virtual_env_name 创建您的虚拟环境，用虚拟环境的 名称 替换virtual_env_name</li>
+<li>使用source activate virtual_env_name切换到您的虚拟环境 ，再次用您的虚拟环境的名称替换virtual_env_name</li>
+<li>运行conda install pip ，它会将pip安装到您的虚拟环境目录中</li>
+<li>后续直接使用以下两步即可：1）source activate virtual_env_name 2）pip install ‘package_name’</li>
+</ol>
+<h6 id="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><a href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。" class="headerlink" title="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"></a>二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</h6><ol>
+<li>运行conda install pip ，它会将pip安装到您的Anaconda虚拟环境目录中。</li>
+<li>你需要找到你的Anaconda bin目录运行pip，如：//anaconda/bin/pip install package_name将软件包安装到您的虚拟环境中 。</li>
+</ol>
 <h4 id="设置国内镜像"><a href="#设置国内镜像" class="headerlink" title="设置国内镜像"></a>设置国内镜像</h4><p>如果需要安装很多packages，你会发现conda下载的速度经常很慢，因为Anaconda.org的服务器在国外。所幸的是，清华TUNA镜像源有Anaconda仓库的镜像，我们将其加入conda的配置即可：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 添加Anaconda的TUNA镜像</div><div class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</div><div class="line"># TUNA的help中镜像地址加有引号，需要去掉</div><div class="line"></div><div class="line"># 设置搜索时显示通道地址</div><div class="line">conda config --set show_channel_urls yes</div></pre></td></tr></table></figure></p>
 <p>执行完上述命令后，会生成<code>~/.condarc(Linux/Mac)</code>或<code>C:\Users\USER_NAME\.condarc</code>文件，记录着我们对conda的配置，直接手动创建、编辑该文件是相同的效果。</p>
@@ -620,7 +634,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -631,7 +645,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -642,7 +656,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-count">55</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -736,7 +750,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装anaconda"><span class="nav-number">1.</span> <span class="nav-text">安装anaconda</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conda的环境管理"><span class="nav-number">2.</span> <span class="nav-text">Conda的环境管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conda的包管理"><span class="nav-number">3.</span> <span class="nav-text">Conda的包管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置国内镜像"><span class="nav-number">4.</span> <span class="nav-text">设置国内镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为vscode配置集成环境"><span class="nav-number">5.</span> <span class="nav-text">为vscode配置集成环境</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#添加Python编译配置"><span class="nav-number">5.1.</span> <span class="nav-text">添加Python编译配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Python脚本编译测试"><span class="nav-number">5.2.</span> <span class="nav-text">Python脚本编译测试</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装anaconda"><span class="nav-number">1.</span> <span class="nav-text">安装anaconda</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conda的环境管理"><span class="nav-number">2.</span> <span class="nav-text">Conda的环境管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conda的包管理"><span class="nav-number">3.</span> <span class="nav-text">Conda的包管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#通过pip将packages安装到Conda环境中"><span class="nav-number">3.1.</span> <span class="nav-text">通过pip将packages安装到Conda环境中</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><span class="nav-number">3.1.1.</span> <span class="nav-text">一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><span class="nav-number">3.1.2.</span> <span class="nav-text">二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置国内镜像"><span class="nav-number">4.</span> <span class="nav-text">设置国内镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为vscode配置集成环境"><span class="nav-number">5.</span> <span class="nav-text">为vscode配置集成环境</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#添加Python编译配置"><span class="nav-number">5.1.</span> <span class="nav-text">添加Python编译配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Python脚本编译测试"><span class="nav-number">5.2.</span> <span class="nav-text">Python脚本编译测试</span></a></li></ol></li></ol></div>
             
 
           </div>

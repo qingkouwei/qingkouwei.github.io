@@ -323,6 +323,259 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/21/tips-ml-dpst/" itemprop="url">
+                  deep-photo-styletransfer介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-21T22:41:30+08:00">
+                2018-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
+<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
+安装:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
+<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>如果你想要卸载 torch，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
+<p>现在在你可以用 Luarocks 安装新的包
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
+<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
+<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
+要执行 file.lua, 写 th&gt; dofile “file.lua”。
+在非交互模式下执行文件：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
+<p>th 命令有很多选项，类似 perl 和 ruby。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
+<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
+<ul>
+<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
+<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
+</ul>
+<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
+Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
+<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
+<p>之后安装Mac下的包管理神器Homebrew，命令如下，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
+<p>通过以下命令升级Homebrew:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
+<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
+<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
+<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
+<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
+使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
+<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
+<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
+<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
+<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
+<blockquote>
+<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
+<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
+<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
+<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
+</blockquote>
+<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
+<ul>
+<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
+<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
+使用不同版本有兼容性问题</li>
+</ul>
+<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
+<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
+<p>可能有xcode Command Line Tool版本不兼容问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
+<p>替换版本即可:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
+</blockquote>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
+<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
+<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
+<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+<li><a href="https://github.com/LouieYang/deep-photo-styletransfer-tf" target="_blank" rel="external">deep-photo-styletransfer-tf</a>:Tensorflow (Python API) implementation of Deep Photo Style Transfer</li>
+<li><a href="https://github.com/floydhub/deep-photo-styletransfer" target="_blank" rel="external">floydhub/deep-photo-styletransfer</a>:Jupyter Notebook to train photorealistic style transfer</li>
+<li><a href="https://askubuntu.com/questions/652004/how-do-i-rebuild-octave-and-link-in-graphicsmagick" target="_blank" rel="external">How do I rebuild Octave and link in GraphicsMagick?</a></li>
+<li><a href="ftp://ftp.gnu.org/gnu/octave/" target="_blank" rel="external">/gnu/octave/ 的索引</a></li>
+</ul>
+<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><ol>
+<li><code>configure :error: No usable version of sed found:</code>
+I did ./configure to make a makefile</li>
+</ol>
+<p>but it ran into an error: configure :error: No usable version of sed found:</p>
+<p>I then typed which see</p>
+<p>it shows /usr/bin/sed.</p>
+<p>so, what’s wrong? why can’t ./configure find sed?</p>
+<p>I happened to have this problem on my mac. This is because OS X uses an old version of sed. Installing gnu-sed by <code>brew install gnu-sed</code> and <code>alias gsed=sed</code> solved this problem. You may install gnu-sed with other method.</p>
+<p><a href="https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found" target="_blank" rel="external">https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found</a></p>
+<ol>
+<li><code>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</code></li>
+</ol>
+<p>I am attempting to install GraphicsMagick in a hosting account…</p>
+<p>I used this info to get it to work in most cases:</p>
+<p><a href="https://superuser.com/questions/192573/how-do-you-specify-the-location-of-libraries-to-a-binary-linux" target="_blank" rel="external">How do you specify the location of libraries to a binary? (linux)</a></p>
+<p>However, it still cannot find the delegates.mgk (which is in ./lib/GraphicsMagick-1.3.14/delegates.mgk) as witnessed in this error:</p>
+<p>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</p>
+<p>Either, a) how do find out where the binary thinks this file should be, or b) how do I extend the wrapper script to help it out?</p>
+<p>Figured it out after looking through the binary for /PATH/</p>
+<p>The binaries require these additional path variables:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$MAGICK_CONFIG_PATH</div><div class="line">$MAGICK_CODER_MODULE_PATH</div><div class="line">$MAGICK_FILTER_MODULE_PATH</div></pre></td></tr></table></figure></p>
+<p>…here is the resulting script modification form my setup:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ -n &quot;$LD_LIBRARY_PATH&quot; ]; then</div><div class="line">  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/USER/lib</div><div class="line">else</div><div class="line">  LD_LIBRARY_PATH=/home/USER/lib</div><div class="line">fi</div><div class="line">[ -z &quot;$&#123;MAGICK_CONFIGURE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CONFIGURE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/config</div><div class="line">[ -z &quot;$&#123;MAGICK_CODER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CODER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/coders</div><div class="line">[ -z &quot;$&#123;MAGICK_FILTER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_FILTER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/filters</div><div class="line">export LD_LIBRARY_PATH</div><div class="line">exec /home/USER/bin/gm-bin &quot;$@&quot;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/issue-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2136,225 +2389,11 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-1/" itemprop="url">
-                  Android插件化(二)基础之类加载器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:35:40+08:00">
-                2018-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-什么是ClassLoader"><a href="#1-什么是ClassLoader" class="headerlink" title="1.什么是ClassLoader"></a>1.什么是ClassLoader</h3><p>当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
-<h3 id="2-Java-ClassLoader"><a href="#2-Java-ClassLoader" class="headerlink" title="2.Java ClassLoader"></a>2.Java ClassLoader</h3><h4 id="2-1-Java默认提供的三个ClassLoader"><a href="#2-1-Java默认提供的三个ClassLoader" class="headerlink" title="2.1.Java默认提供的三个ClassLoader"></a>2.1.Java默认提供的三个ClassLoader</h4><ol>
-<li>BootStrap ClassLoader：
-称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();  </div><div class="line">for (int i = 0; i &lt; urls.length; i++) &#123;  </div><div class="line">    System.out.println(urls[i].toExternalForm());  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>以下内容是上述程序从本机JDK环境所获得的结果：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
-<p>其实上述结果也是通过查找sun.boot.class.path这个系统属性所得知的。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(System.getProperty(&quot;sun.boot.class.path&quot;));</div></pre></td></tr></table></figure></p>
-<p>打印结果:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
-<ol>
-<li>Extension ClassLoader：
-称为扩展类加载器，负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</li>
-<li>App ClassLoader：
-称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。</li>
-</ol>
-<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是Bootstrap ClassLoader不继承自ClassLoader，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
-<h4 id="2-2ClassLoader加载类的原理"><a href="#2-2ClassLoader加载类的原理" class="headerlink" title="2.2ClassLoader加载类的原理"></a>2.2ClassLoader加载类的原理</h4><p>ClassLoader使用的是双亲委托模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
-<p>这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到安全因素，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
-<p>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的。只有两者同时满足的情况下，JVM才认为这两个class是相同的。就算两个class是同一份class字节码，如果被两个不同的ClassLoader实例所加载，JVM也会认为它们是两个不同class。比如网络上的一个Java类org.classloader.simple.NetClassLoaderSimple，javac编译之后生成字节码文件NetClassLoaderSimple.class，ClassLoaderA和ClassLoaderB这两个类加载器并读取了NetClassLoaderSimple.class文件，并分别定义出了java.lang.Class实例来表示这个类，对于JVM来说，它们是两个不同的实例对象，但它们确实是同一份字节码文件，如果试图将这个Class实例生成具体的对象进行转换时，就会抛运行时异常java.lang.ClassCaseException，提示这是两个不同的类型。现在通过实例来验证上述所描述的是否正确:</p>
-<ol>
-<li>在web服务器上建一个org.classloader.simple.NetClassLoaderSimple.java类<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.classloader.simple;  </div><div class="line"></div><div class="line">public class NetClassLoaderSimple &#123;  </div><div class="line"></div><div class="line">    private NetClassLoaderSimple instance;  </div><div class="line"></div><div class="line">    public void setNetClassLoaderSimple(Object obj) &#123;  </div><div class="line">        this.instance = (NetClassLoaderSimple)obj;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>org.classloader.simple.NetClassLoaderSimple类的setNetClassLoaderSimple方法接收一个Object类型参数，并将它强制转换成org.classloader.simple.NetClassLoaderSimple类型。</p>
-<ol>
-<li>测试两个class是否相同
-<code>NetWorkClassLoader.java</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">package classloader;</div><div class="line"></div><div class="line">import java.io.ByteArrayOutputStream;</div><div class="line">import java.io.InputStream;</div><div class="line">import java.net.URL;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 加载网络class的ClassLoader</div><div class="line"> */</div><div class="line">public class NetworkClassLoader extends ClassLoader &#123;</div><div class="line"></div><div class="line">	private String rootUrl;</div><div class="line"></div><div class="line">	public NetworkClassLoader(String rootUrl) &#123;</div><div class="line">		this.rootUrl = rootUrl;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@Override</div><div class="line">	protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException &#123;</div><div class="line">		Class clazz = null;//this.findLoadedClass(name); // 父类已加载</div><div class="line">		//if (clazz == null) &#123;	//检查该类是否已被加载过</div><div class="line">			byte[] classData = getClassData(name);	//根据类的二进制名称,获得该class文件的字节码数组</div><div class="line">			if (classData == null) &#123;</div><div class="line">				throw new ClassNotFoundException();</div><div class="line">			&#125;</div><div class="line">			clazz = defineClass(name, classData, 0, classData.length);	//将class的字节码数组转换成Class类的实例</div><div class="line">		//&#125;</div><div class="line">		return clazz;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private byte[] getClassData(String name) &#123;</div><div class="line">		InputStream is = null;</div><div class="line">		try &#123;</div><div class="line">			String path = classNameToPath(name);</div><div class="line">			URL url = new URL(path);</div><div class="line">			byte[] buff = new byte[1024*4];</div><div class="line">			int len = -1;</div><div class="line">			is = url.openStream();</div><div class="line">			ByteArrayOutputStream baos = new ByteArrayOutputStream();</div><div class="line">			while((len = is.read(buff)) != -1) &#123;</div><div class="line">				baos.write(buff,0,len);</div><div class="line">			&#125;</div><div class="line">			return baos.toByteArray();</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125; finally &#123;</div><div class="line">			if (is != null) &#123;</div><div class="line">			   try &#123;</div><div class="line">			      is.close();</div><div class="line">			   &#125; catch(IOException e) &#123;</div><div class="line">			      e.printStackTrace();</div><div class="line">			   &#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private String classNameToPath(String name) &#123;</div><div class="line">		return rootUrl + &quot;/&quot; + name.replace(&quot;.&quot;, &quot;/&quot;) + &quot;.class&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">package classloader;  </div><div class="line"></div><div class="line">public class NewworkClassLoaderTest &#123;  </div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;  </div><div class="line">        try &#123;  </div><div class="line">            //测试加载网络中的class文件  </div><div class="line">            String rootUrl = &quot;http://localhost:8080/httpweb/classes&quot;;  </div><div class="line">            String className = &quot;org.classloader.simple.NetClassLoaderSimple&quot;;  </div><div class="line">            NetworkClassLoader ncl1 = new NetworkClassLoader(rootUrl);  </div><div class="line">            NetworkClassLoader ncl2 = new NetworkClassLoader(rootUrl);  </div><div class="line">            Class&lt;?&gt; clazz1 = ncl1.loadClass(className);  </div><div class="line">            Class&lt;?&gt; clazz2 = ncl2.loadClass(className);  </div><div class="line">            Object obj1 = clazz1.newInstance();  </div><div class="line">            Object obj2 = clazz2.newInstance();  </div><div class="line">            clazz1.getMethod(&quot;setNetClassLoaderSimple&quot;, Object.class).invoke(obj1, obj2);  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>首先获得网络上一个class文件的二进制名称，然后通过自定义的类加载器NetworkClassLoader创建两个实例，并根据网络地址分别加载这份class，并得到这两个ClassLoader实例加载后生成的Class实例clazz1和clazz2，最后将这两个Class实例分别生成具体的实例对象obj1和obj2，再通过反射调用clazz1中的setNetClassLoaderSimple方法。</p>
-<p>结果抛出<code>java.lang.ClassCastgException</code>,虽然是同一份class字节码文件，但是由于被两个不同的ClassLoader实例所加载，所以JVM认为它们就是两个不同的类。</p>
-<h4 id="2-3ClassLoader的体系架构："><a href="#2-3ClassLoader的体系架构：" class="headerlink" title="2.3ClassLoader的体系架构："></a>2.3ClassLoader的体系架构：</h4><p><img src="http://images.wodekouwei.com/technology/classloader.gif" alt="iamge"></p>
-<p>打印ClassLoader类的层次结构:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ClassLoader loader = ClassLoaderTest.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  </div><div class="line">while(loader != null) &#123;  </div><div class="line">    System.out.println(loader);  </div><div class="line">    loader = loader.getParent();    //获得父类加载器的引用  </div><div class="line">&#125;  </div><div class="line">System.out.println(loader);</div></pre></td></tr></table></figure></p>
-<p>输出:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</div><div class="line">sun.misc.Launcher$ExtClassLoader@1540e19d</div><div class="line">null</div></pre></td></tr></table></figure></p>
-<p>第一行结果说明：ClassLoaderTest的类加载器是AppClassLoader。</p>
-<p>第二行结果说明：AppClassLoader的类加器是ExtClassLoader，即parent=ExtClassLoader。</p>
-<p>第三行结果说明：ExtClassLoader的类加器是Bootstrap ClassLoader，因为Bootstrap ClassLoader不是一个普通的Java类，所以ExtClassLoader的parent=null，所以第三行的打印结果为null就是这个原因。</p>
-<ul>
-<li>将ClassLoaderTest.class打包成ClassLoaderTest.jar，放到Extension ClassLoader的加载目录下（JAVA_HOME/jre/lib/ext）可以测试Extension ClassLoader</li>
-<li>在jvm中添加-Xbootclasspath参数，指定Bootstrcp ClassLoader加载类的路径，并追加我们自已的jar（ClassTestLoader.jar）或 将class文件放到JAVA_HOME/jre/classes/目录下测试用Bootstrcp ClassLoader加载ClassLoaderTest.class.</li>
-</ul>
-<h4 id="2-4定义自己的ClassLoader"><a href="#2-4定义自己的ClassLoader" class="headerlink" title="2.4定义自己的ClassLoader:"></a>2.4定义自己的ClassLoader:</h4><p>因为Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，比如：我要加载网络上的一个class文件，通过动态加载到内存之后，要调用这个类中的方法实现我的业务逻辑。在这样的情况下，默认的ClassLoader就不能满足我们的需求了，所以需要定义自己的ClassLoader。</p>
-<p><strong>定义自已的类加载器分为两步：</strong></p>
-<ol>
-<li>继承java.lang.ClassLoader</li>
-<li>重写父类的findClass方法</li>
-</ol>
-<blockquote>
-<p>参考:<a href="https://www.ibm.com/developerworks/cn/java/j-lo-classloader/" target="_blank" rel="external">深入探讨 Java 类加载器</a></p>
-<h3 id="3-Android-ClassLoader"><a href="#3-Android-ClassLoader" class="headerlink" title="3.Android ClassLoader"></a>3.Android ClassLoader</h3><p>Android ClassLoader种类：</p>
-<ul>
-<li>DexClassLoader：可以加载文件系统上的jar、dex、apk</li>
-<li>PathClassLoader：可以加载/data/app目录下的apk，这也意味着，它只能加载已经安装的apk</li>
-<li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
-</ul>
-</blockquote>
-<p>关于jar、dex和apk，dex和apk是可以直接加载的，因为它们都是或者内部有dex文件，而原始的jar是不行的，必须转换成dalvik所能识别的字节码文件，转换工具可以使用android sdk中platform-tools目录下的dx
-转换命令 ：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dx --dex --output=dest.jar src.jar</div></pre></td></tr></table></figure></p>
-<p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
-<ol>
-<li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
-<li>创建一个 DexClassLoader实例</li>
-<li>加载指定的类返回一个Class</li>
-<li>然后使用反射调用这个Class</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2399,7 +2438,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2410,7 +2449,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2421,7 +2460,7 @@ DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-count">55</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2018-09-11T14:27:32.806Z</updated>
+  <updated>2018-09-12T06:05:41.810Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -16,14 +16,245 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>面试题库</title>
+    <link href="http://wodekouwei.com/2018/09/11/interview-repository/"/>
+    <id>http://wodekouwei.com/2018/09/11/interview-repository/</id>
+    <published>2018-09-11T15:00:17.000Z</published>
+    <updated>2018-09-12T06:05:41.810Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h3><p>Java：</p>
+<ol>
+<li><p>数组实现队列
+ <a href="http://blog.csdn.net/qq_25722767/article/details/52234509" target="_blank" rel="external">http://blog.csdn.net/qq_25722767/article/details/52234509</a></p>
+</li>
+<li><p>GC 的流程<br> <a href="https://www.cnblogs.com/little-YTMM/p/5613642.html" target="_blank" rel="external">https://www.cnblogs.com/little-YTMM/p/5613642.html</a>
+ <a href="https://www.cnblogs.com/zhguang/p/3257367.html" target="_blank" rel="external">https://www.cnblogs.com/zhguang/p/3257367.html</a></p>
+</li>
+<li><p>Java 软引用和弱引用的区别<br> 强引用（StrongReference）：只要某个对象有强引用与之关联，JVM必定不会回收这个对象，即使在内存不足的情况下，JVM宁愿抛出OutOfMemory错误也不会回收这种对象
+ 软引用（SoftReference）：只有在内存不足的时候JVM才会回收该对象
+ 弱引用（WeakReference）：当JVM进行垃圾回收时，无论内存是否充足，都会回收被弱引用关联的对象
+ 虚引用（PhantomReference）：垃圾回收时回收，虚引用并不会决定对象的生命周期，无法通过引用取到对象值</p>
+</li>
+<li><p>Java 中 this 编译时的原理
+ this调用本类中的属性，也就是类中的成员变量；
+ this调用本类中的其他方法；
+ this调用本类中的其他构造方法，调用时要放在构造方法的首行。    </p>
+</li>
+<li><p>final 变量用反射修改
+ public static void modify(Object object, String fieldName, Object newFieldValue) throws Exception {</p>
+<pre><code>Field field = object.getClass().getDeclaredField(fieldName);
+
+Field modifiersField = Field.class.getDeclaredField(&quot;modifiers&quot;);
+modifiersField.setAccessible(true); //Field 的 modifiers 是私有的
+modifiersField.setInt(field, field.getModifiers() &amp; ~Modifier.FINAL);
+
+if(!field.isAccessible()) {
+field.setAccessible(true);
+}
+
+field.set(object, newFieldValue);
+</code></pre><p> }</p>
+<p> class Person {</p>
+<pre><code>public final String firstName = &quot;Mike&quot;;
+public final String lastName = new String(&quot;Jordan&quot;); //可被有效修改
+public final float age = 50.5f;
+public final Float height = 1.99f; //可被有效修改
+public final Address address = new Address(&quot;aaa&quot;, &quot;bbb&quot;); //可被有效修改
+
+public final String city; //可被有效修改
+
+public Person(String city) {
+this.city = city;
+}
+</code></pre><p> }</p>
+</li>
+<li><p>HashMap的内部结构，给定一个key，如何找到对应的value<br> <a href="https://www.cnblogs.com/shipengzhi/articles/2087505.html" target="_blank" rel="external">https://www.cnblogs.com/shipengzhi/articles/2087505.html</a></p>
+</li>
+<li><p>volatile 
+ <a href="https://www.cnblogs.com/tangyanbo/p/6538488.html" target="_blank" rel="external">https://www.cnblogs.com/tangyanbo/p/6538488.html</a></p>
+</li>
+<li><p>Java线程池有什么作用
+ 在程序启动的时候就创建若干线程来响应处理，它们被称为线程池，里面的线程叫工作线程 
+ 第一：降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。 
+ 第二：提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。 
+ 第三：提高线程的可管理性。 
+ 常用线程池：ExecutorService 是主要的实现类，其中常用的有 :
+ Executors.newSingleThreadPool() 创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。
+ Executors.newFixedThreadPool() 创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+ Executors.newcachedTheadPool() 创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
+ Executors.newScheduledThreadPool() 创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
+ <a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a>
+ <a href="https://www.cnblogs.com/ruiati/p/6134131.html" target="_blank" rel="external">https://www.cnblogs.com/ruiati/p/6134131.html</a></p>
+</li>
+<li><p>Java 动态代理 
+ <a href="https://www.cnblogs.com/xiaoluo501395377/p/3383130.html" target="_blank" rel="external">https://www.cnblogs.com/xiaoluo501395377/p/3383130.html</a></p>
+</li>
+<li><p>求 n 的 m 次幂
+<a href="http://blog.csdn.net/derrantcm/article/details/47098373" target="_blank" rel="external">http://blog.csdn.net/derrantcm/article/details/47098373</a></p>
+</li>
+<li><p>java 集合<br><a href="https://www.cnblogs.com/lwlxqlccc/p/6121307.html" target="_blank" rel="external">https://www.cnblogs.com/lwlxqlccc/p/6121307.html</a></p>
+</li>
+<li><p>String 的 spit 实现
+<a href="http://fangguanhong.iteye.com/blog/2069993" target="_blank" rel="external">http://fangguanhong.iteye.com/blog/2069993</a></p>
+</li>
+<li><p>Http和Https的区别
+<a href="https://www.jianshu.com/p/37654eb66b58" target="_blank" rel="external">https://www.jianshu.com/p/37654eb66b58</a></p>
+</li>
+<li><p>java线程池—ThreadPoolExecutor 
+<a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a></p>
+</li>
+<li><p>冒泡排序
+<a href="http://blog.csdn.net/u010853261/article/details/54891710" target="_blank" rel="external">http://blog.csdn.net/u010853261/article/details/54891710</a></p>
+</li>
+<li><p>排序算法 
+<a href="http://blog.csdn.net/pzhtpf/article/details/7560294" target="_blank" rel="external">http://blog.csdn.net/pzhtpf/article/details/7560294</a></p>
+</li>
+<li><p>抽象类和接口的区别
+接口是对动作的抽象，而抽象类是对根源的抽象。
+接口和抽象类都是继承树的上层，他们的共同点如下：1)    都是上层的抽象层。2)    都不能被实例化3)    都能包含抽象的方法，这些抽象的方法用于描述类具备的功能，但是不比提供具体的实现。他们的区别如下：1)    在抽象类中可以写非抽象的方法，从而避免在子类中重复书写他们，这样可以提高代码的复用性，这是抽象类的优势；接口中只能有抽象的方法。2)    一个类只能继承一个直接父类，这个父类可以是具体的类也可是抽象类；但是一个类可以实现多个接口。Java语言中类的继承是单继承原因是：当子类重写父类方法的时候，或者隐藏父类的成员变量以及静态方法的时候，JVM使用不同的绑定规则。如果一个类有多个直接的父类，那么会使绑定规则变得更复杂。为了简化软件的体系结构和绑定机制，java语言禁止多继承。接口可以多继承，是因为接口中只有抽象方法，没有静态方法和非常量的属性，只有接口的实现类才会重写接口中方法。因此一个类有多个接口也不会增加JVM的绑定机制和复杂度。</p>
+</li>
+<li><p>java基本数据类型
+8位：Byte（字节型）<br>16位：short（短整型）、char（字符型）<br>32位：int（整型）、float（单精度型/浮点型）<br>64位：long（长整型）、double（双精度型）<br>最后一个：boolean(布尔类型）</p>
+</li>
+<li><p>Java堆的实现、排序
+<a href="http://blog.csdn.net/idealemail/article/details/51382837" target="_blank" rel="external">http://blog.csdn.net/idealemail/article/details/51382837</a></p>
+</li>
+<li><p>数组中重复数字
+<a href="http://blog.csdn.net/zjkc050818/article/details/72800175" target="_blank" rel="external">http://blog.csdn.net/zjkc050818/article/details/72800175</a></p>
+</li>
+<li><p>字符串中判断另一个字符串是否存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">static int indexOf(String source,</div><div class="line">                   String target,</div><div class="line">                   int fromIndex) &#123;</div><div class="line">    if (fromIndex &gt;= source.count) &#123;</div><div class="line">        return (target.count == 0 ? source.count : -1);</div><div class="line">    &#125;</div><div class="line">    if (fromIndex &lt; 0) &#123;</div><div class="line">        fromIndex = 0;</div><div class="line">    &#125;</div><div class="line">    if (target.count == 0) &#123;</div><div class="line">        return fromIndex;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    char first = target.charAt(0);</div><div class="line">    int max = (source.count - target.count);</div><div class="line"></div><div class="line">    for (int i = fromIndex; i &lt;= max; i++) &#123;</div><div class="line">        /* Look for first character. */</div><div class="line">        if (source.charAt(i)!= first) &#123;</div><div class="line">            while (++i &lt;= max &amp;&amp; source.charAt(i) != first);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /* Found first character, now look at the rest of v2 */</div><div class="line">        if (i &lt;= max) &#123;</div><div class="line">            int j = i + 1;</div><div class="line">            int end = j + target.count - 1;</div><div class="line">            for (int k = 1; j &lt; end &amp;&amp; source.charAt(j)</div><div class="line">                     == target.charAt(k); j++, k++);</div><div class="line"></div><div class="line">            if (j == end) &#123;</div><div class="line">                /* Found whole string. */</div><div class="line">                return i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return -1;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>ThreadLocal 使用及原理<br><a href="https://www.cnblogs.com/coshaho/p/5127135.html" target="_blank" rel="external">https://www.cnblogs.com/coshaho/p/5127135.html</a></p>
+</li>
+<li><p>Java 泛型
+<a href="https://www.cnblogs.com/demingblog/p/5495610.html" target="_blank" rel="external">https://www.cnblogs.com/demingblog/p/5495610.html</a></p>
+</li>
+<li><p>Java 内部类
+<a href="http://blog.csdn.net/roamer314/article/details/48598633" target="_blank" rel="external">http://blog.csdn.net/roamer314/article/details/48598633</a></p>
+</li>
+<li><p>Java ConcurrentHashMap的原理<br><a href="https://www.cnblogs.com/chengxiao/p/6842045.html" target="_blank" rel="external">https://www.cnblogs.com/chengxiao/p/6842045.html</a></p>
+</li>
+<li><p>线程的几种状态<br><a href="http://blog.csdn.net/sinat_36042530/article/details/52565296" target="_blank" rel="external">http://blog.csdn.net/sinat_36042530/article/details/52565296</a>
+<a href="https://www.cnblogs.com/wxd0108/p/5479442.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/5479442.html</a></p>
+</li>
+<li><p>Java 双亲委派机制<br><a href="https://www.cnblogs.com/wxd0108/p/6681618.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/6681618.html</a></p>
+</li>
+<li><p>Java 运算符
+<a href="https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html" target="_blank" rel="external">https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html</a></p>
+</li>
+</ol>
+<h3 id="Android基础"><a href="#Android基础" class="headerlink" title="Android基础"></a>Android基础</h3><ol>
+<li><p>View 的绘制原理
+ <a href="https://www.cnblogs.com/jycboy/p/6219915.html" target="_blank" rel="external">https://www.cnblogs.com/jycboy/p/6219915.html</a>
+ <a href="https://www.jianshu.com/p/5a71014e7b1b" target="_blank" rel="external">https://www.jianshu.com/p/5a71014e7b1b</a>
+ <a href="http://blog.csdn.net/fwt336/article/details/52979876" target="_blank" rel="external">http://blog.csdn.net/fwt336/article/details/52979876</a></p>
+</li>
+<li><p>Android 进程间通信方式
+ <a href="http://blog.csdn.net/fiendvip/article/details/50954393" target="_blank" rel="external">http://blog.csdn.net/fiendvip/article/details/50954393</a></p>
+</li>
+<li><p>Android Binder 机制
+ <a href="http://blog.csdn.net/qq_23191031/article/details/60145022" target="_blank" rel="external">http://blog.csdn.net/qq_23191031/article/details/60145022</a></p>
+</li>
+<li><p>Activity 加载过程
+ <a href="http://blog.csdn.net/yyh352091626/article/details/51086117" target="_blank" rel="external">http://blog.csdn.net/yyh352091626/article/details/51086117</a></p>
+</li>
+<li><p>Activity 启动模式
+ <a href="https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw" target="_blank" rel="external">https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw</a></p>
+</li>
+<li><p>MVP 和 MVC 和MVVM 有什么区别
+ <a href="http://blog.csdn.net/greathfs/article/details/52017155" target="_blank" rel="external">http://blog.csdn.net/greathfs/article/details/52017155</a></p>
+</li>
+<li><p>Android 性能优化
+ <a href="https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw" target="_blank" rel="external">https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw</a></p>
+</li>
+<li><p>Service 概况
+ <a href="http://blog.csdn.net/lqb3732842/article/details/54892813" target="_blank" rel="external">http://blog.csdn.net/lqb3732842/article/details/54892813</a></p>
+</li>
+<li><p>Android 最新官方框架
+ <a href="https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ" target="_blank" rel="external">https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ</a>
+ <a href="https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew" target="_blank" rel="external">https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew</a></p>
+</li>
+<li><p>Android 类加载机制
+<a href="https://www.jianshu.com/p/3afa47e9112e" target="_blank" rel="external">https://www.jianshu.com/p/3afa47e9112e</a>
+<a href="https://www.jianshu.com/p/a620e368389a" target="_blank" rel="external">https://www.jianshu.com/p/a620e368389a</a></p>
+</li>
+<li><p>Android 消息处理机制（Looper、Handler、MessageQueue,Message）
+<a href="https://www.jianshu.com/p/02962454adf7" target="_blank" rel="external">https://www.jianshu.com/p/02962454adf7</a>
+<a href="http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换" target="_blank" rel="external">http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换</a></p>
+</li>
+<li><p>Android 事件分发机制
+<a href="https://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="external">https://www.jianshu.com/p/e99b5e8bd67b</a></p>
+</li>
+<li><p>Retrofit 分析
+<a href="https://www.jianshu.com/p/45cb536be2f4" target="_blank" rel="external">https://www.jianshu.com/p/45cb536be2f4</a></p>
+</li>
+<li><p>Android 动画
+<a href="https://www.jianshu.com/p/420629118c10" target="_blank" rel="external">https://www.jianshu.com/p/420629118c10</a></p>
+</li>
+<li><p>Rxjava 使用介绍
+<a href="https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw" target="_blank" rel="external">https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw</a></p>
+</li>
+<li><p>View 和 SurfaceView 的区别
+<a href="http://blog.csdn.net/shareus/article/details/51538507" target="_blank" rel="external">http://blog.csdn.net/shareus/article/details/51538507</a></p>
+</li>
+<li><p>LruCache 原理解析
+<a href="https://www.jianshu.com/p/b49a111147ee" target="_blank" rel="external">https://www.jianshu.com/p/b49a111147ee</a></p>
+</li>
+<li><p>多线程断点续传
+<a href="http://blog.csdn.net/tianzhaoai/article/details/56673071" target="_blank" rel="external">http://blog.csdn.net/tianzhaoai/article/details/56673071</a>
+<a href="https://www.jianshu.com/p/1bb084d282be" target="_blank" rel="external">https://www.jianshu.com/p/1bb084d282be</a></p>
+</li>
+<li><p>Android APP 冷启动时间统计及优化
+<a href="https://www.jianshu.com/p/c967653a9468" target="_blank" rel="external">https://www.jianshu.com/p/c967653a9468</a>
+<a href="http://blog.csdn.net/code_dream_wq/article/details/75012353" target="_blank" rel="external">http://blog.csdn.net/code_dream_wq/article/details/75012353</a>
+<a href="http://blog.csdn.net/zhangyongfeiyong/article/details/61925399" target="_blank" rel="external">http://blog.csdn.net/zhangyongfeiyong/article/details/61925399</a></p>
+</li>
+<li><p>热修复原理
+<a href="https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA" target="_blank" rel="external">https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA</a></p>
+</li>
+<li><p>插件化原理
+类的加载</p>
+<pre><code>1)替换App的ClassLoader
+2)修改PathList(例如在PathList中加入我们需要加载的Dex的对应项)
+</code></pre><p>资源的加载：安卓资源由AssetManager加载,应用启动时,系统会为其创建一个AssetManager实例,并由addAssetPath方 法添加资源搜索路径</p>
+<pre><code>1. 插件独立使用一个资源管理器
+2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
+</code></pre><p>组件的动态注册</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Java基础&quot;&gt;&lt;a href=&quot;#Java基础&quot; class=&quot;headerlink&quot; title=&quot;Java基础&quot;&gt;&lt;/a&gt;Java基础&lt;/h3&gt;&lt;p&gt;Java：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;数组实现队列
+ &lt;a href=&quot;http://blog.csd
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
     <title>mac环境配置之小工具</title>
     <link href="http://wodekouwei.com/2018/09/11/env-mac-tools/"/>
     <id>http://wodekouwei.com/2018/09/11/env-mac-tools/</id>
     <published>2018-09-11T14:25:48.000Z</published>
-    <updated>2018-09-11T14:27:32.806Z</updated>
+    <updated>2018-09-17T08:42:28.988Z</updated>
     
     <content type="html"><![CDATA[<h3 id="VS-Code"><a href="#VS-Code" class="headerlink" title="VS Code"></a>VS Code</h3><h4 id="JSON-Tools"><a href="#JSON-Tools" class="headerlink" title="JSON Tools"></a>JSON Tools</h4><p>Ctrl(Cmd)+Alt+M for JSON pretty.</p>
 <p>Alt+M for JSON minify.</p>
+<h4 id="打开文件覆盖之前tab问题"><a href="#打开文件覆盖之前tab问题" class="headerlink" title="打开文件覆盖之前tab问题"></a>打开文件覆盖之前tab问题</h4><p>这是因为你单击文件名的缘故，这个是“预览模式”，所以再单击其他文件时，会覆盖当前打开的文件。
+预览模式是现在各类编辑器的默认功能，可以关掉, 给配置settings.json里加一条：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
@@ -582,7 +813,7 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
     <link href="http://wodekouwei.com/2018/04/03/ml-anaconda-intro/"/>
     <id>http://wodekouwei.com/2018/04/03/ml-anaconda-intro/</id>
     <published>2018-04-03T07:54:06.000Z</published>
-    <updated>2018-04-05T12:22:39.545Z</updated>
+    <updated>2018-09-17T08:47:16.136Z</updated>
     
     <content type="html"><![CDATA[<p>anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！</p>
 <p>官网下载地址为：<a href="https://www.anaconda.com/download/" target="_blank" rel="external">https://www.anaconda.com/download/</a></p>
@@ -604,6 +835,20 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 更新conda，保持conda最新</div><div class="line">conda update conda</div><div class="line"></div><div class="line"># 更新anaconda</div><div class="line">conda update anaconda</div><div class="line"></div><div class="line"># 更新python</div><div class="line">conda update python</div><div class="line"># 假设当前环境是python 3.4, conda会将python升级为3.4.x系列的当前最新版本</div></pre></td></tr></table></figure>
 <p>补充：如果创建新的python环境，比如3.4，运行conda create -n python34 python=3.4之后，conda仅安装python 3.4相关的必须项，如python, pip等，如果希望该环境像默认环境那样，安装anaconda集合包，只需要：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在当前环境下安装anaconda包集合</div><div class="line">conda install anaconda</div><div class="line"></div><div class="line"># 结合创建环境的命令，以上操作可以合并为</div><div class="line">conda create -n python34 python=3.4 anaconda</div><div class="line"># 也可以不用全部安装，根据需求安装自己需要的package即可</div></pre></td></tr></table></figure></p>
+<h5 id="通过pip将packages安装到Conda环境中"><a href="#通过pip将packages安装到Conda环境中" class="headerlink" title="通过pip将packages安装到Conda环境中"></a>通过pip将packages安装到Conda环境中</h5><p>发行版Anaconda附带安装了200多个Python软件包，还可以使用conda install 命令快速轻松地安装许多软件包。</p>
+<p>除了安装和管理软件包的实用程序外，conda还拥有创建虚拟环境的能力，这些虚拟环境是在没有任何Python包预先加载的情况下创建的。
+但是不是所有的软件包都可以通过 conda 安装，如果你想要一个不可用的软件，那么你将不得不使用备用软件包管理器pip。Anaconda的软件包管理器conda和pip如何相互交互？
+目前有两种方法:</p>
+<h6 id="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><a href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：" class="headerlink" title="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："></a>一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</h6><ol>
+<li>使用conda create - name virtual_env_name 创建您的虚拟环境，用虚拟环境的 名称 替换virtual_env_name</li>
+<li>使用source activate virtual_env_name切换到您的虚拟环境 ，再次用您的虚拟环境的名称替换virtual_env_name</li>
+<li>运行conda install pip ，它会将pip安装到您的虚拟环境目录中</li>
+<li>后续直接使用以下两步即可：1）source activate virtual_env_name 2）pip install ‘package_name’</li>
+</ol>
+<h6 id="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><a href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。" class="headerlink" title="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"></a>二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</h6><ol>
+<li>运行conda install pip ，它会将pip安装到您的Anaconda虚拟环境目录中。</li>
+<li>你需要找到你的Anaconda bin目录运行pip，如：//anaconda/bin/pip install package_name将软件包安装到您的虚拟环境中 。</li>
+</ol>
 <h4 id="设置国内镜像"><a href="#设置国内镜像" class="headerlink" title="设置国内镜像"></a>设置国内镜像</h4><p>如果需要安装很多packages，你会发现conda下载的速度经常很慢，因为Anaconda.org的服务器在国外。所幸的是，清华TUNA镜像源有Anaconda仓库的镜像，我们将其加入conda的配置即可：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 添加Anaconda的TUNA镜像</div><div class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</div><div class="line"># TUNA的help中镜像地址加有引号，需要去掉</div><div class="line"></div><div class="line"># 设置搜索时显示通道地址</div><div class="line">conda config --set show_channel_urls yes</div></pre></td></tr></table></figure></p>
 <p>执行完上述命令后，会生成<code>~/.condarc(Linux/Mac)</code>或<code>C:\Users\USER_NAME\.condarc</code>文件，记录着我们对conda的配置，直接手动创建、编辑该文件是相同的效果。</p>
@@ -1124,144 +1369,9 @@ MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用�
       <category term="ml" scheme="http://wodekouwei.com/categories/ml/"/>
     
     
-      <category term="ml" scheme="http://wodekouwei.com/tags/ml/"/>
-    
       <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
     
-  </entry>
-  
-  <entry>
-    <title>deep-photo-styletransfer介绍</title>
-    <link href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/"/>
-    <id>http://wodekouwei.com/2018/01/21/tips-ml-dpst/</id>
-    <published>2018-01-21T14:41:30.000Z</published>
-    <updated>2018-01-25T07:22:47.585Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
-<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
-<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
-安装:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
-<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
-<p>如果你想要卸载 torch，执行：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
-<p>现在在你可以用 Luarocks 安装新的包
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
-<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
-<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
-要执行 file.lua, 写 th&gt; dofile “file.lua”。
-在非交互模式下执行文件：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
-<p>th 命令有很多选项，类似 perl 和 ruby。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
-<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
-<ul>
-<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
-<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
-</ul>
-<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
-Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
-<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
-<p>之后安装Mac下的包管理神器Homebrew，命令如下，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
-<p>通过以下命令升级Homebrew:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
-<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
-<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
-<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
-<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
-<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
-使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
-<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
-<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
-<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
-<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
-<blockquote>
-<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
-<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
-<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
-<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
-</blockquote>
-<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
-<ul>
-<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
-<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
-使用不同版本有兼容性问题</li>
-</ul>
-<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
-<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
-<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
-<p>可能有xcode Command Line Tool版本不兼容问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
-<p>替换版本即可:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
-</blockquote>
-<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
-<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
-<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
-<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
-<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
-<li><a href="https://github.com/LouieYang/deep-photo-styletransfer-tf" target="_blank" rel="external">deep-photo-styletransfer-tf</a>:Tensorflow (Python API) implementation of Deep Photo Style Transfer</li>
-<li><a href="https://github.com/floydhub/deep-photo-styletransfer" target="_blank" rel="external">floydhub/deep-photo-styletransfer</a>:Jupyter Notebook to train photorealistic style transfer</li>
-<li><a href="https://askubuntu.com/questions/652004/how-do-i-rebuild-octave-and-link-in-graphicsmagick" target="_blank" rel="external">How do I rebuild Octave and link in GraphicsMagick?</a></li>
-<li><a href="ftp://ftp.gnu.org/gnu/octave/" target="_blank" rel="external">/gnu/octave/ 的索引</a></li>
-</ul>
-<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><ol>
-<li><code>configure :error: No usable version of sed found:</code>
-I did ./configure to make a makefile</li>
-</ol>
-<p>but it ran into an error: configure :error: No usable version of sed found:</p>
-<p>I then typed which see</p>
-<p>it shows /usr/bin/sed.</p>
-<p>so, what’s wrong? why can’t ./configure find sed?</p>
-<p>I happened to have this problem on my mac. This is because OS X uses an old version of sed. Installing gnu-sed by <code>brew install gnu-sed</code> and <code>alias gsed=sed</code> solved this problem. You may install gnu-sed with other method.</p>
-<p><a href="https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found" target="_blank" rel="external">https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found</a></p>
-<ol>
-<li><code>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</code></li>
-</ol>
-<p>I am attempting to install GraphicsMagick in a hosting account…</p>
-<p>I used this info to get it to work in most cases:</p>
-<p><a href="https://superuser.com/questions/192573/how-do-you-specify-the-location-of-libraries-to-a-binary-linux" target="_blank" rel="external">How do you specify the location of libraries to a binary? (linux)</a></p>
-<p>However, it still cannot find the delegates.mgk (which is in ./lib/GraphicsMagick-1.3.14/delegates.mgk) as witnessed in this error:</p>
-<p>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</p>
-<p>Either, a) how do find out where the binary thinks this file should be, or b) how do I extend the wrapper script to help it out?</p>
-<p>Figured it out after looking through the binary for /PATH/</p>
-<p>The binaries require these additional path variables:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$MAGICK_CONFIG_PATH</div><div class="line">$MAGICK_CODER_MODULE_PATH</div><div class="line">$MAGICK_FILTER_MODULE_PATH</div></pre></td></tr></table></figure></p>
-<p>…here is the resulting script modification form my setup:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ -n &quot;$LD_LIBRARY_PATH&quot; ]; then</div><div class="line">  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/USER/lib</div><div class="line">else</div><div class="line">  LD_LIBRARY_PATH=/home/USER/lib</div><div class="line">fi</div><div class="line">[ -z &quot;$&#123;MAGICK_CONFIGURE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CONFIGURE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/config</div><div class="line">[ -z &quot;$&#123;MAGICK_CODER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CODER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/coders</div><div class="line">[ -z &quot;$&#123;MAGICK_FILTER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_FILTER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/filters</div><div class="line">export LD_LIBRARY_PATH</div><div class="line">exec /home/USER/bin/gm-bin &quot;$@&quot;</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-介绍&quot; class=&quot;headerlink&quot; title=&quot;1.介绍&quot;&gt;&lt;/a&gt;1.介绍&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/luanfujun/deep-photo-styletransfer
-    
-    </summary>
-    
-      <category term="ml" scheme="http://wodekouwei.com/categories/ml/"/>
-    
-    
       <category term="ml" scheme="http://wodekouwei.com/tags/ml/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
     
   </entry>
   

@@ -323,6 +323,193 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/media-graphic-image-stride/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/27/media-graphic-image-stride/" itemprop="url">
+                  Image Stride(内存图像行跨度)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T15:00:14+08:00">
+                2017-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>When a video image is stored in memory, the memory buffer might contain extra padding bytes after each row of pixels. The padding bytes affect how the image is store in memory, but do not affect how the image is displayed.</p>
+<p>当视频图像存储在内存时，图像的每一行末尾也许包含一些扩展的内容，这些扩展的内容只影响图像如何存储在内存中，但是不影响图像如何显示出来；</p>
+<p>The stride is the number of bytes from one row of pixels in memory to the next row of pixels in memory. Stride is also called pitch. If padding bytes are present, the stride is wider than the width of the image, as shown in the following illustration.</p>
+<p>Stride 就是这些扩展内容的名称，Stride 也被称作 Pitch，如果图像的每一行像素末尾拥有扩展内容，Stride 的值一定大于图像的宽度值，就像下图所示：
+<img src="http://images.wodekouwei.com/media/imagestride1.png" alt="image"></p>
+<p>Two buffers that contain video frames with equal dimensions can have two different strides. If you process a video image, you must take into the stride into account.</p>
+<p>两个缓冲区包含同样大小（宽度和高度）的视频帧，却不一定拥有同样的 Stride 值，如果你处理一个视频帧，你必须在计算的时候把 Stride 考虑进去；</p>
+<p>In addition, there are two ways that an image can be arranged in memory. In a top-down image, the top row of pixels in the image appears first in memory. In a bottom-up image, the last row of pixels appears first in memory. The following illustration shows the difference between a top-down image and a bottom-up image.</p>
+<p>另外，一张图像在内存中有两种不同的存储序列（arranged），对于一个从上而下存储（Top-Down） 的图像，最顶行的像素保存在内存中最开头的部分，对于一张从下而上存储（Bottom-Up）的图像，最后一行的像素保存在内存中最开头的部分，下面图示展示了这两种情况：
+<img src="http://images.wodekouwei.com/media/imagestride2.png" alt="image"></p>
+<p>A bottom-up image has a negative stride, because stride is defined as the number of bytes need to move down a row of pixels, relative to the displayed image. YUV images should always be top-down, and any image that is contained in a Direct3D surface must be top-down. RGB images in system memory are usually bottom-up.</p>
+<p>一张从下而上的图像拥有一个负的 Stride 值，因为 Stride 被定义为[从一行像素移动到下一行像素时需要跨过多少个像素]，仅相对于被显示出来的图像而言；而 YUV 图像永远都是从上而下表示的，以及任何包含在 Direct3D Surface 中的图像必须是从上而下，RGB 图像保存在系统内存时通常是从下而上；</p>
+<p>Video transforms in particular need to handle buffers with mismatched strides, because the input buffer might not match the output buffer. For example, suppose that you want to convert a source image and write the result to a destination image. Assume that both images have the same width and height, but might not have the same pixel format or the same image stride.</p>
+<p>尤其是视频变换，特别需要处理不同 Stride 值的图像，因为输入缓冲也许与输出缓冲不匹配，举个例子，假设你想要将源图像转换并且将结果写入到目标图像，假设两个图像拥有相同的宽度和高度，但是其像素格式与 Stride 值也许不同；</p>
+<p>The following example code shows a generalized approach for writing this kind of function. This is not a complete working example, because it abstracts many of the specific details.</p>
+<p>下面代码演示了一种通用方法来编写这种功能，这段代码并不完整，因为这只是一个抽象的算法，没有完全考虑到真实需求中的所有细节；
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">void ProcessVideoImage(</div><div class="line">    BYTE*       pDestScanLine0,    </div><div class="line">    LONG        lDestStride,       </div><div class="line">    const BYTE* pSrcScanLine0,     </div><div class="line">    LONG        lSrcStride,        </div><div class="line">    DWORD       dwWidthInPixels,    </div><div class="line">    DWORD       dwHeightInPixels</div><div class="line">    )</div><div class="line">&#123;</div><div class="line">    for (DWORD y = 0; y &lt; dwHeightInPixels; y++)</div><div class="line">    &#123;</div><div class="line">        SOURCE_PIXEL_TYPE *pSrcPixel = (SOURCE_PIXEL_TYPE*)pDestScanLine0;</div><div class="line">        DEST_PIXEL_TYPE *pDestPixel = (DEST_PIXEL_TYPE*)pSrcScanLine0;</div><div class="line"></div><div class="line">        for (DWORD x = 0; x &lt; dwWidthInPixels; x +=2)</div><div class="line">        &#123;</div><div class="line">            pDestPixel[x] = TransformPixelValue(pSrcPixel[x]);</div><div class="line">        &#125;</div><div class="line">        pDestScanLine0 += lDestStride;</div><div class="line">        pSrcScanLine0 += lSrcStride;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>This function takes six parameters:</p>
+<ul>
+<li>A pointer to the start of scan line 0 in the destination image.</li>
+<li>The stride of the destination image.</li>
+<li>A pointer to the start of scan line 0 in the source image.</li>
+<li>The stride of the source image.</li>
+<li>The width of the image in pixels.</li>
+<li>The height of the image in pixels.</li>
+</ul>
+<p>这个函数需要六个参数：</p>
+<ul>
+<li>目标图像的起始扫描行的内存指针</li>
+<li>目标图像的 Stride 值</li>
+<li>源图像的起始扫描行的内存指针</li>
+<li>源图像的 Stride 值</li>
+<li>图像的宽度值（以像素为单位）</li>
+<li>图像的高度值（以像素为单位）
+The general idea is to process one row at a time, iterating over each pixel in the row. Assume that SOURCE_PIXEL_TYPE and DEST_PIXEL_TYPE are structures representing the pixel layout for the source and destination images, respectively. (For example, 32-bit RGB uses the RGBQUAD structure. Not every pixel format has a pre-defined structure.) Casting the array pointer to the structure type enables you to access the RGB or YUV components of each pixel. At the start of each row, the function stores a pointer to the row. At the end of the row, it increments the pointer by the width of the image stride, which advances the pointer to the next row.</li>
+</ul>
+<p>这里的要点是如何一次处理一行像素，遍历一行里面的每一个像素，假设源像素类型与目标像素类型各自在像素的层面上已经结构化来表示一个源图像与目标图像的像素，（举个例子，32 位 RGB 像素使用 RGBQUAD 结构体，并不是每一种像素类型都有预定义结构体的）强制转换数组指针到这样的结构体指针，可以方便你直接读写每一个像素的 RGB 或者 YUV 值，在每一行的开头，这个函数保存了一个指向这行像素的指针，函数的最后一行，通过图像的 Stride 值直接将指针跳转到图像的下一行像素的起始点；</p>
+<p>This example calls a hypothetical function named TransformPixelValue for each pixel. This could be any function that calculates a target pixel from a source pixel. Of course, the exact details will depend on the particular task. For example, if you have a planar YUV format, you must access the chroma planes independently from the luma plane; with interlaced video, you might need to process the fields separately; and so forth.</p>
+<p>To give a more concrete example, the following code converts a 32-bit RGB image into an AYUV image. The RGB pixels are accessed using an RGBQUAD structure, and the AYUV pixels are accessed using aDXVA2_AYUVSample8 Structure structure.</p>
+<blockquote>
+<p>引用:
+如果你用的是 MSDN Library For Visual Studio 2008 SP1，那么你应该能够在下面地址中找到这篇文章的原文：
+ms-help://MS.MSDNQTR.v90.chs/medfound/html/13cd1106-48b3-4522-ac09-8efbaab5c31d.htm</p>
+<p><a href="http://blog.csdn.net/g0ose/article/details/52116453" target="_blank" rel="external">http://blog.csdn.net/g0ose/article/details/52116453</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2199,168 +2386,11 @@ Soft Light模式根据背景中的颜色色调，把颜色用于变暗或加亮�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/media-intro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/media-intro/" itemprop="url">
-                  多媒体技术简介
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:28:19+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/media/" itemprop="url" rel="index">
-                    <span itemprop="name">media</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="关键帧间隔"><a href="#关键帧间隔" class="headerlink" title="关键帧间隔"></a>关键帧间隔</h4><p>关键帧包含了显示帧需要的所有信息</p>
-<p>所有的视频都至少包含一个关键帧，作为文件的第一个帧。其它的关键帧可用来改善视频的质量，不过它们也会增加文件大小。一般而言，每一秒视频至少需要使用 1 个关键帧。若使用此公式，在每秒播放 25个帧的视频中，每 25 个帧就会有 1 个关键帧。增加关键帧个数可改善质量，但是同时增加带宽和网络负载。</p>
-<p>两种彩电视频制式：</p>
-<ul>
-<li>NTSC (525 lines @ 59.94 Hz)  29.97 fps</li>
-<li>PAL (625 lines @ 50 Hz)  25 fps</li>
-</ul>
-<p>NTSC和PAL属于全球两大主要的电视广播制式，但是由于系统投射颜色影像的频率而有所不同。NTSC是National Television System Committee的缩写，其标准主要应用于日本、美国，加拿大、墨西哥等等，PAL 则是Phase Alternating Line的缩写，主要应用于中国，香港、中东地区和欧洲一带。</p>
-<p>GOP最大可含帧数目：18 (NTSC) / 15 (PAL)</p>
-<p>GOP是由固定模式的一系列I帧、P帧、B帧组成。
-I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域冗余。
-常用的结构由15个帧组成，具有以下形式IBBPBBPBBPBBPBB。简称GOP(4,2)，指的是该图像组除了一个I帧外，包含了4个P帧，并且任何两个P帧或者I、P之间都有两个B帧。</p>
-<p>GOP（Group of Pictures）策略影响编码质量：所谓GOP，意思是画面组，一个GOP就是一组连续的画面。MPEG编码将画面（即帧）分为I、P、B三种，I是内部编码帧，P是前向预测帧，B是双向内插帧。简单地讲，I帧是一个完整的画面，而P帧和B帧记录的是相对于I帧的变化。没有I帧，P帧和B帧就无法解码，这就是MPEG格式难以精确剪辑的原因，也是我们之所以要微调头和尾的原因。</p>
-<p>MPEG-2 帧结构
-　　MPEG-2压缩的帧结构有两个参数，一个是GOP（Group Of Picture）图像组的长度，一般可按编码方式从1－15；另一个是I帧和P帧之间B帧的数量，一般是1－2个。前者在理论上记录为N，即多少帧里面出现一次I帧；后者描述为多少帧里出现一次P帧，记录为M。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2405,7 +2435,7 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2416,7 +2446,7 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2427,7 +2457,7 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-count">55</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

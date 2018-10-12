@@ -323,6 +323,195 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/20/tips-audiomanager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/07/20/tips-audiomanager/" itemprop="url">
+                  Android听筒与喇叭切换遇到的坑
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T08:18:29+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h4><p>在聊天场景中,收到对方语音时,用户可以选择外放播放,也可以选择插入耳机收听.更人性化一点当用户把手机靠近耳朵时屏幕关闭自动切换到听筒中播放,播放完毕后拿开手机屏幕自动点亮.比如微信就是如此.</p>
+<h4 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h4><p>从上面场景中我们可以得出我们需要的要点:</p>
+<p>播放模式切换:外放&lt;—&gt;耳机
+播放模式切换:外放&lt;—&gt;听筒
+屏幕操作:亮屏&lt;—&gt;息屏&lt;—&gt;亮屏</p>
+<h4 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h4><p>从需求分析我们可以得出需要代码进行控制的有:</p>
+<p>音乐播放控制
+外放,耳机,听筒之间的切换
+屏幕的息屏与亮屏</p>
+<h5 id="外放-耳机-听筒之间的切换"><a href="#外放-耳机-听筒之间的切换" class="headerlink" title="外放,耳机,听筒之间的切换"></a>外放,耳机,听筒之间的切换</h5><p>在Android系统中是用AudioManager来管理播放模式的,通过AudioManager.setMode()方法来实现.</p>
+<p>在setMode()方法中有以下几种对应不同的播放模式:</p>
+<ul>
+<li>MODE_NORMAL: 普通模式,既不是铃声模式也不是通话模式</li>
+<li>MODE_RINGTONE:铃声模式</li>
+<li>MODE_IN_CALL:通话模式</li>
+<li>MODE_IN_COMMUNICATION:通信模式,包括音/视频,VoIP通话.(3.0加入的,与通话模式类似)</li>
+</ul>
+<p>其中:播放音乐的对应的就是MODE_NORMAL, 如果使用外放播则调用audioManager.setSpeakerphoneOn(true)即可.若使用耳机和听筒,则需要先设置模式为MODE_IN_CALL(3.0以前)或MODE_IN_COMMUNICATION(3.0以后).</p>
+<p><strong>注意:</strong>
+需要权限android.permission.MODIFY_AUDIO_SETTINGS
+3.0以后设置模式为MODE_IN_CALL,在华为的某些机型中,根本不起作用.</p>
+<p>切换代码如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);</div><div class="line">/**</div><div class="line"> * 切换到外放</div><div class="line"> */</div><div class="line">public void changeToSpeaker()&#123;</div><div class="line">    audioManager.setMode(AudioManager.MODE_NORMAL);</div><div class="line">    audioManager.setSpeakerphoneOn(true);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 切换到耳机模式</div><div class="line"> */</div><div class="line">public void changeToHeadset()&#123;</div><div class="line">    audioManager.setSpeakerphoneOn(false);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 切换到听筒</div><div class="line"> */</div><div class="line">public void changeToReceiver()&#123;</div><div class="line">    audioManager.setSpeakerphoneOn(false);</div><div class="line">    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB)&#123;</div><div class="line">        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);</div><div class="line">    &#125; else &#123;</div><div class="line">        audioManager.setMode(AudioManager.MODE_IN_CALL);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>听筒切换到外放模式,使用上面的changeToSpeaker()即可,但是外放切换到听筒时会丢失大概3秒的语音,解决办法是设置mediaplayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL),该方法需要在player的prepare前调用,所以外放切听筒会导致重新播放</strong></p>
+<h5 id="是否插入耳机判断"><a href="#是否插入耳机判断" class="headerlink" title="是否插入耳机判断"></a>是否插入耳机判断</h5><p>在插入或者拔出耳机时系统会发出Action为Intent.ACTION_HEADSET_PLUG的广播,并且该广播不能使用静态接收器处理,故写一个广播接收器处理耳机事件即可.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class HeadsetReceiver extends BroadcastReceiver&#123;</div><div class="line">    @Override</div><div class="line">    public void onReceive(Context context, Intent intent) &#123;</div><div class="line">        String action = intent.getAction();</div><div class="line">        switch (action)&#123;</div><div class="line">            //插入和拔出耳机会触发此广播</div><div class="line">            case Intent.ACTION_HEADSET_PLUG:</div><div class="line">                int state = intent.getIntExtra(&quot;state&quot;, 0);</div><div class="line">                if (state == 1)&#123;//切换到耳机</div><div class="line">                    changeToHeadset();</div><div class="line">                &#125; else if (state == 0)&#123;</div><div class="line">                    changeToSpeaker();</div><div class="line">                &#125;</div><div class="line">                break;</div><div class="line">            default:</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>耳机切换到外放会出现丢失语音
+由于耳机切换到外放需要一段时间导致,故解决此问题的方法是先暂停再续播.那么什么时候暂停什么时候续播呢?
+耳机拔出时系统还会发出Action为<code>AudioManager.ACTION_AUDIO_BECOMING_NOISY</code>的广播,且此广播比<code>Intent.ACTION_HEADSET_PLUG</code>要早.</p>
+<h5 id="屏幕的息屏与亮屏"><a href="#屏幕的息屏与亮屏" class="headerlink" title="屏幕的息屏与亮屏"></a>屏幕的息屏与亮屏</h5><p>现在几乎每个手机都有距离感应器,通过举例感应器可获得距离.距离感应器由SensorManager管理:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);</div><div class="line">sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);</div><div class="line">sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);</div></pre></td></tr></table></figure></p>
+<p>注册监听的方法的最后一个参数是敏感度,敏感度越高越费电,此处选择一般敏感度即可.此外Activity还需实现SensorEventListener接口,覆写其方法:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onSensorChanged(SensorEvent event) &#123;</div><div class="line">    float value = event.values[0];</div><div class="line">    if (playerManager.isPlaying())&#123;</div><div class="line">        if (value == sensor.getMaximumRange()) &#123;</div><div class="line">            changeToSpeaker();</div><div class="line">            setScreenOn();</div><div class="line">        &#125; else &#123;</div><div class="line">            changeToReceiver();</div><div class="line">            setScreenOff();</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        if(value == sensor.getMaximumRange())&#123;</div><div class="line">            changeToSpeaker();</div><div class="line">            setScreenOn();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在Android系统中硬件的工作状态的控制由PowerManager与WakeLock掌管.PowerManager通过不同的WakeLock来控制CPU,屏幕,键盘等硬件的工作状态.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">powerManager = (PowerManager) getSystemService(POWER_SERVICE);</div><div class="line">wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);</div></pre></td></tr></table></figure></p>
+<p>注意:需要权限<code>android.Manifest.permission.DEVICE_POWER</code>和<code>android.permission.WAKE_LOCK</code>
+其中第一个参数代表控制级别,可选值有:</p>
+<ul>
+<li>PARTIAL_WAKE_LOCK : CPU运行,屏幕和键盘可能关闭</li>
+<li>SCREEN_DIM_WAKE_LOCK :　屏幕亮,键盘灯可能关闭</li>
+<li>SCREEN_BRIGHT_WAKE_LOCK : 屏幕全亮,键盘灯可能关闭</li>
+<li>FULL_WAKE_LOCK : 屏幕和键盘灯全亮</li>
+<li>PROXIMITY_SCREEN_OFF_WAKE_LOCK : 屏幕关闭,键盘灯关闭,CPU运行</li>
+<li>DOZE_WAKE_LOCK : 屏幕灰显,CPU延缓工作</li>
+</ul>
+<p>此处我们选取<code>PROXIMITY_SCREEN_OFF_WAKE_LOCK.WakeLock</code>通过<code>acquire()</code>和<code>release()</code>方法上锁和解锁.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">private void setScreenOff()&#123;</div><div class="line">    if (wakeLock == null)&#123;</div><div class="line">        wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);</div><div class="line">    &#125;</div><div class="line">    wakeLock.acquire();</div><div class="line">&#125;</div><div class="line">private void setScreenOn()&#123;</div><div class="line">    if (wakeLock != null)&#123;</div><div class="line">        wakeLock.setReferenceCounted(false);</div><div class="line">        wakeLock.release();</div><div class="line">        wakeLock = null;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="三星Galaxy-note5在熄灭屏幕是会调用Activity的onPause-onStop-方法"><a href="#三星Galaxy-note5在熄灭屏幕是会调用Activity的onPause-onStop-方法" class="headerlink" title="三星Galaxy note5在熄灭屏幕是会调用Activity的onPause(),onStop()方法"></a>三星Galaxy note5在熄灭屏幕是会调用Activity的onPause(),onStop()方法</h5>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/06/gradle-config/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -658,6 +847,20 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 更新conda，保持conda最新</div><div class="line">conda update conda</div><div class="line"></div><div class="line"># 更新anaconda</div><div class="line">conda update anaconda</div><div class="line"></div><div class="line"># 更新python</div><div class="line">conda update python</div><div class="line"># 假设当前环境是python 3.4, conda会将python升级为3.4.x系列的当前最新版本</div></pre></td></tr></table></figure>
 <p>补充：如果创建新的python环境，比如3.4，运行conda create -n python34 python=3.4之后，conda仅安装python 3.4相关的必须项，如python, pip等，如果希望该环境像默认环境那样，安装anaconda集合包，只需要：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在当前环境下安装anaconda包集合</div><div class="line">conda install anaconda</div><div class="line"></div><div class="line"># 结合创建环境的命令，以上操作可以合并为</div><div class="line">conda create -n python34 python=3.4 anaconda</div><div class="line"># 也可以不用全部安装，根据需求安装自己需要的package即可</div></pre></td></tr></table></figure></p>
+<h5 id="通过pip将packages安装到Conda环境中"><a href="#通过pip将packages安装到Conda环境中" class="headerlink" title="通过pip将packages安装到Conda环境中"></a>通过pip将packages安装到Conda环境中</h5><p>发行版Anaconda附带安装了200多个Python软件包，还可以使用conda install 命令快速轻松地安装许多软件包。</p>
+<p>除了安装和管理软件包的实用程序外，conda还拥有创建虚拟环境的能力，这些虚拟环境是在没有任何Python包预先加载的情况下创建的。
+但是不是所有的软件包都可以通过 conda 安装，如果你想要一个不可用的软件，那么你将不得不使用备用软件包管理器pip。Anaconda的软件包管理器conda和pip如何相互交互？
+目前有两种方法:</p>
+<h6 id="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><a href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：" class="headerlink" title="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："></a>一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</h6><ol>
+<li>使用conda create - name virtual_env_name 创建您的虚拟环境，用虚拟环境的 名称 替换virtual_env_name</li>
+<li>使用source activate virtual_env_name切换到您的虚拟环境 ，再次用您的虚拟环境的名称替换virtual_env_name</li>
+<li>运行conda install pip ，它会将pip安装到您的虚拟环境目录中</li>
+<li>后续直接使用以下两步即可：1）source activate virtual_env_name 2）pip install ‘package_name’</li>
+</ol>
+<h6 id="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><a href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。" class="headerlink" title="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"></a>二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</h6><ol>
+<li>运行conda install pip ，它会将pip安装到您的Anaconda虚拟环境目录中。</li>
+<li>你需要找到你的Anaconda bin目录运行pip，如：//anaconda/bin/pip install package_name将软件包安装到您的虚拟环境中 。</li>
+</ol>
 <h4 id="设置国内镜像"><a href="#设置国内镜像" class="headerlink" title="设置国内镜像"></a>设置国内镜像</h4><p>如果需要安装很多packages，你会发现conda下载的速度经常很慢，因为Anaconda.org的服务器在国外。所幸的是，清华TUNA镜像源有Anaconda仓库的镜像，我们将其加入conda的配置即可：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 添加Anaconda的TUNA镜像</div><div class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</div><div class="line"># TUNA的help中镜像地址加有引号，需要去掉</div><div class="line"></div><div class="line"># 设置搜索时显示通道地址</div><div class="line">conda config --set show_channel_urls yes</div></pre></td></tr></table></figure></p>
 <p>执行完上述命令后，会生成<code>~/.condarc(Linux/Mac)</code>或<code>C:\Users\USER_NAME\.condarc</code>文件，记录着我们对conda的配置，直接手动创建、编辑该文件是相同的效果。</p>
@@ -2030,264 +2233,11 @@ MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/21/tips-ml-dpst/" itemprop="url">
-                  deep-photo-styletransfer介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-21T22:41:30+08:00">
-                2018-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
-<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
-<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
-安装:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
-<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
-<p>如果你想要卸载 torch，执行：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
-<p>现在在你可以用 Luarocks 安装新的包
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
-<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
-<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
-要执行 file.lua, 写 th&gt; dofile “file.lua”。
-在非交互模式下执行文件：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
-<p>th 命令有很多选项，类似 perl 和 ruby。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
-<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
-<ul>
-<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
-<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
-</ul>
-<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
-Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
-<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
-<p>之后安装Mac下的包管理神器Homebrew，命令如下，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
-<p>通过以下命令升级Homebrew:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
-<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
-<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
-<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
-<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
-<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
-使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
-<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
-<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
-<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
-<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
-<blockquote>
-<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
-<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
-<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
-<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
-<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
-</blockquote>
-<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
-<ul>
-<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
-<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
-使用不同版本有兼容性问题</li>
-</ul>
-<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
-<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
-<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
-<p>可能有xcode Command Line Tool版本不兼容问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
-<p>替换版本即可:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
-</blockquote>
-<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
-<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
-<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
-<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
-<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
-<li><a href="https://github.com/LouieYang/deep-photo-styletransfer-tf" target="_blank" rel="external">deep-photo-styletransfer-tf</a>:Tensorflow (Python API) implementation of Deep Photo Style Transfer</li>
-<li><a href="https://github.com/floydhub/deep-photo-styletransfer" target="_blank" rel="external">floydhub/deep-photo-styletransfer</a>:Jupyter Notebook to train photorealistic style transfer</li>
-<li><a href="https://askubuntu.com/questions/652004/how-do-i-rebuild-octave-and-link-in-graphicsmagick" target="_blank" rel="external">How do I rebuild Octave and link in GraphicsMagick?</a></li>
-<li><a href="ftp://ftp.gnu.org/gnu/octave/" target="_blank" rel="external">/gnu/octave/ 的索引</a></li>
-</ul>
-<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><ol>
-<li><code>configure :error: No usable version of sed found:</code>
-I did ./configure to make a makefile</li>
-</ol>
-<p>but it ran into an error: configure :error: No usable version of sed found:</p>
-<p>I then typed which see</p>
-<p>it shows /usr/bin/sed.</p>
-<p>so, what’s wrong? why can’t ./configure find sed?</p>
-<p>I happened to have this problem on my mac. This is because OS X uses an old version of sed. Installing gnu-sed by <code>brew install gnu-sed</code> and <code>alias gsed=sed</code> solved this problem. You may install gnu-sed with other method.</p>
-<p><a href="https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found" target="_blank" rel="external">https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found</a></p>
-<ol>
-<li><code>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</code></li>
-</ol>
-<p>I am attempting to install GraphicsMagick in a hosting account…</p>
-<p>I used this info to get it to work in most cases:</p>
-<p><a href="https://superuser.com/questions/192573/how-do-you-specify-the-location-of-libraries-to-a-binary-linux" target="_blank" rel="external">How do you specify the location of libraries to a binary? (linux)</a></p>
-<p>However, it still cannot find the delegates.mgk (which is in ./lib/GraphicsMagick-1.3.14/delegates.mgk) as witnessed in this error:</p>
-<p>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</p>
-<p>Either, a) how do find out where the binary thinks this file should be, or b) how do I extend the wrapper script to help it out?</p>
-<p>Figured it out after looking through the binary for /PATH/</p>
-<p>The binaries require these additional path variables:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$MAGICK_CONFIG_PATH</div><div class="line">$MAGICK_CODER_MODULE_PATH</div><div class="line">$MAGICK_FILTER_MODULE_PATH</div></pre></td></tr></table></figure></p>
-<p>…here is the resulting script modification form my setup:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ -n &quot;$LD_LIBRARY_PATH&quot; ]; then</div><div class="line">  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/USER/lib</div><div class="line">else</div><div class="line">  LD_LIBRARY_PATH=/home/USER/lib</div><div class="line">fi</div><div class="line">[ -z &quot;$&#123;MAGICK_CONFIGURE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CONFIGURE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/config</div><div class="line">[ -z &quot;$&#123;MAGICK_CODER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CODER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/coders</div><div class="line">[ -z &quot;$&#123;MAGICK_FILTER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_FILTER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/filters</div><div class="line">export LD_LIBRARY_PATH</div><div class="line">exec /home/USER/bin/gm-bin &quot;$@&quot;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2332,7 +2282,7 @@ I did ./configure to make a makefile</li>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2343,7 +2293,7 @@ I did ./configure to make a makefile</li>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2354,7 +2304,7 @@ I did ./configure to make a makefile</li>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-count">55</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
