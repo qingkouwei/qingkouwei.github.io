@@ -98,7 +98,7 @@
 <meta property="og:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/virtualapk_arch.png">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg">
-<meta property="og:updated_time" content="2018-01-13T10:38:31.942Z">
+<meta property="og:updated_time" content="2018-10-23T09:06:31.844Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android插件化(一)技术调研">
 <meta name="twitter:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
@@ -732,6 +732,55 @@
 </tbody>
 </table>
 <h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
+<h3 id="模块化-组件化-插件化"><a href="#模块化-组件化-插件化" class="headerlink" title="模块化,组件化,插件化"></a>模块化,组件化,插件化</h3><p>在技术开发领域，模块化是指分拆代码，即当我们的代码特别臃肿的时候，用模块化将代码分而治之、解耦分层。具体到 android 领域，模块化的具体实施方法分为插件化和组件化。</p>
+<p>一套完整的插件化或组件化都必须能够实现单独调试、集成编译、数据传输、UI 跳转、生命周期和代码边界这六大功能。</p>
+<p>解耦思想:
+控制反转是一种思想,依赖注入是一种设计模式,IoC框架使用依赖注入作为控制反转的方式</p>
+<p>模块化粒度更小,更侧重于重用,而组件化粒度稍大于模块,更侧重于业务解耦。
+组件化的核心是角色的转换。 在打包时， 是library; 在调试时， 是application。
+组件化开发是纵向分层，模块化开发是横向分块。</p>
+<p>组件化想要解决的问题：</p>
+<ol>
+<li>实际业务变化非常快,但是工程之前的业务模块耦合度太高,牵一发而动全身.</li>
+<li>对工程所做的任何修改都必须要编译整个工程</li>
+<li>功能测试和系统测试每次都要进行.</li>
+<li>团队协同开发存在较多的冲突.不得不花费更多的时间去沟通和协调,并且在开发过程中,任何一位成员没办法专注于自己的功能点,影响开发效率.</li>
+<li>不能灵活的对工程进行配置和组装.比如今天产品经理说加上这个功能,明天又说去掉,后天在加上.</li>
+</ol>
+<p>组件开发比较常见的问题是业务组件的相互引用,为此我们可以通过路由/总线的方式去处理,挂载到组件总线上的业务组件,都可以实现双向通信.而通信协议和HTTP通信协议类似,即基于URL的方式进行.</p>
+<p>相对于组件化开发主要要解决的问题：</p>
+<ol>
+<li>宿主和插件分开编译</li>
+<li>并发开发</li>
+<li>动态更新插件</li>
+<li>按需下载模块</li>
+<li>方法数或变量数爆棚</li>
+</ol>
+<p>插件化组件化的区别:</p>
+<ol>
+<li>组件化的单位是组件（module);插件化的单位是apk(一个完整的应用)。</li>
+<li>组件化实现的是解耦与加快编译， 隔离不需要关注的部分;插件化实现的也是解耦与加快编译，同时实现热插拔也就是热更新。</li>
+<li>组件化的灵活性在于按加载时机切换，分离出独立的业务组件，比如微信的朋友圈;插件化的灵活性在于是加载apk, 完全可以动态下载，动态更新，比组件化更灵活。</li>
+<li>组件化能做的只是， 朋友圈已经有了，我想单独调试，维护，和别人不耦合,但是和整个项目还是有关联的;插件化可以说朋友圈就是一个app, 我需要整合了，把它整合进微信这个大的app里面</li>
+</ol>
+<p>其实从框架名称就可以看出： 组 和 插。
+组本来就是一个系统，你把微信分为朋友圈，聊天， 通讯录按意义上划为独立模块，但并不是真正意义上的独立模块。
+插本来就是不同的apk， 你把微信的朋友圈，聊天，通讯录单独做一个完全独立的app, 需要微信的时候插在一起，就是一个大型的app了。
+插件化的加载是动态的，这点很重要，也是灵活的根源。</p>
+<p>所谓架构，无非两个方面： 分层和通信方式。 其实广义的架构也可以说是这两个方面：子模块（子系统）划分和通信。</p>
+<p><strong>子模块划分</strong>
+除了大家公认的common部分， 业务模块的划分尤为重要，相比于狭义上的架构，广义上的子系统的划分的关注点，很考验技术经验以及对业务的理解。</p>
+<p><strong>通信方式</strong>
+模块化的通信方式，无非是相互引入；我抽取了common, 其他模块使用自然要引入这个module
+组件化的通信方式，按理说可以划分为多种，主流的是隐式和路由。隐式的存在使解耦与灵活大大降低，因此路由是主流
+插件化的通信方式，不同插件本身就是不同的进程了。因此通信方式偏向于Binder机制类似的进程间通信
+移动端目前的架构，差异化在于通信机制。通过以上说明，通信机制主要分为3种：</p>
+<ul>
+<li>对象持有</li>
+<li>接口持有</li>
+<li>路由
+通信方式中，对象持有是比较原始的，解耦率最低，建议放弃； 接口持有是个不错的选择，极大程度上实现解耦的诉求，但是解耦不彻底，相互持有交互方的接口。 路由机制也是个不错的选择，可以实现完全解耦，就像组件化一样。但是路由机制的设计是个技术难点，怎么设计效率最高？更健壮？代码可查阅性更好？这些都是值得思考的问题。对于路由机制的优化，阿里的ARouter（用于组件通信）中，采用了分组的模式，我们可以采用；其次可以根据AnnotationProcessor的处理，为每一个注册接收器的组件实现一个SupportActions来确保消息只发送给注册了指定类型的模块，也是个不错的选择。</li>
+</ul>
 
       
     </div>
@@ -891,7 +940,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">116</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -913,7 +962,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1007,7 +1056,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-增量更新"><span class="nav-number">2.</span> <span class="nav-text">1.增量更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1增量更新的流程"><span class="nav-number">2.1.</span> <span class="nav-text">1.1增量更新的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2服务器端行为（后台工程师操作）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2服务器端行为（后台工程师操作）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-2Java代码调用"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2Java代码调用:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><span class="nav-number">2.2.3.</span> <span class="nav-text">1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3Android客户端行为"><span class="nav-number">2.3.</span> <span class="nav-text">1.3Android客户端行为</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.3.1.</span> <span class="nav-text">1.3.1编译合并要用的第三方库（bsdiff、bzip2）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-插件化"><span class="nav-number">3.</span> <span class="nav-text">2.插件化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1DynamicLoadApk"><span class="nav-number">3.1.</span> <span class="nav-text">2.1DynamicLoadApk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2VirtualAPK"><span class="nav-number">3.2.</span> <span class="nav-text">2.2VirtualAPK</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1特性"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.2.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2架构"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2.2架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3原理"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.2.3原理</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-3-1基本原理"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">2.2.3.1基本原理</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-2四大组件的实现原理"><span class="nav-number">3.2.4.</span> <span class="nav-text">2.2.3.2四大组件的实现原理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3RePlugin"><span class="nav-number">3.3.</span> <span class="nav-text">2.3RePlugin</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1特性"><span class="nav-number">3.3.1.</span> <span class="nav-text">2.3.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2架构"><span class="nav-number">3.3.2.</span> <span class="nav-text">2.3.2架构</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-增量更新"><span class="nav-number">2.</span> <span class="nav-text">1.增量更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1增量更新的流程"><span class="nav-number">2.1.</span> <span class="nav-text">1.1增量更新的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2服务器端行为（后台工程师操作）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2服务器端行为（后台工程师操作）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-2Java代码调用"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2Java代码调用:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><span class="nav-number">2.2.3.</span> <span class="nav-text">1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3Android客户端行为"><span class="nav-number">2.3.</span> <span class="nav-text">1.3Android客户端行为</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.3.1.</span> <span class="nav-text">1.3.1编译合并要用的第三方库（bsdiff、bzip2）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-插件化"><span class="nav-number">3.</span> <span class="nav-text">2.插件化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1DynamicLoadApk"><span class="nav-number">3.1.</span> <span class="nav-text">2.1DynamicLoadApk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2VirtualAPK"><span class="nav-number">3.2.</span> <span class="nav-text">2.2VirtualAPK</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1特性"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.2.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2架构"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2.2架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3原理"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.2.3原理</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-3-1基本原理"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">2.2.3.1基本原理</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-2四大组件的实现原理"><span class="nav-number">3.2.4.</span> <span class="nav-text">2.2.3.2四大组件的实现原理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3RePlugin"><span class="nav-number">3.3.</span> <span class="nav-text">2.3RePlugin</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1特性"><span class="nav-number">3.3.1.</span> <span class="nav-text">2.3.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2架构"><span class="nav-number">3.3.2.</span> <span class="nav-text">2.3.2架构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块化-组件化-插件化"><span class="nav-number">4.</span> <span class="nav-text">模块化,组件化,插件化</span></a></li></ol></div>
             
 
           </div>

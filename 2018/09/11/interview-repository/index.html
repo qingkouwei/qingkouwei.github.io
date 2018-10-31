@@ -89,17 +89,14 @@
 
 
 
-<meta name="description" content="Java基础Java：  数组实现队列  http://blog.csdn.net/qq_25722767/article/details/52234509  GC 的流程 https://www.cnblogs.com/little-YTMM/p/5613642.html  https://www.cnblogs.com/zhguang/p/3257367.html  Java 软引用和弱引用的">
 <meta name="keywords" content="interview,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试题库">
 <meta property="og:url" content="http://wodekouwei.com/2018/09/11/interview-repository/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="Java基础Java：  数组实现队列  http://blog.csdn.net/qq_25722767/article/details/52234509  GC 的流程 https://www.cnblogs.com/little-YTMM/p/5613642.html  https://www.cnblogs.com/zhguang/p/3257367.html  Java 软引用和弱引用的">
-<meta property="og:updated_time" content="2018-09-12T06:05:41.810Z">
+<meta property="og:updated_time" content="2018-10-31T10:32:33.383Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题库">
-<meta name="twitter:description" content="Java基础Java：  数组实现队列  http://blog.csdn.net/qq_25722767/article/details/52234509  GC 的流程 https://www.cnblogs.com/little-YTMM/p/5613642.html  https://www.cnblogs.com/zhguang/p/3257367.html  Java 软引用和弱引用的">
 
 
 
@@ -435,208 +432,7 @@
       
 
       
-        <h3 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h3><p>Java：</p>
-<ol>
-<li><p>数组实现队列
- <a href="http://blog.csdn.net/qq_25722767/article/details/52234509" target="_blank" rel="external">http://blog.csdn.net/qq_25722767/article/details/52234509</a></p>
-</li>
-<li><p>GC 的流程<br> <a href="https://www.cnblogs.com/little-YTMM/p/5613642.html" target="_blank" rel="external">https://www.cnblogs.com/little-YTMM/p/5613642.html</a>
- <a href="https://www.cnblogs.com/zhguang/p/3257367.html" target="_blank" rel="external">https://www.cnblogs.com/zhguang/p/3257367.html</a></p>
-</li>
-<li><p>Java 软引用和弱引用的区别<br> 强引用（StrongReference）：只要某个对象有强引用与之关联，JVM必定不会回收这个对象，即使在内存不足的情况下，JVM宁愿抛出OutOfMemory错误也不会回收这种对象
- 软引用（SoftReference）：只有在内存不足的时候JVM才会回收该对象
- 弱引用（WeakReference）：当JVM进行垃圾回收时，无论内存是否充足，都会回收被弱引用关联的对象
- 虚引用（PhantomReference）：垃圾回收时回收，虚引用并不会决定对象的生命周期，无法通过引用取到对象值</p>
-</li>
-<li><p>Java 中 this 编译时的原理
- this调用本类中的属性，也就是类中的成员变量；
- this调用本类中的其他方法；
- this调用本类中的其他构造方法，调用时要放在构造方法的首行。    </p>
-</li>
-<li><p>final 变量用反射修改
- public static void modify(Object object, String fieldName, Object newFieldValue) throws Exception {</p>
-<pre><code>Field field = object.getClass().getDeclaredField(fieldName);
-
-Field modifiersField = Field.class.getDeclaredField(&quot;modifiers&quot;);
-modifiersField.setAccessible(true); //Field 的 modifiers 是私有的
-modifiersField.setInt(field, field.getModifiers() &amp; ~Modifier.FINAL);
-
-if(!field.isAccessible()) {
-field.setAccessible(true);
-}
-
-field.set(object, newFieldValue);
-</code></pre><p> }</p>
-<p> class Person {</p>
-<pre><code>public final String firstName = &quot;Mike&quot;;
-public final String lastName = new String(&quot;Jordan&quot;); //可被有效修改
-public final float age = 50.5f;
-public final Float height = 1.99f; //可被有效修改
-public final Address address = new Address(&quot;aaa&quot;, &quot;bbb&quot;); //可被有效修改
-
-public final String city; //可被有效修改
-
-public Person(String city) {
-this.city = city;
-}
-</code></pre><p> }</p>
-</li>
-<li><p>HashMap的内部结构，给定一个key，如何找到对应的value<br> <a href="https://www.cnblogs.com/shipengzhi/articles/2087505.html" target="_blank" rel="external">https://www.cnblogs.com/shipengzhi/articles/2087505.html</a></p>
-</li>
-<li><p>volatile 
- <a href="https://www.cnblogs.com/tangyanbo/p/6538488.html" target="_blank" rel="external">https://www.cnblogs.com/tangyanbo/p/6538488.html</a></p>
-</li>
-<li><p>Java线程池有什么作用
- 在程序启动的时候就创建若干线程来响应处理，它们被称为线程池，里面的线程叫工作线程 
- 第一：降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。 
- 第二：提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。 
- 第三：提高线程的可管理性。 
- 常用线程池：ExecutorService 是主要的实现类，其中常用的有 :
- Executors.newSingleThreadPool() 创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。
- Executors.newFixedThreadPool() 创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
- Executors.newcachedTheadPool() 创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
- Executors.newScheduledThreadPool() 创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
- <a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a>
- <a href="https://www.cnblogs.com/ruiati/p/6134131.html" target="_blank" rel="external">https://www.cnblogs.com/ruiati/p/6134131.html</a></p>
-</li>
-<li><p>Java 动态代理 
- <a href="https://www.cnblogs.com/xiaoluo501395377/p/3383130.html" target="_blank" rel="external">https://www.cnblogs.com/xiaoluo501395377/p/3383130.html</a></p>
-</li>
-<li><p>求 n 的 m 次幂
-<a href="http://blog.csdn.net/derrantcm/article/details/47098373" target="_blank" rel="external">http://blog.csdn.net/derrantcm/article/details/47098373</a></p>
-</li>
-<li><p>java 集合<br><a href="https://www.cnblogs.com/lwlxqlccc/p/6121307.html" target="_blank" rel="external">https://www.cnblogs.com/lwlxqlccc/p/6121307.html</a></p>
-</li>
-<li><p>String 的 spit 实现
-<a href="http://fangguanhong.iteye.com/blog/2069993" target="_blank" rel="external">http://fangguanhong.iteye.com/blog/2069993</a></p>
-</li>
-<li><p>Http和Https的区别
-<a href="https://www.jianshu.com/p/37654eb66b58" target="_blank" rel="external">https://www.jianshu.com/p/37654eb66b58</a></p>
-</li>
-<li><p>java线程池—ThreadPoolExecutor 
-<a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a></p>
-</li>
-<li><p>冒泡排序
-<a href="http://blog.csdn.net/u010853261/article/details/54891710" target="_blank" rel="external">http://blog.csdn.net/u010853261/article/details/54891710</a></p>
-</li>
-<li><p>排序算法 
-<a href="http://blog.csdn.net/pzhtpf/article/details/7560294" target="_blank" rel="external">http://blog.csdn.net/pzhtpf/article/details/7560294</a></p>
-</li>
-<li><p>抽象类和接口的区别
-接口是对动作的抽象，而抽象类是对根源的抽象。
-接口和抽象类都是继承树的上层，他们的共同点如下：1)    都是上层的抽象层。2)    都不能被实例化3)    都能包含抽象的方法，这些抽象的方法用于描述类具备的功能，但是不比提供具体的实现。他们的区别如下：1)    在抽象类中可以写非抽象的方法，从而避免在子类中重复书写他们，这样可以提高代码的复用性，这是抽象类的优势；接口中只能有抽象的方法。2)    一个类只能继承一个直接父类，这个父类可以是具体的类也可是抽象类；但是一个类可以实现多个接口。Java语言中类的继承是单继承原因是：当子类重写父类方法的时候，或者隐藏父类的成员变量以及静态方法的时候，JVM使用不同的绑定规则。如果一个类有多个直接的父类，那么会使绑定规则变得更复杂。为了简化软件的体系结构和绑定机制，java语言禁止多继承。接口可以多继承，是因为接口中只有抽象方法，没有静态方法和非常量的属性，只有接口的实现类才会重写接口中方法。因此一个类有多个接口也不会增加JVM的绑定机制和复杂度。</p>
-</li>
-<li><p>java基本数据类型
-8位：Byte（字节型）<br>16位：short（短整型）、char（字符型）<br>32位：int（整型）、float（单精度型/浮点型）<br>64位：long（长整型）、double（双精度型）<br>最后一个：boolean(布尔类型）</p>
-</li>
-<li><p>Java堆的实现、排序
-<a href="http://blog.csdn.net/idealemail/article/details/51382837" target="_blank" rel="external">http://blog.csdn.net/idealemail/article/details/51382837</a></p>
-</li>
-<li><p>数组中重复数字
-<a href="http://blog.csdn.net/zjkc050818/article/details/72800175" target="_blank" rel="external">http://blog.csdn.net/zjkc050818/article/details/72800175</a></p>
-</li>
-<li><p>字符串中判断另一个字符串是否存在</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">static int indexOf(String source,</div><div class="line">                   String target,</div><div class="line">                   int fromIndex) &#123;</div><div class="line">    if (fromIndex &gt;= source.count) &#123;</div><div class="line">        return (target.count == 0 ? source.count : -1);</div><div class="line">    &#125;</div><div class="line">    if (fromIndex &lt; 0) &#123;</div><div class="line">        fromIndex = 0;</div><div class="line">    &#125;</div><div class="line">    if (target.count == 0) &#123;</div><div class="line">        return fromIndex;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    char first = target.charAt(0);</div><div class="line">    int max = (source.count - target.count);</div><div class="line"></div><div class="line">    for (int i = fromIndex; i &lt;= max; i++) &#123;</div><div class="line">        /* Look for first character. */</div><div class="line">        if (source.charAt(i)!= first) &#123;</div><div class="line">            while (++i &lt;= max &amp;&amp; source.charAt(i) != first);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /* Found first character, now look at the rest of v2 */</div><div class="line">        if (i &lt;= max) &#123;</div><div class="line">            int j = i + 1;</div><div class="line">            int end = j + target.count - 1;</div><div class="line">            for (int k = 1; j &lt; end &amp;&amp; source.charAt(j)</div><div class="line">                     == target.charAt(k); j++, k++);</div><div class="line"></div><div class="line">            if (j == end) &#123;</div><div class="line">                /* Found whole string. */</div><div class="line">                return i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return -1;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>ThreadLocal 使用及原理<br><a href="https://www.cnblogs.com/coshaho/p/5127135.html" target="_blank" rel="external">https://www.cnblogs.com/coshaho/p/5127135.html</a></p>
-</li>
-<li><p>Java 泛型
-<a href="https://www.cnblogs.com/demingblog/p/5495610.html" target="_blank" rel="external">https://www.cnblogs.com/demingblog/p/5495610.html</a></p>
-</li>
-<li><p>Java 内部类
-<a href="http://blog.csdn.net/roamer314/article/details/48598633" target="_blank" rel="external">http://blog.csdn.net/roamer314/article/details/48598633</a></p>
-</li>
-<li><p>Java ConcurrentHashMap的原理<br><a href="https://www.cnblogs.com/chengxiao/p/6842045.html" target="_blank" rel="external">https://www.cnblogs.com/chengxiao/p/6842045.html</a></p>
-</li>
-<li><p>线程的几种状态<br><a href="http://blog.csdn.net/sinat_36042530/article/details/52565296" target="_blank" rel="external">http://blog.csdn.net/sinat_36042530/article/details/52565296</a>
-<a href="https://www.cnblogs.com/wxd0108/p/5479442.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/5479442.html</a></p>
-</li>
-<li><p>Java 双亲委派机制<br><a href="https://www.cnblogs.com/wxd0108/p/6681618.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/6681618.html</a></p>
-</li>
-<li><p>Java 运算符
-<a href="https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html" target="_blank" rel="external">https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html</a></p>
-</li>
-</ol>
-<h3 id="Android基础"><a href="#Android基础" class="headerlink" title="Android基础"></a>Android基础</h3><ol>
-<li><p>View 的绘制原理
- <a href="https://www.cnblogs.com/jycboy/p/6219915.html" target="_blank" rel="external">https://www.cnblogs.com/jycboy/p/6219915.html</a>
- <a href="https://www.jianshu.com/p/5a71014e7b1b" target="_blank" rel="external">https://www.jianshu.com/p/5a71014e7b1b</a>
- <a href="http://blog.csdn.net/fwt336/article/details/52979876" target="_blank" rel="external">http://blog.csdn.net/fwt336/article/details/52979876</a></p>
-</li>
-<li><p>Android 进程间通信方式
- <a href="http://blog.csdn.net/fiendvip/article/details/50954393" target="_blank" rel="external">http://blog.csdn.net/fiendvip/article/details/50954393</a></p>
-</li>
-<li><p>Android Binder 机制
- <a href="http://blog.csdn.net/qq_23191031/article/details/60145022" target="_blank" rel="external">http://blog.csdn.net/qq_23191031/article/details/60145022</a></p>
-</li>
-<li><p>Activity 加载过程
- <a href="http://blog.csdn.net/yyh352091626/article/details/51086117" target="_blank" rel="external">http://blog.csdn.net/yyh352091626/article/details/51086117</a></p>
-</li>
-<li><p>Activity 启动模式
- <a href="https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw" target="_blank" rel="external">https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw</a></p>
-</li>
-<li><p>MVP 和 MVC 和MVVM 有什么区别
- <a href="http://blog.csdn.net/greathfs/article/details/52017155" target="_blank" rel="external">http://blog.csdn.net/greathfs/article/details/52017155</a></p>
-</li>
-<li><p>Android 性能优化
- <a href="https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw" target="_blank" rel="external">https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw</a></p>
-</li>
-<li><p>Service 概况
- <a href="http://blog.csdn.net/lqb3732842/article/details/54892813" target="_blank" rel="external">http://blog.csdn.net/lqb3732842/article/details/54892813</a></p>
-</li>
-<li><p>Android 最新官方框架
- <a href="https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ" target="_blank" rel="external">https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ</a>
- <a href="https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew" target="_blank" rel="external">https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew</a></p>
-</li>
-<li><p>Android 类加载机制
-<a href="https://www.jianshu.com/p/3afa47e9112e" target="_blank" rel="external">https://www.jianshu.com/p/3afa47e9112e</a>
-<a href="https://www.jianshu.com/p/a620e368389a" target="_blank" rel="external">https://www.jianshu.com/p/a620e368389a</a></p>
-</li>
-<li><p>Android 消息处理机制（Looper、Handler、MessageQueue,Message）
-<a href="https://www.jianshu.com/p/02962454adf7" target="_blank" rel="external">https://www.jianshu.com/p/02962454adf7</a>
-<a href="http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换" target="_blank" rel="external">http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换</a></p>
-</li>
-<li><p>Android 事件分发机制
-<a href="https://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="external">https://www.jianshu.com/p/e99b5e8bd67b</a></p>
-</li>
-<li><p>Retrofit 分析
-<a href="https://www.jianshu.com/p/45cb536be2f4" target="_blank" rel="external">https://www.jianshu.com/p/45cb536be2f4</a></p>
-</li>
-<li><p>Android 动画
-<a href="https://www.jianshu.com/p/420629118c10" target="_blank" rel="external">https://www.jianshu.com/p/420629118c10</a></p>
-</li>
-<li><p>Rxjava 使用介绍
-<a href="https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw" target="_blank" rel="external">https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw</a></p>
-</li>
-<li><p>View 和 SurfaceView 的区别
-<a href="http://blog.csdn.net/shareus/article/details/51538507" target="_blank" rel="external">http://blog.csdn.net/shareus/article/details/51538507</a></p>
-</li>
-<li><p>LruCache 原理解析
-<a href="https://www.jianshu.com/p/b49a111147ee" target="_blank" rel="external">https://www.jianshu.com/p/b49a111147ee</a></p>
-</li>
-<li><p>多线程断点续传
-<a href="http://blog.csdn.net/tianzhaoai/article/details/56673071" target="_blank" rel="external">http://blog.csdn.net/tianzhaoai/article/details/56673071</a>
-<a href="https://www.jianshu.com/p/1bb084d282be" target="_blank" rel="external">https://www.jianshu.com/p/1bb084d282be</a></p>
-</li>
-<li><p>Android APP 冷启动时间统计及优化
-<a href="https://www.jianshu.com/p/c967653a9468" target="_blank" rel="external">https://www.jianshu.com/p/c967653a9468</a>
-<a href="http://blog.csdn.net/code_dream_wq/article/details/75012353" target="_blank" rel="external">http://blog.csdn.net/code_dream_wq/article/details/75012353</a>
-<a href="http://blog.csdn.net/zhangyongfeiyong/article/details/61925399" target="_blank" rel="external">http://blog.csdn.net/zhangyongfeiyong/article/details/61925399</a></p>
-</li>
-<li><p>热修复原理
-<a href="https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA" target="_blank" rel="external">https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA</a></p>
-</li>
-<li><p>插件化原理
-类的加载</p>
-<pre><code>1)替换App的ClassLoader
-2)修改PathList(例如在PathList中加入我们需要加载的Dex的对应项)
-</code></pre><p>资源的加载：安卓资源由AssetManager加载,应用启动时,系统会为其创建一个AssetManager实例,并由addAssetPath方 法添加资源搜索路径</p>
-<pre><code>1. 插件独立使用一个资源管理器
-2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
-</code></pre><p>组件的动态注册</p>
-</li>
-</ol>
-
+        
       
     </div>
 
@@ -711,6 +507,10 @@ this.city = city;
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/10/23/interview-repository-java/" rel="prev" title="面试题库java">
+                面试题库java <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -764,17 +564,8 @@ this.city = city;
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
@@ -789,7 +580,7 @@ this.city = city;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">116</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -811,7 +602,7 @@ this.city = city;
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -895,22 +686,6 @@ this.city = city;
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java基础"><span class="nav-number">1.</span> <span class="nav-text">Java基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android基础"><span class="nav-number">2.</span> <span class="nav-text">Android基础</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

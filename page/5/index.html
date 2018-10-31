@@ -323,6 +323,937 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/05/tips-android-review/" itemprop="url">
+                  (转)总结Android开发中必备的代码Review清单
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T14:11:25+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
+<p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
+<h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
+<li>页面退出时，是否完成必要的清理操作<ol>
+<li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
+<li>是否取消了还没完成的请求；</li>
+<li>在页面里注册的监听，是否反注册；</li>
+<li>假如自己用到观察者模式，是否反注册；</li>
+<li>假如用了RxJava的话，是否解除订阅；</li>
+</ol>
+</li>
+<li><p>数据库的游标是否已经关闭
+这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
+所以数据库的操作需要加上同步代码块
+详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
+</li>
+<li><p>打开过的文件流是否关闭</p>
+</li>
+<li><p>Android 3.0以下的版本，使用完的Bitmap是否调用recycle()，否则会一直占用内存
+而Android 3.0及以上的版本不需要调用recycle()，因为这些版本的Bitmap全部放到虚拟机的堆内存中，让GC自动回收。</p>
+</li>
+<li><p>WebView使用完是否调用了其destory()函数</p>
+</li>
+</ol>
+<h3 id="是否能进一步优化自己的代码"><a href="#是否能进一步优化自己的代码" class="headerlink" title="是否能进一步优化自己的代码"></a>是否能进一步优化自己的代码</h3><ol>
+<li><p>保存在内存中的图片，是否做过压缩处理再保存在内存里
+否则可能由于图片质量太高，导致OOM</p>
+</li>
+<li><p>Intent传递的数据太大，会导致页面跳转过慢。太大的数据可以通过持久化的形式传递，例如读写文件</p>
+</li>
+<li><p>频繁地操作同一个文件或者执行同一个数据库操作，是否考虑把它用静态变量或者局部变量的形式缓存在内存里。用空间换时间</p>
+</li>
+<li><p>放在主页面的控件，是否可以考虑用ViewStub来优化启动速度</p>
+</li>
+</ol>
+<h3 id="要小心第三方包"><a href="#要小心第三方包" class="headerlink" title="要小心第三方包"></a>要小心第三方包</h3><ol>
+<li><p>build.gradle远程依赖第三方包时，版本号建议写死，不要使用+号
+避免由于新版本的第三方包引入了新的问题</p>
+</li>
+<li><p>导入第三方工程时，记得把编码转换成自己工程当前是用的编码</p>
+</li>
+<li><p>调用第三方的包或者JDK的方法时，要跳进他们的源码，看要不要加 try-catch
+否则可能会导致自己应用的崩溃</p>
+</li>
+<li><p>使用第三方包时，是否加上其混淆规则
+若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
+</li>
+<li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
+<li><p>系统的、自己写的，注册和反注册的方法，是否成对出现</p>
+</li>
+<li><p>在生命周期的回调里，创建和销毁的代码是否对应起来
+比如：onCreate()里面创建了Adapter，那么对应Adapter的退出处理操作(比如清空Image缓存)，一般就要写在onDestory()，而不能写在onDestoryView()。</p>
+</li>
+</ol>
+<p>类似的生命周期对应的代码有：
+onStart()、onStop();
+onCreate()、onDestory();
+onResume()、onPause();
+onCreateView()、onDestoryView()</p>
+<ol>
+<li>若ListView的item复用了，对Item里View的操作是否成对出现
+比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
+<h3 id="防内存泄漏"><a href="#防内存泄漏" class="headerlink" title="防内存泄漏"></a>防内存泄漏</h3><ol>
+<li><p>内部类，比如Handler、Listener、Callback是否是成static class
+因为非静态内部类会持有外部类的引用。</p>
+</li>
+<li><p>假如子线程持有了Activity，要用弱引用来持有
+比如Request的Activity就应该用弱引用的形式，防止内存泄漏。</p>
+</li>
+<li><p>要求传入Activity作为参数的函数，是否可以改用getApplicationContext()来作为参数</p>
+</li>
+</ol>
+<h3 id="Handler相关"><a href="#Handler相关" class="headerlink" title="Handler相关"></a>Handler相关</h3><ol>
+<li>使用View.post()是否会有问题
+因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
+</ol>
+<p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
+<ol>
+<li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
+如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><p>多思考某些情况下，某变量是否会为空
+而且在函数体内，处理参数前，必须加上判空语句</p>
+</li>
+<li><p>回调函数是否处理好
+回调函数很容易出问题。比如网络请求的回调，需要判断此时的Aciivity等是否还存在，再进行调用。因为异步操作回来，Activity可能就消失不存在了。
+而且还要对一些可能被回收的变量进行判空。</p>
+</li>
+<li><p>修改数据库后，是否把数据库的版本号+1</p>
+</li>
+<li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
+<ol>
+<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
+可能导致的问题：</p>
+<ul>
+<li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
+<li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
+</ul>
+<ol>
+<li><p>除数是否做了非0判断</p>
+</li>
+<li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
+</li>
+</ol>
+<h3 id="功能完成后，自测时的检查点"><a href="#功能完成后，自测时的检查点" class="headerlink" title="功能完成后，自测时的检查点"></a>功能完成后，自测时的检查点</h3><ol>
+<li>思考某些情况下，某个变量是否会造成空指针问题</li>
+<li>把手机横屏，检查布局是否有Bug</li>
+<li>在不同分辨率的机型上，检查布局是否有Bug</li>
+<li>切换到英文等外文字体下，检查外文是否能完整显示</li>
+<li>从低版本升级上来，会不会有问题,比如可能会出现数据库不兼容的问题</li>
+<li>按下Home再返回是否正常</li>
+<li>熄灭屏幕再打开是否正常</li>
+<li>切换成其它应用再切换回来会怎样</li>
+<li>利用手机的开发者选项中的 “调试GPU过度绘制” ，“GPU呈现模式分析” 和 “显示FPS和功耗” 功能，看自己的新功能是否会导致过度绘制、是否会掉帧</li>
+<li>测试看是否影响启动速度<code>adb shell am start -W 包名/Activity</code></li>
+<li>对比看APK大小是否有增大</li>
+<li>跑1小时Monkey，测试其稳定性</li>
+</ol>
+<blockquote>
+<p>转自:
+<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
+</blockquote>
+<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
+<p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
+<h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
+<h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
+<li>强烈建议先跑30分钟Monkey测试</li>
+<li>使用eclipse的ddms找到对应的进程，触发一次gc后，dump出里面的内存快照hprof文件以分析当前应用内存的堆有什么东西</li>
+<li>使用Android SDK 里的platform-tools文件夹的 hprof-conv工具，对刚才 hprof 文件进行转换，以至于 后面MAT工具能正常打开</li>
+<li>使用MAT打开hprof文件，进入Histogram。输入自己猜测可能泄漏的Activity（项目中Activity不多时，可每个Activity都重复以下3、4、5步骤）</li>
+<li>键该其中一项，打开菜单选择list objects -&gt;with incoming refs将列出该类的实例</li>
+<li>右健Path to GC Roots–&gt;exclue all phantom/weak/soft etc. reference，找出这个实例GC后，还会存在什么对象的引用关系。</li>
+</ul>
+<h3 id="常见导致内存泄漏的几个点"><a href="#常见导致内存泄漏的几个点" class="headerlink" title="常见导致内存泄漏的几个点"></a>常见导致内存泄漏的几个点</h3><h4 id="生命周期的原因"><a href="#生命周期的原因" class="headerlink" title="生命周期的原因"></a>生命周期的原因</h4><p>比如：Activity中关联了一个生命周期超过Activity的Thread，这个Thread 若持有该Activity的引用，就会导致内存泄漏。</p>
+<h4 id="内部类的原因"><a href="#内部类的原因" class="headerlink" title="内部类的原因"></a>内部类的原因</h4><p>因为内部类会隐式地持有外部类的引用，若内部类不被释放，外部类也是无法释放。常见的有内部的Listener、Callback、Handler等导致。</p>
+<p>情景1：若外部类应该释放的时候，内部类还在执行里面的函数，会导致外部类无法释放。</p>
+<p>情景2：若一个异步操作，会回调内部类的Listener、Callback、Handler。当外部类应该释放的时候，但是这个异步操作还存在，而这个异步操作类又持有了Listener、Callback、Handler，导致外部类无法被释放。PS：这个原因也属于生命周期的原因。</p>
+<h4 id="静态变量的原因"><a href="#静态变量的原因" class="headerlink" title="静态变量的原因"></a>静态变量的原因</h4><p>单例类里包含Activity</p>
+<p>静态变量的类里引用到Activity</p>
+<h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
+<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
+<ol>
+<li>使用静态内部类 + weakReference
+静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
+<h4 id="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><a href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期" class="headerlink" title="单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"></a>单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</h4><h4 id="对象的注册与反注册要成对出现"><a href="#对象的注册与反注册要成对出现" class="headerlink" title="对象的注册与反注册要成对出现"></a>对象的注册与反注册要成对出现</h4><h4 id="不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><a href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存" class="headerlink" title="不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存"></a>不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</h4><h4 id="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><a href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View" class="headerlink" title="因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"></a>因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/12/05/tips-android-arch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/05/tips-android-arch/" itemprop="url">
+                  android架构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T11:59:48+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://www.cnblogs.com/zqlxtt/p/6887938.html" target="_blank" rel="external">Android官方架构组件介绍之LifeCycle</a>,Android架构组件一共包括以下几个：</p>
+<ul>
+<li>LifeCycle ： 与Activity和Fragment的生命周期有关</li>
+<li>LiveData ：异步可订阅数据，也是生命周期感知</li>
+<li>ViewModel ：视图数据持有模型，也是生命周期感知</li>
+<li>Room ：SQLite抽象层，用于简化SQLite数据存储</li>
+</ul>
+<p><a href="https://developer.android.com/topic/libraries/architecture/index.html" target="_blank" rel="external">官网</a></p>
+<h3 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h3><p>Android应用程序的开发使用Java编写，在架构上使用MVC，鼓励组件之间的弱耦合。开发出编写可重用、可扩展、可维护、灵活性高的代码需要遵循以下原则。
+● “开—闭”原则（OCP）：一个软件实体应当对扩展开放，对修改关闭。这个原则说的是，在设计一个模块时，应当使这个模块可以在不被修改的前提下被扩展。换言之，应当允许在不必修改源代码的情况下改变这个模块的行为。
+● 里氏代换原则（LSP）：一个软件实体如果使用的是一个基类的话，那么一定使用于其子类，而且它根本不能察觉出基类对象和子类对象的区别。
+● 依赖倒转原则（DIP）：要依赖于抽象，不要依赖于具体。
+● 接口隔离原则（ISP）：使用多个专门的接口比使用单一的总接口要好。一个类对另外一个类的依赖性应当是建立在最小的接口上的。
+● 合成/聚合复用原则（CARP）：又称合成复用原则（CRP），就是在一个新的对象里面使用一些已有的对象，使之成为新对象的一部分；新的对象通过向这些对象的委派达到复用已有功能的目的。简而言之就是：要尽量使用合成/聚合，尽量不使用继承。
+● 迪米特法则（LoD）：又称最少知识原则（LKP），是说一个对象应当对其他对象尽可能少的了解。狭义的迪米特法则是指如果两个类不必彼此直接通信，那么这两个类就不应当发生直接的相互作用。如果其中一个类需要调用另一个类，可以通过第三者转发这个调用。广义的迪米特法则是指一个模块设计得好坏的一个重要的标志就是该模块在多大的程度上将自己的内部数据与实现有关的细节隐藏起来。信息的隐藏非常重要的原因在于，它可以使各个子系统之间脱耦，从而允许它们独立地被开发、优化、使用、阅读及修改。</p>
+<h4 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h4><p>Android中最明显的简单工厂模式之一就是获取服务的系统方法“getSystemService”，例如，获得SensorManager的具体代码如下所示。</p>
+<h4 id="Android与工厂方法模式"><a href="#Android与工厂方法模式" class="headerlink" title="Android与工厂方法模式"></a>Android与工厂方法模式</h4><p>在Android的Activity、Service等核心组件中，都定义了onCreate（）方法，例如，当我们要显示用户界面时，一般都会在onCreate（）使用setContentView这个方法，这个方法是在Activity中定义的，在编写具体的</p>
+<h4 id="Android与抽象工厂模式"><a href="#Android与抽象工厂模式" class="headerlink" title="Android与抽象工厂模式"></a>Android与抽象工厂模式</h4><p>在Android的应用程序开发中涉及到的IPC通信就是抽象工厂模式很好的</p>
+<h4 id="Android与单例模式"><a href="#Android与单例模式" class="headerlink" title="Android与单例模式"></a>Android与单例模式</h4><p>单例模式在Android中无所不在，例如，对服务的管理者ServiceManager就采用了单例模式，具体代码如下所示。</p>
+<h4 id="构造器模式"><a href="#构造器模式" class="headerlink" title="构造器模式"></a>构造器模式</h4><p>在Android中，AlertDialog的构造是建造者模式一个非常经典的实现，具体代码如下所示。</p>
+<h4 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h4><p>在Java I/O库的设计和实现中就很好地使用了装饰模式。JDK提供的java.io包中使用了Decorator模式来实</p>
+<h4 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h4><p>是一种得到广泛应用的模式，例如，我们熟知的MVC模式就采用了外观模式。在MVC架构模式中，每一层并不需要知道其他层次的细节，只是通过层与层之间的接口调用即可，这极大方便了应用开发</p>
+<h4 id="Facade设计模式"><a href="#Facade设计模式" class="headerlink" title="Facade设计模式"></a>Facade设计模式</h4><p>在JNI中的美妙应用，如下图所示。</p>
+<h4 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h4><p> 在Android中，享元模式非常明显的应用是在SQLite数据库数据查询时，当我们向SQLite发起查询时，SQL语句会被编译和缓存，此时即享元模式。</p>
+<h4 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h4><p>Android中的ListView是对适配器模式非常好的说明</p>
+<h4 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h4><p>Android中两个进程间的通信，如 框架在支持Android应用程序间的跨进程通信时就是基于Binder的，要实现进程间通信的双方只需要遵循共同的AIDL接口即可，而在背后是使用了代理模式的，下面举具体的例子说明。</p>
+<h4 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h4><p>Android中的View布局树是组合模式非常生动直观的说明</p>
+<h4 id="模板方式模式"><a href="#模板方式模式" class="headerlink" title="模板方式模式"></a>模板方式模式</h4><p>Android中的四大组件的生命周期方法是模板方法模式的绝妙体现。</p>
+<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><p>Android中观察者模式的实现可谓比比皆是，例如，一个Button的ButtonClickListener就是观察者，当用户单击该Button时，ButtonClickListener就会做出相应的响应。</p>
+<h4 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h4><p>当Activity执行不同的方法时，会处于相应的状态中，这就是状态模式的应用。</p>
+<h4 id="Android与策略模式"><a href="#Android与策略模式" class="headerlink" title="Android与策略模式"></a>Android与策略模式</h4><p>Android中的ListView是策略模式非常好的说明，ListView汇总会有很多Items，每个处理会根据特定Item的ID可以选择不同的策略进行处理。我们在5.4节中已经进行了详细的阐述。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/30/tips-linux-rename/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/30/tips-linux-rename/" itemprop="url">
+                  linux批量操作文件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-30T18:25:22+08:00">
+                2017-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux管理/" itemprop="url" rel="index">
+                    <span itemprop="name">linux管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>一个批量将mp4文件转成gif文件的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;*.mp4&quot; |sed &apos;s/.mp4$//g&apos;|xargs -i ffmpeg -i &#123;&#125;.mp4 &#123;&#125;.gif</div></pre></td></tr></table></figure>
+<p><code>sed &#39;s/.mp4$//g&#39;</code>使用sed命令将mp4文件名的<code>.mp4</code>全部替换成空.<code>/g</code>是全局替换.s是sed的替换命令,替换格式<code>&#39;s/原文/要替换成的/&#39;</code></p>
+<p>或者:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">for file in $(find . -name &quot;*.mp4&quot; -type f);do ffmpeg -i &quot;$file&quot; &quot;$&#123;file%.*&#125;.gif&quot;;done</div></pre></td></tr></table></figure></p>
+<p>找到所有<code>.mp4</code>文件进行循环,file是mp4文件全名,<code>${file%.*}</code>是剔除从右边最小匹配,即将<code>.mp4</code>去掉</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/17/env-mac-debug-c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/17/env-mac-debug-c/" itemprop="url">
+                  mac下Core Dump文件的行程与分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T16:31:12+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/env/" itemprop="url" rel="index">
+                    <span itemprop="name">env</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="mac下生成core-dump"><a href="#mac下生成core-dump" class="headerlink" title="mac下生成core dump"></a>mac下生成core dump</h4><ol>
+<li>使用<code>ulimit -c</code>查看ulimit设置,显示<code>unlimited</code>表示开启,显示0表示关闭,通过<code>ulimit -c unlimited</code>打开设置;
+但是这个只在当前窗口有效果。如果需要变成系统全局设置。
+就需要去改/etc/profile文件，打开，然后加上<code>ulimit -c unlimited</code>就可以了，这样当产生Crash的时候就会自动产生dump文件。</li>
+<li><p>之后需要配置一下dump产生的规则和路径:<code>sudo sysctl kern.corefile=/cores/core.%N.%P</code>,其中%N表示进程名字，%P表示进程id。Linux还有%S,%T分别表示最后一个信号和时间，在MAC上没找到对应的。(mac默认生成的core dump在<code>/cores/</code>下).</p>
+</li>
+<li><p>最后如何用lldb来查看一个core dump文件<code>lldb -c core.xxx</code>. 在lldb命令下输入<code>bt</code>查看报错代码.</p>
+</li>
+</ol>
+<p>生成太多core文件会占用电脑磁盘,可以关闭全局的core dump生成配置:</p>
+<ol>
+<li>永久关闭，则在/etc/sysctl.conf中加入一行（如果存在，则将其值修改为0），重启后生效：<code>kern.coredump=0</code></li>
+<li>零时关闭，当前生效，重启后失效：<code>sudo sysctl -w kern.coredump=0</code></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/14/tips-android-compatibility/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/14/tips-android-compatibility/" itemprop="url">
+                  android兼容性
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-14T14:48:39+08:00">
+                2017-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="oppo-r9s无法浮层无法显示问题"><a href="#oppo-r9s无法浮层无法显示问题" class="headerlink" title="oppo r9s无法浮层无法显示问题"></a>oppo r9s无法浮层无法显示问题</h3><p>oppo r9s,系统版本6.0.1,<code>wmParams.type = WindowManager.LayoutParams.TYPE_TOAST;</code>时无法正常弹出,改成<code>wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;</code>可显示.</p>
+<p>在activity中弹出浮层后马上将activity movetoback导致oppo r9s 浮层无法显示,moveTaskToBack后延迟一秒显示浮层可解决问题.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//moveTaskToBack</div><div class="line">val intent = Intent(Intent.ACTION_MAIN)</div><div class="line">                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK// 注意</div><div class="line">                intent.addCategory(Intent.CATEGORY_HOME)</div><div class="line">                aty.startActivity(intent)</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/08/db-sql-query/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1360,1049 +2291,6 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/l-c-dllist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/31/l-c-dllist/" itemprop="url">
-                  (转)转使用C语言实现"泛型"链表
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T20:13:42+08:00">
-                2017-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。</p>
-<h3 id="一、所用的链表类型的选择"><a href="#一、所用的链表类型的选择" class="headerlink" title="一、所用的链表类型的选择"></a>一、所用的链表类型的选择</h3><p>我们知道，链表也有非常多的类型，包括单链表、单循环链表、双链表、双向循环链表等。在我的设计中，我的链表使用的类型是双向循环链表，并带一个不保存真实数据的头结点。其原因如下：
-1）单链表由于不能从后继定位到前驱，在操作时较为不方便
-2）双链表虽然能方便找到前驱，但是如果总是在其尾部插入或删除结点，为了定位的方便和操作的统一（所有的删除和插入操作，都跟在中间插入删除结点的操作一样），还要为其增加一个尾结点，并且程序还要保存一个指向这个尾结点的指针，并管理这个指针，从而增加程序的复杂性。而使用带头结点的循环双向链表，就能方便的定位（其上一个元素为链表的最后一个元素，其下一个元素为链表的第0个元素），并使所有的插入和删除的操作统一，因为头结点也是尾结点。注：结点的下标从0开始，头结点不算入下标值。
-3）接口的使用与C++中stl中list和泛型算法的使用大致相同。</p>
-<h3 id="二、list类型的定义"><a href="#二、list类型的定义" class="headerlink" title="二、list类型的定义"></a>二、list类型的定义</h3><p>为了让大家一睹为快，下面就给出这个用C语言实现的“泛型”的定义，再来说明，我这样设计的原因及要点，其定义如下：
-其定义在文件list_v2.c中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    void* data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;  </div><div class="line"></div><div class="line">struct list  </div><div class="line">&#123;  </div><div class="line">    struct node *head;//头指针，指向头结点  </div><div class="line">    int data_size;//链表对应的数据所占内存的大小  </div><div class="line">    int length;//链表list的长度  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>其声明在文件list_v2.h中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </div><div class="line"></div><div class="line"></div><div class="line">//定义结点指针Node*为List类型的迭代器  </div><div class="line">typedef struct node* Iterator;  </div><div class="line"></div><div class="line"></div><div class="line">//List类型的定义  </div><div class="line">typedef struct list* List;  </div><div class="line"></div><div class="line"></div><div class="line">//初始化链表,数据域所占内存的大小由data_size给出  </div><div class="line">int InitList(List *list, int data_size);  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表list的末尾  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Append(List list, void *data,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表的迭代器it_before的前面  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Insert(List list, void *data, Iterator it_before,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </div><div class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </div><div class="line">                      List B, Iterator it_b_before);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list中迭代器it指向的结点  </div><div class="line">int Remove(List list, Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的第0个结点，下标从0开始  </div><div class="line">int RemoveFirst(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的最后一个结点  </div><div class="line">int RemoveLast(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//返回list中第index个数据的指针  </div><div class="line">void* At(List list, int index);  </div><div class="line"></div><div class="line"></div><div class="line">//在begin和end之间查找符合condition的第一个元素，  </div><div class="line">//比较函数由condition指向,比较的值由data指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </div><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </div><div class="line">                       int (*condition)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找list中第一个与data相等的元素的下标，  </div><div class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </div><div class="line">int IndexOf(List list, void *data,  </div><div class="line">            int (*equal)(const void*,const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最小值，比较函数由less指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMin(Iterator begin, Iterator end,  </div><div class="line">                int (*less)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最大值，比较函数由large指向  </div><div class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMax(Iterator begin, Iterator end,  </div><div class="line">                int (*large)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//获取list的长度  </div><div class="line">int GetLength(List list);  </div><div class="line">//若list为空链表，则返回1，否则返回0  </div><div class="line">int IsEmpty(List list);  </div><div class="line">//销毁list  </div><div class="line">void DestroyList(List *list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的首迭代器  </div><div class="line">Iterator Begin(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </div><div class="line">Iterator End(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </div><div class="line">Iterator Next(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </div><div class="line">Iterator Last(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//通过迭代器it获得数据，相当于*p  </div><div class="line">void* GetData(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetNext(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetLast(Iterator it);</div></pre></td></tr></table></figure></p>
-<h3 id="三、如何实现隐藏链表的成员变量（即封装）"><a href="#三、如何实现隐藏链表的成员变量（即封装）" class="headerlink" title="三、如何实现隐藏链表的成员变量（即封装）"></a>三、如何实现隐藏链表的成员变量（即封装）</h3><p>首先，我们为什么需要封装呢？我觉得封装主要有三大好处。</p>
-<ol>
-<li>隔离变化，在程序中需要封装的通常是程序中最容易发生变化的地方，例如成员变量等，我们可以把它们封装起来，从而让它们的变化不会影响到系统的其他部分，也就是说，封装的是变化。</li>
-<li>降低复杂度，因为我们把一个对象是如何实现的等细节封装起来，只留给用户一个最小依赖的接口，从而让系统变量简单明了，在一定程度降低了系统的复杂性，方便了用户的使用。</li>
-<li>让用户只能按照我们设计好的接口来操作一个对象或类型，而不能自己直接对一个对象进行操作，从而减少了用户的误操作，提高了系统的稳定性。</li>
-</ol>
-<p>在面向对象的设计中，如果我们想要隐藏一个类的成员变量，我们可以把这些成员变量声明为私有的，而在C语言中，我们可以怎么实现呢？其实其实现是很简单的，我们在C语言中，当我们要使用一个自己定义的类型或函数时，我们会把声明它的头文件包含（include）过来，只要我们在文件中只声明其类型是一个结构体，而把它的实现写在.c文件中即可。</p>
-<p>在本例子中，我把<code>struct list</code>和<code>struct node</code>定义在.c文件中，而在头文件中，只声明其指针类型，即<code>typedef struct node* Iterator</code>和<code>typedef struct list* List;</code>当我们要使用该类型时，只需要在所在的文件中，include该头文件即可。因为在编译时，编译器只要知道List和Iterator是一个指针类型就能知道其所占的内存大小，也就能为其分配内存，所以能够编译成功。而又因为该头文件中并没有该类型（struct list和struct node）的定义，所以我们在使用该类型时，只能通过我们提供的接口来操作对象。例如，我们并不能使用<code>List list; list-&gt;data</code>等等的操作，而只能通过已定义的接口GetData来获得。</p>
-<p>###四、如何实现泛型
-泛型，第一时间想起的可能是模板，但是在C语言中却没有这个东西。但是C语言中却有一个可以指向任何类型，在使用时，再根据具体的指针类型进行类型转换的指针类型，它就是<code>void*</code>。</p>
-<p>为什么void<em>可以指向任何类型的数据？这还得从C语言对于数据类型的处理方式来说明。在C语言中，我们使用<code>malloc</code>等函数来申请内存，而从内存的角度来看，数据是没有类型的，它们都是一串的0或1，而程序则根据不同的类型来解释这个内存单元中的数据的意义，例如对于内存中的数据，<code>FFFFFFFF</code>，如果它是一个有符号整型数据，它代表的是<code>-1</code>，而如果它是一个无符号整型数据，它代表的则是<code>2^32-1</code>。进一步说，如果你用一个<code>int</code>的指针变量p指向该内存，则</em>p就是-1，如果你用<code>unsigned int</code>的指针<code>p</code>指向该内存，则<code>*p = 2^32-1</code>。</p>
-<p>而我们使用<code>malloc</code>等函数时，也只需要说明申请的内存的大小即可，也不用说明申请的内存空间所存放的数据的类型，例如，我们申请一块内存空间来存放一个整型数据，则只需要<code>malloc(sizeof(int))</code>，即可，当然你完全可以把它当作一个具有4个单位的char数组来使用。所以我们可以使用void指针来指向我们申请的内存，申请内存的大小由链表中的成员data_size定义，它也是真正的data所占的内存大小。</p>
-<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Iterator Insert(List list, void *data, Iterator it_before,</div><div class="line">                void (*assign)(void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>从上面的解说中，我们可以看到链表中的成员data_size指示了链表中的数据所占的内存大小，那我们们就可以使用函数memcpy把data指向的数据复制到新建的结点的data所指向的内存即可。为什么还需要一个函数指针assign，来指向一个定义数据之间如何赋值的函数呢？其实这和面向对象语言中常说到的深复制和浅复制有关。</p>
-<p>注：memcpy函数的原型为：<code>void * memcpy ( void * destination, const void * source, size_t num );</code></p>
-<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct student  </div><div class="line">&#123;  </div><div class="line">    char *name;  </div><div class="line">    char *no;  </div><div class="line">    int age;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>学生的姓名和学号都是能过动态分配内存而来的，并由student结构体中的name和no指针指向，那么当我们使用memcpy时，只能复制其指针，而不能复制其指向的数据，这样在很多情况下都会带来一定的问题。这个跟在C++中什么时候需要自己定义复制构造函数的情况类似。因为这种情况下，默认的复制构造函数并不能满足我们的需要，只能自己定义复制构造函数。</p>
-<p>所以在插入一个结点时，需要assign函数指针的原理与C++中自己定义复制构造函数的原理一样。它用于定义如何根据一个已有的对象生成一个该对象的拷贝对象。当然，可能在大多数的情况下，我们需要用到的数据类型都没有包含指针，所以在Insert函数的实现中，其实我也是有用到memcpy函数的，就是当assign为NULL时，就使用memcpy函数进行数据对象间的赋值，它其实就相当于C++中的默认复制构造函数或默认赋值操作函数。assign为NULL表示使用默认的逐位复制方式，即浅复制。</p>
-<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    DataType data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;</div></pre></td></tr></table></figure></p>
-<p>然后，当需要使用整型的链表时，就把DataType用typedef为int。其实这样做的一个最大的缺陷就是一个程序中只能存在着一个数据类型的链表，例如，如果我需要一个int型的链表和一个float型的链表，那么该把DataType定义为int呢还是float呢？所以这种看似可行的方式，其实只是虚有其表，在现象中是行不能的，虽然不少的数据结构的书都是这样实现的，但是它却没有什么实用价值。</p>
-<p>而其本质的原因是把结点的数据域的数据类型与某一种特定的数据类型DataType绑定在一起，从而让链表不能独立地变化。</p>
-<h3 id="七、为什么只把结点的指针定义为Iterator"><a href="#七、为什么只把结点的指针定义为Iterator" class="headerlink" title="七、为什么只把结点的指针定义为Iterator"></a>七、为什么只把结点的指针定义为Iterator</h3><p>在C++中iterator是一个类，为什么在这里，我只把结点的指针声明为一个Iterator呢？其实受STL的影响，我在一开始时，也是把Iterator实现为一个结构体，它只有一个数据成员，就是一个指向Node的指针。但在后来的实践中，发现其实并没有必要。在C++中为什么把iterator定义为一个类，是为了重载*，-&gt;等运行符，让iterator使用起来跟普通的指针一样。但是在C语言中，并没有重载运行符的做法，所以直接把Ierator声明为一个Node的指针最为方便、直接和好用，所有的比较运算都可以直接进行，而无需要借助函数。而把它声明为一个结构体反而麻烦、累赘。</p>
-<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>而是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>们可以试想一下，这个链表的为char链表，链表的元素为ABCBCBC，我们要在链表中找出所有的B，如果查找算法是使用第一种定义的话，它只能找出第一个B，而后面的两个B就无能为力了，而第二种定义，则可以通过循环改变其始末迭代器来在不同的序列段间查找目标字符B的位置。</p>
-<blockquote>
-<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="external">使用C语言实现“泛型”链表</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tool-as3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/31/tool-as3/" itemprop="url">
-                  tool-as3
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T19:47:42+08:00">
-                2017-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="AndroidStudio3-0新特性"><a href="#AndroidStudio3-0新特性" class="headerlink" title="AndroidStudio3.0新特性"></a>AndroidStudio3.0新特性</h3><h4 id="支持Java8语言"><a href="#支持Java8语言" class="headerlink" title="支持Java8语言"></a>支持Java8语言</h4><p>由于AS3.0默认支持Java8语言，所以我们就可以移除build.gradle里面的jackOptions了
-<del>jackOptions { true }</del></p>
-<p>然后可以在build.gradle配置为Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">  ...</div><div class="line">  compileOptions &#123;</div><div class="line">    sourceCompatibility JavaVersion.VERSION_1_8</div><div class="line">    targetCompatibility JavaVersion.VERSION_1_8</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果对Java8的一些特性存在问题,我们也可以在gradle.properties里面禁用Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.enableDesugar=false</div></pre></td></tr></table></figure></p>
-<h4 id="配置产品渠道"><a href="#配置产品渠道" class="headerlink" title="配置产品渠道"></a>配置产品渠道</h4><p>AS3.0以前我们常用productFlavors配置不同的渠道包，比如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        dev&#123;</div><div class="line">            applicationIdSuffix &quot;.dev&quot;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>AS3.0得新增flavorDimensions的配置，主要有以下 12 个构建变体：
-构建变体：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minApi24, minApi23, minApi21][Demo, Full][Debug, Release]</div></pre></td></tr></table></figure></p>
-<p>对应 APK：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app-[minApi24, minApi23, minApi21]-[demo, full]-[debug, release].apk</div></pre></td></tr></table></figure></p>
-<p>比如这里创建一个构建方式
-首先得在defaultConfig通过flavorDimensions配置构建变体，如下
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">       ...</div><div class="line">        flavorDimensions &quot;debug&quot;,&quot;release&quot;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>然后productFlavors的配置就可以如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        demo &#123;</div><div class="line">            dimension &quot;debug&quot;</div><div class="line">            applicationIdSuffix &quot;.demo&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            dimension &quot;release&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h4 id="改进的Android插件"><a href="#改进的Android插件" class="headerlink" title="改进的Android插件"></a>改进的Android插件</h4><ul>
-<li>优化了多 module 的项目并行编译运行更详细Task的展示
-构建变体的从属管理，比如上文的Flavors Dimensions配置新 api ，implementation依赖（替代compile ），compileOnly（替代provided）和runtimeOnly（替代 apk）</li>
-<li>通过增量编译 优化多dex的app构建速度</li>
-<li>优化了AAPT2增量资源化处理。如果要启用AAPT2,在gradle.properties文件添加代码：<code>android.enableAapt2=true</code></li>
-<li>支持java8语言</li>
-<li>增加测试工具，可通过dependencies依赖使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies&#123;</div><div class="line">        androidTestUtil“com.linkedin.testbutler：测试管家应用：1.3.0@apk”</div><div class="line">        ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="常见出错总结"><a href="#常见出错总结" class="headerlink" title="常见出错总结"></a>常见出错总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Cause: getMainOutputFile is no longer supported.  Use getOutputFileName if you need to determine the file name of the output.</div></pre></td></tr></table></figure>
-<p>或
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Not valid.</div></pre></td></tr></table></figure></p>
-<p>主要是AndResGuard1.2.3版本还没有兼容AS3.0
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:All flavors must now belong to a named flavor dimension. The flavor &apos;prod&apos; is not assigned to a flavor dimension. Learn more at https://d.android.com/r/tools/flavorDimensions-missing-error-message.html</div></pre></td></tr></table></figure></p>
-<p>AS3.0需要通过flavorDimensions来配置产品渠道，详细看上文。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/17/tips-candcpp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/17/tips-candcpp/" itemprop="url">
-                  C/CPP中的编程技巧及其概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-17T11:25:05+08:00">
-                2017-10-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="C-Language"><a href="#C-Language" class="headerlink" title="C Language"></a>C Language</h3><h4 id="size-t"><a href="#size-t" class="headerlink" title="size_t"></a>size_t</h4><p>size_t的全称应该是size type，就是说“一种用来记录大小的数据类型”。属于C99标准，它所定义的变量可以进行加减乘除运算。因此函数中表示数据大小的变量，推荐使用这个类型！例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int xxx(voidvoid *p, size_t len);</div></pre></td></tr></table></figure></p>
-<h4 id="指针的指针（双重指针）的作用："><a href="#指针的指针（双重指针）的作用：" class="headerlink" title="指针的指针（双重指针）的作用："></a>指针的指针（双重指针）的作用：</h4><ol>
-<li>用来传递需要修改的指针参数到函数中；</li>
-<li>用来动态生成多维数组；</li>
-<li>多用于指针交换，可以避免数据复制，提升系统的性能，同时还可以让函数修改指针，例如扩充其大小，指向等一般指针的指针用作参数，大多用在需要函数改变指针(重新引用变量)而又不能通过返回值传递(例如返回值用于传递其他结果)时。</li>
-</ol>
-<h4 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h4><p>以空间换时间。</p>
-<h4 id="backtrace函数追踪函数调用堆栈以及定位段错误"><a href="#backtrace函数追踪函数调用堆栈以及定位段错误" class="headerlink" title="backtrace函数追踪函数调用堆栈以及定位段错误"></a>backtrace函数追踪函数调用堆栈以及定位段错误</h4><p>一般察看函数运行时堆栈的方法是使用GDB（bt命令）之类的外部调试器,但是,有些时候为了分析程序的BUG,(主要针对长时间运行程序的分析),在程序出错时打印出函数的调用堆栈是非常有用的</p>
-<h3 id="CPP"><a href="#CPP" class="headerlink" title="CPP"></a>CPP</h3><h4 id="显示限定数组实参的原始个数"><a href="#显示限定数组实参的原始个数" class="headerlink" title="显示限定数组实参的原始个数"></a>显示限定数组实参的原始个数</h4><p>数组在作为函数参数传递时会退化为指针：</p>
-<blockquote>
-<p>A declaration of a parameter as “array of type” shall be adjusted to “qualified pointer to type”.</p>
-</blockquote>
-<p>以及前面已经提到的：</p>
-<blockquote>
-<p>int x[3][5];Here x is a 3 × 5 array of integers. When x appears in an expression, it is converted to a pointer to (the first of three) five-membered arrays of integers.</p>
-</blockquote>
-<p>这意味着数组作为参数传递时会丢失边界(C/C++的原生数组本来也就没有边界检查…)。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void funcA(int x[10])&#123;&#125;</div><div class="line">// Equivalent to</div><div class="line">void funcB(int *x)&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>其对应的中间代码为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">; Function Attrs: nounwind uwtable</div><div class="line">define void @_Z5funcAPi(i32*) #4 &#123;</div><div class="line">  %2 = alloca i32*, align 8</div><div class="line">  store i32* %0, i32** %2, align 8</div><div class="line">  ret void</div><div class="line">&#125;</div><div class="line">; Function Attrs: nounwind uwtable</div><div class="line">define void @_Z5funcBPi(i32*) #4 &#123;</div><div class="line">  %2 = alloca i32*, align 8</div><div class="line">  store i32* %0, i32** %2, align 8</div><div class="line">  ret void</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果数组边界的精确数值非常重要，并且希望函数只接收含有特定数量的元素的数组，可以使用引用形参：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void funcC(int (&amp;x)[10])&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>其中间代码为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">; Function Attrs: nounwind uwtable</div><div class="line">define void @_Z5funcCRA10_i([10 x i32]* dereferenceable(40)) #4 &#123;</div><div class="line">  %2 = alloca [10 x i32]*, align 8</div><div class="line">  store [10 x i32]* %0, [10 x i32]** %2, align 8</div><div class="line">  ret void</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果我们使用数组元素个数不等于10的数组传递给funcC,会导致编译错误：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// note: candidate function not viable: no known conversion from &apos;int [11]&apos; to &apos;int (&amp;)[10]&apos; for 1st argument.</div><div class="line">void funcC(int (&amp;x)[10])&#123;&#125;</div><div class="line">int main(int argc,char* argv[])</div><div class="line">&#123;</div><div class="line">  int x[11]=&#123;0,1,2,3,4,5,6,7,8,9,10&#125;;</div><div class="line">  // error: no matching function for call to &apos;funcC&apos;.</div><div class="line">  funcC(x);</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>也可以使用函数模板参数来指定函数接收参数的数组大小：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">template&lt;int arrSize&gt;</div><div class="line">void funcA(int x[arrSize])&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>使用时：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int x[12]</div><div class="line">funcA&lt;12&gt;(x); // OK</div><div class="line">funcA&lt;13&gt;(x); //ERROR</div></pre></td></tr></table></figure></p>
-<h4 id="启用编译器的改变符号的隐式类型转换警告"><a href="#启用编译器的改变符号的隐式类型转换警告" class="headerlink" title="启用编译器的改变符号的隐式类型转换警告"></a>启用编译器的改变符号的隐式类型转换警告</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if((unsigned int)4&lt;(unsigned int)(int)-1)&#123;</div><div class="line">  cout&lt;&lt;&quot;yes&quot;&lt;&lt;endl;</div><div class="line">&#125;else&#123;</div><div class="line">  cout&lt;&lt;&quot;no&quot;&lt;&lt;endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>if中的那段表达式是为true的(输出yes)，而且编译时也不会发出警告。
-虽然我们指定了(int)-1，但是当将unsigned int和int比较时会发生隐式转换。即：</p>
-<blockquote>
-<p>The usual arithmetic conversions are performed on operands of arithmetic or enumeration type.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">((unsigned int)4&lt;(unsigned)(int)-1)==true</div></pre></td></tr></table></figure></p>
-<p>Warnings about conversions between signed and unsigned integers are disabled by default in C++ unless -Wsign-conversion is explicitly enabled.</p>
-</blockquote>
-<p>通过启用-Wsign-conversion就可以看到警告了(建议开启)。
-该参数的作用为：</p>
-<blockquote>
-<p>Warn for implicit conversions that may change the sign of an integer value, like assigning a signed integer expression to an unsigned integer variable. An explicit cast silences the warning. In C, this option is enabled also by -Wconversion.</p>
-</blockquote>
-<h4 id="断言-assert"><a href="#断言-assert" class="headerlink" title="断言(assert)"></a>断言(assert)</h4><p>assert Defined in header(c++)/(C)</p>
-<blockquote>
-<p>If NDEBUG is defined as a macro name at the point in the source code where <assert.h> is included, then assert does nothing.
-If NDEBUG is not defined, then assert checks if its argument (which must have scalar type) compares equal to zero.</assert.h></p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#ifdef NDEBUG</div><div class="line">#define assert(condition) ((void)0)</div><div class="line">#else</div><div class="line">#define assert(condition) /*implementation defined*/</div><div class="line">#endif</div></pre></td></tr></table></figure>
-<p>assert只在Debug模式中有效，使用release模assert什么都不做了。
-因为在VC++里面，release会在全局定义NDEBUG
-下面的代码在VS中使用debug和release模式分别编译并输入&gt;100的数，会有不一样的结果(release不会)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">using namespace std;</div><div class="line">bool func(int x) &#123;</div><div class="line">  if (x &gt; 100) &#123;</div><div class="line">    return true;</div><div class="line">  &#125;</div><div class="line">  else &#123;</div><div class="line">    return false;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">int main(void) &#123;</div><div class="line">  int i;</div><div class="line">  cin &gt;&gt; i;</div><div class="line">  assert(func(i));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="无效的引用"><a href="#无效的引用" class="headerlink" title="无效的引用"></a>无效的引用</h4><p>通常情况下我们创建的引用就是有效的，但是也可以人为因素使坏…
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">char* ident(char *p) &#123; return p; &#125;</div><div class="line">int main(int argc,char* argv[])</div><div class="line">&#123;</div><div class="line">  char&amp; r &#123;*ident(nullptr)&#125;;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这是UB的行为。</p>
-<blockquote>
-<p>in particular, a null reference cannot exist in a well-defined program, because the only way to create such a reference would be to bind it to the “object” obtained by indirection through a null pointer,which causes undefined behavior.</p>
-</blockquote>
-<h4 id="数组的引用"><a href="#数组的引用" class="headerlink" title="数组的引用"></a>数组的引用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">void f(int(&amp;r)[4])&#123;</div><div class="line">  cout&lt;&lt;sizeof(r)&lt;&lt;endl;</div><div class="line">&#125;</div><div class="line">void g(void)&#123;</div><div class="line">  int a[]=&#123;1,2,3,4&#125;;</div><div class="line">  f(a); // OK</div><div class="line">  int b[]=&#123;1,2,3&#125;;</div><div class="line">  f(b); // 错误，元素个数有误</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>对于数组引用类型的从参数来说，元素个数也是其类型的一部分。通常只有在模板中才会使用数组引用，此时数组的引用可以通过推断得到。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">template&lt;class T,int N&gt;</div><div class="line">void f(T(&amp;r)[N])&#123;</div><div class="line">  // ...</div><div class="line">&#125;</div><div class="line">int a1[10];</div><div class="line">double a2[100];</div><div class="line">void g()&#123;</div><div class="line">  f(a1);  // T是int，N是10</div><div class="line">  f(a2);  // T是double，N是100</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这么做的后果是调用f()所用的不同类型的数组有多少个，对应定义的函数有多少个。</p>
-<h4 id="忽略函数参数的顶层const"><a href="#忽略函数参数的顶层const" class="headerlink" title="忽略函数参数的顶层const"></a>忽略函数参数的顶层const</h4><p>为了与C语言兼容，在C++中会自动忽略参数类型的顶层const。</p>
-<p>例如下面的函数在C++会报重定义错误，而不是重载：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 类型是int(int)</div><div class="line">int f(int x)&#123;&#125;</div><div class="line">// error: redefinition of &apos;f&apos;</div><div class="line">// 类型是int(int)</div><div class="line">int f(const int x)&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>不论对于哪种情况，允许修改实参也好，不允许修改实参也好，它都只是函数调用者提供的实参的一个副本。因此调用过程不会破坏调用上下文的数据安全性。</p>
-<h4 id="char作为数组下标时当心unsigned-signed"><a href="#char作为数组下标时当心unsigned-signed" class="headerlink" title="char作为数组下标时当心unsigned/signed"></a>char作为数组下标时当心unsigned/signed</h4><p>当char类型用作数组下标时，一定要先转unsigned char（因为char通常是有符号的(依赖实现定义)）。不能直接转int或unsigned int，会数组下标越界。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int main(void) &#123;</div><div class="line">  char ch=-1;</div><div class="line">    printf(&quot;%d %u %d&quot;, (int)ch, (unsigned)ch, (unsigned char)ch);</div><div class="line">  return 0;</div><div class="line">&#125;</div><div class="line">// output</div><div class="line">// -1 4294967295 255</div></pre></td></tr></table></figure></p>
-<h4 id="struct-tag-5-float"><a href="#struct-tag-5-float" class="headerlink" title="struct tag (*[5])(float)"></a><code>struct tag (*[5])(float)</code></h4><p>The type designated as <code>struct tag (*[5])(float)</code> has type ‘‘array of pointer to function returning struct tag’’. The array has length five and the function has a single parameter of type float. Its type category is array.</p>
-<h4 id="new一个指针数组"><a href="#new一个指针数组" class="headerlink" title="new一个指针数组"></a>new一个指针数组</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int TEN=10;</div><div class="line">auto A=new (void(*[TEN])(void));</div><div class="line">delete[] A;</div></pre></td></tr></table></figure>
-<h4 id="底层-Low-Level-const和顶层-Top-Level-const"><a href="#底层-Low-Level-const和顶层-Top-Level-const" class="headerlink" title="底层(Low-Level)const和顶层(Top-Level)const"></a>底层(Low-Level)const和顶层(Top-Level)const</h4><ul>
-<li><strong>底层const(Low-Level const)</strong>:表示指针所指的对象是一个常量。</li>
-<li><strong>顶层const(Top-Level const)</strong>:表示指针本身是个常量。顶层const可以表示任意的对象是常量，这对于任何数据类型都适用。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">int ival=0;</div><div class="line">int *const ivalp_1=&amp;ival; // 不能改变ivalp_1的值，这是一个顶层const</div><div class="line">const int ci=42;  // 不能改变ci的值，这是一个顶层const</div><div class="line">const int *ivalp_2=&amp;ci;;  // 允许改变ivalp_2的值，这是一个底层const</div><div class="line">const int *const ivalp_3=ivalp_2; //靠右的是顶层const，靠左的是底层const</div><div class="line">const int &amp;ref=ci;  // 用于声明引用的const都是底层const</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>其实我有一个简单的区分的方法：看const修饰的右边是什么。</p>
-<ul>
-<li>对于<code>int const *x=std::nullput;</code>，const修饰的是<em>x，因为x是指针，我们就暂且把此处的</em>x当做解引用来看，他就代表x所指向的对象，则它就是底层const。</li>
-<li>反之亦然，<code>int * const x=std::nullptr;</code>，因为const修饰的是指针x，所以它就是顶层const。</li>
-</ul>
-<h4 id="在构造函数中传递this指针的危害"><a href="#在构造函数中传递this指针的危害" class="headerlink" title="在构造函数中传递this指针的危害"></a>在构造函数中传递this指针的危害</h4><p>如果我们在构造函数中将this指针传递给其它的函数，有可能会引发这样的问题：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct C;</div><div class="line">void no_opt(C*);</div><div class="line">struct C &#123;</div><div class="line">	int c;</div><div class="line">	C() : c(0) &#123; no_opt(this); &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>看起来上面的代码似乎没什么问题，但是我们构造一个const C的时候，有可能会出现这样的问题：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const C cobj;</div><div class="line">void no_opt(C* cptr) &#123;</div><div class="line">	int i = cobj.c * 100; // value of cobj.c is unspecified</div><div class="line">	cout&lt;&lt;i&lt;&lt;endl;</div><div class="line">	cout &lt;&lt; cobj.c * 100 // value of cobj.c is unspecified</div><div class="line">	&lt;&lt; &apos;\n&apos;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面的代码会编译通过并可以在no_opt中修改常量对象cobj的成员i的值。
-在一个常量对象构造的时候将其this指针传递给其他函数，这意味着我们可以修改该常量中的对象的值，这是不合乎标准的。</p>
-<blockquote>
-<p>During the construction of a const object, if the value of the object or any of its subobjects is accessed through a glvalue that is not obtained, directly or indirectly, from the constructor’s this pointer, the value of the object or subobject thus obtained is unspecified.</p>
-</blockquote>
-<p>所以还是不要在构造函数中写将this指针传递出类外的东西(最好还是只初始化数据成员吧)…</p>
-<h4 id="获取当前执行程序的绝对路径"><a href="#获取当前执行程序的绝对路径" class="headerlink" title="获取当前执行程序的绝对路径"></a>获取当前执行程序的绝对路径</h4><p>有两种方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#include &lt;direct.h&gt;</div><div class="line">char buffer[MAXPATH];</div><div class="line">getcwd(buffer, MAXPATH);</div><div class="line">cout&lt;&lt;buffer&lt;&lt;endl;</div></pre></td></tr></table></figure></p>
-<p>这种方法有一个弊端：如果将可执行程序添加至系统的PATH路径，则获取到的是在某个目录执行时该目录的路径。</p>
-<p>另一种方法是通过Windows API来获取：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">const string getTheProgramAbsPath(void)&#123;</div><div class="line">    TCHAR exeFullPath[MAX_PATH]; // MAX_PATH在WINDEF.h中定义了，等于260</div><div class="line">    memset(exeFullPath,0,MAX_PATH);</div><div class="line">    GetModuleFileName(NULL,exeFullPath,MAX_PATH);</div><div class="line">    return &#123;exeFullPath&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在此种方式下不论是否将该程序添加至系统的PATH路径以及在何处执行，都会获取该可执行程序在系统中存放的绝对路径。</p>
-<h4 id="一个奇葩的using用法"><a href="#一个奇葩的using用法" class="headerlink" title="一个奇葩的using用法"></a>一个奇葩的using用法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">using foofunc=void(int);</div><div class="line">foofunc foo;</div><div class="line">int main()&#123;</div><div class="line">  foo(1);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上面的代码里：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">foofunc foo;</div></pre></td></tr></table></figure></p>
-<p>是声明一个函数foo，可以看一下目标文件中的符号信息(省去无关细节)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ clang++ -c testusing.cc -o testusing.o -std=c++11</div><div class="line">$ llvm-nm testusing.o</div><div class="line">-------- U _Z3fooi</div><div class="line">-------- U __main</div><div class="line">-------- U atexit</div><div class="line">00000050 T main</div></pre></td></tr></table></figure></p>
-<p>通过gcc工具链中的c++filt可以还原目标文件中的符号：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ c++filt _Z3fooi</div><div class="line">foo(int)</div></pre></td></tr></table></figure></p>
-<p>但是并没有定义，直接链接会产生未定义错误。</p>
-<h4 id="右值引用"><a href="#右值引用" class="headerlink" title="右值引用"></a>右值引用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">int x=123;</div><div class="line">int &amp;&amp;y=x+1;</div></pre></td></tr></table></figure>
-<p>其IR代码为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># 使用值123初始化x</div><div class="line">%2 = alloca i32, align 4</div><div class="line">store i32 123, i32* %2, align 4</div><div class="line"># y</div><div class="line">%3 = alloca i32*, align 8</div><div class="line"># 存放x+1产生的临时对象</div><div class="line">%4 = alloca i32, align 4</div><div class="line"># 计算x+1</div><div class="line">%5 = load i32, i32* %2, align 4</div><div class="line">%6 = add nsw i32 %5, 1</div><div class="line"># x+1 产生一个临时值，该临时值为%4</div><div class="line">store i32 %6, i32* %4, align 4</div><div class="line"># 将该临时值的地址绑定到%3(y)</div><div class="line">store i32* %4, i32** %3, align 8</div></pre></td></tr></table></figure></p>
-<p>从而实现非拷贝行为，其行为类似于将一个对象的地址赋值给一个指针。
-其实右值引用的作用就是给临时对象续命——将引用绑定到一个临时对象，不会带来额外的拷贝操作。
-实现同样续命行为的还有<code>const T&amp;</code>：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">int x=123;</div><div class="line">const int &amp;y=x+1;</div></pre></td></tr></table></figure></p>
-<p>和上面的示例在LLVM下会产生一模一样的IR代码。</p>
-<h4 id="一个数组名字例子"><a href="#一个数组名字例子" class="headerlink" title="一个数组名字例子"></a>一个数组名字例子</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">int a[]=&#123;1,2,3,4,5&#125;;</div><div class="line">int *p=(int*)(&amp;a+1);</div><div class="line">printf(&quot;%d,%d\n&quot;,*(a+1),*(p-1));</div><div class="line">// output: 2,5</div></pre></td></tr></table></figure>
-<h4 id="到底有几种传参方式"><a href="#到底有几种传参方式" class="headerlink" title="到底有几种传参方式"></a>到底有几种传参方式</h4><p>大多数人都觉得在C++函数中有以下三种传参方式：</p>
-<ul>
-<li>传值(by value)：形参的值是实参的拷；</li>
-<li>传引用(by reference)：形参是实参的别名；</li>
-<li>传指针(by pointer)：传递指向对象的指针给形参；
-实际上，C++中只有两种传参方式：传值、传引用。
-因为传指针(by pointer)也是传值的一种，形参的值也只是实参的一份拷贝，只是形参和实参都是指针而已。
-在C++之父的著作：《The C++ Programming Language 4th》中写道：<blockquote>
-<p>Unless a formal argument(parameter) is a reference, a copy of the actual argument is passed to the function.</p>
-</blockquote>
-</li>
-</ul>
-<p>传指针(by value)只是一种利用指针的性质来实现防止拷贝带来开销的一种技巧，而不是一种传参方式。</p>
-<h4 id="定义拷贝-赋值与析构函数的三大法则"><a href="#定义拷贝-赋值与析构函数的三大法则" class="headerlink" title="定义拷贝/赋值与析构函数的三大法则"></a>定义拷贝/赋值与析构函数的三大法则</h4><blockquote>
-<p>如果一个类需要自定义的拷贝构造函数、拷贝赋值操作符、析构函数中的任何一个，那么他往往同时需要三者。</p>
-</blockquote>
-<p>因为编译器生成的隐式定义的copy constructor和operator=语义是逐成员拷贝(memberwise)的，所以如果编译器生成的操作不能够满足类的拷贝需求(比如类成员是具有管理某种资源的句柄)，使用编译器的隐式定义会具有浅拷贝，导致两个对象进入某种共享状态。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">struct A&#123;</div><div class="line">  A():memory(nullptr)&#123;&#125;</div><div class="line">  void getMemory(std::size_t memSize)&#123;</div><div class="line">    memory=(char*)malloc(memSize);</div><div class="line">  &#125;</div><div class="line">  ~A()&#123; free(memory); &#125;</div><div class="line">private:</div><div class="line">  char* memory;</div><div class="line">&#125;;</div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">  A x;</div><div class="line">  x.getMemory(12);</div><div class="line">  A y;</div><div class="line">  y=x;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果使用编译器生成的语义会使对象x和y内部共享一块内存，所以需要用户自己定义拷贝构造和拷贝赋值操作符，同样的原因，因为类成员持有某种资源，也需要用户自定义一个析构函数。</p>
-<h4 id="引用的实现"><a href="#引用的实现" class="headerlink" title="引用的实现"></a>引用的实现</h4><p>C++标准中是这么解释引用的:</p>
-<blockquote>
-<p>[ISO/IEC 14882:2014 §8.3.2]A reference can be thought of as a name of an object.</p>
-</blockquote>
-<p>但是标准中并没有要求应该如何实现引用这一行为(这一点标准中比比皆是)，不过多数编译器底层都是使用指针来实现的。
-看下列代码：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int a=123;</div><div class="line">int &amp;ra=a;</div><div class="line">int *pc=&amp;a;</div></pre></td></tr></table></figure></p>
-<p>然后将其编译为LLVM-IR来看编译器的实际行为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">%2 = alloca i32, align 4</div><div class="line">%3 = alloca i32*, align 8</div><div class="line">%4 = alloca i32*, align 8</div><div class="line">store i32 123, i32* %2, align 4</div><div class="line">store i32* %2, i32** %3, align 8</div><div class="line">store i32* %2, i32** %4, align 8</div></pre></td></tr></table></figure></p>
-<p>可以看到，指针和引用在经过编译器之后具有了完全相同的行为。</p>
-<h4 id="适当使用编译器生成操作"><a href="#适当使用编译器生成操作" class="headerlink" title="适当使用编译器生成操作"></a>适当使用编译器生成操作</h4><p>在特殊成员函数的隐式声明及其标准行为中提到了编译器会隐式生成和定义六种特殊的成员函数的行为。
-因为编译器生成的copy constructor和copy assigment operator均是具有memberwise行为的。所以当我们撰写的类使用浅拷贝可以满足的时候(值语义)，没必要自己费劲再写相关的操作了，因为编译器生成的和你手写的一样好，而且不容易出错。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">struct A&#123;</div><div class="line">  A(int a=0,double b=0.0):x(a),y(b)&#123;&#125;</div><div class="line">  A(const A&amp;)=default;</div><div class="line">  A&amp; operator=(const A&amp;)=default;</div><div class="line">  int x;</div><div class="line">  double y;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>虽然当你没有显式定义一个copy constructor和copy assignment operator的时候编译器就会隐式定义，但是最好还是自己手动使用=delete指定。
-编译器生成的和下面这样手写的一样：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">struct A&#123;</div><div class="line">  A(int a=0,double b=0.0):x(a),y(b)&#123;&#125;</div><div class="line">  A(const A&amp; r)&#123;</div><div class="line">    x=r.x;</div><div class="line">    y=r.y;</div><div class="line">  &#125;</div><div class="line">  A&amp; operator=(const A&amp; r)&#123;</div><div class="line">    x=r.x;</div><div class="line">    y=r.y;</div><div class="line">    return *this;</div><div class="line">  &#125;</div><div class="line">  int x;</div><div class="line">  double y;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>显然自己手写容易出错，这样的行为可以放心地交给编译器来做。</p>
-<h4 id="STL容器中压缩容量和真正地删除元素"><a href="#STL容器中压缩容量和真正地删除元素" class="headerlink" title="STL容器中压缩容量和真正地删除元素"></a>STL容器中压缩容量和真正地删除元素</h4><p>摘取自《C++编程规范：101条规则/准则与最佳实践》第82条。</p>
-<h5 id="压缩容器容量：swap魔术"><a href="#压缩容器容量：swap魔术" class="headerlink" title="压缩容器容量：swap魔术"></a>压缩容器容量：swap魔术</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">vector&lt;int&gt; x&#123;1,2,3,4,5,6,7&#125;;</div><div class="line">// ...</div><div class="line">vector&lt;int&gt;(x).swap(x); // 压缩到合适容量</div><div class="line">vector&lt;int&gt;().swap(x); // 删除所有元素</div></pre></td></tr></table></figure>
-<h5 id="真正地删除元素：std-remove并不执行删除操作"><a href="#真正地删除元素：std-remove并不执行删除操作" class="headerlink" title="真正地删除元素：std::remove并不执行删除操作"></a>真正地删除元素：std::remove并不执行删除操作</h5><p>STL中的std::remove算法并不真正地从容器中删除元素。因为std::remove属于algorithm，只操作迭代器范围，不掉用容器的成员函数，所以是不可能从容器中真正删除元素的。
-来看一下SGISTL中的实现(SGISTL的实现太老，没有用到std::move)：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">template &lt;class _InputIter, class _Tp&gt;</div><div class="line">inline _InputIter find(_InputIter __first, _InputIter __last, const _Tp&amp; __val)</div><div class="line">&#123;</div><div class="line">  while (__first != __last &amp;&amp; !(*__first == __val))</div><div class="line">    ++__first;</div><div class="line">  return __first;</div><div class="line">&#125;</div><div class="line">template &lt;class _InputIter, class _OutputIter, class _Tp&gt;</div><div class="line">_OutputIter remove_copy(_InputIter __first, _InputIter __last, _OutputIter __result, const _Tp&amp; __value) &#123;</div><div class="line">  for ( ; __first != __last; ++__first)</div><div class="line">    if (!(*__first == __value)) &#123;</div><div class="line">      *__result = *__first;</div><div class="line">      ++__result;</div><div class="line">    &#125;</div><div class="line">  return __result;</div><div class="line">&#125;</div><div class="line">template &lt;class _ForwardIter, class _Tp&gt;</div><div class="line">_ForwardIter remove(_ForwardIter __first, _ForwardIter __last, const _Tp&amp; __value) &#123;</div><div class="line">  __first = find(__first, __last, __value);</div><div class="line">  _ForwardIter __i = __first;</div><div class="line">  return __first == __last ? __first : remove_copy(++__i, __last, __first, __value);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到它们只是移动元素的位置，并非真正地把元素删除，只是将不该删除的元素移动到容器的首部，然后返回新的结束位置迭代器。
-等于是把删除的部分移动到了元素的尾部，所以要真正地删除容器中所有匹配的元素，需要用erase-remove惯用法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">c.erase(std::remove(c.begin(),c.end(),value),c.end()); // 删除std::remove之后容器尾部的元素</div></pre></td></tr></table></figure></p>
-<h4 id="谨防隐藏基类中的重载函数"><a href="#谨防隐藏基类中的重载函数" class="headerlink" title="谨防隐藏基类中的重载函数"></a>谨防隐藏基类中的重载函数</h4><p>如果基类中具有一个虚函数func但是其又重载了几个非虚函数：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">struct A&#123;</div><div class="line">  virtual void func()&#123;</div><div class="line">    cout&lt;&lt;&quot;A::func()&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  void func(int)&#123;</div><div class="line">    cout&lt;&lt;&quot;A::func(int)&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  void func(double)&#123;</div><div class="line">    cout&lt;&lt;&quot;A::func(double)&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line">struct B:public A&#123;</div><div class="line">  virtual void func()&#123;</div><div class="line">    cout&lt;&lt;&quot;B::func()&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>如果我们想要在B对象中使用非虚版本的func函数：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">B x;</div><div class="line">// error: too many arguments to function call, expected 0, have 1</div><div class="line">x.func(123);</div></pre></td></tr></table></figure></p>
-<p>这是由于派生类在覆盖基类虚函数的时候会隐藏其他的重载函数，需要在B中显式引入：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">struct B:public A&#123;</div><div class="line">  virtual void func()&#123;</div><div class="line">    cout&lt;&lt;&quot;B::func()&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  // 将A::func的重载函数引入作用域</div><div class="line">  using A::func;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<h4 id="宏的替代"><a href="#宏的替代" class="headerlink" title="宏的替代"></a>宏的替代</h4><p>宏在预处理阶段被替换，此时C++的语法和语义规则还没有生效，宏能做的只是简单的文本替换，是极其生硬的工具。
-C++中几乎从不需要宏。可以用const和enum定义易于理解的常量。用inline来避免函数调用的开销，用template指定函数系列和类型系列，用namespace避免名字冲突。
-除非在条件编译时使用，其他任何时候都没有在C++中使用宏的正当理由。</p>
-<h4 id="类内内存分配函数"><a href="#类内内存分配函数" class="headerlink" title="类内内存分配函数"></a>类内内存分配函数</h4><p>C++中类内的内存分配函数都是static成员函数:</p>
-<blockquote>
-<p>Any allocation function for a class T is a static member (even if not explicitly declared static).</p>
-</blockquote>
-<p>这意味着operator new/operator delete以及operator new[]/operator delete[]都被隐式声明为static成员函数。</p>
-<h4 id="异常安全"><a href="#异常安全" class="headerlink" title="异常安全"></a>异常安全</h4><ol>
-<li>析构函数、operator new、operator delete不能抛出异常</li>
-<li>swap操作不要抛出异常</li>
-<li>首先做任何可能抛出异常的事情(但不会改变对象重要的状态)，然后以不会抛出异常的操作结束。</li>
-<li>当一个被抛出的异常从throw表达式奔向catch子句时，所经之路任何一个部分执行的函数比从执行堆栈上移除其激活记录之前，都必须清理他所控制的任何资源。</li>
-<li>不要在代码中插入可能会提前返回的代码、调用可能会抛出异常的函数、或者插入其他一些东西从而使得函数末尾的资源释放得不到执行。</li>
-</ol>
-<h4 id="指向类成员函数指针的cv版本"><a href="#指向类成员函数指针的cv版本" class="headerlink" title="指向类成员函数指针的cv版本"></a>指向类成员函数指针的cv版本</h4><p>如果我们具有一个类A，其中具有重载的成员函数func，而他们的区别只是该成员函数是否为const，那么在定义一个指向成员函数的指针时如何分别？
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">struct A&#123;</div><div class="line">  void func()const&#123;</div><div class="line">    std::cout&lt;&lt;&quot;void func()const&quot;&lt;&lt;std::endl;</div><div class="line">  &#125;</div><div class="line">  void func()&#123;</div><div class="line">    std::cout&lt;&lt;&quot;void func()&quot;&lt;&lt;std::endl;</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>如果我们只是创建一个A::func的指针，指向的只是non-const版本。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void(A::*funcP)()=&amp;A::func;</div></pre></td></tr></table></figure></p>
-<p>想要指定const的版本，就需要在声明时指定const:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void(A::*funcConstP)()const=&amp;A::func;</div></pre></td></tr></table></figure></p>
-<p>对于const的A对象要使用const的版本，对于non-const的A对象要使用non-const的版本，不能混用。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">const A x;</div><div class="line">(x.*funcP)(); // ERROR!</div><div class="line">(x.*funcConstP)(); // OK</div><div class="line">A y;</div><div class="line">(y.*funcConstP)(); // ERROR!</div><div class="line">(y.*funcP)(); // OK</div></pre></td></tr></table></figure></p>
-<h4 id="STL中的compare操作实现"><a href="#STL中的compare操作实现" class="headerlink" title="STL中的compare操作实现"></a>STL中的compare操作实现</h4><p>不同于C语言中的宏，使用C++中的模板(template)和谓词(Predicates)可以很轻易的写出泛型的比较操作。
-在宏定义中还要注意参数的副作用，因为宏只是简单的替换，比如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#define MAX(a,b) a&gt;=b?a:b;</div><div class="line">MAX(--a,++b);</div><div class="line">// 被替换为</div><div class="line">--a&gt;=++b?--a:++b;</div></pre></td></tr></table></figure></p>
-<p>但是这个宏的实际操作这并不是我们所期待的行为。
-幸运的是，在C++中我们可以使用模板来避免这种丑陋的宏定义，而且也可以传递一个自定义的谓词来实现我们的判断行为：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">struct Compare&#123;</div><div class="line">  template&lt;typename T&gt;</div><div class="line">  bool operator()(const T&amp; a,const T&amp; b)&#123;</div><div class="line">    return a&lt;b?false:true;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line">template&lt;class T, class Compare&gt;</div><div class="line">const T&amp; max(const T&amp; a, const T&amp; b, Compare comp)</div><div class="line">&#123;</div><div class="line">    return (comp(a, b)) ? b : a;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="计算性构造函数"><a href="#计算性构造函数" class="headerlink" title="计算性构造函数"></a>计算性构造函数</h4><p>在某些情况下，可以通过创建构造函数的方式来提高成员函数的执行效率。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">struct String&#123;</div><div class="line">  String(const char* init);</div><div class="line">  const String operator+(const String&amp; l,const String&amp; r)&#123;</div><div class="line">    return String(l.s_,r.s_);</div><div class="line">  &#125;</div><div class="line">private:</div><div class="line">  String(const char* a,const char* b)&#123;</div><div class="line">    s_=new char[strlen(a)+strlen(b)+1];</div><div class="line">    strcat(strcpy(s_,a),b);</div><div class="line">  &#125;</div><div class="line">  char *s_;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<h4 id="自身类型的using成员"><a href="#自身类型的using成员" class="headerlink" title="自身类型的using成员"></a>自身类型的using成员</h4><p>怎么定义一个类的成员中能够获取到当前类类型的成员呢？
-可以用下面这种写法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">template&lt;typename T&gt;</div><div class="line">struct base&#123;</div><div class="line">  using selfType=T;</div><div class="line">&#125;;</div><div class="line">template&lt;typename T&gt;</div><div class="line">struct foo:public base&lt;foo&lt;T&gt;&gt;&#123;&#125;;</div></pre></td></tr></table></figure></p>
-<p>虽然有种强行搞事的意思…</p>
-<h4 id="std-vector的随机访问"><a href="#std-vector的随机访问" class="headerlink" title="std::vector的随机访问"></a>std::vector的随机访问</h4><p>std::vector可以随机访问，因为其重载了[]操作符，以及有at成员函数，则通常有下面两种方式：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">template&lt;typename T&gt;</div><div class="line">void f(std::vector&lt;T&gt;&amp; x)&#123;</div><div class="line">  x[0];</div><div class="line">  x.at(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>以上两种随机访问方式有什么区别？</p>
-<blockquote>
-<p>顺序容器的at(size_type)要求有范围检查。
-[ISO/IEC 14882:2014]The member function at() provides bounds-checked access to container elements. at() throws out_of_range if n &gt;= a.size().
-而operator[]标准中则没有任何要求。</p>
-</blockquote>
-<p>可以来看一下一些STL实现(SGISTL)的源码对std::vector的operator[size_type]和at(size_type)的实现：
-首先是at(size_type)的实现
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// at(size_type)的实现</div><div class="line">#ifdef __STL_THROW_RANGE_ERRORS</div><div class="line">void _M_range_check(size_type __n) const &#123;</div><div class="line">  if (__n &gt;= this-&gt;size())</div><div class="line">    __stl_throw_range_error(&quot;vector&quot;);</div><div class="line">&#125;</div><div class="line">reference at(size_type __n)</div><div class="line">  &#123; _M_range_check(__n); return (*this)[__n]; &#125;</div><div class="line">const_reference at(size_type __n) const</div><div class="line">  &#123; _M_range_check(__n); return (*this)[__n]; &#125;</div><div class="line">#endif /* __STL_THROW_RANGE_ERRORS */</div><div class="line">​`</div></pre></td></tr></table></figure></p>
-<p>再看一下operator[] (size_type)的实现：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">// operator[](size_type)的实现</div><div class="line">reference operator[](size_type __n) &#123; return *(begin() + __n); &#125;</div><div class="line">const_reference operator[](size_type __n) const &#123; return *(begin() + __n); &#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到，operator[]的随机访问并没有范围检查。
-即上面的问题：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x[0];</div><div class="line">x.at(0);</div></pre></td></tr></table></figure></p>
-<p>这两个的区别在于，若x不为空，则行为相同，若x为空，x.at(0)则抛出一个std::out_of_range异常(C++标准规定)，而x[0]是未定义行为。</p>
-<h4 id="注意typedef和-define的区别"><a href="#注意typedef和-define的区别" class="headerlink" title="注意typedef和#define的区别"></a>注意typedef和#define的区别</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">typedef int* INTPTR;</div><div class="line">#define INTPTR2 int*</div><div class="line">int main(int argc,char* argv[])</div><div class="line">&#123;</div><div class="line">  INTPTR i1,i2;</div><div class="line">  INTPTR2 i3,i4;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>还是直接从IR代码来看吧：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">%6 = alloca i32*, align 8</div><div class="line">%7 = alloca i32*, align 8</div><div class="line">%8 = alloca i32*, align 8</div><div class="line">%9 = alloca i32, align 4</div></pre></td></tr></table></figure></p>
-<p>注意<code>%9</code>不是<code>i32*</code>,它是一个i32的对象。
-因为<code>#define</code>只是编译期的简单替换，所以在编译期展开的时候会变成这样：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#define INTPTR2 int*</div><div class="line">INTPTR2 i3,i4;</div><div class="line">// 编译期展开</div><div class="line">int* i3,i4;</div></pre></td></tr></table></figure></p>
-<p>即只有i3为<code>int*</code>，而i4则为int</p>
-<h4 id="为什么const-object不是编译时常量？"><a href="#为什么const-object不是编译时常量？" class="headerlink" title="为什么const object不是编译时常量？"></a>为什么const object不是编译时常量？</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">const int x=10;</div><div class="line">int y[x]=&#123;0&#125;;</div></pre></td></tr></table></figure>
-<p>这里是可以的，在编译器优化下x会直接被替换为10
-其中间代码如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">%6 = alloca i32, align 4</div><div class="line">%7 = alloca [10 x i32], align 16</div><div class="line">store i32 10, i32* %6, align 4</div><div class="line">%8 = bitcast [10 x i32]* %7 to i8*</div><div class="line">call void @llvm.memset.p0i8.i64(i8* %8, i8 0, i64 40, i32 16, i1 false)</div></pre></td></tr></table></figure></p>
-<p>可以看到<code>%7</code>的分配时并没有使用%6，所以也并不依赖x这个对象，这个对象是编译期已知的。
-但是，当我们这么写时，又如何编译期可知：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int x;</div><div class="line">cin&gt;&gt;x;</div><div class="line">const int y=x;</div><div class="line">// error: variable-sized object may not be initialized</div><div class="line">int z[y]=&#123;0&#125;;</div></pre></td></tr></table></figure></p>
-<p>这里是由于编译器扩展，所以C++也支持VLA。但是可以看到const是没办法为编译期常量的。</p>
-<h4 id="继承层次中的类查询"><a href="#继承层次中的类查询" class="headerlink" title="继承层次中的类查询"></a>继承层次中的类查询</h4><p>在类的继承层次中，可能具有同一基类的几个不同的派生类，他们之间可能又互相继承派生出了几个继承层次，在这样的情况下如何判断某一个派生类的层次中是否继承自某一个类呢？</p>
-<p>可以使用dynamic_cast来实现我们的要求，关于C++类型转换的部分可以看我之前的一篇文章：详细分析下C++中的类型转换。下面先来看一下dynamic_cast在C++标准中的描述(ISO/IEC 14882:2014)：</p>
-<blockquote>
-<p>The result of the expression dynamic_cast<t>(v) is the result of converting the expression v to type T. T shall be a pointer or reference to a complete class type, or “pointer to cv void.” The dynamic_cast operator shall not cast away constness (5.2.11).</t></p>
-</blockquote>
-<p>If C is the class type to which T points or refers, the run-time check logically executes as follows:</p>
-<ul>
-<li>If, in the most derived object pointed (referred) to by v, v points (refers) to a public base class subobject of a C object, and if only one object of type C is derived from the subobject pointed (referred) to by v the result points (refers) to that C object.</li>
-<li>Otherwise, if v points (refers) to a public base class subobject of the most derived object, and the type of the most derived object has a base class, of type C, that is unambiguous and public, the result points (refers) to the C subobject of the most derived object.</li>
-<li>Otherwise, the run-time check fails.</li>
-</ul>
-<blockquote>
-<p>The value of a failed cast to pointer type is the null pointer value of the required result type. A failed cast to reference type throws an exception (15.1) of a type that would match a handler (15.3) of type std::bad_cast (18.7.2).</p>
-</blockquote>
-<p>所以我们可以对继承层次中的类指针执行dynamic_cast转换，检查是否转换成功，从而判断继承层次中是否具有某个类。
-一个代码的例子如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">using namespace std;</div><div class="line">struct Shape&#123;</div><div class="line">  virtual void draw()=0;</div><div class="line">  virtual ~Shape()&#123;&#125;</div><div class="line">&#125;;</div><div class="line">struct Roll&#123;</div><div class="line">  virtual void roll()&#123;cout&lt;&lt;&quot;Roll:roll()&quot;&lt;&lt;endl;&#125;</div><div class="line">  virtual ~Roll()&#123;&#125;</div><div class="line">&#125;;</div><div class="line">struct Circle:public Shape,public Roll&#123;</div><div class="line">  void draw()&#123;</div><div class="line">    cout&lt;&lt;&quot;Circle::draw&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  void roll()&#123;</div><div class="line">    cout&lt;&lt;&quot;Circle::roll()&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  ~Circle()=default;</div><div class="line">&#125;;</div><div class="line">struct Square:public Shape&#123;</div><div class="line">  void draw()&#123;</div><div class="line">    cout&lt;&lt;&quot;Square::draw()&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  ~Square()=default;</div><div class="line">&#125;;</div><div class="line">int main(int argc,char* argv[])</div><div class="line">&#123;</div><div class="line">  Shape *a=new Square;</div><div class="line">  Roll *b=dynamic_cast&lt;Roll*&gt;(a);</div><div class="line">  if(b!=NULL)&#123;</div><div class="line">    cout&lt;&lt;&quot;yes&quot;&lt;&lt;endl;</div><div class="line">  &#125;else&#123;</div><div class="line">    cout&lt;&lt;&quot;no&quot;&lt;&lt;endl;</div><div class="line">  &#125;</div><div class="line">  delete a;</div><div class="line">  return 0;</div><div class="line">&#125;</div><div class="line">// output: no</div></pre></td></tr></table></figure></p>
-<p>面的继承层次比较简单，但是当假设我们不知道Cricle和Square的具体继承层次时，那么如何判断Square中是否存在某一基类(如Roll)？
-解决的办法就是上面提到的dynamic_cast！通过dynamic_cast转换到转换到要检测的类类型的指针，如果转换成功，dynamic_cast会返回从源类型转换到目标类型的指针，如果失败会返回一个空指针(之所以不使用引用是因为要处理可能会抛出异常的潜在威胁)，这种转换并非是向上或者向下转型，而是横向转型。所以我们需要对dynamic_cast返回的对象(指针)作一个判断就可以得出检测目标的继承层次中是否存在要检测的类型。</p>
-<p>但是，我觉得这种行为的适用场景十分狭窄，在良好的类设计下几乎不必要，如果你对自己所实现的类层次感到失控，那一定是糟糕的设计。</p>
-<h4 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h4><p><a href="https://imzlp.me/posts/1756/" target="_blank" rel="external">C/C++中的编程技巧及其概念</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/12/l-c-skill/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/12/l-c-skill/" itemprop="url">
-                  l-c-skill
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-12T17:51:08+08:00">
-                2017-10-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Segmentation-fault段错误调试总结"><a href="#Segmentation-fault段错误调试总结" class="headerlink" title="Segmentation fault段错误调试总结"></a>Segmentation fault段错误调试总结</h3><p>Segmetation fault也叫做段错误，引发的原因有好多，这里我们只说一下段错误发生时的调试方法。</p>
-<h4 id="方法1：加打印printf。"><a href="#方法1：加打印printf。" class="headerlink" title="方法1：加打印printf。"></a>方法1：加打印printf。</h4><p>这是最基本的往往也很有效的方法，在哪里Core掉就会在哪里停止打印–一目了然。同时这种方法也存在一个致命缺陷：如果恰巧Core掉的地方没加打印而程序代码又非常庞大又可能是多线程的，那查找问题等同于大海捞针。</p>
-<h4 id="方法2：gdb调试。"><a href="#方法2：gdb调试。" class="headerlink" title="方法2：gdb调试。"></a>方法2：gdb调试。</h4><p>加gdb调试往往能在Core dump时抓到，甚至能抓到哪一个文件哪个类哪个函数哪一行，甚是精确。要确保GDB能抓到可用信息要做一些准备：</p>
-<ul>
-<li>加-g 参数，这样才会有调试信息。 我想是个程序员就应该知道吧。</li>
-<li>在Makefile 中加上 -fstack-protector 和-fstack-protector-all 信息，确保函数调用栈不丢失，当然只能是一定程度的不丢失，要完成保留住是不太可能的，但起码可以得到栈顶函数。</li>
-</ul>
-<p>有了上面两点对大多数的Segmentation fault都能抓住，但是函数调用栈彻底乱掉或者在动态库so中Core而这个库编译时没有加-g参数，这些情况就gdb就无能为力了。</p>
-<h4 id="方法3：手动获取函数调用栈。"><a href="#方法3：手动获取函数调用栈。" class="headerlink" title="方法3：手动获取函数调用栈。"></a>方法3：手动获取函数调用栈。</h4><p>这种方法其实是借住两个系统函数backtrace和backtrace_symbol来获取函数调用栈的，把这两个函数放在信号处理函数中：当收到 SIGSEG时在信号处理函数中调用这两个函数打印函数调用栈，在没用GDB调试的时候这种方法可以代替gdb的一部分功能，这听起来是不是非常酷啊，来看一看实现吧：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;execinfo.h&gt;</div><div class="line">#include &lt;sys/types.h&gt;</div><div class="line">#include &lt;sys/stat.h&gt;</div><div class="line">#include &lt;fcntl.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line"></div><div class="line">static void SignalHandle(int sig)</div><div class="line">&#123;</div><div class="line">    void *array[20];</div><div class="line">    size_t size;</div><div class="line">    char **strings;</div><div class="line">    int i;</div><div class="line">    size = backtrace(array, 10);</div><div class="line">    strings = backtrace_symbols(array, size);</div><div class="line">    printf(&quot;SIGNAL ocurre %d, stack tarce:\n&quot;, sig);</div><div class="line">    printf(&quot;obtained %d stack frames.\n&quot;, size);</div><div class="line"></div><div class="line">    for (i = 0; i &lt; size; i++)</div><div class="line">        printf(&quot;%s\n&quot;, strings);</div><div class="line"></div><div class="line">    free(strings);</div><div class="line">    printf(&quot;stack trace over!\n&quot;);</div><div class="line">    exit(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char **argv)</div><div class="line">&#123;</div><div class="line">    signal(SIGSEGV, SignalHandle);</div><div class="line">    //...程序主体</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当然这种方法在没有GDB时候会大显身手，经过实验就是有gdb的时候这种方法有时比gdb抓到调用栈要多一层；当然这种方法和用gdb调试一样要加<code>-g</code>和栈保护参数<code>-fstack-protector</code> 和 <code>-fstack-protector-all</code>。其缺点就是抓到的调用栈无效，这是什么意思呢？有时发生core dump,能定位到甚至哪一行，但是那一行根本没有明显的错误；或者追到没有调试信息的动态库里如glibc。当然这些情况大多数调试方法都无能为力，只能依靠程序员的经验了。</p>
-<h4 id="方法4：经验之谈。"><a href="#方法4：经验之谈。" class="headerlink" title="方法4：经验之谈。"></a>方法4：经验之谈。</h4><p>如果我们的程序是多线程的，发生core dump用以上方法均无效，除了仔细排查代码外，还有这么一方法让我们缩小范围。</p>
-<p><a href="https://coolshell.cn/articles/10115.html" target="_blank" rel="external">c语言全局变量那些事</a>
-<a href="https://coolshell.cn/articles/9543.html" target="_blank" rel="external">“C++的数组不支持多态”？</a></p>
-<p><a href="https://coolshell.cn/articles/7886.html" target="_blank" rel="external">代码执行的效率</a></p>
-<p><a href="https://coolshell.cn/articles/5761.html" target="_blank" rel="external">深入理解C语言</a></p>
-<p><a href="https://coolshell.cn/articles/5202.html" target="_blank" rel="external">对象的消息模型</a></p>
-<p><a href="https://coolshell.cn/articles/4626.html" target="_blank" rel="external">读书笔记：对线程模型的批评</a></p>
-<p><a href="https://coolshell.cn/articles/945.html" target="_blank" rel="external">C语言的谜题</a></p>
-<p><a href="https://coolshell.cn/articles/3572.html" target="_blank" rel="external">C语言函数实现的另类方法</a></p>
-<p><a href="https://coolshell.cn/articles/873.html" target="_blank" rel="external">谁说C语言很简单？</a></p>
-<p><a href="https://coolshell.cn/articles/551.html" target="_blank" rel="external">C语言下的错误处理的问题</a></p>
-<p><a href="https://coolshell.cn/articles/11377.html" target="_blank" rel="external">C语言结构体里的成员数组和指针</a></p>
-<p><a href="http://blog.csdn.net/haoel/article/details/6212499" target="_blank" rel="external">C技巧：结构体参数转成不定参数</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/12/arithmetic-kmp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/12/arithmetic-kmp/" itemprop="url">
-                  arithmetic-kmp
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-12T17:48:52+08:00">
-                2017-10-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin" target="_blank" rel="external">https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin</a></p>
-<p><a href="http://blog.csdn.net/yutianzuijin/article/details/11954939/" target="_blank" rel="external">http://blog.csdn.net/yutianzuijin/article/details/11954939/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2452,7 +2340,7 @@ C++中几乎从不需要宏。可以用const和enum定义易于理解的常量�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">116</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2474,7 +2362,7 @@ C++中几乎从不需要宏。可以用const和enum定义易于理解的常量�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

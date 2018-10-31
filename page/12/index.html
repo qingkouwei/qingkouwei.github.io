@@ -323,6 +323,1706 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/19/issues-android-audio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/19/issues-android-audio/" itemprop="url">
+                  Android声音播放与录制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T10:31:45+08:00">
+                2017-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AudioTrack"><a href="#AudioTrack" class="headerlink" title="AudioTrack"></a>AudioTrack</h2><h3 id="AudioTrack类说明"><a href="#AudioTrack类说明" class="headerlink" title="AudioTrack类说明:"></a>AudioTrack类说明:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * The AudioTrack class manages and plays a single audio resource for Java applications.</div><div class="line"> * It allows streaming of PCM audio buffers to the audio sink for playback. This is</div><div class="line"> * achieved by &quot;pushing&quot; the data to the AudioTrack object using one of the</div><div class="line"> *  &#123;@link #write(byte[], int, int)&#125;, &#123;@link #write(short[], int, int)&#125;,</div><div class="line"> *  and &#123;@link #write(float[], int, int, int)&#125; methods.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;An AudioTrack instance can operate under two modes: static or streaming.&lt;br&gt;</div><div class="line"> * In Streaming mode, the application writes a continuous stream of data to the AudioTrack, using</div><div class="line"> * one of the &#123;@code write()&#125; methods. These are blocking and return when the data has been</div><div class="line"> * transferred from the Java layer to the native layer and queued for playback. The streaming</div><div class="line"> * mode is most useful when playing blocks of audio data that for instance are:</div><div class="line"> *</div><div class="line"> * &lt;ul&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the duration of the sound to play,&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the characteristics of the audio data</div><div class="line"> *         (high sampling rate, bits per sample ...)&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;received or generated while previously queued audio is playing.&lt;/li&gt;</div><div class="line"> * &lt;/ul&gt;</div><div class="line"> *</div><div class="line"> * The static mode should be chosen when dealing with short sounds that fit in memory and</div><div class="line"> * that need to be played with the smallest latency possible. The static mode will</div><div class="line"> * therefore be preferred for UI and game sounds that are played often, and with the</div><div class="line"> * smallest overhead possible.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Upon creation, an AudioTrack object initializes its associated audio buffer.</div><div class="line"> * The size of this buffer, specified during the construction, determines how long an AudioTrack</div><div class="line"> * can play before running out of data.&lt;br&gt;</div><div class="line"> * For an AudioTrack using the static mode, this size is the maximum size of the sound that can</div><div class="line"> * be played from it.&lt;br&gt;</div><div class="line"> * For the streaming mode, data will be written to the audio sink in chunks of</div><div class="line"> * sizes less than or equal to the total buffer size.</div><div class="line"> *</div><div class="line"> * AudioTrack is not final and thus permits subclasses, but such use is not recommended.</div><div class="line"> */</div><div class="line">public class AudioTrack extends PlayerBase</div><div class="line">                        implements AudioRouting&#123;</div><div class="line"></div><div class="line">                        &#125;</div></pre></td></tr></table></figure>
+<h3 id="构造方法说明"><a href="#构造方法说明" class="headerlink" title="构造方法说明"></a>构造方法说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//根据采样率，采样精度，单双声道来得到frame的大小。</div><div class="line">int bufsize = AudioTrack.getMinBufferSize(8000,//每秒8K个点　　AudioFormat.CHANNEL_CONFIGURATION_STEREO,//双声道</div><div class="line">AudioFormat.ENCODING_PCM_16BIT);//一个采样点16比特-2个字节</div><div class="line">//注意，按照数字音频的知识，这个算出来的是一秒钟buffer的大小。//创建AudioTrack</div><div class="line">AudioTrack trackplayer = new AudioTrack(AudioManager.STREAM_MUSIC, 8000,　　AudioFormat.CHANNEL_CONFIGURATION_ STEREO,</div><div class="line">　　AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">　　bufsize,</div><div class="line">AudioTrack.MODE_STREAM);//</div><div class="line"> trackplayer.play() ;//开始</div><div class="line"></div><div class="line">trackplayer.write(bytes_pkg, 0, bytes_pkg.length) ;//往track中写数据</div><div class="line"></div><div class="line">….</div><div class="line"></div><div class="line">trackplayer.stop();//停止播放</div><div class="line"></div><div class="line">trackplayer.release();//释放底层资源。</div></pre></td></tr></table></figure>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><h5 id="1-AudioTrack-MODE-STREAM的意思："><a href="#1-AudioTrack-MODE-STREAM的意思：" class="headerlink" title="1. AudioTrack.MODE_STREAM的意思："></a>1. AudioTrack.MODE_STREAM的意思：</h5><p>AudioTrack中有MODE_STATIC和MODE_STREAM两种分类。</p>
+<ul>
+<li><p>STREAM的意思是由用户在应用程序通过write方式把数据一次一次得写到audiotrack中。这个和我们在socket中发送数据一样，应用层从某个地方获取数据，例如通过编解码得到PCM数据，然后write到audiotrack。这种方式的坏处就是总是在JAVA层和Native层交互，效率损失较大。</p>
+</li>
+<li><p>而STATIC的意思是一开始创建的时候，就把音频数据放到一个固定的buffer，然后直接传给audiotrack，后续就不用一次次得write了。AudioTrack会自己播放这个buffer中的数据。
+这种方法对于铃声等内存占用较小，延时要求较高的声音来说很适用。</p>
+</li>
+</ul>
+<h5 id="2-StreamType"><a href="#2-StreamType" class="headerlink" title="2. StreamType"></a>2. StreamType</h5><p>这个在构造AudioTrack的第一个参数中使用。这个参数和Android中的AudioManager有关系，涉及到手机上的音频管理策略。
+Android将系统的声音分为以下几类常见的（定义在AudioManager)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/** The audio stream for phone calls */</div><div class="line">public static final int STREAM_VOICE_CALL = AudioSystem.STREAM_VOICE_CALL;</div><div class="line">/** The audio stream for system sounds */</div><div class="line">public static final int STREAM_SYSTEM = AudioSystem.STREAM_SYSTEM;</div><div class="line">/** The audio stream for the phone ring */</div><div class="line">public static final int STREAM_RING = AudioSystem.STREAM_RING;</div><div class="line">/** The audio stream for music playback */</div><div class="line">public static final int STREAM_MUSIC = AudioSystem.STREAM_MUSIC;</div><div class="line">/** The audio stream for alarms */</div><div class="line">public static final int STREAM_ALARM = AudioSystem.STREAM_ALARM;</div><div class="line">/** The audio stream for notifications */</div><div class="line">public static final int STREAM_NOTIFICATION = AudioSystem.STREAM_NOTIFICATION;</div><div class="line">/** @hide The audio stream for phone calls when connected to bluetooth */</div><div class="line">public static final int STREAM_BLUETOOTH_SCO = AudioSystem.STREAM_BLUETOOTH_SCO;</div><div class="line">/** @hide The audio stream for enforced system sounds in certain countries (e.g camera in Japan) */</div><div class="line">public static final int STREAM_SYSTEM_ENFORCED = AudioSystem.STREAM_SYSTEM_ENFORCED;</div><div class="line">/** The audio stream for DTMF Tones */</div><div class="line">public static final int STREAM_DTMF = AudioSystem.STREAM_DTMF;</div><div class="line">/** @hide The audio stream for text to speech (TTS) */</div><div class="line">public static final int STREAM_TTS = AudioSystem.STREAM_TTS;</div></pre></td></tr></table></figure></p>
+<p>常用说明:</p>
+<ul>
+<li>STREAM_ALARM：警告声</li>
+<li>STREAM_MUSCI：音乐声，例如music等</li>
+<li>STREAM_RING：铃声</li>
+<li>STREAM_SYSTEM：系统声音</li>
+<li>STREAM_VOCIE_CALL：电话声音</li>
+</ul>
+<p>为什么要分这么多呢？以前在台式机上开发的时候很少知道有这么多的声音类型，不过仔细思考下，发现这样做是有道理的。例如你在听music的时候接到电话，这个时候music播放肯定会停止，此时你只能听到电话，如果你调节音量的话，这个调节肯定只对电话起作用。当电话打完了，再回到music，你肯定不用再调节音量了。</p>
+<p>其实系统将这几种声音的数据分开管理，所以，这个参数对AudioTrack来说，它的含义就是告诉系统，我现在想使用的是哪种类型的声音，这样系统就可以对应管理他们了。</p>
+<h2 id="AudioRecord"><a href="#AudioRecord" class="headerlink" title="AudioRecord"></a>AudioRecord</h2><h3 id="AudioRecord说明"><a href="#AudioRecord说明" class="headerlink" title="AudioRecord说明"></a>AudioRecord说明</h3><p>The AudioRecord class manages the audio resources for Java applications to record audio from the audio input hardware of the platform. This is achieved by “pulling” (reading) the data from the AudioRecord object. The application is responsible for polling the AudioRecord object in time using one of the following three methods: <code>read(byte[], int, int)</code>, <code>read(short[], int, int)</code> or <code>read(ByteBuffer, int)</code>. The choice of which method to use will be based on the audio data storage format that is the most convenient for the user of AudioRecord.</p>
+<p>Upon creation, an AudioRecord object initializes its associated audio buffer that it will fill with the new audio data. The size of this buffer, specified during the construction, determines how long an AudioRecord can record before “over-running” data that has not been read yet. Data should be read from the audio hardware in chunks of sizes inferior to the total recording buffer size.</p>
+<h3 id="audiosource类型"><a href="#audiosource类型" class="headerlink" title="audiosource类型"></a>audiosource类型</h3><p>定义在MediaRecorder中
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/** Default audio source **/</div><div class="line"> public static final int DEFAULT = 0;</div><div class="line"></div><div class="line"> /** Microphone audio source */</div><div class="line"> public static final int MIC = 1;</div><div class="line"></div><div class="line"> /** Voice call uplink (Tx) audio source */</div><div class="line"> public static final int VOICE_UPLINK = 2;</div><div class="line"></div><div class="line"> /** Voice call downlink (Rx) audio source */</div><div class="line"> public static final int VOICE_DOWNLINK = 3;</div><div class="line"></div><div class="line"> /** Voice call uplink + downlink audio source */</div><div class="line"> public static final int VOICE_CALL = 4;</div><div class="line"></div><div class="line"> /** Microphone audio source with same orientation as camera if available, the main</div><div class="line">  *  device microphone otherwise */</div><div class="line"> public static final int CAMCORDER = 5;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice recognition if available, behaves like</div><div class="line">  *  &#123;@link #DEFAULT&#125; otherwise. */</div><div class="line"> public static final int VOICE_RECOGNITION = 6;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice communications such as VoIP. It</div><div class="line">  *  will for instance take advantage of echo cancellation or automatic gain control</div><div class="line">  *  if available. It otherwise behaves like &#123;@link #DEFAULT&#125; if no voice processing</div><div class="line">  *  is applied.</div><div class="line">  */</div><div class="line"> public static final int VOICE_COMMUNICATION = 7;</div></pre></td></tr></table></figure></p>
+<h2 id="AudioManager"><a href="#AudioManager" class="headerlink" title="AudioManager"></a>AudioManager</h2><h3 id="获取系统音量"><a href="#获取系统音量" class="headerlink" title="获取系统音量"></a>获取系统音量</h3><p>代码
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//初始化AudioManager:</div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);</div><div class="line"></div><div class="line">//通话音量</div><div class="line">int max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">int current = mAudioManager.getStreamVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">Log.d(“VIOCE_CALL”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//系统音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">Log.d(“SYSTEM”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//铃声音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_RING );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_RING );</div><div class="line">Log.d(“RING”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//音乐音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_MUSIC );</div><div class="line">Log.d(“MUSIC”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//提示声音音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_ALARM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_ALARM );</div><div class="line">Log.d(“ALARM”, “max : ” + max + ” current : ” + current);</div></pre></td></tr></table></figure></p>
+<p>ps：
+　　游戏过程中只允许调整多媒体音量，而不允许调整通话音量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);</div></pre></td></tr></table></figure></p>
+<h3 id="控制音量"><a href="#控制音量" class="headerlink" title="控制音量"></a>控制音量</h3><p>AudioManager提供了设置音量的方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void setStreamVolume(intstreamType,intindex,intflags)</div></pre></td></tr></table></figure></p>
+<p>其中streamType有内置的常量，去文档里面就可以看到。
+使用示例:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//音量控制,初始化定义    </div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);    </div><div class="line">//最大音量    </div><div class="line">int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);    </div><div class="line">//当前音量    </div><div class="line">int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);</div><div class="line"></div><div class="line">//直接控制音量</div><div class="line">if(isSilent)&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);    </div><div class="line">&#125;else&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tempVolume, 0); //tempVolume:音量绝对值    </div><div class="line">&#125;    </div><div class="line"></div><div class="line">//以一步步长控制音量的增减，并弹出系统默认音量控制条：</div><div class="line">//降低音量，调出系统音量控制    </div><div class="line">if(flag == 0)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;    </div><div class="line">//增加音量，调出系统音量控制    </div><div class="line">else if(flag == 1)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>监听按键手动控制音量
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">AudioManager audio = (AudioManager) getSystemService(Service.AUDIO_SERVICE);</div><div class="line"></div><div class="line">@Override</div><div class="line">public boolean onKeyDown(int keyCode, KeyEvent event) &#123;</div><div class="line">    switch (keyCode) &#123;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_UP:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_RAISE,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_DOWN:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_LOWER,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    default:</div><div class="line">        break;</div><div class="line">    &#125;</div><div class="line">    return super.onKeyDown(keyCode, event);</div></pre></td></tr></table></figure></p>
+<h4 id="插入耳机状态仍使用扬声器外放音乐"><a href="#插入耳机状态仍使用扬声器外放音乐" class="headerlink" title="插入耳机状态仍使用扬声器外放音乐"></a>插入耳机状态仍使用扬声器外放音乐</h4><p>插入耳机的时候也可以选择使用扬声器播放音乐，来电铃声就是这么用的。但是只能用MediaPlayer，播放音频文件。
+使用AudioTrack.write播放是行不通的(有待验证)。按理说AudioRecord、AudioTrack类相对于MediaRecorder mediaPlayer来说，更加接近底层，应该也行得通的。</p>
+<p>插入耳机，选择外放的代码如下(兼容性验证)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);  </div><div class="line">audioManager.setMicrophoneMute(false);          </div><div class="line">audioManager.setSpeakerphoneOn(true);//使用扬声器外放，即使已经插入耳机  </div><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);//控制声音的大小  </div><div class="line">audioManager.setMode(AudioManager.STREAM_MUSIC);   </div><div class="line"></div><div class="line">//播放一段声音，查看效果          </div><div class="line">MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse(&quot;file:///system/media/audio/ui/camera_click.ogg&quot;));  </div><div class="line">playerSound.start();</div></pre></td></tr></table></figure></p>
+<h3 id="使用STREAM-VOCIE-CALL播放声音与耳机冲突"><a href="#使用STREAM-VOCIE-CALL播放声音与耳机冲突" class="headerlink" title="使用STREAM_VOCIE_CALL播放声音与耳机冲突"></a>使用STREAM_VOCIE_CALL播放声音与耳机冲突</h3><p>使用STREAM_VOCIE_CALL播放声音在某些手机,比如魅蓝等上面会导致声音仍外放,耳机没声音现象.
+WebRtc使用STREAM_VOCIE_CALL播放声音,导致某些手机声音低,没法使用音量键调节,插入耳机声音仍外放等问题.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/16/latex/" itemprop="url">
+                  MarkDown中嵌入LaTex
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-16T17:17:15+08:00">
+                2017-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MarkDown中使用标识符<code>$$</code>和<code>$$$$</code>即可引入LaTeX语法,前者使用时不换行,即在所使用位置使用LaTeX的格式,后者会换行后居中</p>
+<h3 id="部分希腊字母"><a href="#部分希腊字母" class="headerlink" title="部分希腊字母"></a>部分希腊字母</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\alpha</td>
+<td>α</td>
+<td></td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<td>\beta</td>
+<td>β</td>
+<td></td>
+<td>B</td>
+<td>B</td>
+</tr>
+<tr>
+<td>\gamma</td>
+<td>γ</td>
+<td></td>
+<td>\Gamma \varGamma</td>
+<td>Γ  Γ</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>δ</td>
+<td></td>
+<td>\Delta \varDelta</td>
+<td>Δ  Δ</td>
+</tr>
+<tr>
+<td>\epsilon</td>
+<td>ϵ</td>
+<td></td>
+<td>E</td>
+<td>E</td>
+</tr>
+<tr>
+<td>\eta</td>
+<td>η</td>
+<td></td>
+<td>H</td>
+<td>H</td>
+</tr>
+<tr>
+<td>\theta</td>
+<td>θ</td>
+<td></td>
+<td>\Theta \varTheta</td>
+<td>Θ  Θ</td>
+</tr>
+<tr>
+<td>\kappa</td>
+<td>κ</td>
+<td></td>
+<td>K</td>
+<td>K</td>
+</tr>
+<tr>
+<td>\lambda</td>
+<td>λ</td>
+<td></td>
+<td>\Lambda \varLambda</td>
+<td>Λ  Λ</td>
+</tr>
+<tr>
+<td>\mu</td>
+<td>μ</td>
+<td></td>
+<td>M</td>
+<td>M</td>
+</tr>
+<tr>
+<td>\nu</td>
+<td>ν</td>
+<td></td>
+<td>N</td>
+<td>N</td>
+</tr>
+<tr>
+<td>\pi</td>
+<td>π</td>
+<td></td>
+<td>\Pi \varPi</td>
+<td>Π  Π</td>
+</tr>
+<tr>
+<td>\rho</td>
+<td>ρ</td>
+<td></td>
+<td>P</td>
+<td>P</td>
+</tr>
+<tr>
+<td>\sigma</td>
+<td>σ</td>
+<td></td>
+<td>\Sigma \varSigma</td>
+<td>Σ  Σ</td>
+</tr>
+<tr>
+<td>\tau</td>
+<td>τ</td>
+<td></td>
+<td>T</td>
+<td>T</td>
+</tr>
+<tr>
+<td>\phi \varphi</td>
+<td>ϕ  φ</td>
+<td></td>
+<td>\Phi \varPhi</td>
+<td>Φ  Φ</td>
+</tr>
+<tr>
+<td>\omega</td>
+<td>ω</td>
+<td></td>
+<td>\Omega \varOmega</td>
+<td>Ω  Ω</td>
+</tr>
+</tbody>
+</table>
+<p>全部24个字母:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>大写</th>
+<th>Tex</th>
+<th>小写</th>
+<th>Tex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alpha</td>
+<td>A</td>
+<td>A</td>
+<td>α</td>
+<td>\alpha</td>
+</tr>
+<tr>
+<td>beta</td>
+<td>B</td>
+<td>B</td>
+<td>β\</td>
+<td>beta</td>
+</tr>
+<tr>
+<td>gamma</td>
+<td>Γ</td>
+<td>\Gamma</td>
+<td>γ</td>
+<td>\gamma</td>
+</tr>
+<tr>
+<td>delta</td>
+<td>Δ</td>
+<td>\Delta</td>
+<td>δ</td>
+<td>\delta</td>
+</tr>
+<tr>
+<td>epsilon</td>
+<td>E</td>
+<td>E</td>
+<td>ϵ</td>
+<td>\epsilon</td>
+</tr>
+<tr>
+<td>zeta</td>
+<td>Z</td>
+<td>Z</td>
+<td>ζ</td>
+<td>\zeta</td>
+</tr>
+<tr>
+<td>eta</td>
+<td>H</td>
+<td>H</td>
+<td>η</td>
+<td>\eta</td>
+</tr>
+<tr>
+<td>theta</td>
+<td>Θ</td>
+<td>\Theta</td>
+<td>θ</td>
+<td>\theta</td>
+</tr>
+<tr>
+<td>iota</td>
+<td>I</td>
+<td>I</td>
+<td>ι</td>
+<td>\iota</td>
+</tr>
+<tr>
+<td>kappa</td>
+<td>K</td>
+<td>K</td>
+<td>κ</td>
+<td>\kappa</td>
+</tr>
+<tr>
+<td>lambda</td>
+<td>Λ</td>
+<td>\Lambda</td>
+<td>λ</td>
+<td>\lambda</td>
+</tr>
+<tr>
+<td>mu</td>
+<td>M</td>
+<td>M</td>
+<td>μ</td>
+<td>\mu</td>
+</tr>
+<tr>
+<td>nu</td>
+<td>N</td>
+<td>N</td>
+<td>ν</td>
+<td>\nu</td>
+</tr>
+<tr>
+<td>xi</td>
+<td>Ξ</td>
+<td>\Xi</td>
+<td>ξ</td>
+<td>\xi</td>
+</tr>
+<tr>
+<td>omicron</td>
+<td>O</td>
+<td>O</td>
+<td>ο</td>
+<td>\omicron</td>
+</tr>
+<tr>
+<td>pi</td>
+<td>Π</td>
+<td>\Pi</td>
+<td>π</td>
+<td>\pi</td>
+</tr>
+<tr>
+<td>rho</td>
+<td>P</td>
+<td>P</td>
+<td>ρ</td>
+<td>\rho</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td>Σ</td>
+<td>\Sigma</td>
+<td>σ</td>
+<td>\sigma</td>
+</tr>
+<tr>
+<td>tau</td>
+<td>T</td>
+<td>T</td>
+<td>τ</td>
+<td>\tau</td>
+</tr>
+<tr>
+<td>upsilon</td>
+<td>Υ</td>
+<td>\Upsilon</td>
+<td>υ</td>
+<td>\upsilon</td>
+</tr>
+<tr>
+<td>phi</td>
+<td>Φ</td>
+<td>\Phi</td>
+<td>ϕ</td>
+<td>\phi</td>
+</tr>
+<tr>
+<td>chi</td>
+<td>X</td>
+<td>X</td>
+<td>χ</td>
+<td>\chi</td>
+</tr>
+<tr>
+<td>psi</td>
+<td>Ψ</td>
+<td>\Psi</td>
+<td>ψ</td>
+<td>\psi</td>
+</tr>
+<tr>
+<td>omega</td>
+<td>Ω</td>
+<td>\Omega</td>
+<td>ω</td>
+<td>\omega</td>
+</tr>
+</tbody>
+</table>
+<h3 id="部分运算符"><a href="#部分运算符" class="headerlink" title="部分运算符"></a>部分运算符</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\pm</td>
+<td>±</td>
+<td></td>
+<td>\mp</td>
+<td>∓</td>
+</tr>
+<tr>
+<td>\times</td>
+<td>×</td>
+<td></td>
+<td>\div</td>
+<td>÷</td>
+</tr>
+<tr>
+<td>\circ</td>
+<td>∘</td>
+<td></td>
+<td>\bullet</td>
+<td>∙</td>
+</tr>
+<tr>
+<td>\cdot</td>
+<td>⋅</td>
+<td></td>
+<td>\cup</td>
+<td>∪</td>
+</tr>
+<tr>
+<td>\cap</td>
+<td>∩</td>
+<td></td>
+<td>\subset</td>
+<td>⊂</td>
+</tr>
+<tr>
+<td>\supset</td>
+<td>⊃</td>
+<td></td>
+<td>\subseteq</td>
+<td>⊆</td>
+</tr>
+<tr>
+<td>\supseteq</td>
+<td>⊇</td>
+<td></td>
+<td>\leq</td>
+<td>≤</td>
+</tr>
+<tr>
+<td>\geq</td>
+<td>≥</td>
+<td></td>
+<td>\propto</td>
+<td>∝</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>显示</th>
+<th></th>
+<th>命令</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\cdotp</td>
+<td>⋅</td>
+<td></td>
+<td>\cdots</td>
+<td>⋯</td>
+</tr>
+<tr>
+<td>\ddots</td>
+<td>⋱</td>
+<td></td>
+<td>\infty</td>
+<td>∞</td>
+</tr>
+<tr>
+<td>\partial</td>
+<td>∂</td>
+<td></td>
+<td>\bot</td>
+<td>⊥</td>
+</tr>
+<tr>
+<td>\hat{a}</td>
+<td>â</td>
+<td></td>
+<td>\tilde{a}</td>
+<td>ã</td>
+</tr>
+<tr>
+<td>\bar{a}</td>
+<td>a¯</td>
+<td></td>
+<td>\vec{a}</td>
+<td>a⃗</td>
+</tr>
+<tr>
+<td>\dot{a}</td>
+<td>a˙</td>
+<td></td>
+<td>\sqrt{a}</td>
+<td>a‾‾√</td>
+</tr>
+<tr>
+<td>\sqrt[3]{2}</td>
+<td>a‾‾√3</td>
+<td></td>
+<td>a^{3}</td>
+<td>a3</td>
+</tr>
+<tr>
+<td>\frac{1}{a}</td>
+<td>1a</td>
+<td></td>
+<td>\lim_{x \to 0}</td>
+<td>lima→0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="集合关系符号"><a href="#集合关系符号" class="headerlink" title="集合关系符号"></a>集合关系符号</h3><table>
+<thead>
+<tr>
+<th>说明</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集合的大括号</td>
+<td>{ …   }\</td>
+</tr>
+<tr>
+<td>集合中的竖线$\mid$</td>
+<td>\mid</td>
+</tr>
+<tr>
+<td>属于</td>
+<td>\in</td>
+</tr>
+<tr>
+<td>不属于</td>
+<td>\not\in</td>
+</tr>
+<tr>
+<td>A包含于B</td>
+<td>A\subset B</td>
+</tr>
+<tr>
+<td>A真包含于B</td>
+<td>A\subsetneqq B</td>
+</tr>
+<tr>
+<td>A包含B</td>
+<td>A\supset B</td>
+</tr>
+<tr>
+<td>A真包含B</td>
+<td>A\supsetneqq B</td>
+</tr>
+<tr>
+<td>A不包含于B</td>
+<td>A\not\subset B</td>
+</tr>
+<tr>
+<td>A交B</td>
+<td>A\cap B</td>
+</tr>
+<tr>
+<td>A并B</td>
+<td>A\cup B</td>
+</tr>
+<tr>
+<td>A的闭包</td>
+<td>\overline{A}</td>
+</tr>
+<tr>
+<td>A减去B</td>
+<td>A\setminus B</td>
+</tr>
+<tr>
+<td>实数集合</td>
+<td>\mathbb{R}</td>
+</tr>
+<tr>
+<td>空集</td>
+<td>\emptyset</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>表格中竖线用<code>&amp;#124;</code></p>
+</blockquote>
+<h3 id="括号总结"><a href="#括号总结" class="headerlink" title="括号总结"></a>括号总结</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>语法</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不好看</td>
+<td><code>( \frac{1}{2} )</code></td>
+<td>$(\frac{1}{2})$</td>
+</tr>
+<tr>
+<td>好一点</td>
+<td><code>\left( \frac{1}{2} \right)</code></td>
+<td>$\left ( \frac{1}{2} \right )$</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用<code>\left</code>和<code>\right</code>来显示不同的括号：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>语法</th>
+<th>显示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>圆括号，小括号</td>
+<td><code>\left( \frac{a}{b} \right)</code></td>
+<td>$\left( \frac{a}{b} \right)$</td>
+</tr>
+<tr>
+<td>方括号，中括号</td>
+<td>\left[ \frac{a}{b} \right]</td>
+<td>$\left[ \frac{a}{b} \right]$</td>
+</tr>
+<tr>
+<td>花括号，大括号</td>
+<td><code>\left\{ \frac{a}{b} \right\}</code></td>
+<td>$    \left{ \frac{a}{b} \right}$</td>
+</tr>
+<tr>
+<td>角括号</td>
+<td><code>\left \langle \frac{a}{b} \right \rangle</code></td>
+<td>$\left\langle \frac{a}{b} \right \rangle$</td>
+</tr>
+<tr>
+<td>单竖线，绝对值</td>
+<td>\left 竖线 \frac{a}{b} \right 竖线</td>
+<td></td>
+</tr>
+<tr>
+<td>双竖线，范</td>
+<td>\left \ 竖线 \frac{a}{b} \right \ 竖线</td>
+<td></td>
+</tr>
+<tr>
+<td>取整函数</td>
+<td><code>（Floor function）    \left \lfloor \frac{a}{b} \right \rfloor</code></td>
+<td>$    \left \lfloor \frac{a}{b} \right \rfloor$</td>
+</tr>
+<tr>
+<td>取顶函数</td>
+<td><code>（Ceiling function)    \left \lceil \frac{c}{d} \right \rceil</code></td>
+<td>$    \left \lceil \frac{c}{d} \right \rceil$</td>
+</tr>
+<tr>
+<td>斜线与反斜线</td>
+<td><code>\left / \frac{a}{b} \right \backslash</code></td>
+<td>$    \left / \frac{a}{b} \right \backslash$</td>
+</tr>
+<tr>
+<td>上下箭头</td>
+<td><code>\left \uparrow \frac{a}{b} \right \downarrow</code> <code>\left \Uparrow \frac{a}{b} \right \Downarrow</code> <code>\left \updownarrow \frac{a}{b} \right \Updownarrow</code></td>
+<td>$\left \uparrow \frac{a}{b} \right \downarrow$ $\left \Uparrow \frac{a}{b} \right \Downarrow$ $\left \updownarrow \frac{a}{b} \right \Updownarrow$</td>
+</tr>
+<tr>
+<td>混合括号</td>
+<td><code>\left [ 0,1 \right )</code> <code>\left \langle \psi )</code></td>
+<td>$\left [ 0,1 \right )$ $ \left \langle \psi \right)$</td>
+</tr>
+<tr>
+<td>单左括号</td>
+<td><code>\left \{ \frac{a}{b} \right .</code></td>
+<td>$\left { \frac{a}{b} \right .$</td>
+</tr>
+<tr>
+<td>单右括号</td>
+<td><code>\left . \frac{a}{b} \right \}</code></td>
+<td>$\left . \frac{a}{b} \right }$</td>
+</tr>
+</tbody>
+</table>
+<p>备注：
+可以使用<code>\big, \Big, \bigg, \Bigg</code>控制括号的大小，比如代码<code>\Bigg ( \bigg [ \Big \{ \big \langle \left | \| \frac{a}{b} \| \right | \big \rangle \Big \} \bigg ] \Bigg )</code>显示</p>
+<p>$$\Bigg ( \bigg [ \Big { \big \langle \left | | x | \right | \big \rangle \Big } \bigg ] \Bigg )$$</p>
+<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用<code>$$\begin{matrix}…\end{matrix}$$</code>这样的形式来表示矩阵，在<code>\begin与\end</code>之间加入矩阵中的元素即可。矩阵的行之间使用<code>\\</code>分隔，列之间使用&amp;分隔。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">        \begin&#123;matrix&#125;</div><div class="line">        1 &amp; x &amp; x^2 \\</div><div class="line">        1 &amp; y &amp; y^2 \\</div><div class="line">        1 &amp; z &amp; z^2 \\</div><div class="line">        \end&#123;matrix&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<p>$$
+        \begin{matrix}
+        1 &amp; x &amp; x^2 \
+        1 &amp; y &amp; y^2 \
+        1 &amp; z &amp; z^2 \
+        \end{matrix}
+$$</p>
+<h3 id="加括号"><a href="#加括号" class="headerlink" title="加括号"></a>加括号</h3><p>如果要对矩阵加括号，可以像上文中提到的一样，使用<code>\left与\right</code>配合表示括号符号。也可以使用特殊的matrix。即替换<code>\begin{matrix}…\end{matrix}</code>中的matrix为pmatrix，bmatrix，Bmatrix，vmatrix,Vmatrix.</p>
+<h3 id="省略元素"><a href="#省略元素" class="headerlink" title="省略元素"></a>省略元素</h3><p>可以使用<code>\cdots ⋯
+ \ddots ⋱
+ \vdots ⋮</code>
+来省略矩阵中的元素</p>
+<h3 id="增广矩阵"><a href="#增广矩阵" class="headerlink" title="增广矩阵"></a>增广矩阵</h3><p>增广矩阵需要使用前面的array来实现
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$ \left[</div><div class="line">      \begin&#123;array&#125;&#123;cc|c&#125;</div><div class="line">        1&amp;2&amp;3\\</div><div class="line">        4&amp;5&amp;6</div><div class="line">      \end&#123;array&#125;</div><div class="line">    \right]</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<p>$$ \left[
+      \begin{array}{cc|c}
+        1&amp;2&amp;3\
+        4&amp;5&amp;6
+      \end{array}
+    \right]
+$$</p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>使用<code>$$\begin{array}{列样式}…\end{array}$$</code>这样的形式来创建表格，列样式可以是clr表示居中，左，右对齐，还可以使用|表示一条竖线。表格中 各行使用<code>\\</code>分隔，各列使用&amp;分隔。使用<code>\hline</code>在本行前加入一条直线。 例如，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$$</div><div class="line">\begin&#123;array&#125;&#123;c|lcr&#125;</div><div class="line">n &amp; \text&#123;Left&#125; &amp; \text&#123;Center&#125; &amp; \text&#123;Right&#125; \\</div><div class="line">\hline</div><div class="line">1 &amp; 0.24 &amp; 1 &amp; 125 \\</div><div class="line">2 &amp; -1 &amp; 189 &amp; -8 \\</div><div class="line">3 &amp; -20 &amp; 2000 &amp; 1+10i \\</div><div class="line">\end&#123;array&#125;</div><div class="line">$$</div></pre></td></tr></table></figure></p>
+<h2 id="上标与下标"><a href="#上标与下标" class="headerlink" title="上标与下标"></a>上标与下标</h2><p>上标和下标分别使用<code>^与_</code>，例如<code>x_i^2</code>：$x_i^2$
+。默认情况下，上下标符号仅仅对下一个组起作用。一个组即单个字符或者使用{..}包裹起来的内容。也就是说，如果使用<code>10^10</code>，会得到$10^10$
+，而<code>10^{10}</code>才是$10^{10}$
+。同时，大括号还能消除二义性，如<code>x^5^6</code>将得到一个错误，必须使用大括号来界定<code>^</code>的结合性，如<code>{x^5}^6</code>：${x^5}^6$
+ 或者 <code>x^{5^6}</code>：$x^{5^6}$
+。</p>
+<h2 id="对齐的公式"><a href="#对齐的公式" class="headerlink" title="对齐的公式"></a>对齐的公式</h2><h2 id="分类表达式"><a href="#分类表达式" class="headerlink" title="分类表达式"></a>分类表达式</h2><p>定义函数的时候经常需要分情况给出表达式，可使用<code>\begin{cases}…\end{cases}</code>。其中，使用<code>\</code>来分类，使用&amp;指示需要对齐的位置。如：</p>
+<h2 id="多重积分"><a href="#多重积分" class="headerlink" title="多重积分"></a>多重积分</h2><h2 id="连分数"><a href="#连分数" class="headerlink" title="连分数"></a>连分数</h2><h2 id="方程组"><a href="#方程组" class="headerlink" title="方程组"></a>方程组</h2><h2 id="颜色"><a href="#颜色" class="headerlink" title="颜色"></a>颜色</h2><h2 id="公式标记与引用"><a href="#公式标记与引用" class="headerlink" title="公式标记与引用"></a>公式标记与引用</h2><h2 id="求和与积分"><a href="#求和与积分" class="headerlink" title="求和与积分"></a>求和与积分</h2><h2 id="分式与根式"><a href="#分式与根式" class="headerlink" title="分式与根式"></a>分式与根式</h2><h2 id="特殊函数与符号"><a href="#特殊函数与符号" class="headerlink" title="特殊函数与符号"></a>特殊函数与符号</h2><h2 id="空间"><a href="#空间" class="headerlink" title="空间"></a>空间</h2><h2 id="顶部符号"><a href="#顶部符号" class="headerlink" title="顶部符号"></a>顶部符号</h2><blockquote>
+<p>参考
+<a href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/" target="_blank" rel="external">http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/13/am-function-and-limitaion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/13/am-function-and-limitaion/" itemprop="url">
+                  高数1.函数与极限
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T22:34:04+08:00">
+                2017-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/高数/" itemprop="url" rel="index">
+                    <span itemprop="name">高数</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-映射与函数"><a href="#1-映射与函数" class="headerlink" title="1.映射与函数"></a>1.映射与函数</h2><h3 id="1-1-集合"><a href="#1-1-集合" class="headerlink" title="1.1 集合"></a>1.1 集合</h3><h4 id="1-1-1-集合的概念"><a href="#1-1-1-集合的概念" class="headerlink" title="1.1.1 集合的概念"></a>1.1.1 集合的概念</h4><p>集合(集)是指具有某种特定性质的事物的总体,组成这个集合的事物成为该集合的元素(简称元)</p>
+<p>表示:用大写拉丁字母A,B,C…表示集合,小写拉丁字母表示集合的元素</p>
+<p>分类:</p>
+<ul>
+<li>有限集</li>
+<li>无限集</li>
+</ul>
+<p>表示数集的字母的右上角标<code>*</code>表示该数集内排除0的集,标上<code>+</code>来表示数集内排除0和负数的集</p>
+<p>常用表示</p>
+<ol>
+<li>N={0, 1, 2, 3…};全体非负整数即自然数的集合</li>
+<li>N<sup>+</sup>={1,2,3,…n,….};全体正整数的集合</li>
+<li>Z={…,-n,…-3, -2,-1, 0, 1, 2, 3,…,n…};全体整数的集合</li>
+<li>$Q=\lbrace \frac{p}{q}|p \in Z,q \in N^{+} \rbrace$;全体有理数集</li>
+</ol>
+<p>全体实数记做R,R<sup>*</sup>为排除0的实数集,R<sup>+</sup>为全体正实数集.</p>
+<p>子集概念:</p>
+<ul>
+<li>子集</li>
+<li>真子集</li>
+<li>集合相等:互为子集</li>
+<li>空集 $\emptyset$<h4 id="1-1-2-集合的运算"><a href="#1-1-2-集合的运算" class="headerlink" title="1.1.2 集合的运算"></a>1.1.2 集合的运算</h4></li>
+</ul>
+<h4 id="1-1-3-区间和领域"><a href="#1-1-3-区间和领域" class="headerlink" title="1.1.3 区间和领域"></a>1.1.3 区间和领域</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/10/tips-android-thread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/10/tips-android-thread/" itemprop="url">
+                  Android线程使用总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T18:39:43+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-Threading-Performance"><a href="#1-Threading-Performance" class="headerlink" title="1. Threading Performance"></a>1. Threading Performance</h3><p>在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。
+众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户点击滑动等)，程序回调服务，UI 绘制以及闹钟事件等等。那么我们在上述事件或者方法中插入的代码也将执行在主线程。</p>
+<p>一旦我们在主线程里面添加了操作复杂的代码，这些代码就很可能阻碍主线程去响应点击/滑动事件，阻碍主线程的 UI 绘制等等。我们知道，为了让屏幕的刷新帧率达到 60fps，我们需要确保 16ms 内完成单次刷新的操作。一旦我们在主线程里面执行的任务过于繁重就可能导致接收到刷新信号的时候因为资源被占用而无法完成这次刷新操作，这样就会产生掉帧的现象，刷新帧率自然也就跟着下降了(一旦刷新帧率降到 20fps 左右，用户就可以明显感知到卡顿不流畅了)。</p>
+<p>为了避免上面提到的掉帧问题，我们需要使用多线程的技术方案，把那些操作复杂的任务移动到其他线程当中执行，这样就不容易阻塞主线程的操作，也就减小了出现掉帧的可能性。</p>
+<p>为主线程减轻负的多线程方案有哪些呢？这些方案分别适合在什么场景下使用？Android 系统为我们提供了若干组工具类来帮助解决这个问题。</p>
+<ul>
+<li>AsyncTask: 为 UI 线程与工作线程之间进行快速的切换提供一种简单便捷的机制。适用于当下立即需要启动，但是异步执行的生命周期短暂的使用场景。</li>
+<li>HandlerThread: 为某些回调方法或者等待某些任务的执行设置一个专属的线程，并提供线程任务的调度机制。</li>
+<li>ThreadPool: 把任务分解成不同的单元，分发到各个不同的线程上，进行同时并发处理。</li>
+<li>IntentService: 适合于执行由 UI 触发的后台 Service 任务，并可以把后台任务执行的情况通过一定的机制反馈给 UI。</li>
+</ul>
+<p>了解这些系统提供的多线程工具类分别适合在什么场景下，可以帮助我们选择合适的解决方案，避免出现不可预期的麻烦。虽然使用多线程可以提高程序的并发量，但是我们需要特别注意因为引入多线程而可能伴随而来的内存问题。举个例子，在 Activity 内部定义的一个 AsyncTask，它属于一个内部类，该类本身和外面的 Activity 是有引用关系的，如果 Activity 要销毁的时候，AsyncTask 还仍然在运行，这会导致 Activity 没有办法完全释放，从而引发内存泄漏。所以说，多线程是提升程序性能的有效手段之一，但是使用多线程却需要十分谨慎小心，如果不了解背后的执行机制以及使用的注意事项，很可能引起严重的问题。</p>
+<h3 id="2-Understanding-Android-Threading"><a href="#2-Understanding-Android-Threading" class="headerlink" title="2. Understanding Android Threading"></a>2. Understanding Android Threading</h3><p>通常来说，一个线程需要经历三个生命阶段：开始，执行，结束。线程会在任务执行完毕之后结束，那么为了确保线程的存活，我们会在执行阶段给线程赋予不同的任务，然后在里面添加退出的条件从而确保任务能够执行完毕后退出。</p>
+<p>在很多时候，线程不仅仅是线性执行一系列的任务就结束那么简单的，我们会需要增加一个任务队列，让线程不断的从任务队列中获取任务去进行执行，另外我们还可能在线程执行的任务过程中与其他的线程进行协作。如果这些细节都交给我们自己来处理，这将会是件极其繁琐又容易出错的事情。</p>
+<p>所幸的是，Android 系统为我们提供了 Looper，Handler，MessageQueue 来帮助实现上面的线程任务模型：</p>
+<ul>
+<li><p>Looper: 能够确保线程持续存活并且可以不断的从任务队列中获取任务并进行执行。</p>
+</li>
+<li><p>Handler: 能够帮助实现队列任务的管理，不仅仅能够把任务插入到队列的头部，尾部，还可以按照一定的时间延迟来确保任务从队列中能够来得及被取消掉。</p>
+</li>
+<li><p>MessageQueue: 使用 Intent，Message，Runnable 作为任务的载体在不同的线程之间进行传递。</p>
+</li>
+</ul>
+<p>把上面三个组件打包到一起进行协作，这就是 HandlerThread
+我们知道，当程序被启动，系统会帮忙创建进程以及相应的主线程，而这个主线程其实就是一个 HandlerThread。这个主线程会需要处理系统事件，输入事件，系统回调的任务，UI绘制等等任务，为了避免主线程任务过重，我们就会需要不断的开启新的工作线程来处理那些子任务。</p>
+<h3 id="3-Memory-amp-Threading"><a href="#3-Memory-amp-Threading" class="headerlink" title="3. Memory &amp; Threading"></a>3. Memory &amp; Threading</h3><p>增加并发的线程数会导致内存消耗的增加，平衡好这两者的关系是非常重要的。我们知道，多线程并发访问同一块内存区域有可能带来很多问题，例如读写的权限争夺问题，ABA 问题等等。为了解决这些问题，我们会需要引入锁的概念。
+在 Android 系统中也无法避免因为多线程的引入而导致出现诸如上文提到的种种问题。Android UI 对象的创建，更新，销毁等等操作都默认是执行在主线程，但是如果我们在非主线程对UI对象进行操作，程序将可能出现异常甚至是崩溃。</p>
+<p>另外，在非 UI 线程中直接持有 UI 对象的引用也很可能出现问题。例如Work线程中持有某个 UI 对象的引用，在 Work 线程执行完毕之前，UI 对象在主线程中被从 ViewHierarchy 中移除了，这个时候 UI 对象的任何属性都已经不再可用了，另外对这个 UI 对象的更新操作也都没有任何意义了，因为它已经从 ViewHierarchy 中被移除，不再绘制到画面上了。</p>
+<p>不仅如此，View 对象本身对所属的 Activity 是有引用关系的，如果工作线程持续保有 View 的引用，这就可能导致 Activity 无法完全释放。除了直接显式的引用关系可能导致内存泄露之外，我们还需要特别留意隐式的引用关系也可能导致泄露。例如通常我们会看到在 Activity 里面定义的一个 AsyncTask，这种类型的 AsyncTask 与外部的 Activity 是存在隐式引用关系的，只要 Task 没有结束，引用关系就会一直存在，这很容易导致 Activity 的泄漏。更糟糕的情况是，它不仅仅发生了内存泄漏，还可能导致程序异常或者崩溃。</p>
+<p>为了解决上面的问题，我们需要谨记的原则就是：不要在任何非 UI 线程里面去持有 UI 对象的引用。系统为了确保所有的 UI 对象都只会被 UI 线程所进行创建，更新，销毁的操作，特地设计了对应的工作机制(当 Activity 被销毁的时候，由该 Activity 所触发的非 UI 线程都将无法对UI对象进行操作，否者就会抛出程序执行异常的错误)来防止 UI 对象被错误的使用。</p>
+<h3 id="4-Good-AsyncTask-Hunting"><a href="#4-Good-AsyncTask-Hunting" class="headerlink" title="4. Good AsyncTask Hunting"></a>4. Good AsyncTask Hunting</h3><p>AsyncTask 是一个让人既爱又恨的组件，它提供了一种简便的异步处理机制，但是它又同时引入了一些令人厌恶的麻烦。一旦对 AsyncTask 使用不当，很可能对程序的性能带来负面影响，同时还可能导致内存泄露。
+举个例子，常遇到的一个典型的使用场景：用户切换到某个界面，触发了界面上的图片的加载操作，因为图片的加载相对来说耗时比较长，我们需要在子线程中处理图片的加载，当图片在子线程中处理完成之后，再把处理好的图片返回给主线程，交给 UI 更新到画面上。</p>
+<p>AsyncTask 的出现就是为了快速的实现上面的使用场景，AsyncTask 把在主线程里面的准备工作放到 onPreExecute()方法里面进行执行，doInBackground()方法执行在工作线程中，用来处理那些繁重的任务，一旦任务执行完毕，就会调用 onPostExecute()方法返回到主线程。</p>
+<p>使用 AsyncTask 需要注意的问题有哪些呢？请关注以下几点：
+首先，默认情况下，所有的 AsyncTask 任务都是被线性调度执行的，他们处在同一个任务队列当中，按顺序逐个执行。假设你按照顺序启动20个 AsyncTask，一旦其中的某个 AsyncTask 执行时间过长，队列中的其他剩余 AsyncTask 都处于阻塞状态，必须等到该任务执行完毕之后才能够有机会执行下一个任务。</p>
+<p>为了解决上面提到的线性队列等待的问题，我们可以使用 AsyncTask.executeOnExecutor()强制指定 AsyncTask 使用线程池并发调度任务。</p>
+<p>其次，如何才能够真正的取消一个 AsyncTask 的执行呢？我们知道 AsyncTaks 有提供 cancel()的方法，但是这个方法实际上做了什么事情呢？线程本身并不具备中止正在执行的代码的能力，为了能够让一个线程更早的被销毁，我们需要在 doInBackground()的代码中不断的添加程序是否被中止的判断逻辑.</p>
+<p>一旦任务被成功中止，AsyncTask 就不会继续调用 onPostExecute()，而是通过调用 onCancelled()的回调方法反馈任务执行取消的结果。我们可以根据任务回调到哪个方法（是 onPostExecute 还是 onCancelled）来决定是对 UI 进行正常的更新还是把对应的任务所占用的内存进行销毁等。
+最后，使用 AsyncTask 很容易导致内存泄漏，一旦把 AsyncTask 写成 Activity 的内部类的形式就很容易因为 AsyncTask 生命周期的不确定而导致 Activity 发生泄漏。</p>
+<p>综上所述，AsyncTask 虽然提供了一种简单便捷的异步机制，但是我们还是很有必要特别关注到他的缺点，避免出现因为使用错误而导致的严重系统性能问题。</p>
+<h3 id="5-Getting-a-HandlerThread"><a href="#5-Getting-a-HandlerThread" class="headerlink" title="5. Getting a HandlerThread"></a>5. Getting a HandlerThread</h3><p>大多数情况下，AsyncTask 都能够满足多线程并发的场景需要（在工作线程执行任务并返回结果到主线程），但是它并不是万能的。例如打开相机之后的预览帧数据是通过 onPreviewFrame()的方法进行回调的，onPreviewFrame()和 open()相机的方法是执行在同一个线程的。</p>
+<p>如果这个回调方法执行在 UI 线程，那么在 onPreviewFrame()里面将要执行的数据转换操作将和主线程的界面绘制，事件传递等操作争抢系统资源，这就有可能影响到主界面的表现性能。</p>
+<p>我们需要确保 onPreviewFrame()执行在工作线程。如果使用 AsyncTask，会因为 AsyncTask 默认的线性执行的特性(即使换成并发执行)会导致因为无法把任务及时传递给工作线程而导致任务在主线程中被延迟，直到工作线程空闲，才可以把任务切换到工作线程中进行执行。</p>
+<p>所以我们需要的是一个执行在工作线程，同时又能够处理队列中的复杂任务的功能，而 HandlerThread 的出现就是为了实现这个功能的，它组合了 Handler，MessageQueue，Looper 实现了一个长时间运行的线程，不断的从队列中获取任务进行执行的功能。</p>
+<p>回到刚才的处理相机回调数据的例子，使用 HandlerThread 我们可以把 open()操作与 onPreviewFrame()的操作执行在同一个线程，同时还避免了 AsyncTask 的弊端。如果需要在 onPreviewFrame()里面更新 UI，只需要调用 runOnUiThread()方法把任务回调给主线程就够了。</p>
+<p>HandlerThread 比较合适处理那些在工作线程执行，需要花费时间偏长的任务。我们只需要把任务发送给 HandlerThread，然后就只需要等待任务执行结束的时候通知返回到主线程就好了。
+另外很重要的一点是，一旦我们使用了 HandlerThread，需要特别注意给 HandlerThread 设置不同的线程优先级，CPU 会根据设置的不同线程优先级对所有的线程进行调度优化。</p>
+<p>掌握 HandlerThread 与 AsyncTask 之间的优缺点，可以帮助我们选择合适的方案。</p>
+<h3 id="6-Swimming-in-Threadpools"><a href="#6-Swimming-in-Threadpools" class="headerlink" title="6. Swimming in Threadpools"></a>6. Swimming in Threadpools</h3><p>线程池适合用在把任务进行分解，并发进行执行的场景。通常来说，系统里面会针对不同的任务设置一个单独的守护线程用来专门处理这项任务。例如使用 Networking Thread 用来专门处理网络请求的操作，使用 IO Thread 用来专门处理系统的 <code>I\O</code> 操作。针对那些场景，这样设计是没有问题的，因为对应的任务单次执行的时间并不长而且可以是顺序执行的。但是这种专属的单线程并不能满足所有的情况，例如我们需要一次性 decode 40张图片，每个线程需要执行 4ms 的时间，如果我们使用专属单线程的方案，所有图片执行完毕会需要花费 160ms(40*4)，但是如果我们创建10个线程，每个线程执行4个任务，那么我们就只需要16ms就能够把所有的图片处理完毕。</p>
+<p>为了能够实现上面的线程池模型，系统为我们提供了 ThreadPoolExecutor 帮助类来简化实现，剩下需要做的就只是对任务进行分解就好了。</p>
+<p>使用线程池需要特别注意同时并发线程数量的控制，理论上来说，我们可以设置任意你想要的并发数量，但是这样做非常的不好。因为 CPU 只能同时执行固定数量的线程数，一旦同时并发的线程数量超过 CPU 能够同时执行的阈值，CPU 就需要花费精力来判断到底哪些线程的优先级比较高，需要在不同的线程之间进行调度切换。</p>
+<p>一旦同时并发的线程数量达到一定的量级，这个时候 CPU 在不同线程之间进行调度的时间就可能过长，反而导致性能严重下降。另外需要关注的一点是，每开一个新的线程，都会耗费至少 64K+ 的内存。为了能够方便的对线程数量进行控制，ThreadPoolExecutor 为我们提供了初始化的并发线程数量，以及最大的并发数量进行设置。</p>
+<p>另外需要关注的一个问题是：Runtime.getRuntime().availableProcesser()方法并不可靠，他返回的值并不是真实的 CPU 核心数，因为 CPU 会在某些情况下选择对部分核心进行睡眠处理，在这种情况下，返回的数量就只能是激活的 CPU 核心数。</p>
+<h3 id="7-The-Zen-of-IntentService"><a href="#7-The-Zen-of-IntentService" class="headerlink" title="7. The Zen of IntentService"></a>7. The Zen of IntentService</h3><p>默认的 Service 是执行在主线程的，可是通常情况下，这很容易影响到程序的绘制性能(抢占了主线程的资源)。除了前面介绍过的 AsyncTask 与 HandlerThread，我们还可以选择使用 IntentService 来实现异步操作。IntentService 继承自普通 Service 同时又在内部创建了一个 HandlerThread，在 onHandlerIntent()的回调里面处理扔到 IntentService 的任务。所以 IntentService 就不仅仅具备了异步线程的特性，还同时保留了 Service 不受主页面生命周期影响的特点。</p>
+<p>如此一来，我们可以在 IntentService 里面通过设置闹钟间隔性的触发异步任务，例如刷新数据，更新缓存的图片或者是分析用户操作行为等等，当然处理这些任务需要小心谨慎。</p>
+<p>使用 IntentService 需要特别留意以下几点：</p>
+<ul>
+<li>首先，因为 IntentService 内置的是 HandlerThread 作为异步线程，所以每一个交给 IntentService 的任务都将以队列的方式逐个被执行到，一旦队列中有某个任务执行时间过长，那么就会导致后续的任务都会被延迟处理。</li>
+<li>其次，通常使用到 IntentService 的时候，我们会结合使用 BroadcastReceiver 把工作线程的任务执行结果返回给主 UI 线程。使用广播容易引起性能问题，我们可以使用 LocalBroadcastManager 来发送只在程序内部传递的广播，从而提升广播的性能。我们也可以使用 runOnUiThread() 快速回调到主 UI 线程。</li>
+<li>最后，包含正在运行的 IntentService 的程序相比起纯粹的后台程序更不容易被系统杀死，该程序的优先级是介于前台程序与纯后台程序之间的。</li>
+</ul>
+<h3 id="8-Threading-and-Loaders"><a href="#8-Threading-and-Loaders" class="headerlink" title="8. Threading and Loaders"></a>8. Threading and Loaders</h3><p>当启动工作线程的 Activity 被销毁的时候，我们应该做点什么呢？为了方便的控制工作线程的启动与结束，Android 为我们引入了 Loader 来解决这个问题。我们知道 Activity 有可能因为用户的主动切换而频繁的被创建与销毁，也有可能是因为类似屏幕发生旋转等被动原因而销毁再重建。在 Activity 不停的创建与销毁的过程当中，很有可能因为工作线程持有 Activity 的 View 而导致内存泄漏(因为工作线程很可能持有 View 的强引用，另外工作线程的生命周期还无法保证和 Activity 的生命周期一致，这样就容易发生内存泄漏了)。除了可能引起内存泄漏之外，在 Activity 被销毁之后，工作线程还继续更新视图是没有意义的，因为此时视图已经不在界面上显示了。</p>
+<p>Loader 的出现就是为了确保工作线程能够和 Activity 的生命周期保持一致，同时避免出现前面提到的问题。</p>
+<p>LoaderManager 会对查询的操作进行缓存，只要对应 Cursor 上的数据源没有发生变化，在配置信息发生改变的时候(例如屏幕的旋转)，Loader  可以直接把缓存的数据回调到 onLoadFinished()，从而避免重新查询数据。另外系统会在 Loader 不再需要使用到的时候(例如使用 Back 按钮退出当前页面)回调 onLoaderReset()方法，我们可以在这里做数据的清除等等操作。
+在 Activity 或者 Fragment 中使用 Loader 可以方便的实现异步加载的框架，Loader 有诸多优点。但是实现 Loader 的这套代码还是稍微有点点复杂，Android 官方为我们提供了使用 Loader 的示例代码进行参考学习。</p>
+<h3 id="9-The-Importance-of-Thread-Priority"><a href="#9-The-Importance-of-Thread-Priority" class="headerlink" title="9. The Importance of Thread Priority"></a>9. The Importance of Thread Priority</h3><p>理论上来说，我们的程序可以创建出非常多的子线程一起并发执行的，可是基于 CPU 时间片轮转调度的机制，不可能所有的线程都可以同时被调度执行，CPU 需要根据线程的优先级赋予不同的时间片。</p>
+<p>Android 系统会根据当前运行的可见的程序和不可见的后台程序对线程进行归类，划分为 forground 的那部分线程会大致占用掉 CPU 的90%左右的时间片，background 的那部分线程就总共只能分享到5%-10%左右的时间片。之所以设计成这样是因为 forground 的程序本身的优先级就更高，理应得到更多的执行时间。</p>
+<p>默认情况下，新创建的线程的优先级默认和创建它的母线程保持一致。如果主 UI 线程创建出了几十个工作线程，这些工作线程的优先级就默认和主线程保持一致了，为了不让新创建的工作线程和主线程抢占 CPU 资源，需要把这些线程的优先级进行降低处理，这样才能给帮组 CPU 识别主次，提高主线程所能得到的系统资源。</p>
+<p>在 Android 系统里面，我们可以通过 android.os.Process.setThreadPriority(int) 设置线程的优先级，参数范围从-20到19，数值越小优先级越高。Android 系统还为我们提供了以下的一些预设值，我们可以通过给不同的工作线程设置不同数值的优先级来达到更细粒度的控制。</p>
+<p>大多数情况下，新创建的线程优先级会被设置为默认的0，主线程设置为0的时候，新创建的线程还可以利用 THREAD_PRIORITY_LESS_FAVORABLE 或者 THREAD_PRIORITY_MORE_FAVORABLE 来控制线程的优先级。</p>
+<p>Android 系统里面的 AsyncTask 与 IntentService已经默认帮助我们设置线程的优先级，但是对于那些非官方提供的多线程工具类，我们需要特别留意根据需要自己手动来设置线程的优先级。</p>
+<h3 id="10-Profile-GPU-Rendering-M-Update"><a href="#10-Profile-GPU-Rendering-M-Update" class="headerlink" title="10. Profile GPU Rendering : M Update"></a>10. Profile GPU Rendering : M Update</h3><p>从 Android M 系统开始，系统更新了 GPU Profiling 的工具来帮助我们定位 UI 的渲染性能问题。早期的 CPU Profiling 工具只能粗略的显示出 Process，Execute，Update 三大步骤的时间耗费情况。
+但是仅仅显示三大步骤的时间耗费情况，还是不太能够清晰帮助我们定位具体的程序代码问题，所以在 Android M 版本开始，GPU Profiling 工具把渲染操作拆解成如下8个详细的步骤进行显示。</p>
+<p>旧版本中提到的 Proces，Execute，Update 还是继续得到了保留，他们的对应关系如下：</p>
+<p>接下去我们看下其他五个步骤分别代表了什么含义：</p>
+<ul>
+<li>Sync &amp; Upload：通常表示的是准备当前界面上有待绘制的图片所耗费的时间，为了减少该段区域的执行时间，我们可以减少屏幕上的图片数量或者是缩小图片本身的大小。</li>
+<li>Measure &amp; Layout：这里表示的是布局的 onMeasure 与 onLayout 所花费的时间，一旦时间过长，就需要仔细检查自己的布局是不是存在严重的性能问题。</li>
+<li>Animation：表示的是计算执行动画所需要花费的时间，包含的动画有 ObjectAnimator，ViewPropertyAnimator，Transition 等等。一旦这里的执行时间过长，就需要检查是不是使用了非官方的动画工具或者是检查动画执行的过程中是不是触发了读写操作等等。</li>
+<li>Input Handling：表示的是系统处理输入事件所耗费的时间，粗略等于对于的事件处理方法所执行的时间。一旦执行时间过长，意味着在处理用户的输入事件的地方执行了复杂的操作。</li>
+<li>Misc/Vsync Delay：如果稍加注意，我们可以在开发应用的 Log 日志里面看到这样一行提示：I/Choreographer(691): Skipped XXX frames! The application may be doing too much work on its main thread。这意味着我们在主线程执行了太多的任务，导致 UI 渲染跟不上 vSync 的信号而出现掉帧的情况。</li>
+</ul>
+<p>上面八种不同的颜色区分了不同的操作所耗费的时间，为了便于我们迅速找出那些有问题的步骤，GPU Profiling 工具会显示 16ms 的阈值线，这样就很容易找出那些不合理的性能问题，再仔细看对应具体哪个步骤相对来说耗费时间比例更大，结合上面介绍的细化步骤，从而快速定位问题，修复问题。</p>
+<blockquote>
+<p><a href="http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022" target="_blank" rel="external">http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/09/m-f-mp4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/09/m-f-mp4/" itemprop="url">
+                  MP4格式解析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T11:31:46+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
+                    <span itemprop="name">音视频封装</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>目前MP4的概念被炒得很火，也很乱。最开始MP4指的是音频（MP3的升级版），即MPEG-2 AAC标准。随后MP4概念被转移到视频上，对应的是MPEG-4标准。而现在我们流行的叫法，多半是指能播放MPEG-4标准编码格式视频的播放器。但是这篇文章介绍的内容跟上面这些都无关，我们要讨论的是MP4文件封装格式，对应的标准为ISO/IEC 14496-12，即信息技术 视听对象编码的第12部分：ISO 基本媒体文件格式（Information technology Coding of audio-visual objects Part 12: ISO base media file format）。ISO/IEC组织指定的标准一般用数字表示，ISO/IEC 14496即MPEG-4标准。</p>
+<p>MP4视频文件封装格式是基于QuickTime容器格式定义的，因此参考QuickTime的格式定义对理解MP4文件格式很有帮助。MP4文件格式是一个十分开放的容器，几乎可以用来描述所有的媒体结构，MP4文件中的媒体描述与媒体数据是分开的，并且媒体数据的组织也很自由，不一定要按照时间顺序排列，甚至媒体数据可以直接引用其他文件。同时，MP4也支持流媒体。MP4目前被广泛用于封装h.264视频和AAC音频，是高清视频的代表。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V,  3GP, F4V等。</p>
+<h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h3><p>MP4文件中的所有数据都装在box（QuickTime中为atom）中，也就是说MP4文件由若干个box组成，每个box有类型和长度，可以将box理解为一个数据对象块。box中可以包含另一个box，这种box称为container box。一个MP4文件首先会有且只有一个“ftyp”类型的box，作为MP4格式的标志并包含关于文件的一些信息；之后会有且只有一个“moov”类型的box（Movie Box），它是一种container box，子box包含了媒体的metadata信息；MP4文件的媒体数据包含在“mdat”类型的box（Midia Data Box）中，该类型的box也是container box，可以有多个，也可以没有（当媒体数据全部引用其他文件时），媒体数据的结构由metadata进行描述。</p>
+<p>下面是一些概念：</p>
+<ul>
+<li>track  表示一些sample的集合，对于媒体数据来说，track表示一个视频或音频序列。</li>
+<li>hint track  这个特殊的track并不包含媒体数据，而是包含了一些将其他数据track打包成流媒体的指示信息。</li>
+<li>sample  对于非hint track来说，video sample即为一帧视频，或一组连续视频帧，audio sample即为一段连续的压缩音频，它们统称sample。对于hint track，sample定义一个或多个流媒体包的格式。</li>
+<li>sample table  指明sampe时序和物理布局的表。</li>
+<li>chunk 一个track的几个sample组成的单元。</li>
+</ul>
+<p>不讨论涉及hint的内容，只关注包含媒体数据的本地MP4文件。下图为一个典型的MP4文件的结构树。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_struct1.jpeg" alt="MP4文件结构树"></p>
+<h3 id="2-Box"><a href="#2-Box" class="headerlink" title="2.Box"></a>2.Box</h3><p>box中的字节序为网络字节序，也就是大端字节序（Big-Endian），简单的说，就是一个32位的4字节整数存储方式为高位字节在内存的低端。Box由header和body组成，其中header统一指明box的大小和类型，body根据类型有不同的意义和格式。</p>
+<p>标准的box开头的4个字节（32位）为box size，该大小包括box header和box body整个box的大小，这样我们就可以在文件中定位各个box。如果size为1，则表示这个box的大小为large size，真正的size值要在largesize域上得到。（实际上只有“mdat”类型的box才有可能用到large size。）如果size为0，表示该box为文件的最后一个box，文件结尾即为该box结尾。（同样只存在于“mdat”类型的box中。）size后面紧跟的32位为box type，一般是4个字符，如“ftyp”、“moov”等，这些box type都是已经预定义好的，分别表示固定的意义。如果是“uuid”，表示该box为用户扩展类型。如果box type是未定义的，应该将其忽略。</p>
+<h3 id="3-File-Type-Box-ftyp"><a href="#3-File-Type-Box-ftyp" class="headerlink" title="3.File Type Box(ftyp)"></a>3.File Type Box(ftyp)</h3><p>该box有且只有1个，并且只能被包含在文件层，而不能被其他box包含。该box应该被放在文件的最开始，指示该MP4文件应用的相关信息。
+“ftyp” body依次包括1个32位的major brand（4个字符），1个32位的minor version（整数）和1个以32位（4个字符）为单位元素的数组compatible brands。这些都是用来指示文件应用级别的信息。该box的字节实例如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">00000000h: 00 00 00 18 66 74 79 70 6D 70 34 32 00 00 00 01 ; ....ftypmp42....</div><div class="line">00000010h: 6D 70 34 32 6D 70 34 31 00 00 5A EB 6D 6F 6F 76 ; mp42mp41..Zmoov</div></pre></td></tr></table></figure></p>
+<h3 id="4-Movie-Box-moov"><a href="#4-Movie-Box-moov" class="headerlink" title="4.Movie Box(moov)"></a>4.Movie Box(moov)</h3><p>该box包含了文件媒体的metadata信息，“moov”是一个container box，具体内容信息由子box诠释。同File Type Box一样，该box有且只有一个，且只被包含在文件层。一般情况下，“moov”会紧随“ftyp”出现。</p>
+<p>一般情况下（限于篇幅，本文只讲解常见的MP4文件结构），“moov”中会包含1个“mvhd”和若干个“trak”。其中“mvhd”为header box，一般作为“moov”的第一个子box出现（对于其他container box来说，header box都应作为首个子box出现）。“trak”包含了一个track的相关信息，是一个container box。下图为部分“moov”的字节实例，其中红色部分为box header，绿色为“mvhd”，黄色为一部分“trak”。
+<img src="http://images.wodekouwei.com/M/F/mp4_box_moov.png" alt="moov box"></p>
+<h4 id="4-1-Movie-Header-Box-mvhd"><a href="#4-1-Movie-Header-Box-mvhd" class="headerlink" title="4.1 Movie Header Box(mvhd)"></a>4.1 Movie Header Box(mvhd)</h4><p>“mvhd”接口如下表:</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字节数</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>box size</td>
+<td>4</td>
+<td>box大小</td>
+</tr>
+<tr>
+<td>box type</td>
+<td>4</td>
+<td>box类型</td>
+</tr>
+<tr>
+<td>version</td>
+<td>1</td>
+<td>box版本，0或1，一般为0。（以下字节数均按version=0）</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td>creation time</td>
+<td>4</td>
+<td>创建时间（相对于UTC时间1904-01-01零点的秒数）</td>
+</tr>
+<tr>
+<td>modification time</td>
+<td>4</td>
+<td>修改时间</td>
+</tr>
+<tr>
+<td>time scale</td>
+<td>4</td>
+<td>文件媒体在1秒时间内的刻度值，可以理解为1秒长度的时间单元数</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>4</td>
+<td>该track的时间长度，用duration和time scale值可以计算track时长，比如audio track的time scale = 8000, duration = 560128，时长为70.016，video track的time scale = 600, duration = 42000，时长为70</td>
+</tr>
+<tr>
+<td>rate</td>
+<td>4</td>
+<td>推荐播放速率，高16位和低16位分别为小数点整数部分和小数部分，即[16.16] 格式，该值为1.0（0x00010000）表示正常前向播放</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>2</td>
+<td>与rate类似，[8.8] 格式，1.0（0x0100）表示最大音量</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>10</td>
+<td>保留位</td>
+</tr>
+<tr>
+<td>matrix</td>
+<td>36</td>
+<td>视频变换矩阵</td>
+</tr>
+<tr>
+<td>pre-defined</td>
+<td>24</td>
+</tr>
+<tr>
+<td>next track id</td>
+<td>4</td>
+<td>下一个track使用的id号</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://images.wodekouwei.com/M/F/mp4_box_mvhd.png" alt="mvhd"></p>
+<h4 id="4-2Track-Box-trak"><a href="#4-2Track-Box-trak" class="headerlink" title="4.2Track Box(trak)"></a>4.2Track Box(trak)</h4><p>“trak”也是一个container box，其子box包含了该track的媒体数据引用和描述（hint track除外）。一个MP4文件中的媒体可以包含多个track，且至少有一个track，这些track之间彼此独立，有自己的时间和空间信息。“trak”必须包含一个“tkhd”和一个“mdia”，此外还有很多可选的box（略）。其中“tkhd”为track header box，“mdia”为media box，该box是一个包含一些track媒体数据信息box的container box。</p>
+<table>
+<tr>
+<th colspan="6">box类型</th><th colspan="6">说明</th>
+</tr>
+<tr>
+<td>ftype</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">file type,说明文件类型</td>
+</tr>
+<tr>
+<td>moov</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">metadata container,存放媒体信息的地方</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>mvhd</td><td></td><td></td><td></td><td></td><td colspan="6">movie header,文件的总体信息,如时长,创建时间等</td>
+</tr>
+<tr>
+<td></td><td>trak</td><td></td><td></td><td></td><td></td><td colspan="6">track or stream container,存放视频/音频流的容器</td>
+</tr>
+<tr>
+<td></td><td></td><td>tkhd</td><td></td><td></td><td></td><td colspan="6">track header,track的总体信息,如时长,宽高等</td>
+</tr>
+<td></td><td></td><td>media</td><td></td><td></td><td></td><td colspan="6">trak media information container</td>
+
+<tr>
+<td></td><td></td><td></td><td>mdhd</td><td></td><td></td><td colspan="6">media header,定义TimeScale,trak需要通过TimeScale转换成真实时间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>hdlr</td><td></td><td></td><td colspan="6">handler,表明本trak类型,指明是<code>video/audio/还是hint</code></td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td>minf</td><td></td><td></td><td colspan="6">media information container,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td>stbl</td><td></td><td colspan="6">sample table box,存放时间/偏移的映射关系表,数据在子box中</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsd</td><td colspan="6">sample descriptions</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stts</td><td colspan="6">(decoding)time-to-sample,”时戳-sample序号”的映射表</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsc</td><td colspan="6">sample-to-chunk,sample和chunk的映射表,这里的算法比较巧妙</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stsz</td><td colspan="6">sample size,每个sample的大小</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stz2</td><td colspan="6">sample size,另一种sample size的存储算法,更节省空间</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stss</td><td colspan="6">sync sample table,可随机访问的sample列表(关键帧列表)</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>stco</td><td colspan="6">chunk offset,每个chunk的偏移,sample的偏移可根据其他box推算出来</td>
+</tr>
+<tr>
+<td></td><td></td><td></td><td></td><td></td><td>co64</td><td colspan="6">64-bit chunk offset</td>
+</tr>
+<tr>
+<td>mdat</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">media data container,具体的媒体数据</td>
+</tr>
+</table>  
+
+
+<h3 id="Mdat-Box"><a href="#Mdat-Box" class="headerlink" title="Mdat Box"></a>Mdat Box</h3><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
+<p><a href="http://xhelmboyx.tripod.com/formats/mp4-layout.txt" target="_blank" rel="external">http://xhelmboyx.tripod.com/formats/mp4-layout.txt</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2015/04/13/tips-android-knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -560,8 +2260,8 @@ View中setOnTouchListener中的onTouch,onTouchEvent,onClick的执行顺序:onTou
 <li>优化布局层级</li>
 <li>避免嵌套过多无用布局</li>
 <li>当我们在画布局的时候，如果能实现相同的功能，优先考虑相对布局，然后在考虑别的布局，不要用绝对布局。</li>
-<li>使用<include>标签把复杂的界面需要抽取出来</include></li>
-<li>使用<merge>标签，因为它在优化UI结构时起到很重要的作用。目的是通过删减多余或者额外的层级，从而优化整个Android Layout的结构。核心功能就是减少冗余的层次从而达到优化UI的目的！</merge></li>
+<li>使用<code>&lt;include /&gt;</code>标签把复杂的界面需要抽取出来</li>
+<li>使用<code>&lt;merge /&gt;</code>标签，因为它在优化UI结构时起到很重要的作用。目的是通过删减多余或者额外的层级，从而优化整个Android Layout的结构。核心功能就是减少冗余的层次从而达到优化UI的目的！</li>
 <li>ViewStub 是一个隐藏的，不占用内存空间的视图对象，它可以在运行时延迟加载布局资源文件。<h4 id="ListView卡顿的原因以及优化策略"><a href="#ListView卡顿的原因以及优化策略" class="headerlink" title="ListView卡顿的原因以及优化策略"></a>ListView卡顿的原因以及优化策略</h4></li>
 <li>重用converView： 通过复用converview来减少不必要的view的创建，另外Infalte操作会把xml文件实例化成相应的View实例，属于IO操作，是耗时操作。</li>
 <li>减少findViewById()操作： 将xml文件中的元素封装成viewholder静态类，通过converview的setTag和getTag方法将view与相应的holder对象绑定在一起，避免不必要的findviewbyid操作</li>
@@ -671,86 +2371,32 @@ Dalvik解释器采用预先算好的Goto地址，每个指令对内存的访问�
 <p>　　最后，补充一点，byte code并不意味着就是解释执行，也能是加载编译，安装编译，预编译等等。实际上，不同的byte code的程序，不同的技术，不同的具体语言，其真正执行的情况挺复杂，难以一概而论的，好多都是混合技术的案例。</p>
 <p>在智能手机大部分都可以让用户选择使用Dalvik还是ART模式。当然默认还是使用Dalvik模式。
 用法：设置-辅助功能-开发者选项（开发人员工具）-选择运行环境（不同的手机设置的步骤可能不一样）。</p>
-<h3 id="问题整理"><a href="#问题整理" class="headerlink" title="问题整理"></a>问题整理</h3><h4 id="1-分析Java线程中断机制stop和interrupted的用法"><a href="#1-分析Java线程中断机制stop和interrupted的用法" class="headerlink" title="1. 分析Java线程中断机制stop和interrupted的用法"></a>1. 分析Java线程中断机制stop和interrupted的用法</h4><ol>
-<li>当我们点击某个杀毒软件的取消按钮来停止查杀病毒时，当我们在控制台敲入quit命令以结束某个后台服务时……都需要通过一个线程去取消另一个线程正在执行的任务。Java没有提供一种安全直接的方法来停止某个线程，但是Java提供了中断机制。如果对Java中断没有一个全面的了解，可能会误以为被中断的线程将立马退出运行，但事实并非如此。中断机制是如何工作的？捕获或检测到中断后，是抛出InterruptedException还是重设中断状态以及在方法中吞掉中断状态会有什么后果？Thread.stop与中断相比又有哪些异同？什么情况下需要使用中断？本文将从以上几个方面进行描述。</li>
-<li>中断的原理Java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理中断。这好比是家里的父母叮嘱在外的子女要注意身体，但子女是否注意身体，怎么注意身体则完全取决于自己。Java中断模型也是这么简单，每个线程对象里都有一个boolean类型的标识（不一定就要是Thread类的字段，实际上也的确不是，这几个方法最终都是通过native方法来完成的），代表着是否有中断请求（该请求可以来自所有线程，包括被中断的线程本身）。例如，当线程t1想中断线程t2，只需要在线程t1中将线程t2对象的中断标识置为true，然后线程2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像这个线程没有被中断一样。java.lang.Thread类提供了几个方法来操作这个中断状态，这些方法包括：public static boolean interrupted测试当前线程是否已经中断。线程的中断状态 由该方法清除。换句话说，如果连续两次调用该方法，则第二次调用将返回false（在第一次调用已清除了其中断状态之后，且第二次调用检验完中断状态前，当前线程再次中断的情况除外）。public boolean isInterrupted()测试线程是否已经中断。线程的中断状态不受该方法的影响。public void interrupt()中断线程。其中，interrupt方法是唯一能将中断状态设置为true的方法。静态方法interrupted会将当前线程的中断状态清除，但这个方法的命名极不直观，很容易造成误解，需要特别注意。
-上面的例子中，线程t1通过调用interrupt方法将线程t2的中断状态置为true，t2可以在合适的时候调用interrupted或isInterrupted来检测状态并做相应的处理。此外，类库中的有些类的方法也可能会调用中断，如FutureTask中的cancel方法，如果传入的参数为true，它将会在正在运行异步任务的线程上调用interrupt方法，如果正在执行的异步任务中的代码没有对中断做出响应，那么cancel方法中的参数将不会起到什么效果；又如ThreadPoolExecutor中的shutdownNow方法会遍历线程池中的工作线程并调用线程的interrupt方法来中断线程，所以如果工作线程中正在执行的任务没有对中断做出响应，任务将一直执行直到正常结束。</li>
-<li>中断的处理既然Java中断机制只是设置被中断线程的中断状态，那么被中断线程该做些什么？显然，作为一种协作机制，不会强求被中断线程一定要在某个点进行处理。实际上，被中断线程只需在合适的时候处理即可，如果没有合适的时间点，甚至可以不处理，这时候在任务处理层面，就跟没有调用中断方法一样。“合适的时候”与线程正在处理的业务逻辑紧密相关，例如，每次迭代的时候，进入一个可能阻塞且无法中断的方法之前等，但多半不会出现在某个临界区更新另一个对象状态的时候，因为这可能会导致对象处于不一致状态。
-处理时机决定着程序的效率与中断响应的灵敏性。频繁的检查中断状态可能会使程序执行效率下降，相反，检查的较少可能使中断请求得不到及时响应。如果发出中断请求之后，被中断的线程继续执行一段时间不会给系统带来灾难，那么就可以将中断处理放到方便检查中断，同时又能从一定程度上保证响应灵敏度的地方。当程序的性能指标比较关键时，可能需要建立一个测试模型来分析最佳的中断检测点，以平衡性能和响应灵敏性。中断状态的管理<ul>
-<li>一般说来，当可能阻塞的方法声明中有抛出InterruptedException则暗示该方法是可中断的，如BlockingQueue#put、BlockingQueue#take、Object#wait、Thread#sleep等，如果程序捕获到这些可中断的阻塞方法抛出的InterruptedException或检测到中断后，这些中断信息该如何处理？一般有以下两个通用原则：如果遇到的是可中断的阻塞方法抛出InterruptedException，可以继续向方法调用栈的上层抛出该异常，如果是检测到中断，则可清除中断状态并抛出InterruptedException，使当前方法也成为一个可中断的方法。 若有时候不太方便在方法上抛出InterruptedException，比如要实现的某个接口中的方法签名上没有throws InterruptedException，这时就可以捕获可中断方法的InterruptedException并通过Thread.currentThread.interrupt()来重新设置中断状态。如果是检测并清除了中断状态，亦是如此。 一般的代码中，尤其是作为一个基础类库时，绝不应当吞掉中断，即捕获到InterruptedException后在catch里什么也不做，清除中断状态后又不重设中断状态也不抛出InterruptedException等。因为吞掉中断状态会导致方法调用栈的上层得不到这些信息。当然，凡事总有例外的时候，当你完全清楚自己的方法会被谁调用，而调用者也不会因为中断被吞掉了而遇到麻烦，就可以这么做。总得来说，就是要让方法调用栈的上层获知中断的发生。假设你写了一个类库，类库里有个方法amethod，在amethod中检测并清除了中断状态，而没有抛出InterruptedException，作为amethod的用户来说，他并不知道里面的细节，如果用户在调用amethod后也要使用中断来做些事情，那么在调用amethod之后他将永远也检测不到中断了，因为中断信息已经被amethod清除掉了。如果作为用户，遇到这样有问题的类库，又不能修改代码，那该怎么处理？只好在自己的类里设置一个自己的中断状态，在调用interrupt方法的时候，同时设置该状态，这实在是无路可走时才使用的方法。</li>
-<li>中断的响应 程序里发现中断后该怎么响应？这就得视实际情况而定了。有些程序可能一检测到中断就立马将线程终止，有些可能是退出当前执行的任务，继续执行下一个任务……作为一种协作机制，这要与中断方协商好，当调用interrupt会发生些什么都是事先知道的，如做一些事务回滚操作，一些清理工作，一些补偿操作等。若不确定调用某个线程的interrupt后该线程会做出什么样的响应，那就不应当中断该线程。</li>
-</ul>
-</li>
-<li>Thread.interrupt VS Thread.stopThread.stop方法已经不推荐使用了。而在某些方面Thread.stop与中断机制有着相似之处。如当线程在等待内置锁或IO时，stop跟interrupt一样，不会中止这些操作；当catch住stop导致的异常时，程序也可以继续执行，虽然stop本意是要停止线程，这么做会让程序行为变得更加混乱。那么它们的区别在哪里？最重要的就是中断需要程序自己去检测然后做相应的处理，而Thread.stop会直接在代码执行过程中抛出ThreadDeath错误，这是一个java.lang.Error的子类。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.util.Arrays;  </div><div class="line">import java.util.Random;  </div><div class="line">import java.util.concurrent.TimeUnit;  </div><div class="line">public class TestStop &#123;  </div><div class="line">    private static final int[] array = new int[80000];  </div><div class="line">    private static final Thread t = new Thread() &#123;  </div><div class="line">        public void run() &#123;  </div><div class="line">            try &#123;  </div><div class="line">                System.out.println(sort(array));  </div><div class="line">            &#125; catch (Error err) &#123;  </div><div class="line">                err.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">            System.out.println(&quot;in thread t&quot;);  </div><div class="line">        &#125;  </div><div class="line">    &#125;;  </div><div class="line"></div><div class="line">    static &#123;  </div><div class="line">        Random random = new Random();  </div><div class="line">        for(int i = 0; i &lt; array.length; i++) &#123;  </div><div class="line">            array[i] = random.nextInt(i + 1);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    private static int sort(int[] array) &#123;  </div><div class="line">        for (int i = 0; i &lt; array.length-1; i++)&#123;  </div><div class="line">            for(int j = 0 ;j &lt; array.length - i - 1; j++)&#123;  </div><div class="line">                if(array[j] &lt; array[j + 1])&#123;  </div><div class="line">                    int temp = array[j];  </div><div class="line">                    array[j] = array[j + 1];  </div><div class="line">                    array[j + 1] = temp;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        return array[0];  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        t.start();  </div><div class="line">        TimeUnit.SECONDS.sleep(1);  </div><div class="line">        System.out.println(&quot;go to stop thread t&quot;);  </div><div class="line">        t.stop();  </div><div class="line">        System.out.println(&quot;finish main&quot;);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这个例子很简单，线程t里面做了一个非常耗时的排序操作，排序方法中，只有简单的加、减、赋值、比较等操作，一个可能的执行结果如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">go to stop thread t  </div><div class="line">java.lang.ThreadDeath  </div><div class="line">    at java.lang.Thread.stop(Thread.java:758)  </div><div class="line">    at com.ticmy.interrupt.TestStop.main(TestStop.java:44)  </div><div class="line">finish main  </div><div class="line">in thread t</div></pre></td></tr></table></figure></p>
-<p>这里sort方法是个非常耗时的操作，也就是说主线程休眠一秒钟后调用stop的时候，线程t还在执行sort方法。就是这样一个简单的方法，也会抛出错误！换一句话说，调用stop后，大部分Java字节码都有可能抛出错误，哪怕是简单的加法！
-如果线程当前正持有锁，stop之后则会释放该锁。由于此错误可能出现在很多地方，那么这就让编程人员防不胜防，极易造成对象状态的不一致。例如，对象obj中存放着一个范围值：最小值low，最大值high，且low不得大于high，这种关系由锁lock保护，以避免并发时产生竞态条件而导致该关系失效。假设当前low值是5，high值是10，当线程t获取lock后，将low值更新为了15，此时被stop了，真是糟糕，如果没有捕获住stop导致的Error，low的值就为15，high还是10，这导致它们之间的小于关系得不到保证，也就是对象状态被破坏了！如果在给low赋值的时候catch住stop导致的Error则可能使后面high变量的赋值继续，但是谁也不知道Error会在哪条语句抛出，如果对象状态之间的关系更复杂呢？这种方式几乎是无法维护的，太复杂了！如果是中断操作，它决计不会在执行low赋值的时候抛出错误，这样程序对于对象状态一致性就是可控的。
-正是因为可能导致对象状态不一致，stop才被禁用。</p>
-<ol>
-<li>中断的使用通常，中断的使用场景有以下几个：<ul>
-<li>点击某个桌面应用中的取消按钮时；</li>
-<li>某个操作超过了一定的执行时间限制需要中止时；</li>
-<li>多个线程做相同的事情，只要一个线程成功其它线程都可以取消时；</li>
-<li>一组线程中的一个或多个出现错误导致整组都无法继续时；</li>
-<li>当一个应用或服务需要停止时。
-下面来看一个具体的例子。这个例子里，本打算采用GUI形式，但考虑到GUI代码会使程序复杂化，就使用控制台来模拟下核心的逻辑。这里新建了一个磁盘文件扫描的任务，扫描某个目录下的所有文件并将文件路径打印到控制台，扫描的过程可能会很长。若需要中止该任务，只需在控制台键入quit并回车即可。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.io.BufferedReader;  </div><div class="line">import java.io.File;  </div><div class="line">import java.io.InputStreamReader;  </div><div class="line"></div><div class="line">public class FileScanner &#123;  </div><div class="line">    private static void listFile(File f) throws InterruptedException &#123;  </div><div class="line">        if(f == null) &#123;  </div><div class="line">            throw new IllegalArgumentException();  </div><div class="line">        &#125;  </div><div class="line">        if(f.isFile()) &#123;  </div><div class="line">            System.out.println(f);  </div><div class="line">            return;  </div><div class="line">        &#125;  </div><div class="line">        File[] allFiles = f.listFiles();  </div><div class="line">        if(Thread.interrupted()) &#123;  </div><div class="line">            throw new InterruptedException(&quot;文件扫描任务被中断&quot;);  </div><div class="line">        &#125;  </div><div class="line">        for(File file : allFiles) &#123;  </div><div class="line">            //还可以将中断检测放到这里  </div><div class="line">            listFile(file);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static String readFromConsole() &#123;  </div><div class="line">        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  </div><div class="line">        try &#123;  </div><div class="line">            return reader.readLine();  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">            return &quot;&quot;;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        final Thread fileIteratorThread = new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                try &#123;  </div><div class="line">                    listFile(new File(&quot;c:\\&quot;));  </div><div class="line">                &#125; catch (InterruptedException e) &#123;  </div><div class="line">                    e.printStackTrace();  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;;  </div><div class="line">        new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                while(true) &#123;  </div><div class="line">                    if(&quot;quit&quot;.equalsIgnoreCase(readFromConsole())) &#123;  </div><div class="line">                        if(fileIteratorThread.isAlive()) &#123;  </div><div class="line">                            fileIteratorThread.interrupt();  </div><div class="line">                            return;  </div><div class="line">                        &#125;  </div><div class="line">                    &#125; else &#123;  </div><div class="line">                        System.out.println(&quot;输入quit退出文件扫描&quot;);  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;.start();  </div><div class="line">        fileIteratorThread.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ol>
-<p>在扫描文件的过程中，对于中断的检测这里采用的策略是，如果碰到的是文件就不检测中断，是目录才检测中断，因为文件可能是非常多的，每次遇到文件都检测一次会降低程序执行效率。此外，在fileIteratorThread线程中，仅是捕获了InterruptedException，没有重设中断状态也没有继续抛出异常，因为我非常清楚它的使用环境，run方法的调用栈上层已经没有可能需要检测中断状态的方法了。
-在这个程序中，输入quit完全可以执行System.exit(0)操作来退出程序，但正如前面提到的，这是个GUI程序核心逻辑的模拟，在GUI中，执行System.exit(0)会使得整个程序退出。</p>
-<h4 id="2-线程状态"><a href="#2-线程状态" class="headerlink" title="2. 线程状态"></a>2. 线程状态</h4><ol>
-<li><p>新建状态(New)：
-当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码</p>
-</li>
-<li><p>就绪状态(Runnable)
-一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运行的系统资源，并调度线程运行run()方法。当start()方法返回后，线程就处于就绪状态。
-处于就绪状态的线程并不一定立即运行run()方法，线程还必须同其他线程竞争CPU时间，只有获得CPU时间才可以运行线程。因为在单CPU的计算机系统中，不可能同时运行多个线程，一个时刻仅有一个线程处于运行状态。因此此时可能有多个线程处于就绪状态。对多个处于就绪状态的线程是由Java运行时系统的线程调度程序(thread scheduler)来调度的。</p>
-</li>
-<li>运行状态(Running)
-当线程获得CPU时间后，它才进入运行状态，真正开始执行run()方法.</li>
-<li>阻塞状态(Blocked)
-线程运行过程中，可能由于各种原因进入阻塞状态:
-1&gt;线程通过调用sleep方法进入睡眠状态；
-2&gt;线程调用一个在I/O上被阻塞的操作，即该操作在输入输出操作完成之前不会返回到它的调用者；
-3&gt;线程试图得到一个锁，而该锁正被其他线程持有；
-4&gt;线程在等待某个触发条件；<pre><code>......           
-</code></pre>所谓阻塞状态是正在运行的线程没有运行结束，暂时让出CPU，这时其他处于就绪状态的线程就可以获得CPU时间，进入运行状态。</li>
-<li>死亡状态(Dead)
-有两个原因会导致线程死亡：
-1) run方法正常退出而自然死亡，
-2) 一个未捕获的异常终止了run方法而使线程猝死。
-为了确定线程在当前是否存活着（就是要么是可运行的，要么是被阻塞了），需要使用isAlive方法。如果是可运行或被阻塞，这个方法返回true； 如果线程仍旧是new状态且不是可运行的， 或者线程死亡了，则返回false.</li>
-</ol>
-<h4 id="3-View-的onDraw与dispatchDraw"><a href="#3-View-的onDraw与dispatchDraw" class="headerlink" title="3.View 的onDraw与dispatchDraw"></a>3.View 的onDraw与dispatchDraw</h4><p>绘制VIew本身的内容，通过调用View.onDraw(canvas)函数实现
+<h3 id="问题整理"><a href="#问题整理" class="headerlink" title="问题整理"></a>问题整理</h3><h4 id="1-View-的onDraw与dispatchDraw"><a href="#1-View-的onDraw与dispatchDraw" class="headerlink" title="1.View 的onDraw与dispatchDraw"></a>1.View 的onDraw与dispatchDraw</h4><p>绘制VIew本身的内容，通过调用View.onDraw(canvas)函数实现
 绘制自己的孩子通过dispatchDraw（canvas）实现
 View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是先画Drawable背景，对 drawable调用setBounds()然后是draw(Canvas c)方法.有点注意的是背景drawable的实际大小会影响view组件的大小，drawable的实际大小通过getIntrinsicWidth()和getIntrinsicHeight()获取，当背景比较大时view组件大小等于背景drawable的大小</p>
 <p>画完背景后，draw过程会调用onDraw(Canvas canvas)方法，然后就是dispatchDraw(Canvas canvas)方法, dispatchDraw()主要是分发给子组件进行绘制，我们通常定制组件的时候重写的是onDraw()方法。值得注意的是ViewGroup容器组件的绘制，当它没有背景时直接调用的是dispatchDraw()方法, 而绕过了draw()方法，当它有背景的时候就调用draw()方法，而draw()方法里包含了dispatchDraw()方法的调用。因此要在ViewGroup上绘制东西的时候往往重写的是dispatchDraw()方法而不是onDraw()方法，或者自定制一个Drawable，重写它的draw(Canvas c)和 getIntrinsicWidth(),</p>
 <p>getIntrinsicHeight()方法，然后设为背景。</p>
-<h4 id="4-opengl可编程管线与固定区别"><a href="#4-opengl可编程管线与固定区别" class="headerlink" title="4.opengl可编程管线与固定区别"></a>4.opengl可编程管线与固定区别</h4><p>1）、固定渲染管线 ——这是标准的几何&amp;光照(T&amp;L)管线，功能是固定的，它控制着世界、视、投影变换及固定光照控制和纹理混合。T&amp;L管线可以被渲染状态控制，矩阵，光照和采制参数。
+<h4 id="2-opengl可编程管线与固定区别"><a href="#2-opengl可编程管线与固定区别" class="headerlink" title="2.opengl可编程管线与固定区别"></a>2.opengl可编程管线与固定区别</h4><p>1）、固定渲染管线 ——这是标准的几何&amp;光照(T&amp;L)管线，功能是固定的，它控制着世界、视、投影变换及固定光照控制和纹理混合。T&amp;L管线可以被渲染状态控制，矩阵，光照和采制参数。
 2）、顶点着色器——图形开发人员可以对渲染管线中的顶点运算和像素运算分别进行编程处理了，而无须象以前那样套用一些固定函数，取代设置参数来控制管线，最早出现与DX8，包括PS和VS两部分。</p>
-<h4 id="5-光照"><a href="#5-光照" class="headerlink" title="5.光照"></a>5.光照</h4><h4 id="6-深度测试"><a href="#6-深度测试" class="headerlink" title="6.深度测试"></a>6.深度测试</h4><p>像素归属测试：这一步骤由OpenGL ES内部进行，不由开发人员控制；测试确定帧缓冲区的位置的像素是否归属当前OpenGL ES所有，如不属于或被另一个窗口遮挡，从而完全不显示这些像素。</p>
+<h4 id="3-光照"><a href="#3-光照" class="headerlink" title="3.光照"></a>3.光照</h4><h4 id="4-深度测试"><a href="#4-深度测试" class="headerlink" title="4.深度测试"></a>4.深度测试</h4><p>像素归属测试：这一步骤由OpenGL ES内部进行，不由开发人员控制；测试确定帧缓冲区的位置的像素是否归属当前OpenGL ES所有，如不属于或被另一个窗口遮挡，从而完全不显示这些像素。</p>
 <p>裁剪测试：判断像素是否在由 glScissor 定义的剪裁矩形内，不在该剪裁区域内的像素就会被剪裁掉；</p>
 <p>模板和深度测试：测试输入片段的模板和深度值上进行，以确定片段是否应该被拒绝；深度测试比较下一个片段与帧缓冲区中的片段的深度，从而决定哪一个像素在前面，哪一个像素被遮挡；</p>
 <p>混合：是将片段的颜色和帧缓冲区中已有的颜色值进行混合，并将混合所得的新值写入帧缓冲；</p>
 <p>抖动：可用于最小化因为使用有限精度在帧缓冲区中保存颜色值而产生的伪像。</p>
 <p>Framebuffer：这是流水线的最后一个阶段，Framebuffer 中存储这可以用于渲染到屏幕或纹理中的像素值，也可以从Framebuffer 中读回像素值，但不能读取其他值（如深度值，模版值等）。</p>
-<h4 id="7-Intent为什么可序列化的数据"><a href="#7-Intent为什么可序列化的数据" class="headerlink" title="7.Intent为什么可序列化的数据"></a>7.Intent为什么可序列化的数据</h4><p>大家都知道进行Android开发的时候，无法将对象的引用传给Activities或者Fragments，我们需要将这些对象放到一个Intent或者Bundle里面，然后再传递
+<h4 id="5-Intent为什么可序列化的数据"><a href="#5-Intent为什么可序列化的数据" class="headerlink" title="5.Intent为什么可序列化的数据"></a>5.Intent为什么可序列化的数据</h4><p>大家都知道进行Android开发的时候，无法将对象的引用传给Activities或者Fragments，我们需要将这些对象放到一个Intent或者Bundle里面，然后再传递
 序列化的原因基本三种情况：</p>
 <ol>
 <li>永久性保存对象，保存对象的字节序列到本地文件中；</li>
 <li>对象在网络中传递；</li>
-<li>对象在IPC间传递。<h4 id="8-SharedPreference"><a href="#8-SharedPreference" class="headerlink" title="8.SharedPreference"></a>8.SharedPreference</h4>之前为了解决应用的内存压力，在同一个应用中使用了多进程，但在程序自测的过程中发现不同进程之间的SharedPreferences数据不能共享，但应用内很多数据都是通过SharedPreferences来保存的，如果改成其它多进程通信的方式改动比较大。通过查看源码发现，在API Level&gt;=11即Android 3.0可以通过Context.MODE_MULTI_PROCESS属性来实现SharedPreferences多进程共享，具体使用方式如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class PreferencesUtils &#123;</div><div class="line">    public static String PREFERENCE_NAME = &quot;SharedPreferencesDemo&quot;;</div><div class="line"></div><div class="line">    private PreferencesUtils()&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static boolean putString(Context context, String key, String value) &#123;</div><div class="line">        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_MULTI_PROCESS);</div><div class="line">        SharedPreferences.Editor editor = settings.edit();</div><div class="line">        editor.putString(key, value);</div><div class="line">        return editor.commit();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static String getString(Context context, String key, String defaultValue) &#123;</div><div class="line">        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_MULTI_PROCESS);</div><div class="line">        return settings.getString(key, defaultValue);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
+<li>对象在IPC间传递。</li>
 </ol>
+<h4 id="6-SharedPreference"><a href="#6-SharedPreference" class="headerlink" title="6.SharedPreference"></a>6.SharedPreference</h4><p>之前为了解决应用的内存压力，在同一个应用中使用了多进程，但在程序自测的过程中发现不同进程之间的SharedPreferences数据不能共享，但应用内很多数据都是通过SharedPreferences来保存的，如果改成其它多进程通信的方式改动比较大。通过查看源码发现，在API Level&gt;=11即Android 3.0可以通过Context.MODE_MULTI_PROCESS属性来实现SharedPreferences多进程共享，具体使用方式如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class PreferencesUtils &#123;</div><div class="line">    public static String PREFERENCE_NAME = &quot;SharedPreferencesDemo&quot;;</div><div class="line"></div><div class="line">    private PreferencesUtils()&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static boolean putString(Context context, String key, String value) &#123;</div><div class="line">        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_MULTI_PROCESS);</div><div class="line">        SharedPreferences.Editor editor = settings.edit();</div><div class="line">        editor.putString(key, value);</div><div class="line">        return editor.commit();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static String getString(Context context, String key, String defaultValue) &#123;</div><div class="line">        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_MULTI_PROCESS);</div><div class="line">        return settings.getString(key, defaultValue);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>本来以为通过MODE_MULTI_PROCESS属性使用SharedPreferences就可以解决不同进程之间不能共享数据的问题了，但SQA总是反馈一些随机但出现频率比较大的bug，比如在使用过程中没有清除程序数据的前提下，会出现欢迎界面和操作指引，这是通过保存在SharedPreferences的标志来判断用户是否是第一次启动程序的，分析发现保存在SharedPreferences中的数据丢失了，但代码中并没有去清除这些数据，所以推测可能是不同进程同一时间对SharedPreferences操作导致的，经验证确实如此，去掉多进程就不会再出现这个问题了。</p>
 <p>由于进程间是不能内存共享的，每个进程操作的SharedPreferences都是一个单独的实例，上述的问题并不能通过锁来解决，这导致了多进程间通过SharedPreferences来共享数据是不安全的，这个问题只能通过多进程间其它的通信方式或者是在确保不会同时操作SharedPreferences数据的前提下使用SharedPreferences来解决。</p>
 <p><strong>apply和commit都是提交保存，区别在于apply是异步执行的，不需要等待。不论删除，修改，增加都必须调用apply或者commit提交保存。</strong></p>
-<h4 id="9-保存sd卡怎么加锁"><a href="#9-保存sd卡怎么加锁" class="headerlink" title="9.保存sd卡怎么加锁"></a>9.保存sd卡怎么加锁</h4><h4 id="10-Handler中Queue的排序方式"><a href="#10-Handler中Queue的排序方式" class="headerlink" title="10.Handler中Queue的排序方式"></a>10.Handler中Queue的排序方式</h4><h4 id="11-IOC-控制反转"><a href="#11-IOC-控制反转" class="headerlink" title="11.IOC 控制反转"></a>11.IOC 控制反转</h4><h4 id="12-Android-IPC"><a href="#12-Android-IPC" class="headerlink" title="12.Android IPC"></a>12.Android IPC</h4><h4 id="13-OKHttp与httpclient区别"><a href="#13-OKHttp与httpclient区别" class="headerlink" title="13.OKHttp与httpclient区别"></a>13.OKHttp与httpclient区别</h4>
+<h4 id="7-保存sd卡怎么加锁"><a href="#7-保存sd卡怎么加锁" class="headerlink" title="7.保存sd卡怎么加锁"></a>7.保存sd卡怎么加锁</h4><h4 id="8-Handler中Queue的排序方式"><a href="#8-Handler中Queue的排序方式" class="headerlink" title="8.Handler中Queue的排序方式"></a>8.Handler中Queue的排序方式</h4><h4 id="9-IOC-控制反转"><a href="#9-IOC-控制反转" class="headerlink" title="9.IOC 控制反转"></a>9.IOC 控制反转</h4><h4 id="10-Android-IPC"><a href="#10-Android-IPC" class="headerlink" title="10.Android IPC"></a>10.Android IPC</h4><h4 id="11-OKHttp与httpclient区别"><a href="#11-OKHttp与httpclient区别" class="headerlink" title="11.OKHttp与httpclient区别"></a>11.OKHttp与httpclient区别</h4>
           
         
       
@@ -833,7 +2479,7 @@ View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">116</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -855,7 +2501,7 @@ View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

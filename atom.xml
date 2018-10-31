@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2018-09-12T06:05:41.810Z</updated>
+  <updated>2018-10-31T10:38:17.313Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -16,14 +16,206 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>面试题库</title>
-    <link href="http://wodekouwei.com/2018/09/11/interview-repository/"/>
-    <id>http://wodekouwei.com/2018/09/11/interview-repository/</id>
-    <published>2018-09-11T15:00:17.000Z</published>
-    <updated>2018-09-12T06:05:41.810Z</updated>
+    <title>Java GC</title>
+    <link href="http://wodekouwei.com/2018/10/31/tips-gc/"/>
+    <id>http://wodekouwei.com/2018/10/31/tips-gc/</id>
+    <published>2018-10-31T10:37:21.000Z</published>
+    <updated>2018-10-31T10:38:17.313Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h3><p>Java：</p>
+    <summary type="html">
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java内部类详解</title>
+    <link href="http://wodekouwei.com/2018/10/31/tips-innerclass/"/>
+    <id>http://wodekouwei.com/2018/10/31/tips-innerclass/</id>
+    <published>2018-10-31T10:32:17.000Z</published>
+    <updated>2018-10-31T10:33:54.348Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>多线程只是总结</title>
+    <link href="http://wodekouwei.com/2018/10/25/tips-thread/"/>
+    <id>http://wodekouwei.com/2018/10/25/tips-thread/</id>
+    <published>2018-10-25T07:08:43.000Z</published>
+    <updated>2018-10-31T09:59:22.925Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h3><h4 id="线程5种状态"><a href="#线程5种状态" class="headerlink" title="线程5种状态"></a>线程5种状态</h4><p><img src="http://images.wodekouwei.comtechnology/thread-lifecycle.jpeg" alt="image"></p>
 <ol>
+<li><p>新建状态(New)：
+当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码</p>
+</li>
+<li><p>就绪状态(Runnable)
+一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运行的系统资源，并调度线程运行run()方法。当start()方法返回后，线程就处于就绪状态。
+处于就绪状态的线程并不一定立即运行run()方法，线程还必须同其他线程竞争CPU时间，只有获得CPU时间才可以运行线程。因为在单CPU的计算机系统中，不可能同时运行多个线程，一个时刻仅有一个线程处于运行状态。因此此时可能有多个线程处于就绪状态。对多个处于就绪状态的线程是由Java运行时系统的线程调度程序(thread scheduler)来调度的。</p>
+</li>
+<li>运行状态(Running)
+当线程获得CPU时间后，它才进入运行状态，真正开始执行run()方法.</li>
+<li>阻塞状态(Blocked)
+线程运行过程中，可能由于各种原因进入阻塞状态:
+1&gt;线程通过调用sleep方法进入睡眠状态；
+2&gt;线程调用一个在I/O上被阻塞的操作，即该操作在输入输出操作完成之前不会返回到它的调用者；
+3&gt;线程试图得到一个锁，而该锁正被其他线程持有；
+4&gt;线程在等待某个触发条件；<pre><code>......           
+</code></pre>所谓阻塞状态是正在运行的线程没有运行结束，暂时让出CPU，这时其他处于就绪状态的线程就可以获得CPU时间，进入运行状态。</li>
+<li>死亡状态(Dead)
+有两个原因会导致线程死亡：
+1) run方法正常退出而自然死亡，
+2) 一个未捕获的异常终止了run方法而使线程猝死。
+为了确定线程在当前是否存活着（就是要么是可运行的，要么是被阻塞了），需要使用isAlive方法。如果是可运行或被阻塞，这个方法返回true； 如果线程仍旧是new状态且不是可运行的， 或者线程死亡了，则返回false.</li>
+</ol>
+<h4 id="分析Java线程中断机制stop和interrupted的用法"><a href="#分析Java线程中断机制stop和interrupted的用法" class="headerlink" title="分析Java线程中断机制stop和interrupted的用法"></a>分析Java线程中断机制stop和interrupted的用法</h4><ol>
+<li>当我们点击某个杀毒软件的取消按钮来停止查杀病毒时，当我们在控制台敲入quit命令以结束某个后台服务时……都需要通过一个线程去取消另一个线程正在执行的任务。Java没有提供一种安全直接的方法来停止某个线程，但是Java提供了中断机制。如果对Java中断没有一个全面的了解，可能会误以为被中断的线程将立马退出运行，但事实并非如此。中断机制是如何工作的？捕获或检测到中断后，是抛出InterruptedException还是重设中断状态以及在方法中吞掉中断状态会有什么后果？Thread.stop与中断相比又有哪些异同？什么情况下需要使用中断？</li>
+<li>中断的原理Java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理中断。这好比是家里的父母叮嘱在外的子女要注意身体，但子女是否注意身体，怎么注意身体则完全取决于自己。Java中断模型也是这么简单，每个线程对象里都有一个boolean类型的标识（不一定就要是Thread类的字段，实际上也的确不是，这几个方法最终都是通过native方法来完成的），代表着是否有中断请求（该请求可以来自所有线程，包括被中断的线程本身）。例如，当线程t1想中断线程t2，只需要在线程t1中将线程t2对象的中断标识置为true，然后线程2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像这个线程没有被中断一样。java.lang.Thread类提供了几个方法来操作这个中断状态，这些方法包括：public static boolean interrupted测试当前线程是否已经中断。线程的中断状态 由该方法清除。换句话说，如果连续两次调用该方法，则第二次调用将返回false（在第一次调用已清除了其中断状态之后，且第二次调用检验完中断状态前，当前线程再次中断的情况除外）。public boolean isInterrupted()测试线程是否已经中断。线程的中断状态不受该方法的影响。public void interrupt()中断线程。其中，interrupt方法是唯一能将中断状态设置为true的方法。静态方法interrupted会将当前线程的中断状态清除，但这个方法的命名极不直观，很容易造成误解，需要特别注意。
+上面的例子中，线程t1通过调用interrupt方法将线程t2的中断状态置为true，t2可以在合适的时候调用interrupted或isInterrupted来检测状态并做相应的处理。此外，类库中的有些类的方法也可能会调用中断，如FutureTask中的cancel方法，如果传入的参数为true，它将会在正在运行异步任务的线程上调用interrupt方法，如果正在执行的异步任务中的代码没有对中断做出响应，那么cancel方法中的参数将不会起到什么效果；又如ThreadPoolExecutor中的shutdownNow方法会遍历线程池中的工作线程并调用线程的interrupt方法来中断线程，所以如果工作线程中正在执行的任务没有对中断做出响应，任务将一直执行直到正常结束。</li>
+<li>中断的处理既然Java中断机制只是设置被中断线程的中断状态，那么被中断线程该做些什么？显然，作为一种协作机制，不会强求被中断线程一定要在某个点进行处理。实际上，被中断线程只需在合适的时候处理即可，如果没有合适的时间点，甚至可以不处理，这时候在任务处理层面，就跟没有调用中断方法一样。“合适的时候”与线程正在处理的业务逻辑紧密相关，例如，每次迭代的时候，进入一个可能阻塞且无法中断的方法之前等，但多半不会出现在某个临界区更新另一个对象状态的时候，因为这可能会导致对象处于不一致状态。
+处理时机决定着程序的效率与中断响应的灵敏性。频繁的检查中断状态可能会使程序执行效率下降，相反，检查的较少可能使中断请求得不到及时响应。如果发出中断请求之后，被中断的线程继续执行一段时间不会给系统带来灾难，那么就可以将中断处理放到方便检查中断，同时又能从一定程度上保证响应灵敏度的地方。当程序的性能指标比较关键时，可能需要建立一个测试模型来分析最佳的中断检测点，以平衡性能和响应灵敏性。中断状态的管理<ul>
+<li>一般说来，当可能阻塞的方法声明中有抛出InterruptedException则暗示该方法是可中断的，如BlockingQueue#put、BlockingQueue#take、Object#wait、Thread#sleep等，如果程序捕获到这些可中断的阻塞方法抛出的InterruptedException或检测到中断后，这些中断信息该如何处理？一般有以下两个通用原则：如果遇到的是可中断的阻塞方法抛出InterruptedException，可以继续向方法调用栈的上层抛出该异常，如果是检测到中断，则可清除中断状态并抛出InterruptedException，使当前方法也成为一个可中断的方法。 若有时候不太方便在方法上抛出InterruptedException，比如要实现的某个接口中的方法签名上没有throws InterruptedException，这时就可以捕获可中断方法的InterruptedException并通过Thread.currentThread.interrupt()来重新设置中断状态。如果是检测并清除了中断状态，亦是如此。 一般的代码中，尤其是作为一个基础类库时，绝不应当吞掉中断，即捕获到InterruptedException后在catch里什么也不做，清除中断状态后又不重设中断状态也不抛出InterruptedException等。因为吞掉中断状态会导致方法调用栈的上层得不到这些信息。当然，凡事总有例外的时候，当你完全清楚自己的方法会被谁调用，而调用者也不会因为中断被吞掉了而遇到麻烦，就可以这么做。总得来说，就是要让方法调用栈的上层获知中断的发生。假设你写了一个类库，类库里有个方法amethod，在amethod中检测并清除了中断状态，而没有抛出InterruptedException，作为amethod的用户来说，他并不知道里面的细节，如果用户在调用amethod后也要使用中断来做些事情，那么在调用amethod之后他将永远也检测不到中断了，因为中断信息已经被amethod清除掉了。如果作为用户，遇到这样有问题的类库，又不能修改代码，那该怎么处理？只好在自己的类里设置一个自己的中断状态，在调用interrupt方法的时候，同时设置该状态，这实在是无路可走时才使用的方法。</li>
+<li>中断的响应 程序里发现中断后该怎么响应？这就得视实际情况而定了。有些程序可能一检测到中断就立马将线程终止，有些可能是退出当前执行的任务，继续执行下一个任务……作为一种协作机制，这要与中断方协商好，当调用interrupt会发生些什么都是事先知道的，如做一些事务回滚操作，一些清理工作，一些补偿操作等。若不确定调用某个线程的interrupt后该线程会做出什么样的响应，那就不应当中断该线程。</li>
+</ul>
+</li>
+<li>Thread.interrupt VS Thread.stopThread.stop方法已经不推荐使用了。而在某些方面Thread.stop与中断机制有着相似之处。如当线程在等待内置锁或IO时，stop跟interrupt一样，不会中止这些操作；当catch住stop导致的异常时，程序也可以继续执行，虽然stop本意是要停止线程，这么做会让程序行为变得更加混乱。那么它们的区别在哪里？最重要的就是中断需要程序自己去检测然后做相应的处理，而Thread.stop会直接在代码执行过程中抛出ThreadDeath错误，这是一个java.lang.Error的子类。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.util.Arrays;  </div><div class="line">import java.util.Random;  </div><div class="line">import java.util.concurrent.TimeUnit;  </div><div class="line">public class TestStop &#123;  </div><div class="line">    private static final int[] array = new int[80000];  </div><div class="line">    private static final Thread t = new Thread() &#123;  </div><div class="line">        public void run() &#123;  </div><div class="line">            try &#123;  </div><div class="line">                System.out.println(sort(array));  </div><div class="line">            &#125; catch (Error err) &#123;  </div><div class="line">                err.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">            System.out.println(&quot;in thread t&quot;);  </div><div class="line">        &#125;  </div><div class="line">    &#125;;  </div><div class="line"></div><div class="line">    static &#123;  </div><div class="line">        Random random = new Random();  </div><div class="line">        for(int i = 0; i &lt; array.length; i++) &#123;  </div><div class="line">            array[i] = random.nextInt(i + 1);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    private static int sort(int[] array) &#123;  </div><div class="line">        for (int i = 0; i &lt; array.length-1; i++)&#123;  </div><div class="line">            for(int j = 0 ;j &lt; array.length - i - 1; j++)&#123;  </div><div class="line">                if(array[j] &lt; array[j + 1])&#123;  </div><div class="line">                    int temp = array[j];  </div><div class="line">                    array[j] = array[j + 1];  </div><div class="line">                    array[j + 1] = temp;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        return array[0];  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        t.start();  </div><div class="line">        TimeUnit.SECONDS.sleep(1);  </div><div class="line">        System.out.println(&quot;go to stop thread t&quot;);  </div><div class="line">        t.stop();  </div><div class="line">        System.out.println(&quot;finish main&quot;);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这个例子很简单，线程t里面做了一个非常耗时的排序操作，排序方法中，只有简单的加、减、赋值、比较等操作，一个可能的执行结果如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">go to stop thread t  </div><div class="line">java.lang.ThreadDeath  </div><div class="line">    at java.lang.Thread.stop(Thread.java:758)  </div><div class="line">    at com.ticmy.interrupt.TestStop.main(TestStop.java:44)  </div><div class="line">finish main  </div><div class="line">in thread t</div></pre></td></tr></table></figure></p>
+<p>这里sort方法是个非常耗时的操作，也就是说主线程休眠一秒钟后调用stop的时候，线程t还在执行sort方法。就是这样一个简单的方法，也会抛出错误！换一句话说，调用stop后，大部分Java字节码都有可能抛出错误，哪怕是简单的加法！
+如果线程当前正持有锁，stop之后则会释放该锁。由于此错误可能出现在很多地方，那么这就让编程人员防不胜防，极易造成对象状态的不一致。例如，对象obj中存放着一个范围值：最小值low，最大值high，且low不得大于high，这种关系由锁lock保护，以避免并发时产生竞态条件而导致该关系失效。假设当前low值是5，high值是10，当线程t获取lock后，将low值更新为了15，此时被stop了，真是糟糕，如果没有捕获住stop导致的Error，low的值就为15，high还是10，这导致它们之间的小于关系得不到保证，也就是对象状态被破坏了！如果在给low赋值的时候catch住stop导致的Error则可能使后面high变量的赋值继续，但是谁也不知道Error会在哪条语句抛出，如果对象状态之间的关系更复杂呢？这种方式几乎是无法维护的，太复杂了！如果是中断操作，它决计不会在执行low赋值的时候抛出错误，这样程序对于对象状态一致性就是可控的。
+正是因为可能导致对象状态不一致，stop才被禁用。</p>
+<ol>
+<li>中断的使用通常，中断的使用场景有以下几个：<ul>
+<li>点击某个桌面应用中的取消按钮时；</li>
+<li>某个操作超过了一定的执行时间限制需要中止时；</li>
+<li>多个线程做相同的事情，只要一个线程成功其它线程都可以取消时；</li>
+<li>一组线程中的一个或多个出现错误导致整组都无法继续时；</li>
+<li>当一个应用或服务需要停止时。
+下面来看一个具体的例子。这个例子里，本打算采用GUI形式，但考虑到GUI代码会使程序复杂化，就使用控制台来模拟下核心的逻辑。这里新建了一个磁盘文件扫描的任务，扫描某个目录下的所有文件并将文件路径打印到控制台，扫描的过程可能会很长。若需要中止该任务，只需在控制台键入quit并回车即可。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.io.BufferedReader;  </div><div class="line">import java.io.File;  </div><div class="line">import java.io.InputStreamReader;  </div><div class="line"></div><div class="line">public class FileScanner &#123;  </div><div class="line">    private static void listFile(File f) throws InterruptedException &#123;  </div><div class="line">        if(f == null) &#123;  </div><div class="line">            throw new IllegalArgumentException();  </div><div class="line">        &#125;  </div><div class="line">        if(f.isFile()) &#123;  </div><div class="line">            System.out.println(f);  </div><div class="line">            return;  </div><div class="line">        &#125;  </div><div class="line">        File[] allFiles = f.listFiles();  </div><div class="line">        if(Thread.interrupted()) &#123;  </div><div class="line">            throw new InterruptedException(&quot;文件扫描任务被中断&quot;);  </div><div class="line">        &#125;  </div><div class="line">        for(File file : allFiles) &#123;  </div><div class="line">            //还可以将中断检测放到这里  </div><div class="line">            listFile(file);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static String readFromConsole() &#123;  </div><div class="line">        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  </div><div class="line">        try &#123;  </div><div class="line">            return reader.readLine();  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">            return &quot;&quot;;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        final Thread fileIteratorThread = new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                try &#123;  </div><div class="line">                    listFile(new File(&quot;c:\\&quot;));  </div><div class="line">                &#125; catch (InterruptedException e) &#123;  </div><div class="line">                    e.printStackTrace();  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;;  </div><div class="line">        new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                while(true) &#123;  </div><div class="line">                    if(&quot;quit&quot;.equalsIgnoreCase(readFromConsole())) &#123;  </div><div class="line">                        if(fileIteratorThread.isAlive()) &#123;  </div><div class="line">                            fileIteratorThread.interrupt();  </div><div class="line">                            return;  </div><div class="line">                        &#125;  </div><div class="line">                    &#125; else &#123;  </div><div class="line">                        System.out.println(&quot;输入quit退出文件扫描&quot;);  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;.start();  </div><div class="line">        fileIteratorThread.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<p>在扫描文件的过程中，对于中断的检测这里采用的策略是，如果碰到的是文件就不检测中断，是目录才检测中断，因为文件可能是非常多的，每次遇到文件都检测一次会降低程序执行效率。此外，在fileIteratorThread线程中，仅是捕获了InterruptedException，没有重设中断状态也没有继续抛出异常，因为我非常清楚它的使用环境，run方法的调用栈上层已经没有可能需要检测中断状态的方法了。
+在这个程序中，输入quit完全可以执行System.exit(0)操作来退出程序，但正如前面提到的，这是个GUI程序核心逻辑的模拟，在GUI中，执行System.exit(0)会使得整个程序退出。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;什么是线程&quot;&gt;&lt;a href=&quot;#什么是线程&quot; class=&quot;headerlink&quot; title=&quot;什么是线程&quot;&gt;&lt;/a&gt;什么是线程&lt;/h3&gt;&lt;h4 id=&quot;线程5种状态&quot;&gt;&lt;a href=&quot;#线程5种状态&quot; class=&quot;headerlink&quot; title=&quot;线
+    
+    </summary>
+    
+      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
+    
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+      <category term="Java" scheme="http://wodekouwei.com/tags/Java/"/>
+    
+      <category term="Linux" scheme="http://wodekouwei.com/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>interview-repository-android</title>
+    <link href="http://wodekouwei.com/2018/10/23/interview-repository-android/"/>
+    <id>http://wodekouwei.com/2018/10/23/interview-repository-android/</id>
+    <published>2018-10-23T09:22:53.000Z</published>
+    <updated>2018-10-31T10:32:41.018Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="1-View-的绘制原理"><a href="#1-View-的绘制原理" class="headerlink" title="1. View 的绘制原理"></a>1. View 的绘制原理</h4><pre><code>https://www.cnblogs.com/jycboy/p/6219915.html
+https://www.jianshu.com/p/5a71014e7b1b
+http://blog.csdn.net/fwt336/article/details/52979876
+</code></pre><h4 id="2-Android-进程间通信方式"><a href="#2-Android-进程间通信方式" class="headerlink" title="2. Android 进程间通信方式"></a>2. Android 进程间通信方式</h4><pre><code>http://blog.csdn.net/fiendvip/article/details/50954393
+</code></pre><h4 id="3-Android-Binder-机制"><a href="#3-Android-Binder-机制" class="headerlink" title="3. Android Binder 机制"></a>3. Android Binder 机制</h4><pre><code>http://blog.csdn.net/qq_23191031/article/details/60145022
+</code></pre><h4 id="4-Activity-加载过程"><a href="#4-Activity-加载过程" class="headerlink" title="4. Activity 加载过程"></a>4. Activity 加载过程</h4><pre><code>http://blog.csdn.net/yyh352091626/article/details/51086117
+</code></pre><h4 id="5-Activity-启动模式"><a href="#5-Activity-启动模式" class="headerlink" title="5. Activity 启动模式"></a>5. Activity 启动模式</h4><pre><code>https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw
+</code></pre><h4 id="6-MVP-和-MVC-和MVVM-有什么区别"><a href="#6-MVP-和-MVC-和MVVM-有什么区别" class="headerlink" title="6. MVP 和 MVC 和MVVM 有什么区别"></a>6. MVP 和 MVC 和MVVM 有什么区别</h4><pre><code>http://blog.csdn.net/greathfs/article/details/52017155
+</code></pre><h4 id="7-Android-性能优化"><a href="#7-Android-性能优化" class="headerlink" title="7. Android 性能优化"></a>7. Android 性能优化</h4><pre><code>https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw
+</code></pre><h4 id="8-Service-概况"><a href="#8-Service-概况" class="headerlink" title="8. Service 概况"></a>8. Service 概况</h4><pre><code>http://blog.csdn.net/lqb3732842/article/details/54892813
+</code></pre><h4 id="9-Android-最新官方框架"><a href="#9-Android-最新官方框架" class="headerlink" title="9. Android 最新官方框架"></a>9. Android 最新官方框架</h4><pre><code>https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ
+https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew
+</code></pre><h4 id="10-Android-类加载机制"><a href="#10-Android-类加载机制" class="headerlink" title="10. Android 类加载机制"></a>10. Android 类加载机制</h4><pre><code>https://www.jianshu.com/p/3afa47e9112e
+https://www.jianshu.com/p/a620e368389a
+</code></pre><h4 id="11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）"><a href="#11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）" class="headerlink" title="11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）"></a>11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）</h4><pre><code>https://www.jianshu.com/p/02962454adf7
+http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换
+</code></pre><ol>
+<li>说下什么是Android消息处理机制？</li>
+<li>Android消息处理机制的工作原理</li>
+<li>Looper、Handler、MessageQueue,Message作用和存在的意义？</li>
+<li>Looper 死循环为什么不会导致应用卡死，会消耗大量资源吗？</li>
+<li>主线程的消息循环机制是什么（死循环如何处理其它事务）？</li>
+<li>ActivityThread 的动力是什么？（ActivityThread执行Looper的线程是什么）</li>
+<li>Handler 是如何能够线程切换，发送Message的？（线程间通讯）</li>
+<li>子线程有哪些更新UI的方法。</li>
+<li>子线程中Toast，showDialog，的方法。（和子线程不能更新UI有关吗）</li>
+<li>如何处理Handler 使用不当导致的内存泄露？</li>
+</ol>
+<h4 id="12-Android-事件分发机制"><a href="#12-Android-事件分发机制" class="headerlink" title="12. Android 事件分发机制"></a>12. Android 事件分发机制</h4><pre><code>https://www.jianshu.com/p/e99b5e8bd67b
+</code></pre><h4 id="13-Retrofit-分析"><a href="#13-Retrofit-分析" class="headerlink" title="13. Retrofit 分析"></a>13. Retrofit 分析</h4><pre><code>https://www.jianshu.com/p/45cb536be2f4
+</code></pre><h4 id="14-Android-动画"><a href="#14-Android-动画" class="headerlink" title="14. Android 动画"></a>14. Android 动画</h4><pre><code>https://www.jianshu.com/p/420629118c10
+</code></pre><h4 id="15-Rxjava-使用介绍"><a href="#15-Rxjava-使用介绍" class="headerlink" title="15. Rxjava 使用介绍"></a>15. Rxjava 使用介绍</h4><pre><code>https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw
+</code></pre><h4 id="16-View-和-SurfaceView-的区别"><a href="#16-View-和-SurfaceView-的区别" class="headerlink" title="16. View 和 SurfaceView 的区别"></a>16. View 和 SurfaceView 的区别</h4><pre><code>http://blog.csdn.net/shareus/article/details/51538507
+</code></pre><h4 id="17-LruCache-原理解析"><a href="#17-LruCache-原理解析" class="headerlink" title="17. LruCache 原理解析"></a>17. LruCache 原理解析</h4><pre><code>https://www.jianshu.com/p/b49a111147ee
+</code></pre><h4 id="18-多线程断点续传"><a href="#18-多线程断点续传" class="headerlink" title="18. 多线程断点续传"></a>18. 多线程断点续传</h4><pre><code>http://blog.csdn.net/tianzhaoai/article/details/56673071
+https://www.jianshu.com/p/1bb084d282be
+</code></pre><h4 id="19-Android-APP-冷启动时间统计及优化"><a href="#19-Android-APP-冷启动时间统计及优化" class="headerlink" title="19. Android APP 冷启动时间统计及优化"></a>19. Android APP 冷启动时间统计及优化</h4><pre><code>https://www.jianshu.com/p/c967653a9468
+http://blog.csdn.net/code_dream_wq/article/details/75012353
+http://blog.csdn.net/zhangyongfeiyong/article/details/61925399
+</code></pre><h4 id="20-热修复原理"><a href="#20-热修复原理" class="headerlink" title="20. 热修复原理"></a>20. 热修复原理</h4><pre><code>https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA
+</code></pre><h4 id="21-插件化原理"><a href="#21-插件化原理" class="headerlink" title="21. 插件化原理"></a>21. 插件化原理</h4><pre><code>类的加载
+    1)替换App的ClassLoader
+    2)修改PathList(例如在PathList中加入我们需要加载的Dex的对应项)
+资源的加载：安卓资源由AssetManager加载,应用启动时,系统会为其创建一个AssetManager实例,并由addAssetPath方 法添加资源搜索路径
+    1. 插件独立使用一个资源管理器
+    2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
+组件的动态注册
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;1-View-的绘制原理&quot;&gt;&lt;a href=&quot;#1-View-的绘制原理&quot; class=&quot;headerlink&quot; title=&quot;1. View 的绘制原理&quot;&gt;&lt;/a&gt;1. View 的绘制原理&lt;/h4&gt;&lt;pre&gt;&lt;code&gt;https://www.cnblogs.
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>面试题库java</title>
+    <link href="http://wodekouwei.com/2018/10/23/interview-repository-java/"/>
+    <id>http://wodekouwei.com/2018/10/23/interview-repository-java/</id>
+    <published>2018-10-23T09:22:47.000Z</published>
+    <updated>2018-10-31T10:32:45.080Z</updated>
+    
+    <content type="html"><![CDATA[<ol>
 <li><p>数组实现队列
  <a href="http://blog.csdn.net/qq_25722767/article/details/52234509" target="_blank" rel="external">http://blog.csdn.net/qq_25722767/article/details/52234509</a></p>
 </li>
@@ -144,93 +336,33 @@ this.city = city;
 <a href="https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html" target="_blank" rel="external">https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html</a></p>
 </li>
 </ol>
-<h3 id="Android基础"><a href="#Android基础" class="headerlink" title="Android基础"></a>Android基础</h3><ol>
-<li><p>View 的绘制原理
- <a href="https://www.cnblogs.com/jycboy/p/6219915.html" target="_blank" rel="external">https://www.cnblogs.com/jycboy/p/6219915.html</a>
- <a href="https://www.jianshu.com/p/5a71014e7b1b" target="_blank" rel="external">https://www.jianshu.com/p/5a71014e7b1b</a>
- <a href="http://blog.csdn.net/fwt336/article/details/52979876" target="_blank" rel="external">http://blog.csdn.net/fwt336/article/details/52979876</a></p>
-</li>
-<li><p>Android 进程间通信方式
- <a href="http://blog.csdn.net/fiendvip/article/details/50954393" target="_blank" rel="external">http://blog.csdn.net/fiendvip/article/details/50954393</a></p>
-</li>
-<li><p>Android Binder 机制
- <a href="http://blog.csdn.net/qq_23191031/article/details/60145022" target="_blank" rel="external">http://blog.csdn.net/qq_23191031/article/details/60145022</a></p>
-</li>
-<li><p>Activity 加载过程
- <a href="http://blog.csdn.net/yyh352091626/article/details/51086117" target="_blank" rel="external">http://blog.csdn.net/yyh352091626/article/details/51086117</a></p>
-</li>
-<li><p>Activity 启动模式
- <a href="https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw" target="_blank" rel="external">https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw</a></p>
-</li>
-<li><p>MVP 和 MVC 和MVVM 有什么区别
- <a href="http://blog.csdn.net/greathfs/article/details/52017155" target="_blank" rel="external">http://blog.csdn.net/greathfs/article/details/52017155</a></p>
-</li>
-<li><p>Android 性能优化
- <a href="https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw" target="_blank" rel="external">https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw</a></p>
-</li>
-<li><p>Service 概况
- <a href="http://blog.csdn.net/lqb3732842/article/details/54892813" target="_blank" rel="external">http://blog.csdn.net/lqb3732842/article/details/54892813</a></p>
-</li>
-<li><p>Android 最新官方框架
- <a href="https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ" target="_blank" rel="external">https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ</a>
- <a href="https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew" target="_blank" rel="external">https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew</a></p>
-</li>
-<li><p>Android 类加载机制
-<a href="https://www.jianshu.com/p/3afa47e9112e" target="_blank" rel="external">https://www.jianshu.com/p/3afa47e9112e</a>
-<a href="https://www.jianshu.com/p/a620e368389a" target="_blank" rel="external">https://www.jianshu.com/p/a620e368389a</a></p>
-</li>
-<li><p>Android 消息处理机制（Looper、Handler、MessageQueue,Message）
-<a href="https://www.jianshu.com/p/02962454adf7" target="_blank" rel="external">https://www.jianshu.com/p/02962454adf7</a>
-<a href="http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换" target="_blank" rel="external">http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换</a></p>
-</li>
-<li><p>Android 事件分发机制
-<a href="https://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="external">https://www.jianshu.com/p/e99b5e8bd67b</a></p>
-</li>
-<li><p>Retrofit 分析
-<a href="https://www.jianshu.com/p/45cb536be2f4" target="_blank" rel="external">https://www.jianshu.com/p/45cb536be2f4</a></p>
-</li>
-<li><p>Android 动画
-<a href="https://www.jianshu.com/p/420629118c10" target="_blank" rel="external">https://www.jianshu.com/p/420629118c10</a></p>
-</li>
-<li><p>Rxjava 使用介绍
-<a href="https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw" target="_blank" rel="external">https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw</a></p>
-</li>
-<li><p>View 和 SurfaceView 的区别
-<a href="http://blog.csdn.net/shareus/article/details/51538507" target="_blank" rel="external">http://blog.csdn.net/shareus/article/details/51538507</a></p>
-</li>
-<li><p>LruCache 原理解析
-<a href="https://www.jianshu.com/p/b49a111147ee" target="_blank" rel="external">https://www.jianshu.com/p/b49a111147ee</a></p>
-</li>
-<li><p>多线程断点续传
-<a href="http://blog.csdn.net/tianzhaoai/article/details/56673071" target="_blank" rel="external">http://blog.csdn.net/tianzhaoai/article/details/56673071</a>
-<a href="https://www.jianshu.com/p/1bb084d282be" target="_blank" rel="external">https://www.jianshu.com/p/1bb084d282be</a></p>
-</li>
-<li><p>Android APP 冷启动时间统计及优化
-<a href="https://www.jianshu.com/p/c967653a9468" target="_blank" rel="external">https://www.jianshu.com/p/c967653a9468</a>
-<a href="http://blog.csdn.net/code_dream_wq/article/details/75012353" target="_blank" rel="external">http://blog.csdn.net/code_dream_wq/article/details/75012353</a>
-<a href="http://blog.csdn.net/zhangyongfeiyong/article/details/61925399" target="_blank" rel="external">http://blog.csdn.net/zhangyongfeiyong/article/details/61925399</a></p>
-</li>
-<li><p>热修复原理
-<a href="https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA" target="_blank" rel="external">https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA</a></p>
-</li>
-<li><p>插件化原理
-类的加载</p>
-<pre><code>1)替换App的ClassLoader
-2)修改PathList(例如在PathList中加入我们需要加载的Dex的对应项)
-</code></pre><p>资源的加载：安卓资源由AssetManager加载,应用启动时,系统会为其创建一个AssetManager实例,并由addAssetPath方 法添加资源搜索路径</p>
-<pre><code>1. 插件独立使用一个资源管理器
-2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
-</code></pre><p>组件的动态注册</p>
-</li>
-</ol>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;Java基础&quot;&gt;&lt;a href=&quot;#Java基础&quot; class=&quot;headerlink&quot; title=&quot;Java基础&quot;&gt;&lt;/a&gt;Java基础&lt;/h3&gt;&lt;p&gt;Java：&lt;/p&gt;
-&lt;ol&gt;
+      &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;数组实现队列
- &lt;a href=&quot;http://blog.csd
+ &lt;a href=&quot;http://blog.csdn.net/qq_25722767/article/details/52234509&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.csdn.net/
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>面试题库</title>
+    <link href="http://wodekouwei.com/2018/09/11/interview-repository/"/>
+    <id>http://wodekouwei.com/2018/09/11/interview-repository/</id>
+    <published>2018-09-11T15:00:17.000Z</published>
+    <updated>2018-10-31T10:32:33.383Z</updated>
+    
+    <summary type="html">
     
     </summary>
     
@@ -470,9 +602,9 @@ BaseEvent所触发的各个函数:
       <category term="autotest" scheme="http://wodekouwei.com/categories/autotest/"/>
     
     
-      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
-    
       <category term="android" scheme="http://wodekouwei.com/tags/android/"/>
+    
+      <category term="autotest" scheme="http://wodekouwei.com/tags/autotest/"/>
     
       <category term="tools" scheme="http://wodekouwei.com/tags/tools/"/>
     
@@ -988,390 +1120,6 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
     
     
       <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>多媒体技术(1.1)之图像中频率的概念</title>
-    <link href="http://wodekouwei.com/2018/02/27/media-graphic-frequency/"/>
-    <id>http://wodekouwei.com/2018/02/27/media-graphic-frequency/</id>
-    <published>2018-02-27T02:59:35.000Z</published>
-    <updated>2018-03-04T15:11:17.236Z</updated>
-    
-    <content type="html"><![CDATA[<p>一、图像高频信号和低频信号的理解
-1.1 图像中的低频信号和高频信号也叫做低频分量和高频分量。简单一点说，图像中的高频分量，指的是图像强度（亮度/灰度）变化剧烈的地方，也就是我们常说的边缘（轮廓）；图像中的低频分量，指的是图像强度（亮度/灰度）变换平缓的地方，也就是大片色块的地方。人眼对图像中的高频信号更为敏感。 图像的高低频是对图像各个位置之间强度变化的一种度量方法。低频分量:主要对整副图像的强度的综合度量. 高频分量:主要是对图像边缘和轮廓的度量。如果一副图像的各个位置的强度大小相等,则图像只存在低频分量,从图像的频谱图上看,只有一个主峰,且位于频率为零的位置。 如果一副图像的各个位置的强度变化剧烈,则图像不仅存在低频分量,同时也存在多种高频分量,从图像的频谱上看,不仅有一个主峰,同时也存在多个旁峰。 1.2直观认识 假设在正弦波中有一个毛刺，并且正弦波的变化非常的缓慢，频率较低，在正弦波上有一个毛刺，这个毛刺在短时间内就完成了一个变化周期，频率较高。所以我们就把这里的正弦波称为低频信号，而毛刺就称为高频信号。如果要对这个曲线平滑滤波的话，效果就是把毛刺滤掉，也就是说，平滑滤波的操作会将高频信号去除而低频信号保留，也就是我们常说的低通滤波器了。 最简单的低通滤波器的实现就是中值或者均值滤波器。 由以上的认识推广到二维图像上，也就不难知道为什么会将图像上变化剧烈的地方叫做高频信号，而变化平缓的地方叫做低频信号了。
-二、图像频率的理解
-1不同频率信息在图像结构中有不同的作用。图像的主要成分是低频信息，它形成了图像的基本灰度等级，对图像结构的决定作用较小；中频信息决定了图像的基本结构，形成了图像的主要边缘结构；高频信息形成了图像的边缘和细节，是在中频信息上对图像内容的进一步强化。
-2图像的频率是表征图像中灰度变化剧烈程度的指标，是灰度在平面空间上的梯度。如：大面积的沙漠在图像中是一片灰度变化缓慢的区域，对应的频率值很低；而对于地表属性变换剧烈的边缘区域在图像中是一片灰度变化剧烈的区域，对应的频率值较高。
-3对图像而言，图像的边缘部分是突变部分，变化较快，因此反应在频域上是高频分量；图像的噪声大部分情况下是高频部分；图像平缓变化部分则为低频分量。也就是说，傅立叶变换提供另外一个角度来观察图像，可以将图像从灰度分布转化到频率分布上来观察图像的特征。
-4图像进行二维傅立叶变换得到频谱图，就是图像梯度的分布图,当然频谱图上的各点与图像上各点并不存在一一对应的关系，即使在不移频的情况下也是没有。傅立叶频谱图上我们看到的明暗不一的亮点，实际是上图像上某一点与邻域点差异的强弱，即梯度的大小，也即该点的频率的大小（可以这么理解，图像中的低频部分指低梯度的点，高频部分相反）。
-5图像的频率，不是图像上某一个点的频率，它反映了反应了图像像素变化的快慢，也就是说，在某一区域变化的非常大非常的快，那这一区域就携带有一定的高频的信息。图像的高频信息越多，图像的细节特征也就越多。</p>
-<p>图像的频率：灰度值变化剧烈程度的指标，是灰度在平面空间上的梯度。
-（1）什么是低频?
-低频就是颜色缓慢地变化,也就是灰度缓慢地变化,就代表着那是连续渐变的一块区域,这部分就是低频. 对于一幅图像来说，除去高频的就是低频了，也就是边缘以内的内容为低频，而边缘内的内容就是图像的大部分信息，即图像的大致概貌和轮廓，是图像的近似信息。</p>
-<p>（2）什么是高频?
-反过来, 高频就是频率变化快.图像中什么时候灰度变化快?就是相邻区域之间灰度相差很大,这就是变化得快.图像中,一个影像与背景的边缘部位,通常会有明显的差别,也就是说变化那条边线那里,灰度变化很快,也即是变化频率高的部位.因此，图像边缘的灰度值变化快，就对应着频率高，即高频显示图像边缘。图像的细节处也是属于灰度值急剧变化的区域，正是因为灰度值的急剧变化，才会出现细节。
-另外噪声（即噪点）也是这样,在一个像素所在的位置,之所以是噪点,就是因为它与正常的点颜色不一样了，也就是说该像素点灰度值明显不一样了,,也就是灰度有快速地变化了,所以是高频部分，因此有噪声在高频这么一说。</p>
-<p>其实归根到底,是因为我们人眼识别物体就是这样的.假如你穿一个红衣服在红色背景布前拍照,你能很好地识别么?不能,因为衣服与背景融为一体了,没有变化,所以看不出来,除非有灯光从某解度照在人物身上,这样边缘处会出现高亮和阴影,这样我们就能看到一些轮廓线,这些线就是颜色（即灰度）很不一样的地方.</p>
-<p>首先说说图像频率的物理意义。图像可以看做是一个定义为二维平面上的信号，该信号的幅值对应于像素的灰度（对于彩色图像则是RGB三个分量），如果我们仅仅考虑图像上某一行像素，则可以将之视为一个定义在一维空间上信号，这个信号在形式上与传统的信号处理领域的时变信号是相似的。不过是一个是定义在空间域上的，而另一个是定义在时间域上的。所以图像的频率又称为空间频率，它反映了图像的像素灰度在空间中变化的情况。例如，一面墙壁的图像，由于灰度值分布平坦，其低频成分就较强，而高频成分较弱；而对于国际象棋棋盘或者沟壑纵横的卫星图片这类具有快速空间变化的图像来说，其高频成分会相对较强，低频则较弱（注意，是相对而言）。再来谈一谈如何定量的测量图像的空间频率，最为常用的方法就是二维傅里叶变换。图像经过二维傅里叶变换后会形成与图像等大的复数矩阵，取其幅值形成幅度谱，取其相位形成相位谱。图像的频率能量分布主要体现在幅度谱中。通常习惯将低频成分放在幅度谱的中央，而将高频成分放在幅度谱边缘。大多数自然图像的幅度谱在统计上呈现1/f^2分布，也就是频率成分的能量与频率的平方成反比。所以从绝对数值上看，低频能量通常是要高于高频能量的，这一规则也称为power law。power law并非是上帝的无心之作，事实上power law的出现时源于自然图像的尺度不变性（scale invariance）。这一点在很多文献中被解释为从不同的距离观察同样的自然场景，获得的图像的幅度谱是基本相同的。相关内容可以搜索关键字power law &amp; natural image statistics。除了傅里叶变换外，正弦变换、余弦变换、Gabor变换、小波变换、WH变换也可以用来对图像频率分布进行定量测量。目前小波变换是研究的热点，因为小波变换不但能够反映频率能量的分布，同时还保留了图像特征的空间分布特性。</p>
-<p>在 最近十年中，视频工程师发现人眼对色度的敏感程度要低于对亮度的敏感程度。在生理学中，有一条规律，那就是人类视网膜上的视网膜杆细胞要多于视网膜锥细 胞，说得通俗一些，视网膜杆细胞的作用就是识别亮度，而视网膜锥细胞的作用就是识别色度。所以，你的眼睛对于亮和暗的分辨要比对颜色的分辨精细一些。正是 因为这个，在我们的视频存储中，没有必要存储全部颜色信号。既然眼睛看不见，那为什么要浪费存储空间（或者说是金钱）来存储它们呢？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一、图像高频信号和低频信号的理解
-1.1 图像中的低频信号和高频信号也叫做低频分量和高频分量。简单一点说，图像中的高频分量，指的是图像强度（亮度/灰度）变化剧烈的地方，也就是我们常说的边缘（轮廓）；图像中的低频分量，指的是图像强度（亮度/灰度）变换平缓的地方，也就是大片色块
-    
-    </summary>
-    
-      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>vr播放器</title>
-    <link href="http://wodekouwei.com/2018/02/11/media-vr-player/"/>
-    <id>http://wodekouwei.com/2018/02/11/media-vr-player/</id>
-    <published>2018-02-11T10:17:42.000Z</published>
-    <updated>2018-02-11T10:20:01.711Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="VR播放器的简单原理"><a href="#VR播放器的简单原理" class="headerlink" title="VR播放器的简单原理"></a>VR播放器的简单原理</h3><p>一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。</p>
-<p>之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。</p>
-<p>简单球面纹理映射讲解</p>
-<p>实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置向量来生成纹理坐标。</p>
-<p>想象一个球体，球面上每一个点的法向量，可以是从球心起到该点的线段距离。球上每一点都可以视作一个无限小的平面。</p>
-<p>Ps:法向量——垂直于平面的向量，叫做该平面的法向量</p>
-<p>问题的本质是根据球面上每个点的法向量坐标生成对应的纹理坐标，请看下图，下图中外部的方框表示二维纹理坐标，其范围是<code>(u,v)min = (0,0)</code>, <code>(u,v)max = (1,1)</code>，中间的圆形表示球面法向量坐标，其x,y分量的范围是<code>(x,y)min = (-1,-1), (x,y)max = (1,1)</code>。</p>
-<p>所以问题的本质变成了两组坐标的映射，也即将区间<code>(x,y)min - (x,y)max</code>映射到区间<code>(u,v)min - (u,v)max</code>。这里我们使用反正弦函数<code>y = acrsin(x)</code>来实现。先看一下它的函数图象。</p>
-<p>由这个图象知，它的定义域<code>x = (-1，1)</code>，值域是<code>y = (-pi / 2, pi / 2)</code>。我们稍作变型，得到下面两个公式。正好完成了由(-1, 1)到(0, 1)的映射。这里tu表示纹理的x坐标，tv表示纹理的y坐标，Nx表示顶点法向量的x轴分量，Ny表示顶点法向量的y轴分量。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tu = arcsin(Nx) / PI + 0.5</div><div class="line">tv = arcsin(Ny) / PI + 0.5</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;VR播放器的简单原理&quot;&gt;&lt;a href=&quot;#VR播放器的简单原理&quot; class=&quot;headerlink&quot; title=&quot;VR播放器的简单原理&quot;&gt;&lt;/a&gt;VR播放器的简单原理&lt;/h3&gt;&lt;p&gt;一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条
-    
-    </summary>
-    
-      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ts格式解析</title>
-    <link href="http://wodekouwei.com/2018/02/11/m-f-ts/"/>
-    <id>http://wodekouwei.com/2018/02/11/m-f-ts/</id>
-    <published>2018-02-11T07:21:55.000Z</published>
-    <updated>2018-02-11T09:56:33.520Z</updated>
-    
-    <content type="html"><![CDATA[<p>ts是日本高清摄像机拍摄下进行的封装格式，全称为MPEG2-TS。ts即”Transport Stream”的缩写。MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。MPEG2-TS主要应用于实时传送的节目，比如实时广播的电视节目。</p>
-<h3 id="发展简要"><a href="#发展简要" class="headerlink" title="发展简要"></a>发展简要</h3><p>随着从HDTV录制的高清节目在网上的流传，发烧友们现在对TS这个名词大概已经不陌生了，但随之而来就是如何播放、如何添加字幕等等的一系列问题，本文将重点介绍一下这方面的应用操作。
-先来简要介绍一下什么是MPEG2-TS吧。MPEG2格式大家都通过对DVD的接触而多多少少了解了一些，DVD节目中的MPEG2格式，确切地说是MPEG2-PS，全称是Program Stream，而TS的全称则是Transport Stream。MPEG2-PS主要应用于存储的具有固定时长的节目，如DVD电影，而MPEG-TS则主要应用于实时传送的节目，比如实时广播的电视节目。这两种格式的主要区别是什么呢？简单地打个比喻说，你将DVD上的VOB文件的前面一截cut掉（或者干脆就是数据损坏），那么就会导致整个文件无法解码了，而电视节目是你任何时候打开电视机都能解码（收看）的，所以，MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。</p>
-<h3 id="学习多媒体容器格式的目的"><a href="#学习多媒体容器格式的目的" class="headerlink" title="学习多媒体容器格式的目的"></a>学习多媒体容器格式的目的</h3><p>主要是为了回答以下问题：</p>
-<ul>
-<li>该容器中数据是如何组织的？</li>
-<li>该容器包含哪些编码格式的数据？这些数据是如何存储的？</li>
-<li>该容器包含哪些元数据信息？包含哪些节目信息？</li>
-<li>对于支持多节目的容器格式，如何找到对应的音频流、视频流、字幕流？</li>
-<li>如何确定该容器的节目播放时长？</li>
-<li>如何从该容器中提取音频、视频、字幕数据，并交给解码器解码，有时间戳否？</li>
-<li>该容器是否支持seek？有哪些辅助信息？</li>
-<li>是否支持直接流化？</li>
-<li>哪里可以找到该容器格式最标准的文档资料？</li>
-<li>有哪些可用的工具，方便分析容器格式异常或者错误？</li>
-</ul>
-<h3 id="TS流生成和解析的过程"><a href="#TS流生成和解析的过程" class="headerlink" title="TS流生成和解析的过程"></a>TS流生成和解析的过程</h3><p>TS流的形成过程：</p>
-<ol>
-<li>将原始音视频数据压缩之后，压缩结果组成一个基本码流（ES）。</li>
-<li>对ES（基本码流）进行打包形成PES。</li>
-<li>在PES包中加入时间戳信息(PTS/DTS)。</li>
-<li>将PES包内容分配到一系列固定长度的传输包（TS Packet）中。</li>
-<li>在传输包中加入定时信息(PCR)。</li>
-<li>在传输包中加入节目专用信息(PSI) 。</li>
-<li>连续输出传输包形成具有恒定比特率的MPEG-TS流。</li>
-</ol>
-<p>TS流的解析过程，可以说是生成的逆过程：</p>
-<ol>
-<li>从复用的MPEG-TS流中解析出TS包；</li>
-<li>从TS包中获取PAT及对应的PMT（PSI中的表格）；</li>
-<li>从而获取特定节目的音视频PID；</li>
-<li>通过PID筛选出特定音视频相关的TS包，并解析出PES；</li>
-<li>从PES中读取到PTS/DTS，并从PES中解析出基本码流ES；</li>
-<li>将ES交给解码器，获得压缩前的原始音视频数据。</li>
-</ol>
-<h3 id="TS码流整体结构"><a href="#TS码流整体结构" class="headerlink" title="TS码流整体结构"></a>TS码流整体结构</h3><p>MPEG-2中规定TS传输包的长度为188 字节，包头为4个字节，负载为184个字节。但通信媒介会为包添加错误校验字节，从而有了不同于188字节的包长。例如：</p>
-<p>DVB 规定中，使用204字节作为包长:</p>
-<ol>
-<li>通过调制器时，在每个传输包后增加了16 字节的里德所罗门前向纠错码，因而形成了204字节的数据包。调制后总存在204 字节的数据包。</li>
-<li>调制之前存复用器插入RS码或虚构的RS码。</li>
-</ol>
-<p>ATSC规定中，使用208字节作为包长：添加20 字节的 RS（Reed-Solomon）前向纠错码。与DVB不同,ATSC规定RS码只能出现在调制的TS流中。</p>
-<p>所有的TS包都分为包头和净荷部分。TS包中可以填入很多东西（填入的东西都是填入到净荷部分），有：视频、音频、数据（包括PSI、SI以及其它任何形式的数据）。
-<img src="http://images.wodekouwei.com/M/F/ts-head2.jpg" alt="image"></p>
-<h4 id="1、TS包包头"><a href="#1、TS包包头" class="headerlink" title="1、TS包包头"></a>1、TS包包头</h4><p>TS包的包头提供关于传输方面的信息：同步、有无差错、有无加扰、PCR（节目参考时钟）等标志。TS包的包头长度不固定，前32比特（4个字节）固定，后面可能跟有自适应字段（适配域）。32个比特（4个字节）是最小包头。</p>
-<ul>
-<li>sync_byte （同步字节）：固定为0100 0111 (0x47)；该字节由解码器识别，使包头和有效负载可相互分离。</li>
-<li>transport_error_indicator（传输错误指示）：‘1’表示在相关的传输包中至少有一个不可纠正的错误位。当被置1后，在错误被纠正之前不能重置为0。</li>
-<li>payload_unit_start_indicator（开始指示）：为1时，在前4个字节之后会有一个调整字节，其的数值为后面调整字段的长度length。因此有效载荷开始的位置应再偏移1+[length]个字节。</li>
-<li>transport_priority（传输优先级）：‘1’表明优先级比其他具有相同PID 但此位没有被置‘1’的分组高。</li>
-<li>PID：指示存储与分组有效负载中数据的类型。PID 值 0x0000—0x000F 保留。其中0x0000为PAT保留；0x0001为CAT保留；0x1fff为分组保留，即空包。</li>
-<li>transport_scrambling_control（加扰控制）：表示TS流分组有效负载的加密模式。空包为‘00’，如果传输包包头中包括调整字段，不应被加密。</li>
-<li>adaptation_field_control（适配域控制）：表示包头是否有调整字段或有效负载。‘00’为ISO/IEC未来使用保留；‘01’仅含有效载荷，无调整字段；‘10’ 无有效载荷，仅含调整字段；‘11’ 调整字段后为有效载荷，调整字段中的前一个字节表示调整字段的长度length，有效载荷开始的位置应再偏移[length]个字节。空包应为‘10’。</li>
-<li>continuity_counter（连续性计数器）：随着每一个具有相同PID的TS流分组而增加，当它达到最大值后又回复到0。范围为0~15。</li>
-<li>adaptation_field （自适应字段 ）：根据自适应控制字段填充负载。</li>
-</ul>
-<p><img src="http://images.wodekouwei.com/M/F/ts_head.png" alt="image"></p>
-<h4 id="2、节目专用信息PSI。"><a href="#2、节目专用信息PSI。" class="headerlink" title="2、节目专用信息PSI。"></a>2、节目专用信息PSI。</h4><p>然，TS包也可以是空包。空包用来填充TS流，可能在重新进行多路复用时被插入或删除。</p>
-<p>在系统复用时，视频、音频的ES流需进行打包形成视频、音频的 PES流，辅助数据（如图文电视信息）不需要打成PES包。PES包非定长，音频的PES包小于等于64K，视频的一般为一帧一个PES包。一帧图象的PES包通常要由许多个TS包来传输。MPEG-2中规定，一个PES包必须由整数个TS包来传输。如果承载一个PES包的最后一个TS包没能装满，则用填充字节来填满；当下一个新的PES包形成时，需用新的TS包来开始传输。</p>
-<p>节目专用信息PSI(Program Specific Information）</p>
-<p>管理各种类型的TS数据包，需要有些特殊的TS包来确立各个TS数据包之间的关系。这些特殊的TS包里所包含的信息就是节目专用信息。在不同的标准中它有不同的名字：</p>
-<ul>
-<li>MPEG-2中称为PSI；</li>
-<li>DVB标准根据实际需要，对PSI扩展，称为SI信息；</li>
-<li>ATSC标准中为PSIP信息</li>
-</ul>
-<p>MPEG-2中，规定的对PSI信息的描述方法有以下几种：</p>
-<h5 id="1、表Table：-节目信息的结构性的描述；"><a href="#1、表Table：-节目信息的结构性的描述；" class="headerlink" title="1、表Table： 节目信息的结构性的描述；"></a>1、表Table： 节目信息的结构性的描述；</h5><ul>
-<li>节目关联表Program Association Table (PAT) 0x0000</li>
-<li>节目映射表Program Map Tables (PMT) PAT指定</li>
-<li>条件接收表Conditional Access Table (CAT) 0x0001</li>
-<li>网络信息表Network Information Table(NIT) 0x0010</li>
-<li>传送流描述表Transport Stream Description Table (TSDT)<h5 id="2、节Section：-将表格的内容映射到TS流中；"><a href="#2、节Section：-将表格的内容映射到TS流中；" class="headerlink" title="2、节Section： 将表格的内容映射到TS流中；"></a>2、节Section： 将表格的内容映射到TS流中；</h5>专用段 Private_ section</li>
-</ul>
-<h5 id="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"><a href="#3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；" class="headerlink" title="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"></a>3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；</h5><p>ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表可被分成一段或多段置于传输流分组中。一段就是一个语法结构，用来将 ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表映射到传输流分组中。</p>
-<h6 id="PAT表"><a href="#PAT表" class="headerlink" title="PAT表"></a>PAT表</h6><p>TS流中包含一个或者多个PAT表。PAT表由PID为0x0000的TS包传送，其作用是为复用的每一路传送流提供出所包含的节目和节目编号，以及对应节目的PMT的位置即PMT的TS包的PID值，同时还提供NIT的位置，即NIT的TS包的PID的值。</p>
-<ul>
-<li>table_id：固定为0x00，标志该表是PAT表。</li>
-<li>section_syntax_indicator：段语法标志位，固定为1。</li>
-<li>section_length：表示这个字节后面有用的字节数，包括CRC32。节目套数：（section length-9）/4</li>
-<li>transport_stream_id：16位字段，表示该TS流的ID，区别于同一个网络中其它多路复用流。</li>
-<li>version_number：表示PAT的版本号。</li>
-<li>current_next_indicator：表示发送的PAT表是当前有效还是下一个PAT有效。</li>
-<li>section_number：表示分段的号码。PAT可能分为多段传输，第一段为0，以后每个分段加1，最多可能有256个分段。</li>
-<li>last_section_number：表示PAT最后一个分段的号码。</li>
-<li>Program number：节目号</li>
-<li>network_PID：网络信息表（NIT）的PID,节目号为0时对应ID为network_PID。</li>
-<li>Program map PID：节目映射表（PMT）的PID号，节目号为大于等于1时，对应的ID为program_map_PID。一个PAT中可以有多个program_map_PID。</li>
-<li>CRC_32：32位字段，CRC32校验码Cyclic RedundancyCheck。<h6 id="PMT表"><a href="#PMT表" class="headerlink" title="PMT表"></a>PMT表</h6></li>
-</ul>
-<p>PMT在传送流中用于指示组成某一套节目的视频、音频和数据在传送流中的位置，即对应的TS包的PID值，以及每路节目的节目时钟参考（PCR）字段的位置。</p>
-<ul>
-<li>Table id ：固定为0x02，标志该表是PMT 表。</li>
-<li>Section syntax indicator：对于PMT表，设置为1 。</li>
-<li>Section length：表示这个字节后面有用的字节数，包括CRC32 。</li>
-<li>Program number：它指出该节目对应于可应用的Program map PID 。</li>
-<li>Version number：指出PMT 的版本号。</li>
-<li>Current next indicator：当该位置’1’时，当前传送的Program map section可用；当该位置’0’时，指示当前传送的Program map section不可用，下一个TS流的Programmap section 有效。</li>
-<li>Section number：总是置为0x00（因为PMT表里表示一个service的信息，一个section 的长度足够）。</li>
-<li>Last section number：该域的值总是0x00 。</li>
-<li>PCR PID：节目中包含有效PCR字段的传送流中PID 。</li>
-<li>Program info length：12bit域，前两位为00。该域指出跟随其后对节目信息的描述的byte 数。</li>
-<li>Stream type：8bit域，指示特定PID的节目元素包的类型。该处PID由elementary PID 指定。</li>
-</ul>
-<h3 id="HLS"><a href="#HLS" class="headerlink" title="HLS"></a>HLS</h3><p>HTTP Live Streaming（缩写是HLS）是一个由苹果公司提出的基于HTTP的流媒体网络传输协议。是苹果公司QuickTime X和iPhone软件系统的一部分。它的工作原理是把整个流分成一个个小的基于HTTP的文件来下载，每次只下载一些。当媒体流正在播放时，客户端可以选择从许多不同的备用源中以不同的速率下载同样的资源，允许流媒体会话适应不同的数据速率。在开始一个流媒体会话时，客户端会下载一个包含元数据的extended M3U (m3u8)playlist文件，用于寻找可用的媒体流。
-HLS只请求基本的HTTP报文，与实时传输协议（RTP)不同，HLS可以穿过任何允许HTTP数据通过的防火墙或者代理服务器。它也很容易使用内容分发网络来传输媒体流。
-苹果公司把HLS协议作为一个互联网草案（逐步提交），在第一阶段中已作为一个非正式的标准提交到IETF。但是，即使苹果偶尔地提交一些小的更新，IETF却没有关于制定此标准的有关进一步的动作。</p>
-<p>HLS协议规定：</p>
-<ul>
-<li>视频的封装格式是TS。</li>
-<li>视频的编码格式为H264,音频编码格式为MP3、AAC或者AC-3。</li>
-<li>除了TS视频文件本身，还定义了用来控制播放的m3u8文件（文本文件）。</li>
-</ul>
-<p>为什么苹果要提出HLS这个协议，其实他的主要是为了解决RTMP协议存在的一些问题。比如RTMP协议不使用标准的HTTP接口传输数据，所以在一些特殊的网络环境下可能被防火墙屏蔽掉。但是HLS由于使用的HTTP协议传输数据，不会遇到被防火墙屏蔽的情况（该不会有防火墙连80接口都不放过吧）。</p>
-<p>另外于负载，RTMP是一种有状态协议，很难对视频服务器进行平滑扩展，因为需要为每一个播放视频流的客户端维护状态。而HLS基于无状态协议（HTTP），客户端只是按照顺序使用下载存储在服务器的普通TS文件，做负责均衡如同普通的HTTP文件服务器的负载均衡一样简单。</p>
-<p>另外HLS协议本身实现了码率自适应，不同带宽的设备可以自动切换到最适合自己码率的视频播放。其实HLS最大的优势就是他的亲爹是苹果。苹果在自家的iOS设备上只提供对HLS的原生支持，并且放弃了flash。Android也迫于平果的“淫威”原生支持了HLS。这样一来flv，rtmp这些Adobe的视频方案要想在移动设备上播放需要额外下点功夫。当然flash对移动设备造成很大的性能压力确实也是自身的问题。</p>
-<p>但HLS也有一些无法跨越的坑，比如采用HLS协议直播的视频延迟时间无法下到10秒以下，而RTMP协议的延迟最低可以到3、4秒左右。所以说对直播延迟比较敏感的服务请慎用HLS。</p>
-<p><strong>播放模式</strong></p>
-<ul>
-<li>点播VOD的特点就是当前时间点可以获取到所有index文件和ts文件，二级index文件中记录了所有ts文件的地址。这种模式允许客户端访问全部内容。上面的例子中就是一个点播模式下的m3u8的结构。</li>
-<li>Live 模式就是实时生成M3u8和ts文件。它的索引文件一直处于动态变化的，播放的时候需要不断下载二级index文件，以获得最新生成的ts文件播放视频。如果一个二级index文件的末尾没有#EXT-X-ENDLIST标志，说明它是一个Live视频流。<blockquote>
-<p><a href="http://blog.csdn.net/c602273091/article/details/50372160" target="_blank" rel="external">TS码流分析</a>
-<a href="https://www.cnblogs.com/tocy/p/media_container_6-mpegts.html" target="_blank" rel="external">多媒体文件格式之TS</a>
-<a href="https://www.iso.org/standard/67331.html" target="_blank" rel="external">ISO/IEC 13818-1:2015</a></p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;ts是日本高清摄像机拍摄下进行的封装格式，全称为MPEG2-TS。ts即”Transport Stream”的缩写。MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。MPEG2-TS主要应用于实时传送的节目，比如实时广播的电视节目。&lt;/p&gt;
-&lt;h3
-    
-    </summary>
-    
-      <category term="音视频封装" scheme="http://wodekouwei.com/categories/%E9%9F%B3%E8%A7%86%E9%A2%91%E5%B0%81%E8%A3%85/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-      <category term="音视频" scheme="http://wodekouwei.com/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
-    
-      <category term="format" scheme="http://wodekouwei.com/tags/format/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MPEG</title>
-    <link href="http://wodekouwei.com/2018/02/08/media-mpeg/"/>
-    <id>http://wodekouwei.com/2018/02/08/media-mpeg/</id>
-    <published>2018-02-08T10:48:14.000Z</published>
-    <updated>2018-02-11T07:20:35.409Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="MPEG"><a href="#MPEG" class="headerlink" title="MPEG"></a>MPEG</h3><p>MPEG（Moving Picture Experts Group，动态图像专家组）是ISO（International Standardization Organization，国际标准化组织）与IEC（International Electrotechnical Commission，国际电工委员会）于1988年成立的专门针对运动图像和语音压缩制定国际标准的组织。</p>
-<p>MPEG标准主要有以下五个，MPEG-1、MPEG-2、MPEG-4、MPEG-7及MPEG-21等。该专家组建于1988年，专门负责为CD建立视频和音频标准，而成员都是为视频、音频及系统领域的技术专家。及后，他们成功将声音和影像的记录脱离了传统的模拟方式，建立了ISO/IEC11172压缩编码标准，并制定出MPEG-格式，令视听传播方面进入了数码化时代。因此，大家现时泛指的MPEG-X版本，就是由ISO(International Organization for Standardization）所制定而发布的视频、音频、数据的压缩标准。</p>
-<p>MPEG标准的视频压缩编码技术主要利用了具有运动补偿的帧间压缩编码技术以减小时间冗余度，利用DCT技术以减小图像的空间冗余度，利用熵编码则在信息表示方面减小了统计冗余度。这几种技术的综合运用，大大增强了压缩性能。</p>
-<p>MPEG的缔造者们原先打算开发四个版本：MPEG1-MPEG4，以适用于不同带宽和数字影像质量的要求。后由于MPEG3被放弃，所以现存只有三个版本的MPEG：MPEG-1，MPEG-2，MPEG-4。总体来说，MPEG在三方面优于其他压缩/解压缩方案。首先，由于在一开始它就是做为一个国际化的标准来研究制定，所以，MPEG具有很好的兼容性。其次，MPEG能够比其他算法提供更好的压缩比，最高可达200:1。更重要的是，MPEG在提供高压缩比的同时，对数据的损失很小。</p>
-<h4 id="MPEG-1"><a href="#MPEG-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h4><p>MPEG-1制定于1992年，为工业级标准而设计，可适用于不同带宽的设备，如CD-ROM、Video-CD、CD-i。它可针对SIF标准分辨率（对于NTSC制为352X240；对于PAL制为352X288）的图象进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD（指激光唱盘）音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4-5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
-M
-PEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL），视频点播（VOD），以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
-<h4 id="MPEG-2"><a href="#MPEG-2" class="headerlink" title="MPEG-2"></a>MPEG-2</h4><p>MPEG-2制定于1994年，设计目标是高级工业标准的图象质量以及更高的传输率。MPEG-2所能提供的传输率在3-10Mbits/sec间，其在NTSC制式下的分辨率可达720X486，MPEG-2也可提供并能够提供广播级的视像和CD级的音质。MPEG-2的音频编码可提供左右中及两个环绕声道，以及一个加重低音声道，和多达7个伴音声道（DVD可有8种语言配音的原因）。由于MPEG-2在设计时的巧妙处理，使得大多数MPEG-2解码器也可播放MPEG-1格式的数据，如VCD。</p>
-<p>同时，由于MPEG-2的出色性能表现，已能适用于HDTV，使得原打算为HDTV设计的MPEG-3，还没出世就被抛弃了。（MPEG-3要求传输速率在20Mbits/sec-40Mbits/sec间，但这将使画面有轻度扭曲）。除了做为DVD的指定标准外，MPEG-2还可用于为广播，有线电视网，电缆网络以及卫星直播(DirectBroadcastSatellite）提供广播级的数字视频。</p>
-<p>MPEG-2的另一特点是，其可提供一个较广的范围改变压缩比，以适应不同画面质量，存储容量，以及带宽的要求。</p>
-<p>对于最终用户来说，由于现存电视机分辨率限制，MPEG-2所带来的高清晰度画面质量（如DVD画面）在电视上效果并不明显，到是其音频特性（如加重低音，多伴音声道等）更引人注目。</p>
-<h4 id="MPEG-4"><a href="#MPEG-4" class="headerlink" title="MPEG-4"></a>MPEG-4</h4><p>MPEG专家组的专家们正在为MPEG-4的制定努力工作。MPEG-4标准主要应用于视像电话（videophone），视像电子邮件（VideoEmail）和电子新闻（Electronicnews）等，其传输速率要求较低，在4800-64000bits/sec之间，分辨率176X144。MPEG-4利用很窄的带宽，通过帧重建技术，压缩和传输数据，以求以最少的数据获得最佳的图象质量。</p>
-<p>与MPEG-1和MPEG-2相比，MPEG-4的特点是其更适于交互AV服务以及远程监控。MPEG-4是第一个使你由被动变为主动（不再只是观看，允许你加入其中，即有交互性）的动态图象标准；它的另一个特点是其综合性；从根源上说，MPEG-4试图将自然物体与人造物体相溶合（视觉效果意义上的）。MPEG-4的设计目标还有更广的适应性和可扩展性。</p>
-<h3 id="MPEG-1-1"><a href="#MPEG-1-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h3><p>MPEG-1是MPEG组织制定的第一个视频和音频有损压缩标准。视频压缩算法于1990年定义完成。1992年底，MPEG-1正式被批准成为国际标准。MPEG-1是为CD光碟介质定制的的视频和音频压缩格式。一张70分钟的CD光碟传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。MPEG-1的输出质量大约和传统录像机VCR，信号质量相当，这也许是Video CD在发达国家未获成功的原因。</p>
-<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>MPEG-1是为CD光盘介质定制的视频和音频压缩格式。一张70分钟的CD光盘传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。VCD的分辨率只有约352×240，并使用固定的比特率（1.15Mbps），因此在播放快速动作的视频时，由于数据量不足，令压缩时宏区块无法全面调整，结果使视频画面出现模糊的方块。因此MPEG-1的输出质量大约和传统录像机VCR相当，这也许是Video CD在发达国家未获成功的原因。MPEG-1音频分三代，其中最著名的第三代协议被称为MPEG-1 Layer 3，简称MP3，已经成为广泛流传的音频压缩技术。MPEG-1音频技术在每一代之间，在保留相同的输出质量之外，压缩率都比上一代高。第一代协议MP1被应用在LD作为记录数字音频以及飞利浦公司的DGC上；而第二代协议MP2后来被应用于欧洲版的DVD音频层之一。</p>
-<p>MPEG-1具有以下特点：</p>
-<ul>
-<li>随机访问</li>
-<li>灵活的帧率</li>
-<li>可变的图像尺寸</li>
-<li>定义了I-帧、P-帧和B-帧</li>
-<li>运动补偿可跨越多个帧</li>
-<li>半像素精度的运动向量</li>
-<li>量化矩阵</li>
-<li>GOF结构</li>
-<li>slice结构</li>
-</ul>
-<h4 id="音频分层"><a href="#音频分层" class="headerlink" title="音频分层"></a>音频分层</h4><p>MPEG-1音频分三层，分别为MPEG-1 Layer1，MPEG-Layer2以及MPEG-Layer3，并且高层兼容低层。其中第三层协议被称为MPEG-1 Layer 3，简称MP3。MP3已经成为广泛流传的的音频压缩技术。</p>
-<ul>
-<li>MPEG-1 Layer1采用每声道192kbit/s，每帧384个样本，32个等宽子带，固定分割数据块。子带编码用DCT(离散余弦变换)和(快速傅立叶变换)计算子带信号量化bit数。采用基于频域掩蔽效应的心理声学模型，使量化噪声低于掩蔽值。量化采用带死区的线性量化器，主要用于数字盒式磁带(DCC)。</li>
-<li>MPEG-1 Layer2采用每声道128kbit/s，每帧1152个样本，32个子带，属不同分帧方式。采用共同频域和时域掩蔽效应的心理声学模型，并对高、中，低频段的比特分配进行限制，并对比特分配、比例因子，取样进行附加编码。Layer2 广泛用于数字电视，CD-ROM，CD-I和VCD等。</li>
-<li>MPEG-1 Layer3采用每声道64kbit/s，用混合滤波器组提高频率分辨率，按信号分辨率分成6X32或18X32个子带，克服平均32个子带的Layer1，Layer2在中低频段分辨率偏低的缺点。采用心理声学模型2，增设不均匀量化器，量化值进行熵编码。主要用于ISDN(综合业务数字网)音频编码。</li>
-</ul>
-<p>MPEG-1制定于1992年，为工业级标准而设计，它可针对SIF标准分辨率(对于NTSC制为352X240；对于PAL制为352X288)的图像进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD(指激光唱盘)音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4- 5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
-MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL)，视频点播(VOD)，以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
-<h3 id="MPEG-2-1"><a href="#MPEG-2-1" class="headerlink" title="MPEG-2"></a>MPEG-2</h3><p>MPEG-2是MPEG（Moving Picture Experts Group，运动图像专家组）组织制定的视频和音频有损压缩标准之一，它的正式名称为“基于数字存储媒体运动图像和语音的压缩标准”。与MPEG-1标准相比，MPEG-2标准具有更高的图像质量、更多的图像格式和传输码率的图像压缩标准。MPEG-2标准不是MPEG-1的简单升级，而是在传输和系统方面做了更加详细的规定和进一步的完善。它是针对标准数字电视和高清晰电视在各种应用下的压缩方案，编码率从3 Mbit/s~100 Mbit/s。</p>
-<p>MPEG-2音频是在1994年11月为数字电视而提出来的，其发展分为三个阶段：
-第一阶段是对MPEG-1增加了低采样频率，有16KHZ，22.05KHZ，以及24KHZ。
-第二阶段是对MPEG-1实施了向后兼容的多声道扩展，将其称为MPEG-2 BC。支持单声道，双声道，多声道等编码。并附加“低频加重”扩展声道，从而达到五声道编码。
-第三阶段是向后不兼容，将其称为MPEG-2 AAC先进音频编码。采样频率可以低至8KHZ；而高至96KHZ范围内的1-48个通道可选的高音质音频编码。</p>
-<h4 id="分部"><a href="#分部" class="headerlink" title="分部"></a>分部</h4><p>MPEG-2标准目前分为9个部分，统称为ISO/IEC13818国际标准。各部分的内容描述如下：</p>
-<ul>
-<li>一部分－ISO/IEC13818-1，System：系统，描述多个视频，音频和数据基本码流合成传输码流和节目码流的方式。</li>
-<li>二部分－ISO/IEC13818-2，Video：视频，描述视频编码方法。</li>
-<li>三部分－ISO/IEC13818-3，Audio：音频，描述与MPEG-1音频标准反向兼容的音频编码方法。</li>
-<li>四部分－ISO/IEC13818-4，Compliance：符合测试，描述测试一个编码码流是否符合MPEG-2码流的方法。</li>
-<li>五部分－ISO/IEC13818-5，Software：软件，描述了MPEG-2标准的第一、二、三部分的软件实现方法。</li>
-<li>六部分－ISO/IEC13818-6，DSM-CC：数字存储媒体-命令与控制，描述交互式多媒体网络中服务器与用户间的会话信令集。</li>
-</ul>
-<p>上六个部分均已获得通过，成为正式的国际标准，并在数字电视等领域中得到了广泛的实际应用。此外，MPEG-2标准还有三个部分：</p>
-<ul>
-<li>第七部分规定不与MPEG-1音频反向兼容的多通道音频编码；</li>
-<li>第八部分现已停止；</li>
-<li>第九部分规定了传送码流的实时接口。</li>
-</ul>
-<p>1990年成立的ATM视频编码专家组与MPEG在ISO/IEC13818标准的第一和第二两个部分进行了合作，因此上述两个部分也成为ITU-T的
-标准，分别为：ITU-T H.222.0和ITU-T H.262视频。</p>
-<h3 id="MPEG-4-1"><a href="#MPEG-4-1" class="headerlink" title="MPEG-4"></a>MPEG-4</h3><p>MPEG-4，于MP4是一套用于音频、视频信息的压缩编码标准，由国际标准化组织（ISO）和国际电工委员会（IEC）下属的“动态图像专家组（Moving Picture Experts即MPEG制定，第一版在1998年10月通过，第二版在1999年12月通过。MPEG-4格式的主要用途在于网上流、光盘、语音发送（视频电话），以及电视广播。MPEG-4包含了MPEG-1及MPEG-2的绝大部份功能及其他格式的长处，并加入及扩充对虚拟现实模型语言（VRML，VirtualReality Modeling Language）的支持，面向对象的合成档案（包括音效，视讯及VRML对象），以及数字版权管理（DRM）及其他互动功能。而MPEG-4比MPEG-2更先进的其中一个特点，就是不再使用宏区块做影像分析，而是以影像上个体为变化记录，因此尽管影像变化速度很快、码率不足时，也不会出现方块画面。</p>
-<h4 id="分部-1"><a href="#分部-1" class="headerlink" title="分部"></a>分部</h4><p>MPEG-4由一系列的子标准组成，被称为部(part)（有时也译为卷），包括以下的部分：</p>
-<ul>
-<li>第一部分（ISO/IEC14496-1）：系统：描述视讯和音频数据流的控制、同步以及混合方式（即混流Multiplexing，简写为MUX）。</li>
-<li>第二部分（ISO/IEC14496-2）：视讯：定义了一个对各种视觉讯息（包括自然视讯、静止纹理、计算机合成图形等等）的编译码器。（例如XviD编码就属于MPEG-4Part2）</li>
-<li>第三部分（ISO/IEC14496-3）：音讯：定义了一个对各种音频讯号进行编码的编译码器的集合。包括高阶音频编码（AdvancedAudioCoding，缩写为AAC）的若干变形和其他一些音频/语音编码工具。</li>
-<li>第四部分（ISO/IEC14496-4）：一致性：定义了对本标准其他的部分进行一致性测试的程序。</li>
-<li>第五部分（ISO/IEC4496-5）：参考软件：提供了用于演示功能和说明本标准其他部分功能的软件。</li>
-<li>第六部分（ISO/IEC14496-6）：多媒体传输整合框架（DMIF for Delivery Multimedia IntegrationFramework）</li>
-<li>第七部分（ISO/IEC14496-7）：优化的参考软件：提供了对实作进行优化的例子（这里的实作指的是第五部分）。</li>
-<li>第八部分（ISO/IEC14496-8）：在IP网络上传输：定义了在IP网络上传输MPEG-4内容的方式。</li>
-<li>第九部分（ISO/IEC14496-9）：参考硬件：提供了用于演示怎样在硬件上实作本标准其他部分功能的硬件设计方案。</li>
-<li>第十部分（ISO/IEC14496-10）：进阶视讯编码或称高阶视讯编码（Advanced Video Coding，缩写为AVC）：定义了一个视讯编译码器（codec）。AVC和XviD都属于MPEG-4编码，但由于AVC属于MPEG-4Part10，在技术特性上比属于MPEG-4Part2的XviD要先进。另外，它和ITU-TH.264标准是一致的，故又称为H.264。</li>
-<li>第十二部分（ISO/IEC14496-12）：基于ISO的媒体文件格式：定义了一个储存媒体内容的文件格式。</li>
-<li>第十三部分（ISO/IEC14496-13）：知识产权管理和保护（IPMP for Intellectual Property Management andProtection）拓展。</li>
-<li>第十四部分（ISO/IEC14496-14）：MPEG-4文件格式：定义了基于第十二部分的用于储存MPEG-4内容的视讯文件格式。</li>
-<li>第十五部分（ISO/IEC14496-15）：AVC文件格式：定义了基于第十二部分的用于储存第十部分的视讯内容的文件格式。</li>
-<li>第十六部分（ISO/IEC14496-16）：动画框架扩充功能（AFX:Animation Framework eXtension）。</li>
-<li>第十七部分（ISO/IEC14496-17）：同步文字字幕格式。</li>
-<li>第十八部分（ISO/IEC14496-18）：字型压缩和串流传输（针对开放字型格式 Open Font Format）。</li>
-<li>第十九部分（ISO/IEC14496-19）：合成材质流（Synthesized Texture Stream）。</li>
-<li>第二十部分（ISO/IEC14496-20）：简单场景表示（LASeR for Lightweight Scene Representation。</li>
-<li>第二十一部分（ISO/IEC14496-21）：用于描绘（Rendering）的MPEG-J拓展。</li>
-<li>第二十二部分（ISO/IEC14496-22）：开放字型格式（Open Font Format）。</li>
-<li>第二十三部分（ISO/IEC14496-23）：符号化音乐表示（Symbolic Music Representation）。</li>
-<li>第二十四部分（ISO/IEC14496-24）：音频与系统互动作用（Audio and systems interaction）。</li>
-<li>第二十五部分（ISO/IEC14496-25）：3D图形压缩模型（3D GraphicsCompression Model）。</li>
-<li>第二十六部分（ISO/IEC14496-26）：音讯一致性检查：定义了测试音频数据与ISO/IEC 14496-3是否一致的方法（Audioconformance）。</li>
-<li>第二十七部分（ISO/IEC14496-27）：3D图形一致性检查：定义了测试3D图形数据与ISO/IEC14496-11:2005,ISO/IEC 14496-16:2006,ISO/IEC14496-21:2006,和ISO/IEC14496-25:2009是否一致的方法（3D Graphicsconformance）。</li>
-</ul>
-<p>Profiles是在每个部分内定义的，所以对某个部分的一个实作通常不是对该部分的完整实作。</p>
-<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
-<li>对于不同的对象可采用不同的编码算法，从而进一步提高压缩效率；</li>
-<li>对象各自相对独立，提高了多媒体数据的可重用性；</li>
-<li>允许用户对单个的对象操作，提供前所未有的交互性；</li>
-<li>允许在不同的对象之间灵活分配码率，对重要的对象可分配较多的字节，对次要的对象可分配较少的字节，从而能在低码率下获得较好的效果；</li>
-<li>可以方便的集成自然音视频对象和合成音视频对象。</li>
-</ul>
-<h3 id="MPEG-7"><a href="#MPEG-7" class="headerlink" title="MPEG-7"></a>MPEG-7</h3><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Moving_Picture_Experts_Group" target="_blank" rel="external">Moving Picture Experts Group</a>
-<a href="https://en.wikipedia.org/wiki/ISO/IEC_JTC_1/SC_29" target="_blank" rel="external">ISO/IEC JTC 1/SC 29</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-1" target="_blank" rel="external">MPEG-1</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-2" target="_blank" rel="external">MPEG-2</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-4" target="_blank" rel="external">MPEG-4</a>
-<a href="https://zh.wikipedia.org/wiki/MP3" target="_blank" rel="external">MP3</a></p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;MPEG&quot;&gt;&lt;a href=&quot;#MPEG&quot; class=&quot;headerlink&quot; title=&quot;MPEG&quot;&gt;&lt;/a&gt;MPEG&lt;/h3&gt;&lt;p&gt;MPEG（Moving Picture Experts Group，动态图像专家组）是ISO（International S
-    
-    </summary>
-    
-      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>基于深度学习的自动抠图</title>
-    <link href="http://wodekouwei.com/2018/01/25/tips-ml-about-backgroundremoval/"/>
-    <id>http://wodekouwei.com/2018/01/25/tips-ml-about-backgroundremoval/</id>
-    <published>2018-01-25T07:27:43.000Z</published>
-    <updated>2018-01-25T07:42:37.093Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><ul>
-<li>原文:<a href="https://towardsdatascience.com/background-removal-with-deep-learning-c4f2104b3157" target="_blank" rel="external">Background removal with deep learning</a></li>
-<li>译文:<a href="https://www.leiphone.com/news/201709/UlV8rwd3s6ZeEccW.html" target="_blank" rel="external">自拍抠图抠到手软？详解如何用深度学习消除背景</a></li>
-<li><a href="https://gitlab.com/fast-science" target="_blank" rel="external">server代码地址</a></li>
-<li><a href="https://github.com/Kjeanclaude/acGAN-Paper-Implementation" target="_blank" rel="external">acGAN-Paper-Implementation</a>:acGAN paper implementation and adaptation by KJeanclaude &amp; Gidi Shperber</li>
-<li><a href="http://www.fast.ai/" target="_blank" rel="external">fast.ai course</a></li>
-<li>作者:<a href="https://medium.com/@burgalon" target="_blank" rel="external">Alon Burg</a> ,<a href="https://towardsdatascience.com/@gidishperber" target="_blank" rel="external">Gidi Shperber</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;资源&quot;&gt;&lt;a href=&quot;#资源&quot; class=&quot;headerlink&quot; title=&quot;资源&quot;&gt;&lt;/a&gt;资源&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;原文:&lt;a href=&quot;https://towardsdatascience.com/background-removal-wi
-    
-    </summary>
-    
-      <category term="ml" scheme="http://wodekouwei.com/categories/ml/"/>
-    
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-      <category term="ml" scheme="http://wodekouwei.com/tags/ml/"/>
     
   </entry>
   

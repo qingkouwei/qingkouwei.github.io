@@ -323,6 +323,814 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/08/09/android-source-mediaplayer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/08/09/android-source-mediaplayer/" itemprop="url">
+                  Android源码分析:Mediaplayer
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-09T16:06:24+08:00">
+                2018-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MediaPlayer Factory分别会生成4个不同的MediaPlayer基类：StagefrightPlayer、NuPlayerDriver、MidiFile和TestPlayerStub，四者均继承于MediaPlayerBase。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/08/06/at-android-source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/08/06/at-android-source/" itemprop="url">
+                  android自动化测试(二):源码分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-06T10:45:50+08:00">
+                2018-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/autotest/" itemprop="url" rel="index">
+                    <span itemprop="name">autotest</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="monkey"><a href="#monkey" class="headerlink" title="monkey"></a>monkey</h3><p>源码位于:<code>~/development/cmds/monkey/src/com/android/commands/monkey</code></p>
+<h3 id="monkeyrunner"><a href="#monkeyrunner" class="headerlink" title="monkeyrunner"></a>monkeyrunner</h3><p>源码位于:<code>~/sdk/monkeyrunner/src/com/android/monkeyrunner</code></p>
+<h3 id="instrumentation"><a href="#instrumentation" class="headerlink" title="instrumentation"></a>instrumentation</h3><p>源码位于:<code>~/framenworks/base/test-runner/src</code></p>
+<h3 id="uiautomator"><a href="#uiautomator" class="headerlink" title="uiautomator"></a>uiautomator</h3><p>源码位于:<code>~/frameworks/testing/uiautomator/library/src/com/android/ui/automator</code></p>
+<h3 id="cts"><a href="#cts" class="headerlink" title="cts"></a>cts</h3><p>源码位于:<code>cts/tools/tradefed-host/src/com/android/cts/tradefed</code></p>
+<p><a href="https://github.com/square/assertj-android" target="_blank" rel="external">https://github.com/square/assertj-android</a></p>
+<p><a href="https://github.com/square/spoon" target="_blank" rel="external">https://github.com/square/spoon</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/08/05/tips-android-process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/08/05/tips-android-process/" itemprop="url">
+                  Android应用内多进程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-05T05:14:39+08:00">
+                2018-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>正常情况下，一个apk启动后只会运行在一个进程中，其进程名为AndroidManifest.xml文件中指定的应用包名，所有的基本组件都会在这个进程中运行。但是如果需要将某些组件（如Service、Activity等）运行在单独的进程中，就需要用到android:process属性了。我们可以为android的基础组件指定process属性来指定它们运行在指定进程中。</p>
+<h4 id="多进程好处"><a href="#多进程好处" class="headerlink" title="多进程好处"></a>多进程好处</h4><p> 一般来说，Android应用多进程有三个好处。</p>
+<ol>
+<li>我们知道Android系统对每个应用进程的内存占用是有限制的，而且占用内存越大的进程，通常被系统杀死的可能性越大。让一个组件运行在单独的进程中，可以减少主进程所占用的内存，降低被系统杀死的概率.</li>
+<li>如果子进程因为某种原因崩溃了，不会直接导致主程序的崩溃，可以降低我们程序的崩溃率。</li>
+<li>即使主进程退出了，我们的子进程仍然可以继续工作，假设子进程是推送服务，在主进程退出的情况下，仍然能够保证用户可以收到推送消息。</li>
+</ol>
+<h4 id="陷阱"><a href="#陷阱" class="headerlink" title="陷阱"></a>陷阱</h4><p> 我们已经开启了应用内多进程，那么，开启多进程是不是只是我们看到的这么简单呢？其实这里面会有一些陷阱，稍微不注意就会陷入其中。我们首先要明确的一点是进程间的内存空间时不可见的。从而，开启多进程后，我们需要面临这样几个问题：</p>
+<ol>
+<li>Application的多次重建。</li>
+<li>静态成员的失效。</li>
+<li>文件共享问题。</li>
+<li>断点调试问题。</li>
+</ol>
+<p>多进程情况下会出现两个进程在同一时刻访问同一个数据库文件的情况。这就可能造成资源的竞争访问，导致诸如数据库损坏、数据丢失等。在多线程的情况下我们有锁机制控制资源的共享，但是在多进程中比较难，虽然有文件锁、排队等机制，但是在Android里很难实现。解决办法就是多进程的时候不并发访问同一个文件，比如子进程涉及到操作数据库，就可以考虑调用主进程进行数据库的操作。</p>
+<p>调试就是跟踪程序运行过程中的堆栈信息，由于每个进程都有自己独立的内存空间和各自的堆栈，无法实现在不同的进程间调试。不过可以通过下面的方式实现：调试时去掉AndroidManifest.xml中android:process标签，这样保证调试状态下是在同一进程中，堆栈信息是连贯的。待调试完成后，再将标签复原。</p>
+<h4 id="process属性的设置有两种形式"><a href="#process属性的设置有两种形式" class="headerlink" title="process属性的设置有两种形式"></a>process属性的设置有两种形式</h4><p>第一种形式如 android:process=”:remote”，以冒号开头，冒号后面的字符串原则上是可以随意指定的。如果我们的包名为“com.example.processtest”，则实际的进程名为“com.example.processtest:remote”。这种设置形式表示该进程为当前应用的私有进程，其他应用的组件不可以和它跑在同一个进程中。</p>
+<p>第二种情况如 android:process=”com.example.processtest.remote”，以小写字母开头，表示运行在一个以这个名字命名的全局进程中，其他应用通过设置相同的ShareUID可以和它跑在同一个进程。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/31/tips-android-pluggable-8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/07/31/tips-android-pluggable-8/" itemprop="url">
+                  tips-android-pluggable-8
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T20:20:35+08:00">
+                2018-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/25/tips-android-serialization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/07/25/tips-android-serialization/" itemprop="url">
+                  android数据序列化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-25T10:41:25+08:00">
+                2018-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="什么是序列化"><a href="#什么是序列化" class="headerlink" title="什么是序列化"></a>什么是序列化</h3><p>序列化 (Serialization)将对象的状态信息转换为可以存储或传输的形式的过程。在序列化期间，对象将其当前状态写入到临时或持久性存储区。以后，可以通过从存储区中读取或反序列化对象的状态，重新创建该对象。
+二进制序列化保持类型保真度，这对于在应用程序的不同调用之间保留对象的状态很有用。例如，通过将对象序列化到剪贴板，可在不同的应用程序之间共享对象。您可以将对象序列化到流、磁盘、内存和网络等等。远程处理使用序列化“通过值”在计算机或应用程序域之间传递对象。</p>
+<p>简单地说，“序列化”就是将运行时的对象状态转换成二进制，然后保存到流、内存或者通过网络传输给其他端。
+在安卓开发中，我们在组件中传递数据时常常使用 Intent 传输数据时需要传递 Serializable 或者 Parcelable 的数据，比如 Intent.putExtra 方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public Intent putExtra(String name, Parcelable value) &#123;...&#125;</div><div class="line">public Intent putExtra(String name, Serializable value) &#123;...&#125;</div></pre></td></tr></table></figure></p>
+<p>也会使用 Binder 传递数据。</p>
+<h3 id="Serializable-接口"><a href="#Serializable-接口" class="headerlink" title="Serializable 接口"></a>Serializable 接口</h3><p>Serializable 是 Java 提供的序列化接口，它是一个空接口:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public interface Serializable &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Serializable 用来标识当前类可以被 ObjectOutputStream 序列化，以及被 ObjectInputStream 反序列化。
+Serializable 有以下几个特点：</p>
+<ul>
+<li>可序列化类中，未实现 Serializable 的属性状态无法被序列化/反序列化</li>
+<li>也就是说，反序列化一个类的过程中，它的非可序列化的属性将会调用无参构造函数重新创建</li>
+<li>因此这个属性的无参构造函数必须可以访问，否者运行时会报错</li>
+<li>一个实现序列化的类，它的子类也是可序列化的</li>
+</ul>
+<p>下面是一个实现了 Serializable 的实体类：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public class GroupBean implements Serializable &#123;</div><div class="line"></div><div class="line">    private static final long serialVersionUID = 8829975621220483374L;</div><div class="line">    private String mName;</div><div class="line">    private List&lt;String&gt; mMemberNameList;</div><div class="line"></div><div class="line">    public GroupBean() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String getName() &#123;</div><div class="line">        return mName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        mName = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public List&lt;String&gt; getMemberNameList() &#123;</div><div class="line">        return mMemberNameList;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setMemberNameList(List&lt;String&gt; memberNameList) &#123;</div><div class="line">        mMemberNameList = memberNameList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到实现 Serializable 的实现非常简单，除了实体内容外只要创建一个 serialVersionUID 属性就好。</p>
+<h4 id="serialVersionUID"><a href="#serialVersionUID" class="headerlink" title="serialVersionUID"></a>serialVersionUID</h4><p>从名字就可以看出来，这个 serialVersionUID ，有些类似我们平时的接口版本号，在运行时这个版本号唯一标识了一个可序列化的类。</p>
+<p>也就是说，一个类序列化时，运行时会保存它的版本号，然后在反序列化时检查你要反序列化成的对象版本号是否一致，不一致的话就会报错：·InvalidClassException。</p>
+<p>如果我们不自己创建这个版本号，序列化过程中运行时会根据类的许多特点计算出一个默认版本号。然而只要你对这个类修改了一点点，这个版本号就会改变。这种情况如果发生在序列化之后，反序列化时就会导致上面说的错误。</p>
+<p>因此 JVM 规范强烈 建议我们手动声明一个版本号，这个数字可以是随机的，只要固定不变就可以。同时最好是 private 和 final 的，尽量保证不变。</p>
+<p>此外，序列化过程中不会保存 static 和 transient 修饰的属性，前者很好理解，因为静态属性是与类管理的，不属于对象状态；而后者则是 Java 的关键字，专门用来标识不序列化的属性。</p>
+<p>默认实现 Serializable 不会自动创建 serialVersionUID 属性，为了提示我们及时创建 serialVersionUID ，可以在设置中搜索 serializable 然后选择下图所示的几个选项，为那些没有声明 serialVersionUID 属性的类以及内部类添加一个警告:
+setting-&gt;Editor-&gt;Inspections-&gt;搜索serializable-&gt;勾选:</p>
+<ul>
+<li>Serializable class without’readObject()’ and ‘writeObject()’</li>
+<li>Serializable class without’seriaVersionUID’</li>
+<li>Serializable not-‘static’ inner class with not-Serializable outer class</li>
+<li>Serializable object implicitly stores non-Serializable Object</li>
+</ul>
+<p>这样当我们创建一个类不声明 UID 属性时，类名上就会有黄黄的警告,鼠标放上去就会显示警告内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GroupBean’ does not define a ‘serialVersionUID’ field less… (Ctrl+F1) </div><div class="line">Reports any Serializable classes which do not provide a serialVersionUID field. Without a serialVersionUID field, any change to a class will make previously serialized versions unreadable.</div></pre></td></tr></table></figure></p>
+<p>这时我们按代码提示快捷键就可以生成 serialVersionUID 了。</p>
+<h4 id="序列化与反序列化-Serializable"><a href="#序列化与反序列化-Serializable" class="headerlink" title="序列化与反序列化 Serializable"></a>序列化与反序列化 Serializable</h4><p>Serializable 的序列化与反序列化分别通过 ObjectOutputStream 和 ObjectInputStream 进行，实例代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">**</div><div class="line"> * 序列化对象</div><div class="line"> *</div><div class="line"> * @param obj</div><div class="line"> * @param path</div><div class="line"> * @return</div><div class="line"> */</div><div class="line">synchronized public static boolean saveObject(Object obj, String path) &#123;</div><div class="line">    if (obj == null) &#123;</div><div class="line">        return false;</div><div class="line">    &#125;</div><div class="line">    ObjectOutputStream oos = null;</div><div class="line">    try &#123;</div><div class="line">        oos = new ObjectOutputStream(new FileOutputStream(path));</div><div class="line">        oos.writeObject(obj);</div><div class="line">        oos.close();</div><div class="line">        return true;</div><div class="line">    &#125; catch (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; finally &#123;</div><div class="line">        if (oos != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                oos.close();</div><div class="line">            &#125; catch (IOException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 反序列化对象</div><div class="line"> *</div><div class="line"> * @param path</div><div class="line"> * @param &lt;T&gt;</div><div class="line"> * @return</div><div class="line"> */</div><div class="line">@SuppressWarnings(&quot;unchecked &quot;)</div><div class="line">synchronized public static &lt;T&gt; T readObject(String path) &#123;</div><div class="line">    ObjectInputStream ojs = null;</div><div class="line">    try &#123;</div><div class="line">        ojs = new ObjectInputStream(new FileInputStream(path));</div><div class="line">        return (T) ojs.readObject();</div><div class="line">    &#125; catch (IOException | ClassNotFoundException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; finally &#123;</div><div class="line">        close(ojs);</div><div class="line">    &#125;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Parcelable-接口"><a href="#Parcelable-接口" class="headerlink" title="Parcelable 接口"></a>Parcelable 接口</h3><p>Parcelable 是 Android 特有的序列化接口：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">public interface Parcelable &#123;</div><div class="line">    //writeToParcel() 方法中的参数，用于标识当前对象作为返回值返回</div><div class="line">    //有些实现类可能会在这时释放其中的资源</div><div class="line">    public static final int PARCELABLE_WRITE_RETURN_VALUE = 0x0001;</div><div class="line"></div><div class="line">    //writeToParcel() 方法中的第二个参数，它标识父对象会管理内部状态中重复的数据</div><div class="line">    public static final int PARCELABLE_ELIDE_DUPLICATES = 0x0002;</div><div class="line"></div><div class="line">    //用于 describeContents() 方法的位掩码，每一位都代表着一种对象类型</div><div class="line">    public static final int CONTENTS_FILE_DESCRIPTOR = 0x0001;</div><div class="line"></div><div class="line">    //描述当前 Parcelable 实例的对象类型</div><div class="line">    //比如说，如果对象中有文件描述符，这个方法就会返回上面的 CONTENTS_FILE_DESCRIPTOR</div><div class="line">    //其他情况会返回一个位掩码</div><div class="line">    public int describeContents();</div><div class="line"></div><div class="line">    //将对象转换成一个 Parcel 对象</div><div class="line">    //参数中 dest 表示要写入的 Parcel 对象</div><div class="line">    //flags 表示这个对象将如何写入</div><div class="line">    public void writeToParcel(Parcel dest, int flags);</div><div class="line"></div><div class="line">    //实现类必须有一个 Creator 属性，用于反序列化，将 Parcel 对象转换为 Parcelable </div><div class="line">    public interface Creator&lt;T&gt; &#123;</div><div class="line"></div><div class="line">        public T createFromParcel(Parcel source);</div><div class="line"></div><div class="line">        public T[] newArray(int size);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //对象创建时提供的一个创建器</div><div class="line">    public interface ClassLoaderCreator&lt;T&gt; extends Creator&lt;T&gt; &#123;</div><div class="line">        //使用类加载器和之前序列化成的 Parcel 对象反序列化一个对象</div><div class="line">        public T createFromParcel(Parcel source, ClassLoader loader);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>实现了 Parcelable 接口的类在序列化和反序列化时会被转换为 Parcel 类型的数据 。
+Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 IBinder 在进程间传递。
+实现 Parcelable 接口的类必须有一个 CREATOR 类型的静态变量，下面是一个实例：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">public class ParcelableGroupBean implements Parcelable &#123;</div><div class="line"></div><div class="line">    private String mName;</div><div class="line">    private List&lt;String&gt; mMemberNameList;</div><div class="line">    private User mUser;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 需要我们手动创建的构造函数</div><div class="line">     * @param name</div><div class="line">     * @param memberNameList</div><div class="line">     * @param user</div><div class="line">     */</div><div class="line">    public ParcelableGroupBean(String name, List&lt;String&gt; memberNameList, User user) &#123;</div><div class="line">        mName = name;</div><div class="line">        mMemberNameList = memberNameList;</div><div class="line">        mUser = user;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 1.内容描述</div><div class="line">     * @return</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public int describeContents() &#123;</div><div class="line">        //几乎都返回 0，除非当前对象中存在文件描述符时为 1</div><div class="line">        return 0;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 2.序列化</div><div class="line">     * @param dest</div><div class="line">     * @param flags 0 或者 1</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public void writeToParcel(Parcel dest, int flags) &#123;</div><div class="line">        dest.writeString(mName);</div><div class="line">        dest.writeStringList(mMemberNameList);</div><div class="line">        dest.writeParcelable(mUser, flags);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 3.反序列化</div><div class="line">     */</div><div class="line">    public static final Creator&lt;ParcelableGroupBean&gt; CREATOR = new Creator&lt;ParcelableGroupBean&gt;() &#123;</div><div class="line">        /**</div><div class="line">         * 反序列创建对象</div><div class="line">         * @param in</div><div class="line">         * @return</div><div class="line">         */</div><div class="line">        @Override</div><div class="line">        public ParcelableGroupBean createFromParcel(Parcel in) &#123;</div><div class="line">            return new ParcelableGroupBean(in);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 反序列创建对象数组</div><div class="line">         * @param size</div><div class="line">         * @return</div><div class="line">         */</div><div class="line">        @Override</div><div class="line">        public ParcelableGroupBean[] newArray(int size) &#123;</div><div class="line">            return new ParcelableGroupBean[size];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 4.自动创建的的构造器，使用反序列化得到的 Parcel 构造对象</div><div class="line">     * @param in</div><div class="line">     */</div><div class="line">    protected ParcelableGroupBean(Parcel in) &#123;</div><div class="line">        mName = in.readString();</div><div class="line">        mMemberNameList = in.createStringArrayList();</div><div class="line">        //反序列化时，如果熟悉也是 Parcelable 的类，需要使用它的类加载器作为参数，否则报错无法找到类</div><div class="line">        mUser = in.readParcelable(User.class.getClassLoader());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Parcelable原理"><a href="#Parcelable原理" class="headerlink" title="Parcelable原理"></a>Parcelable原理</h4><p>Parcelable具体的写入（dest.writeInt(mAge);）与读取（gril.mAge = in.readInt();）都是针对Parcel对象进行的操作，下面贴出的是Parcle 读写int类型数据的定义。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public final class Parcel &#123;</div><div class="line"> </div><div class="line">    ......</div><div class="line">    </div><div class="line">    /**</div><div class="line">     * Write an integer value into the parcel at the current dataPosition(),</div><div class="line">     * growing dataCapacity() if needed.</div><div class="line">     */</div><div class="line">    public final native void writeInt(int val);</div><div class="line"> </div><div class="line">    /**</div><div class="line">     * Read an integer value from the parcel at the current dataPosition().</div><div class="line">     */</div><div class="line">    public final native int readInt();</div><div class="line">    </div><div class="line">     ......</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面代码可以看出都是native方法说明都是使用JNI，其具体位置在<code>frameworks/base/core/jni/android_util_Binder.cpp</code> ，以下也仅以int类型读写为例
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">static void android_os_Parcel_writeInt(JNIEnv* env, jobject clazz, jint val)</div><div class="line">&#123;</div><div class="line">    Parcel* parcel = parcelForJavaObject(env, clazz);</div><div class="line">    if (parcel != NULL) &#123;</div><div class="line">        const status_t err = parcel-&gt;writeInt32(val);</div><div class="line">        if (err != NO_ERROR) &#123;</div><div class="line">            jniThrowException(env, &quot;java/lang/OutOfMemoryError&quot;, NULL);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">static jint android_os_Parcel_readInt(JNIEnv* env, jobject clazz)</div><div class="line">&#123;</div><div class="line">    Parcel* parcel = parcelForJavaObject(env, clazz);</div><div class="line">    if (parcel != NULL) &#123;</div><div class="line">        return parcel-&gt;readInt32();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面可以看出都会调用Parcel实现且分别调用writeInt32与readInt32函数，接着来看看具体实现。位置：<code>/system/frameworks/base/libs/binder/Parcel.cpp</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">status_t Parcel::writeInt32(int32_t val)</div><div class="line">&#123;</div><div class="line">    return writeAligned(val);</div><div class="line">&#125;</div><div class="line"> </div><div class="line">template&lt;class T&gt;</div><div class="line">status_t Parcel::writeAligned(T val) &#123;</div><div class="line">    COMPILE_TIME_ASSERT_FUNCTION_SCOPE(PAD_SIZE(sizeof(T)) == sizeof(T));</div><div class="line"> </div><div class="line">    if ((mDataPos+sizeof(val)) &lt;= mDataCapacity) &#123;</div><div class="line">restart_write:</div><div class="line">        *reinterpret_cast&lt;T*&gt;(mData+mDataPos) = val;</div><div class="line">        return finishWrite(sizeof(val));</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    status_t err = growData(sizeof(val));</div><div class="line">    if (err == NO_ERROR) goto restart_write;</div><div class="line">    return err;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line">status_t Parcel::readInt32(int32_t *pArg) const</div><div class="line">&#123;</div><div class="line">    return readAligned(pArg);</div><div class="line">&#125;</div><div class="line"> </div><div class="line">template&lt;class T&gt;</div><div class="line">status_t Parcel::readAligned(T *pArg) const &#123;</div><div class="line">    COMPILE_TIME_ASSERT_FUNCTION_SCOPE(PAD_SIZE(sizeof(T)) == sizeof(T));</div><div class="line"> </div><div class="line">    if ((mDataPos+sizeof(T)) &lt;= mDataSize) &#123;</div><div class="line">        const void* data = mData+mDataPos;</div><div class="line">        mDataPos += sizeof(T);</div><div class="line">        *pArg =  *reinterpret_cast&lt;const T*&gt;(data);</div><div class="line">        return NO_ERROR;</div><div class="line">    &#125; else &#123;</div><div class="line">        return NOT_ENOUGH_DATA;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>基本的思路总结一下：</p>
+<ol>
+<li>整个读写全是在内存中进行，主要是通过malloc()、realloc()、memcpy()等内存操作进行，所以效率比JAVA序列化中使用外部存储器会高很多；</li>
+<li>读写时是4字节对齐的，可以看到#define PAD_SIZE(s) (((s)+3)&amp;~3)这句宏定义就是在做这件事情；</li>
+<li>如果预分配的空间不够时newSize = ((mDataSize+len)*3)/2;会一次多分配50%；</li>
+<li>对于普通数据，使用的是mData内存地址，对于IBinder类型的数据以及FileDescriptor使用的是mObjects内存地址。后者是通过flatten_binder()和unflatten_binder()实现的，目的是反序列化时读出的对象就是原对象而不用重新new一个新对象。</li>
+</ol>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><ol>
+<li>任何实体类都需要复写Parcelable接口吗？</li>
+<li>如果子类新增属性，需要复写父类writeToParcel与CREATOR吗？</li>
+<li>writeToParcel 与 createFromParcel 对变量的读写前后顺序可以不一致吗，会出现什么结果？</li>
+<li>读写Parcelable对象（写操作dest.writeParcelable(obj, flags);  读操作in.readParcelable(ObjectA.class.getClassLoader()); ）</li>
+<li>读写Parcelable对象数组<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3>可以看到，Serializable 的使用比较简单，创建一个版本号即可；而 Parcelable 则相对复杂一些，会有四个方法需要实现。</li>
+</ol>
+<p>一般在保存数据到 SD 卡或者网络传输时建议使用 Serializable 即可，虽然效率差一些，好在使用方便。</p>
+<p>而在运行时数据传递时建议使用 Parcelable，比如 Intent，Bundle 等，Android 底层做了优化处理，效率很高。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://blog.csdn.net/caowenbin/article/details/6532217" target="_blank" rel="external">《探索Android中的Parcel机制（上）》</a></li>
+<li><a href="https://blog.csdn.net/caowenbin/article/details/6532238" target="_blank" rel="external">《探索Android中的Parcel机制（下）》</a></li>
+<li><a href="https://blog.codingnow.com/2010/03/c_serialization.html" target="_blank" rel="external">《C 语言的数据序列化 （C语言实现序列化机制的思路）</a></li>
+<li><a href="https://blog.csdn.net/niu_gao/article/details/6451699" target="_blank" rel="external"> 《Android中的Parcel是什么》</a></li>
+<li><a href="https://blog.csdn.net/niu_gao/article/details/6453391" target="_blank" rel="external"> 《Android开发：什么是Parcel(2)》</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/20/tips-audiomanager/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1258,981 +2066,6 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/27/media-graphic-frequency/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/27/media-graphic-frequency/" itemprop="url">
-                  多媒体技术(1.1)之图像中频率的概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T10:59:35+08:00">
-                2018-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/media/" itemprop="url" rel="index">
-                    <span itemprop="name">media</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一、图像高频信号和低频信号的理解
-1.1 图像中的低频信号和高频信号也叫做低频分量和高频分量。简单一点说，图像中的高频分量，指的是图像强度（亮度/灰度）变化剧烈的地方，也就是我们常说的边缘（轮廓）；图像中的低频分量，指的是图像强度（亮度/灰度）变换平缓的地方，也就是大片色块的地方。人眼对图像中的高频信号更为敏感。 图像的高低频是对图像各个位置之间强度变化的一种度量方法。低频分量:主要对整副图像的强度的综合度量. 高频分量:主要是对图像边缘和轮廓的度量。如果一副图像的各个位置的强度大小相等,则图像只存在低频分量,从图像的频谱图上看,只有一个主峰,且位于频率为零的位置。 如果一副图像的各个位置的强度变化剧烈,则图像不仅存在低频分量,同时也存在多种高频分量,从图像的频谱上看,不仅有一个主峰,同时也存在多个旁峰。 1.2直观认识 假设在正弦波中有一个毛刺，并且正弦波的变化非常的缓慢，频率较低，在正弦波上有一个毛刺，这个毛刺在短时间内就完成了一个变化周期，频率较高。所以我们就把这里的正弦波称为低频信号，而毛刺就称为高频信号。如果要对这个曲线平滑滤波的话，效果就是把毛刺滤掉，也就是说，平滑滤波的操作会将高频信号去除而低频信号保留，也就是我们常说的低通滤波器了。 最简单的低通滤波器的实现就是中值或者均值滤波器。 由以上的认识推广到二维图像上，也就不难知道为什么会将图像上变化剧烈的地方叫做高频信号，而变化平缓的地方叫做低频信号了。
-二、图像频率的理解
-1不同频率信息在图像结构中有不同的作用。图像的主要成分是低频信息，它形成了图像的基本灰度等级，对图像结构的决定作用较小；中频信息决定了图像的基本结构，形成了图像的主要边缘结构；高频信息形成了图像的边缘和细节，是在中频信息上对图像内容的进一步强化。
-2图像的频率是表征图像中灰度变化剧烈程度的指标，是灰度在平面空间上的梯度。如：大面积的沙漠在图像中是一片灰度变化缓慢的区域，对应的频率值很低；而对于地表属性变换剧烈的边缘区域在图像中是一片灰度变化剧烈的区域，对应的频率值较高。
-3对图像而言，图像的边缘部分是突变部分，变化较快，因此反应在频域上是高频分量；图像的噪声大部分情况下是高频部分；图像平缓变化部分则为低频分量。也就是说，傅立叶变换提供另外一个角度来观察图像，可以将图像从灰度分布转化到频率分布上来观察图像的特征。
-4图像进行二维傅立叶变换得到频谱图，就是图像梯度的分布图,当然频谱图上的各点与图像上各点并不存在一一对应的关系，即使在不移频的情况下也是没有。傅立叶频谱图上我们看到的明暗不一的亮点，实际是上图像上某一点与邻域点差异的强弱，即梯度的大小，也即该点的频率的大小（可以这么理解，图像中的低频部分指低梯度的点，高频部分相反）。
-5图像的频率，不是图像上某一个点的频率，它反映了反应了图像像素变化的快慢，也就是说，在某一区域变化的非常大非常的快，那这一区域就携带有一定的高频的信息。图像的高频信息越多，图像的细节特征也就越多。</p>
-<p>图像的频率：灰度值变化剧烈程度的指标，是灰度在平面空间上的梯度。
-（1）什么是低频?
-低频就是颜色缓慢地变化,也就是灰度缓慢地变化,就代表着那是连续渐变的一块区域,这部分就是低频. 对于一幅图像来说，除去高频的就是低频了，也就是边缘以内的内容为低频，而边缘内的内容就是图像的大部分信息，即图像的大致概貌和轮廓，是图像的近似信息。</p>
-<p>（2）什么是高频?
-反过来, 高频就是频率变化快.图像中什么时候灰度变化快?就是相邻区域之间灰度相差很大,这就是变化得快.图像中,一个影像与背景的边缘部位,通常会有明显的差别,也就是说变化那条边线那里,灰度变化很快,也即是变化频率高的部位.因此，图像边缘的灰度值变化快，就对应着频率高，即高频显示图像边缘。图像的细节处也是属于灰度值急剧变化的区域，正是因为灰度值的急剧变化，才会出现细节。
-另外噪声（即噪点）也是这样,在一个像素所在的位置,之所以是噪点,就是因为它与正常的点颜色不一样了，也就是说该像素点灰度值明显不一样了,,也就是灰度有快速地变化了,所以是高频部分，因此有噪声在高频这么一说。</p>
-<p>其实归根到底,是因为我们人眼识别物体就是这样的.假如你穿一个红衣服在红色背景布前拍照,你能很好地识别么?不能,因为衣服与背景融为一体了,没有变化,所以看不出来,除非有灯光从某解度照在人物身上,这样边缘处会出现高亮和阴影,这样我们就能看到一些轮廓线,这些线就是颜色（即灰度）很不一样的地方.</p>
-<p>首先说说图像频率的物理意义。图像可以看做是一个定义为二维平面上的信号，该信号的幅值对应于像素的灰度（对于彩色图像则是RGB三个分量），如果我们仅仅考虑图像上某一行像素，则可以将之视为一个定义在一维空间上信号，这个信号在形式上与传统的信号处理领域的时变信号是相似的。不过是一个是定义在空间域上的，而另一个是定义在时间域上的。所以图像的频率又称为空间频率，它反映了图像的像素灰度在空间中变化的情况。例如，一面墙壁的图像，由于灰度值分布平坦，其低频成分就较强，而高频成分较弱；而对于国际象棋棋盘或者沟壑纵横的卫星图片这类具有快速空间变化的图像来说，其高频成分会相对较强，低频则较弱（注意，是相对而言）。再来谈一谈如何定量的测量图像的空间频率，最为常用的方法就是二维傅里叶变换。图像经过二维傅里叶变换后会形成与图像等大的复数矩阵，取其幅值形成幅度谱，取其相位形成相位谱。图像的频率能量分布主要体现在幅度谱中。通常习惯将低频成分放在幅度谱的中央，而将高频成分放在幅度谱边缘。大多数自然图像的幅度谱在统计上呈现1/f^2分布，也就是频率成分的能量与频率的平方成反比。所以从绝对数值上看，低频能量通常是要高于高频能量的，这一规则也称为power law。power law并非是上帝的无心之作，事实上power law的出现时源于自然图像的尺度不变性（scale invariance）。这一点在很多文献中被解释为从不同的距离观察同样的自然场景，获得的图像的幅度谱是基本相同的。相关内容可以搜索关键字power law &amp; natural image statistics。除了傅里叶变换外，正弦变换、余弦变换、Gabor变换、小波变换、WH变换也可以用来对图像频率分布进行定量测量。目前小波变换是研究的热点，因为小波变换不但能够反映频率能量的分布，同时还保留了图像特征的空间分布特性。</p>
-<p>在 最近十年中，视频工程师发现人眼对色度的敏感程度要低于对亮度的敏感程度。在生理学中，有一条规律，那就是人类视网膜上的视网膜杆细胞要多于视网膜锥细 胞，说得通俗一些，视网膜杆细胞的作用就是识别亮度，而视网膜锥细胞的作用就是识别色度。所以，你的眼睛对于亮和暗的分辨要比对颜色的分辨精细一些。正是 因为这个，在我们的视频存储中，没有必要存储全部颜色信号。既然眼睛看不见，那为什么要浪费存储空间（或者说是金钱）来存储它们呢？</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/media-vr-player/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/11/media-vr-player/" itemprop="url">
-                  vr播放器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T18:17:42+08:00">
-                2018-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/media/" itemprop="url" rel="index">
-                    <span itemprop="name">media</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="VR播放器的简单原理"><a href="#VR播放器的简单原理" class="headerlink" title="VR播放器的简单原理"></a>VR播放器的简单原理</h3><p>一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。</p>
-<p>之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。</p>
-<p>简单球面纹理映射讲解</p>
-<p>实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置向量来生成纹理坐标。</p>
-<p>想象一个球体，球面上每一个点的法向量，可以是从球心起到该点的线段距离。球上每一点都可以视作一个无限小的平面。</p>
-<p>Ps:法向量——垂直于平面的向量，叫做该平面的法向量</p>
-<p>问题的本质是根据球面上每个点的法向量坐标生成对应的纹理坐标，请看下图，下图中外部的方框表示二维纹理坐标，其范围是<code>(u,v)min = (0,0)</code>, <code>(u,v)max = (1,1)</code>，中间的圆形表示球面法向量坐标，其x,y分量的范围是<code>(x,y)min = (-1,-1), (x,y)max = (1,1)</code>。</p>
-<p>所以问题的本质变成了两组坐标的映射，也即将区间<code>(x,y)min - (x,y)max</code>映射到区间<code>(u,v)min - (u,v)max</code>。这里我们使用反正弦函数<code>y = acrsin(x)</code>来实现。先看一下它的函数图象。</p>
-<p>由这个图象知，它的定义域<code>x = (-1，1)</code>，值域是<code>y = (-pi / 2, pi / 2)</code>。我们稍作变型，得到下面两个公式。正好完成了由(-1, 1)到(0, 1)的映射。这里tu表示纹理的x坐标，tv表示纹理的y坐标，Nx表示顶点法向量的x轴分量，Ny表示顶点法向量的y轴分量。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tu = arcsin(Nx) / PI + 0.5</div><div class="line">tv = arcsin(Ny) / PI + 0.5</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/m-f-ts/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/11/m-f-ts/" itemprop="url">
-                  ts格式解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T15:21:55+08:00">
-                2018-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
-                    <span itemprop="name">音视频封装</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>ts是日本高清摄像机拍摄下进行的封装格式，全称为MPEG2-TS。ts即”Transport Stream”的缩写。MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。MPEG2-TS主要应用于实时传送的节目，比如实时广播的电视节目。</p>
-<h3 id="发展简要"><a href="#发展简要" class="headerlink" title="发展简要"></a>发展简要</h3><p>随着从HDTV录制的高清节目在网上的流传，发烧友们现在对TS这个名词大概已经不陌生了，但随之而来就是如何播放、如何添加字幕等等的一系列问题，本文将重点介绍一下这方面的应用操作。
-先来简要介绍一下什么是MPEG2-TS吧。MPEG2格式大家都通过对DVD的接触而多多少少了解了一些，DVD节目中的MPEG2格式，确切地说是MPEG2-PS，全称是Program Stream，而TS的全称则是Transport Stream。MPEG2-PS主要应用于存储的具有固定时长的节目，如DVD电影，而MPEG-TS则主要应用于实时传送的节目，比如实时广播的电视节目。这两种格式的主要区别是什么呢？简单地打个比喻说，你将DVD上的VOB文件的前面一截cut掉（或者干脆就是数据损坏），那么就会导致整个文件无法解码了，而电视节目是你任何时候打开电视机都能解码（收看）的，所以，MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。</p>
-<h3 id="学习多媒体容器格式的目的"><a href="#学习多媒体容器格式的目的" class="headerlink" title="学习多媒体容器格式的目的"></a>学习多媒体容器格式的目的</h3><p>主要是为了回答以下问题：</p>
-<ul>
-<li>该容器中数据是如何组织的？</li>
-<li>该容器包含哪些编码格式的数据？这些数据是如何存储的？</li>
-<li>该容器包含哪些元数据信息？包含哪些节目信息？</li>
-<li>对于支持多节目的容器格式，如何找到对应的音频流、视频流、字幕流？</li>
-<li>如何确定该容器的节目播放时长？</li>
-<li>如何从该容器中提取音频、视频、字幕数据，并交给解码器解码，有时间戳否？</li>
-<li>该容器是否支持seek？有哪些辅助信息？</li>
-<li>是否支持直接流化？</li>
-<li>哪里可以找到该容器格式最标准的文档资料？</li>
-<li>有哪些可用的工具，方便分析容器格式异常或者错误？</li>
-</ul>
-<h3 id="TS流生成和解析的过程"><a href="#TS流生成和解析的过程" class="headerlink" title="TS流生成和解析的过程"></a>TS流生成和解析的过程</h3><p>TS流的形成过程：</p>
-<ol>
-<li>将原始音视频数据压缩之后，压缩结果组成一个基本码流（ES）。</li>
-<li>对ES（基本码流）进行打包形成PES。</li>
-<li>在PES包中加入时间戳信息(PTS/DTS)。</li>
-<li>将PES包内容分配到一系列固定长度的传输包（TS Packet）中。</li>
-<li>在传输包中加入定时信息(PCR)。</li>
-<li>在传输包中加入节目专用信息(PSI) 。</li>
-<li>连续输出传输包形成具有恒定比特率的MPEG-TS流。</li>
-</ol>
-<p>TS流的解析过程，可以说是生成的逆过程：</p>
-<ol>
-<li>从复用的MPEG-TS流中解析出TS包；</li>
-<li>从TS包中获取PAT及对应的PMT（PSI中的表格）；</li>
-<li>从而获取特定节目的音视频PID；</li>
-<li>通过PID筛选出特定音视频相关的TS包，并解析出PES；</li>
-<li>从PES中读取到PTS/DTS，并从PES中解析出基本码流ES；</li>
-<li>将ES交给解码器，获得压缩前的原始音视频数据。</li>
-</ol>
-<h3 id="TS码流整体结构"><a href="#TS码流整体结构" class="headerlink" title="TS码流整体结构"></a>TS码流整体结构</h3><p>MPEG-2中规定TS传输包的长度为188 字节，包头为4个字节，负载为184个字节。但通信媒介会为包添加错误校验字节，从而有了不同于188字节的包长。例如：</p>
-<p>DVB 规定中，使用204字节作为包长:</p>
-<ol>
-<li>通过调制器时，在每个传输包后增加了16 字节的里德所罗门前向纠错码，因而形成了204字节的数据包。调制后总存在204 字节的数据包。</li>
-<li>调制之前存复用器插入RS码或虚构的RS码。</li>
-</ol>
-<p>ATSC规定中，使用208字节作为包长：添加20 字节的 RS（Reed-Solomon）前向纠错码。与DVB不同,ATSC规定RS码只能出现在调制的TS流中。</p>
-<p>所有的TS包都分为包头和净荷部分。TS包中可以填入很多东西（填入的东西都是填入到净荷部分），有：视频、音频、数据（包括PSI、SI以及其它任何形式的数据）。
-<img src="http://images.wodekouwei.com/M/F/ts-head2.jpg" alt="image"></p>
-<h4 id="1、TS包包头"><a href="#1、TS包包头" class="headerlink" title="1、TS包包头"></a>1、TS包包头</h4><p>TS包的包头提供关于传输方面的信息：同步、有无差错、有无加扰、PCR（节目参考时钟）等标志。TS包的包头长度不固定，前32比特（4个字节）固定，后面可能跟有自适应字段（适配域）。32个比特（4个字节）是最小包头。</p>
-<ul>
-<li>sync_byte （同步字节）：固定为0100 0111 (0x47)；该字节由解码器识别，使包头和有效负载可相互分离。</li>
-<li>transport_error_indicator（传输错误指示）：‘1’表示在相关的传输包中至少有一个不可纠正的错误位。当被置1后，在错误被纠正之前不能重置为0。</li>
-<li>payload_unit_start_indicator（开始指示）：为1时，在前4个字节之后会有一个调整字节，其的数值为后面调整字段的长度length。因此有效载荷开始的位置应再偏移1+[length]个字节。</li>
-<li>transport_priority（传输优先级）：‘1’表明优先级比其他具有相同PID 但此位没有被置‘1’的分组高。</li>
-<li>PID：指示存储与分组有效负载中数据的类型。PID 值 0x0000—0x000F 保留。其中0x0000为PAT保留；0x0001为CAT保留；0x1fff为分组保留，即空包。</li>
-<li>transport_scrambling_control（加扰控制）：表示TS流分组有效负载的加密模式。空包为‘00’，如果传输包包头中包括调整字段，不应被加密。</li>
-<li>adaptation_field_control（适配域控制）：表示包头是否有调整字段或有效负载。‘00’为ISO/IEC未来使用保留；‘01’仅含有效载荷，无调整字段；‘10’ 无有效载荷，仅含调整字段；‘11’ 调整字段后为有效载荷，调整字段中的前一个字节表示调整字段的长度length，有效载荷开始的位置应再偏移[length]个字节。空包应为‘10’。</li>
-<li>continuity_counter（连续性计数器）：随着每一个具有相同PID的TS流分组而增加，当它达到最大值后又回复到0。范围为0~15。</li>
-<li>adaptation_field （自适应字段 ）：根据自适应控制字段填充负载。</li>
-</ul>
-<p><img src="http://images.wodekouwei.com/M/F/ts_head.png" alt="image"></p>
-<h4 id="2、节目专用信息PSI。"><a href="#2、节目专用信息PSI。" class="headerlink" title="2、节目专用信息PSI。"></a>2、节目专用信息PSI。</h4><p>然，TS包也可以是空包。空包用来填充TS流，可能在重新进行多路复用时被插入或删除。</p>
-<p>在系统复用时，视频、音频的ES流需进行打包形成视频、音频的 PES流，辅助数据（如图文电视信息）不需要打成PES包。PES包非定长，音频的PES包小于等于64K，视频的一般为一帧一个PES包。一帧图象的PES包通常要由许多个TS包来传输。MPEG-2中规定，一个PES包必须由整数个TS包来传输。如果承载一个PES包的最后一个TS包没能装满，则用填充字节来填满；当下一个新的PES包形成时，需用新的TS包来开始传输。</p>
-<p>节目专用信息PSI(Program Specific Information）</p>
-<p>管理各种类型的TS数据包，需要有些特殊的TS包来确立各个TS数据包之间的关系。这些特殊的TS包里所包含的信息就是节目专用信息。在不同的标准中它有不同的名字：</p>
-<ul>
-<li>MPEG-2中称为PSI；</li>
-<li>DVB标准根据实际需要，对PSI扩展，称为SI信息；</li>
-<li>ATSC标准中为PSIP信息</li>
-</ul>
-<p>MPEG-2中，规定的对PSI信息的描述方法有以下几种：</p>
-<h5 id="1、表Table：-节目信息的结构性的描述；"><a href="#1、表Table：-节目信息的结构性的描述；" class="headerlink" title="1、表Table： 节目信息的结构性的描述；"></a>1、表Table： 节目信息的结构性的描述；</h5><ul>
-<li>节目关联表Program Association Table (PAT) 0x0000</li>
-<li>节目映射表Program Map Tables (PMT) PAT指定</li>
-<li>条件接收表Conditional Access Table (CAT) 0x0001</li>
-<li>网络信息表Network Information Table(NIT) 0x0010</li>
-<li>传送流描述表Transport Stream Description Table (TSDT)<h5 id="2、节Section：-将表格的内容映射到TS流中；"><a href="#2、节Section：-将表格的内容映射到TS流中；" class="headerlink" title="2、节Section： 将表格的内容映射到TS流中；"></a>2、节Section： 将表格的内容映射到TS流中；</h5>专用段 Private_ section</li>
-</ul>
-<h5 id="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"><a href="#3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；" class="headerlink" title="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"></a>3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；</h5><p>ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表可被分成一段或多段置于传输流分组中。一段就是一个语法结构，用来将 ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表映射到传输流分组中。</p>
-<h6 id="PAT表"><a href="#PAT表" class="headerlink" title="PAT表"></a>PAT表</h6><p>TS流中包含一个或者多个PAT表。PAT表由PID为0x0000的TS包传送，其作用是为复用的每一路传送流提供出所包含的节目和节目编号，以及对应节目的PMT的位置即PMT的TS包的PID值，同时还提供NIT的位置，即NIT的TS包的PID的值。</p>
-<ul>
-<li>table_id：固定为0x00，标志该表是PAT表。</li>
-<li>section_syntax_indicator：段语法标志位，固定为1。</li>
-<li>section_length：表示这个字节后面有用的字节数，包括CRC32。节目套数：（section length-9）/4</li>
-<li>transport_stream_id：16位字段，表示该TS流的ID，区别于同一个网络中其它多路复用流。</li>
-<li>version_number：表示PAT的版本号。</li>
-<li>current_next_indicator：表示发送的PAT表是当前有效还是下一个PAT有效。</li>
-<li>section_number：表示分段的号码。PAT可能分为多段传输，第一段为0，以后每个分段加1，最多可能有256个分段。</li>
-<li>last_section_number：表示PAT最后一个分段的号码。</li>
-<li>Program number：节目号</li>
-<li>network_PID：网络信息表（NIT）的PID,节目号为0时对应ID为network_PID。</li>
-<li>Program map PID：节目映射表（PMT）的PID号，节目号为大于等于1时，对应的ID为program_map_PID。一个PAT中可以有多个program_map_PID。</li>
-<li>CRC_32：32位字段，CRC32校验码Cyclic RedundancyCheck。<h6 id="PMT表"><a href="#PMT表" class="headerlink" title="PMT表"></a>PMT表</h6></li>
-</ul>
-<p>PMT在传送流中用于指示组成某一套节目的视频、音频和数据在传送流中的位置，即对应的TS包的PID值，以及每路节目的节目时钟参考（PCR）字段的位置。</p>
-<ul>
-<li>Table id ：固定为0x02，标志该表是PMT 表。</li>
-<li>Section syntax indicator：对于PMT表，设置为1 。</li>
-<li>Section length：表示这个字节后面有用的字节数，包括CRC32 。</li>
-<li>Program number：它指出该节目对应于可应用的Program map PID 。</li>
-<li>Version number：指出PMT 的版本号。</li>
-<li>Current next indicator：当该位置’1’时，当前传送的Program map section可用；当该位置’0’时，指示当前传送的Program map section不可用，下一个TS流的Programmap section 有效。</li>
-<li>Section number：总是置为0x00（因为PMT表里表示一个service的信息，一个section 的长度足够）。</li>
-<li>Last section number：该域的值总是0x00 。</li>
-<li>PCR PID：节目中包含有效PCR字段的传送流中PID 。</li>
-<li>Program info length：12bit域，前两位为00。该域指出跟随其后对节目信息的描述的byte 数。</li>
-<li>Stream type：8bit域，指示特定PID的节目元素包的类型。该处PID由elementary PID 指定。</li>
-</ul>
-<h3 id="HLS"><a href="#HLS" class="headerlink" title="HLS"></a>HLS</h3><p>HTTP Live Streaming（缩写是HLS）是一个由苹果公司提出的基于HTTP的流媒体网络传输协议。是苹果公司QuickTime X和iPhone软件系统的一部分。它的工作原理是把整个流分成一个个小的基于HTTP的文件来下载，每次只下载一些。当媒体流正在播放时，客户端可以选择从许多不同的备用源中以不同的速率下载同样的资源，允许流媒体会话适应不同的数据速率。在开始一个流媒体会话时，客户端会下载一个包含元数据的extended M3U (m3u8)playlist文件，用于寻找可用的媒体流。
-HLS只请求基本的HTTP报文，与实时传输协议（RTP)不同，HLS可以穿过任何允许HTTP数据通过的防火墙或者代理服务器。它也很容易使用内容分发网络来传输媒体流。
-苹果公司把HLS协议作为一个互联网草案（逐步提交），在第一阶段中已作为一个非正式的标准提交到IETF。但是，即使苹果偶尔地提交一些小的更新，IETF却没有关于制定此标准的有关进一步的动作。</p>
-<p>HLS协议规定：</p>
-<ul>
-<li>视频的封装格式是TS。</li>
-<li>视频的编码格式为H264,音频编码格式为MP3、AAC或者AC-3。</li>
-<li>除了TS视频文件本身，还定义了用来控制播放的m3u8文件（文本文件）。</li>
-</ul>
-<p>为什么苹果要提出HLS这个协议，其实他的主要是为了解决RTMP协议存在的一些问题。比如RTMP协议不使用标准的HTTP接口传输数据，所以在一些特殊的网络环境下可能被防火墙屏蔽掉。但是HLS由于使用的HTTP协议传输数据，不会遇到被防火墙屏蔽的情况（该不会有防火墙连80接口都不放过吧）。</p>
-<p>另外于负载，RTMP是一种有状态协议，很难对视频服务器进行平滑扩展，因为需要为每一个播放视频流的客户端维护状态。而HLS基于无状态协议（HTTP），客户端只是按照顺序使用下载存储在服务器的普通TS文件，做负责均衡如同普通的HTTP文件服务器的负载均衡一样简单。</p>
-<p>另外HLS协议本身实现了码率自适应，不同带宽的设备可以自动切换到最适合自己码率的视频播放。其实HLS最大的优势就是他的亲爹是苹果。苹果在自家的iOS设备上只提供对HLS的原生支持，并且放弃了flash。Android也迫于平果的“淫威”原生支持了HLS。这样一来flv，rtmp这些Adobe的视频方案要想在移动设备上播放需要额外下点功夫。当然flash对移动设备造成很大的性能压力确实也是自身的问题。</p>
-<p>但HLS也有一些无法跨越的坑，比如采用HLS协议直播的视频延迟时间无法下到10秒以下，而RTMP协议的延迟最低可以到3、4秒左右。所以说对直播延迟比较敏感的服务请慎用HLS。</p>
-<p><strong>播放模式</strong></p>
-<ul>
-<li>点播VOD的特点就是当前时间点可以获取到所有index文件和ts文件，二级index文件中记录了所有ts文件的地址。这种模式允许客户端访问全部内容。上面的例子中就是一个点播模式下的m3u8的结构。</li>
-<li>Live 模式就是实时生成M3u8和ts文件。它的索引文件一直处于动态变化的，播放的时候需要不断下载二级index文件，以获得最新生成的ts文件播放视频。如果一个二级index文件的末尾没有#EXT-X-ENDLIST标志，说明它是一个Live视频流。<blockquote>
-<p><a href="http://blog.csdn.net/c602273091/article/details/50372160" target="_blank" rel="external">TS码流分析</a>
-<a href="https://www.cnblogs.com/tocy/p/media_container_6-mpegts.html" target="_blank" rel="external">多媒体文件格式之TS</a>
-<a href="https://www.iso.org/standard/67331.html" target="_blank" rel="external">ISO/IEC 13818-1:2015</a></p>
-</blockquote>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/08/media-mpeg/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/08/media-mpeg/" itemprop="url">
-                  MPEG
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T18:48:14+08:00">
-                2018-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/media/" itemprop="url" rel="index">
-                    <span itemprop="name">media</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="MPEG"><a href="#MPEG" class="headerlink" title="MPEG"></a>MPEG</h3><p>MPEG（Moving Picture Experts Group，动态图像专家组）是ISO（International Standardization Organization，国际标准化组织）与IEC（International Electrotechnical Commission，国际电工委员会）于1988年成立的专门针对运动图像和语音压缩制定国际标准的组织。</p>
-<p>MPEG标准主要有以下五个，MPEG-1、MPEG-2、MPEG-4、MPEG-7及MPEG-21等。该专家组建于1988年，专门负责为CD建立视频和音频标准，而成员都是为视频、音频及系统领域的技术专家。及后，他们成功将声音和影像的记录脱离了传统的模拟方式，建立了ISO/IEC11172压缩编码标准，并制定出MPEG-格式，令视听传播方面进入了数码化时代。因此，大家现时泛指的MPEG-X版本，就是由ISO(International Organization for Standardization）所制定而发布的视频、音频、数据的压缩标准。</p>
-<p>MPEG标准的视频压缩编码技术主要利用了具有运动补偿的帧间压缩编码技术以减小时间冗余度，利用DCT技术以减小图像的空间冗余度，利用熵编码则在信息表示方面减小了统计冗余度。这几种技术的综合运用，大大增强了压缩性能。</p>
-<p>MPEG的缔造者们原先打算开发四个版本：MPEG1-MPEG4，以适用于不同带宽和数字影像质量的要求。后由于MPEG3被放弃，所以现存只有三个版本的MPEG：MPEG-1，MPEG-2，MPEG-4。总体来说，MPEG在三方面优于其他压缩/解压缩方案。首先，由于在一开始它就是做为一个国际化的标准来研究制定，所以，MPEG具有很好的兼容性。其次，MPEG能够比其他算法提供更好的压缩比，最高可达200:1。更重要的是，MPEG在提供高压缩比的同时，对数据的损失很小。</p>
-<h4 id="MPEG-1"><a href="#MPEG-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h4><p>MPEG-1制定于1992年，为工业级标准而设计，可适用于不同带宽的设备，如CD-ROM、Video-CD、CD-i。它可针对SIF标准分辨率（对于NTSC制为352X240；对于PAL制为352X288）的图象进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD（指激光唱盘）音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4-5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
-M
-PEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL），视频点播（VOD），以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
-<h4 id="MPEG-2"><a href="#MPEG-2" class="headerlink" title="MPEG-2"></a>MPEG-2</h4><p>MPEG-2制定于1994年，设计目标是高级工业标准的图象质量以及更高的传输率。MPEG-2所能提供的传输率在3-10Mbits/sec间，其在NTSC制式下的分辨率可达720X486，MPEG-2也可提供并能够提供广播级的视像和CD级的音质。MPEG-2的音频编码可提供左右中及两个环绕声道，以及一个加重低音声道，和多达7个伴音声道（DVD可有8种语言配音的原因）。由于MPEG-2在设计时的巧妙处理，使得大多数MPEG-2解码器也可播放MPEG-1格式的数据，如VCD。</p>
-<p>同时，由于MPEG-2的出色性能表现，已能适用于HDTV，使得原打算为HDTV设计的MPEG-3，还没出世就被抛弃了。（MPEG-3要求传输速率在20Mbits/sec-40Mbits/sec间，但这将使画面有轻度扭曲）。除了做为DVD的指定标准外，MPEG-2还可用于为广播，有线电视网，电缆网络以及卫星直播(DirectBroadcastSatellite）提供广播级的数字视频。</p>
-<p>MPEG-2的另一特点是，其可提供一个较广的范围改变压缩比，以适应不同画面质量，存储容量，以及带宽的要求。</p>
-<p>对于最终用户来说，由于现存电视机分辨率限制，MPEG-2所带来的高清晰度画面质量（如DVD画面）在电视上效果并不明显，到是其音频特性（如加重低音，多伴音声道等）更引人注目。</p>
-<h4 id="MPEG-4"><a href="#MPEG-4" class="headerlink" title="MPEG-4"></a>MPEG-4</h4><p>MPEG专家组的专家们正在为MPEG-4的制定努力工作。MPEG-4标准主要应用于视像电话（videophone），视像电子邮件（VideoEmail）和电子新闻（Electronicnews）等，其传输速率要求较低，在4800-64000bits/sec之间，分辨率176X144。MPEG-4利用很窄的带宽，通过帧重建技术，压缩和传输数据，以求以最少的数据获得最佳的图象质量。</p>
-<p>与MPEG-1和MPEG-2相比，MPEG-4的特点是其更适于交互AV服务以及远程监控。MPEG-4是第一个使你由被动变为主动（不再只是观看，允许你加入其中，即有交互性）的动态图象标准；它的另一个特点是其综合性；从根源上说，MPEG-4试图将自然物体与人造物体相溶合（视觉效果意义上的）。MPEG-4的设计目标还有更广的适应性和可扩展性。</p>
-<h3 id="MPEG-1-1"><a href="#MPEG-1-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h3><p>MPEG-1是MPEG组织制定的第一个视频和音频有损压缩标准。视频压缩算法于1990年定义完成。1992年底，MPEG-1正式被批准成为国际标准。MPEG-1是为CD光碟介质定制的的视频和音频压缩格式。一张70分钟的CD光碟传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。MPEG-1的输出质量大约和传统录像机VCR，信号质量相当，这也许是Video CD在发达国家未获成功的原因。</p>
-<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>MPEG-1是为CD光盘介质定制的视频和音频压缩格式。一张70分钟的CD光盘传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。VCD的分辨率只有约352×240，并使用固定的比特率（1.15Mbps），因此在播放快速动作的视频时，由于数据量不足，令压缩时宏区块无法全面调整，结果使视频画面出现模糊的方块。因此MPEG-1的输出质量大约和传统录像机VCR相当，这也许是Video CD在发达国家未获成功的原因。MPEG-1音频分三代，其中最著名的第三代协议被称为MPEG-1 Layer 3，简称MP3，已经成为广泛流传的音频压缩技术。MPEG-1音频技术在每一代之间，在保留相同的输出质量之外，压缩率都比上一代高。第一代协议MP1被应用在LD作为记录数字音频以及飞利浦公司的DGC上；而第二代协议MP2后来被应用于欧洲版的DVD音频层之一。</p>
-<p>MPEG-1具有以下特点：</p>
-<ul>
-<li>随机访问</li>
-<li>灵活的帧率</li>
-<li>可变的图像尺寸</li>
-<li>定义了I-帧、P-帧和B-帧</li>
-<li>运动补偿可跨越多个帧</li>
-<li>半像素精度的运动向量</li>
-<li>量化矩阵</li>
-<li>GOF结构</li>
-<li>slice结构</li>
-</ul>
-<h4 id="音频分层"><a href="#音频分层" class="headerlink" title="音频分层"></a>音频分层</h4><p>MPEG-1音频分三层，分别为MPEG-1 Layer1，MPEG-Layer2以及MPEG-Layer3，并且高层兼容低层。其中第三层协议被称为MPEG-1 Layer 3，简称MP3。MP3已经成为广泛流传的的音频压缩技术。</p>
-<ul>
-<li>MPEG-1 Layer1采用每声道192kbit/s，每帧384个样本，32个等宽子带，固定分割数据块。子带编码用DCT(离散余弦变换)和(快速傅立叶变换)计算子带信号量化bit数。采用基于频域掩蔽效应的心理声学模型，使量化噪声低于掩蔽值。量化采用带死区的线性量化器，主要用于数字盒式磁带(DCC)。</li>
-<li>MPEG-1 Layer2采用每声道128kbit/s，每帧1152个样本，32个子带，属不同分帧方式。采用共同频域和时域掩蔽效应的心理声学模型，并对高、中，低频段的比特分配进行限制，并对比特分配、比例因子，取样进行附加编码。Layer2 广泛用于数字电视，CD-ROM，CD-I和VCD等。</li>
-<li>MPEG-1 Layer3采用每声道64kbit/s，用混合滤波器组提高频率分辨率，按信号分辨率分成6X32或18X32个子带，克服平均32个子带的Layer1，Layer2在中低频段分辨率偏低的缺点。采用心理声学模型2，增设不均匀量化器，量化值进行熵编码。主要用于ISDN(综合业务数字网)音频编码。</li>
-</ul>
-<p>MPEG-1制定于1992年，为工业级标准而设计，它可针对SIF标准分辨率(对于NTSC制为352X240；对于PAL制为352X288)的图像进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD(指激光唱盘)音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4- 5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
-MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL)，视频点播(VOD)，以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
-<h3 id="MPEG-2-1"><a href="#MPEG-2-1" class="headerlink" title="MPEG-2"></a>MPEG-2</h3><p>MPEG-2是MPEG（Moving Picture Experts Group，运动图像专家组）组织制定的视频和音频有损压缩标准之一，它的正式名称为“基于数字存储媒体运动图像和语音的压缩标准”。与MPEG-1标准相比，MPEG-2标准具有更高的图像质量、更多的图像格式和传输码率的图像压缩标准。MPEG-2标准不是MPEG-1的简单升级，而是在传输和系统方面做了更加详细的规定和进一步的完善。它是针对标准数字电视和高清晰电视在各种应用下的压缩方案，编码率从3 Mbit/s~100 Mbit/s。</p>
-<p>MPEG-2音频是在1994年11月为数字电视而提出来的，其发展分为三个阶段：
-第一阶段是对MPEG-1增加了低采样频率，有16KHZ，22.05KHZ，以及24KHZ。
-第二阶段是对MPEG-1实施了向后兼容的多声道扩展，将其称为MPEG-2 BC。支持单声道，双声道，多声道等编码。并附加“低频加重”扩展声道，从而达到五声道编码。
-第三阶段是向后不兼容，将其称为MPEG-2 AAC先进音频编码。采样频率可以低至8KHZ；而高至96KHZ范围内的1-48个通道可选的高音质音频编码。</p>
-<h4 id="分部"><a href="#分部" class="headerlink" title="分部"></a>分部</h4><p>MPEG-2标准目前分为9个部分，统称为ISO/IEC13818国际标准。各部分的内容描述如下：</p>
-<ul>
-<li>一部分－ISO/IEC13818-1，System：系统，描述多个视频，音频和数据基本码流合成传输码流和节目码流的方式。</li>
-<li>二部分－ISO/IEC13818-2，Video：视频，描述视频编码方法。</li>
-<li>三部分－ISO/IEC13818-3，Audio：音频，描述与MPEG-1音频标准反向兼容的音频编码方法。</li>
-<li>四部分－ISO/IEC13818-4，Compliance：符合测试，描述测试一个编码码流是否符合MPEG-2码流的方法。</li>
-<li>五部分－ISO/IEC13818-5，Software：软件，描述了MPEG-2标准的第一、二、三部分的软件实现方法。</li>
-<li>六部分－ISO/IEC13818-6，DSM-CC：数字存储媒体-命令与控制，描述交互式多媒体网络中服务器与用户间的会话信令集。</li>
-</ul>
-<p>上六个部分均已获得通过，成为正式的国际标准，并在数字电视等领域中得到了广泛的实际应用。此外，MPEG-2标准还有三个部分：</p>
-<ul>
-<li>第七部分规定不与MPEG-1音频反向兼容的多通道音频编码；</li>
-<li>第八部分现已停止；</li>
-<li>第九部分规定了传送码流的实时接口。</li>
-</ul>
-<p>1990年成立的ATM视频编码专家组与MPEG在ISO/IEC13818标准的第一和第二两个部分进行了合作，因此上述两个部分也成为ITU-T的
-标准，分别为：ITU-T H.222.0和ITU-T H.262视频。</p>
-<h3 id="MPEG-4-1"><a href="#MPEG-4-1" class="headerlink" title="MPEG-4"></a>MPEG-4</h3><p>MPEG-4，于MP4是一套用于音频、视频信息的压缩编码标准，由国际标准化组织（ISO）和国际电工委员会（IEC）下属的“动态图像专家组（Moving Picture Experts即MPEG制定，第一版在1998年10月通过，第二版在1999年12月通过。MPEG-4格式的主要用途在于网上流、光盘、语音发送（视频电话），以及电视广播。MPEG-4包含了MPEG-1及MPEG-2的绝大部份功能及其他格式的长处，并加入及扩充对虚拟现实模型语言（VRML，VirtualReality Modeling Language）的支持，面向对象的合成档案（包括音效，视讯及VRML对象），以及数字版权管理（DRM）及其他互动功能。而MPEG-4比MPEG-2更先进的其中一个特点，就是不再使用宏区块做影像分析，而是以影像上个体为变化记录，因此尽管影像变化速度很快、码率不足时，也不会出现方块画面。</p>
-<h4 id="分部-1"><a href="#分部-1" class="headerlink" title="分部"></a>分部</h4><p>MPEG-4由一系列的子标准组成，被称为部(part)（有时也译为卷），包括以下的部分：</p>
-<ul>
-<li>第一部分（ISO/IEC14496-1）：系统：描述视讯和音频数据流的控制、同步以及混合方式（即混流Multiplexing，简写为MUX）。</li>
-<li>第二部分（ISO/IEC14496-2）：视讯：定义了一个对各种视觉讯息（包括自然视讯、静止纹理、计算机合成图形等等）的编译码器。（例如XviD编码就属于MPEG-4Part2）</li>
-<li>第三部分（ISO/IEC14496-3）：音讯：定义了一个对各种音频讯号进行编码的编译码器的集合。包括高阶音频编码（AdvancedAudioCoding，缩写为AAC）的若干变形和其他一些音频/语音编码工具。</li>
-<li>第四部分（ISO/IEC14496-4）：一致性：定义了对本标准其他的部分进行一致性测试的程序。</li>
-<li>第五部分（ISO/IEC4496-5）：参考软件：提供了用于演示功能和说明本标准其他部分功能的软件。</li>
-<li>第六部分（ISO/IEC14496-6）：多媒体传输整合框架（DMIF for Delivery Multimedia IntegrationFramework）</li>
-<li>第七部分（ISO/IEC14496-7）：优化的参考软件：提供了对实作进行优化的例子（这里的实作指的是第五部分）。</li>
-<li>第八部分（ISO/IEC14496-8）：在IP网络上传输：定义了在IP网络上传输MPEG-4内容的方式。</li>
-<li>第九部分（ISO/IEC14496-9）：参考硬件：提供了用于演示怎样在硬件上实作本标准其他部分功能的硬件设计方案。</li>
-<li>第十部分（ISO/IEC14496-10）：进阶视讯编码或称高阶视讯编码（Advanced Video Coding，缩写为AVC）：定义了一个视讯编译码器（codec）。AVC和XviD都属于MPEG-4编码，但由于AVC属于MPEG-4Part10，在技术特性上比属于MPEG-4Part2的XviD要先进。另外，它和ITU-TH.264标准是一致的，故又称为H.264。</li>
-<li>第十二部分（ISO/IEC14496-12）：基于ISO的媒体文件格式：定义了一个储存媒体内容的文件格式。</li>
-<li>第十三部分（ISO/IEC14496-13）：知识产权管理和保护（IPMP for Intellectual Property Management andProtection）拓展。</li>
-<li>第十四部分（ISO/IEC14496-14）：MPEG-4文件格式：定义了基于第十二部分的用于储存MPEG-4内容的视讯文件格式。</li>
-<li>第十五部分（ISO/IEC14496-15）：AVC文件格式：定义了基于第十二部分的用于储存第十部分的视讯内容的文件格式。</li>
-<li>第十六部分（ISO/IEC14496-16）：动画框架扩充功能（AFX:Animation Framework eXtension）。</li>
-<li>第十七部分（ISO/IEC14496-17）：同步文字字幕格式。</li>
-<li>第十八部分（ISO/IEC14496-18）：字型压缩和串流传输（针对开放字型格式 Open Font Format）。</li>
-<li>第十九部分（ISO/IEC14496-19）：合成材质流（Synthesized Texture Stream）。</li>
-<li>第二十部分（ISO/IEC14496-20）：简单场景表示（LASeR for Lightweight Scene Representation。</li>
-<li>第二十一部分（ISO/IEC14496-21）：用于描绘（Rendering）的MPEG-J拓展。</li>
-<li>第二十二部分（ISO/IEC14496-22）：开放字型格式（Open Font Format）。</li>
-<li>第二十三部分（ISO/IEC14496-23）：符号化音乐表示（Symbolic Music Representation）。</li>
-<li>第二十四部分（ISO/IEC14496-24）：音频与系统互动作用（Audio and systems interaction）。</li>
-<li>第二十五部分（ISO/IEC14496-25）：3D图形压缩模型（3D GraphicsCompression Model）。</li>
-<li>第二十六部分（ISO/IEC14496-26）：音讯一致性检查：定义了测试音频数据与ISO/IEC 14496-3是否一致的方法（Audioconformance）。</li>
-<li>第二十七部分（ISO/IEC14496-27）：3D图形一致性检查：定义了测试3D图形数据与ISO/IEC14496-11:2005,ISO/IEC 14496-16:2006,ISO/IEC14496-21:2006,和ISO/IEC14496-25:2009是否一致的方法（3D Graphicsconformance）。</li>
-</ul>
-<p>Profiles是在每个部分内定义的，所以对某个部分的一个实作通常不是对该部分的完整实作。</p>
-<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
-<li>对于不同的对象可采用不同的编码算法，从而进一步提高压缩效率；</li>
-<li>对象各自相对独立，提高了多媒体数据的可重用性；</li>
-<li>允许用户对单个的对象操作，提供前所未有的交互性；</li>
-<li>允许在不同的对象之间灵活分配码率，对重要的对象可分配较多的字节，对次要的对象可分配较少的字节，从而能在低码率下获得较好的效果；</li>
-<li>可以方便的集成自然音视频对象和合成音视频对象。</li>
-</ul>
-<h3 id="MPEG-7"><a href="#MPEG-7" class="headerlink" title="MPEG-7"></a>MPEG-7</h3><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Moving_Picture_Experts_Group" target="_blank" rel="external">Moving Picture Experts Group</a>
-<a href="https://en.wikipedia.org/wiki/ISO/IEC_JTC_1/SC_29" target="_blank" rel="external">ISO/IEC JTC 1/SC 29</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-1" target="_blank" rel="external">MPEG-1</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-2" target="_blank" rel="external">MPEG-2</a>
-<a href="https://en.wikipedia.org/wiki/MPEG-4" target="_blank" rel="external">MPEG-4</a>
-<a href="https://zh.wikipedia.org/wiki/MP3" target="_blank" rel="external">MP3</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/25/tips-ml-about-backgroundremoval/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/25/tips-ml-about-backgroundremoval/" itemprop="url">
-                  基于深度学习的自动抠图
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-25T15:27:43+08:00">
-                2018-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ml/" itemprop="url" rel="index">
-                    <span itemprop="name">ml</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><ul>
-<li>原文:<a href="https://towardsdatascience.com/background-removal-with-deep-learning-c4f2104b3157" target="_blank" rel="external">Background removal with deep learning</a></li>
-<li>译文:<a href="https://www.leiphone.com/news/201709/UlV8rwd3s6ZeEccW.html" target="_blank" rel="external">自拍抠图抠到手软？详解如何用深度学习消除背景</a></li>
-<li><a href="https://gitlab.com/fast-science" target="_blank" rel="external">server代码地址</a></li>
-<li><a href="https://github.com/Kjeanclaude/acGAN-Paper-Implementation" target="_blank" rel="external">acGAN-Paper-Implementation</a>:acGAN paper implementation and adaptation by KJeanclaude &amp; Gidi Shperber</li>
-<li><a href="http://www.fast.ai/" target="_blank" rel="external">fast.ai course</a></li>
-<li>作者:<a href="https://medium.com/@burgalon" target="_blank" rel="external">Alon Burg</a> ,<a href="https://towardsdatascience.com/@gidishperber" target="_blank" rel="external">Gidi Shperber</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2282,7 +2115,7 @@ MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">116</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2304,7 +2137,7 @@ MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
