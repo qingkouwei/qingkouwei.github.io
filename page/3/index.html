@@ -323,6 +323,761 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/06/gradle-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/07/06/gradle-config/" itemprop="url">
+                  gradle系列之配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-06T15:16:08+08:00">
+                2018-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">Gradle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>AndroidStudio中build.gradle配置信息
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">// Top-level build file where you can add configuration options common to all sub-projects/modules.</div><div class="line">// Gradle中可以使用“//”或“/**/”来添加注释，与Java类似。</div><div class="line">// 根目录下的build.gradle用于添加子工程或模块共用的配置项。</div><div class="line"> </div><div class="line">// &quot;buildscript&quot;的类型为script block，而且是最上层的script block，用于配置Gradle的Project实例。其API文档为https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:buildscript(groovy.lang.Closure)</div><div class="line">// 其余的根script block有&quot;allprojects&quot;, &quot;dependencies&quot;, &quot;configurations&quot;等，更多的可见https://docs.gradle.org/current/dsl/的“Build script structure”一节。</div><div class="line">// Script Block是一种method的调用，传入的参数为configuration closure。执行后会对Project的属性进行配置。</div><div class="line">// 此处的&quot;buildscript&quot;用于配置Project的build script的classpath。</div><div class="line">    buildscript &#123;</div><div class="line">    // 如果需要的话，从https://jcenter.bintray.com/下载code reposities。</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    // 定义classpath，gradle会从“repositories”中下载对应版本的Gradle。如果使用gradle wrapper的话，感觉这个配置会被忽略。Wrapper会自己去下载所使用的gradle版本。</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:2.1.3&apos;</div><div class="line">        // NOTE: Do not place your application dependencies here; they belong</div><div class="line">        // in the individual module build.gradle files</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">// 该配置会被应用到所有的子工程。</div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">// 运行gradle clean时，执行此处定义的task。</div><div class="line">// 该任务继承自Delete，删除根目录中的build目录。</div><div class="line">// 相当于执行Delete.delete(rootProject.buildDir)。</div><div class="line">// gradle使用groovy语言，调用method时可以不用加（）。</div><div class="line">task clean(type: Delete) &#123;</div><div class="line">    delete rootProject.buildDir</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。而在build.gradle文件中直接声明的依赖项、仓库地址等信息是项目自身需要的资源。</p>
+<p>gradle是由groovy语言编写的，支持groovy语法，可以灵活的使用已有的各种ant插件、基于jvm的类库，这也是它比maven、ant等构建脚本强大的原因。虽然gradle支持开箱即用，但是如果你想在脚本中使用一些第三方的插件、类库等，就需要自己手动添加对这些插件、类库的引用。而这些插件、类库又不是直接服务于项目的，而是支持其它build脚本的运行。所以你应当将这部分的引用放置在buildscript代码块中。gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
+<p>举个例子，假设我们要编写一个task，用于解析csv文件并输出其内容。虽然我们可以使用gradle编写解析csv文件的代码，但其实apache有个库已经实现了一个解析csv文件的库供我们直接使用。我们如果想要使用这个库，需要在gradle.build文件中加入对该库的引用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">classpath &apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">import org.apache.commons.csv.*</div><div class="line">task printCSV() &#123;</div><div class="line">doLast &#123;</div><div class="line">def records = CSVFormat.EXCEL.parse(new FileReader(&apos;config/sample.csv&apos;))</div><div class="line">for (item in records) &#123;</div><div class="line">print item.get(0) + &apos; &apos;</div><div class="line">println item.get(1)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>buildscript代码块中的repositories和dependencies的使用方式与直接在build.gradle文件中的使用方式几乎完全一样。唯一不同之处是在buildscript代码块中你可以对dependencies使用classpath声明。该classpath声明说明了在执行其余的build脚本时，class loader可以使用这些你提供的依赖项。这也正是我们使用buildscript代码块的目的。</p>
+<p>而如果你的项目中需要使用该类库的话，就需要定义在buildscript代码块之外的dependencies代码块中。所以有可能会看到在build.gradle中出现以下代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">compile &apos;org.springframework.ws:spring-ws-core:2.2.0.RELEASE&apos;,</div><div class="line">&apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">buildscript &#123;</div><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">classpath &apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">import org.apache.commons.csv.*</div><div class="line">task printCSV() &#123;</div><div class="line">doLast &#123;</div><div class="line">def records = CSVFormat.EXCEL.parse(new FileReader(&apos;config/sample.csv&apos;))</div><div class="line">for (item in records) &#123;</div><div class="line">print item.get(0) + &apos; &apos;</div><div class="line">println item.get(1)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="依赖更新"><a href="#依赖更新" class="headerlink" title="依赖更新"></a>依赖更新</h5><p>项目依赖的远程包如果有更新，会有提醒或者自动更新吗？ 不会的，需要你手动设置changing标记为true，这样gradle会每24小时检查更新，通过更改resolutionStrategy可以修改检查周期。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">configurations.all &#123;</div><div class="line">    // check for updates every build</div><div class="line">    resolutionStrategy.cacheChangingModulesFor 0, &apos;seconds&apos;</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">    compile group: &quot;group&quot;, name: &quot;projectA&quot;, version: &quot;1.1-SNAPSHOT&quot;, changing: true</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>之前上传aar同一版本到maven仓库，但依赖却没有更新，该怎么办呢?可以直接删除本地缓存，缓存在~/.gradle/caches目录下，删除缓存后，下次运行就会自动重新下载远程依赖了。</p>
+<h5 id="取消任务"><a href="#取消任务" class="headerlink" title="取消任务"></a>取消任务</h5><p>项目构建过程中那么多任务，有些test相关的任务可能根本不需要，可以直接关掉，在build.gradle中加入如下脚本：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">tasks.whenTaskAdded &#123; task -&gt;</div><div class="line">    if (task.name.contains(&apos;AndroidTest&apos;)) &#123;</div><div class="line">        task.enabled = false</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>tasks会获取当前project中所有的task，enabled属性控制任务开关，whenTaskAdded后面的闭包会在gradle配置阶段完成。</p>
+<h5 id="加入任务"><a href="#加入任务" class="headerlink" title="加入任务"></a>加入任务</h5><p>任务可以取消了，但还不尽兴啊，想加入任务怎么搞？前面讲了dependsOn的方法，那就拿过来用啊，但是原有任务的依赖关系你又不是很清楚，甚至任务名称都不知道，怎么搞？</p>
+<p>比如我想在执行dex打包之前，加入一个hello任务，可以这么写：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">afterEvaluate &#123;</div><div class="line">    android.applicationVariants.each &#123; variant -&gt;</div><div class="line">        def dx = tasks.findByName(&quot;dex$&#123;variant.name.capitalize()&#125;&quot;)</div><div class="line">        def hello = &quot;hello$&#123;variant.name.capitalize()&#125;&quot;</div><div class="line">        task(hello) &lt;&lt; &#123;</div><div class="line">            println &quot;hello&quot;</div><div class="line">        &#125;</div><div class="line">        tasks.findByName(hello).dependsOn dx.taskDependencies.getDependencies(dx)</div><div class="line">        dx.dependsOn tasks.findByName(hello)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>afterEvaluate是什么鸟？你可以理解为在配置阶段要结束，项目评估完会走到这一步。</p>
+<p>variant呢？variant = productFlavors+ buildTypes，所以dex打包的任务可能就是dexCommonDebug。</p>
+<p>你怎么知道dex任务的具体名称？Android Studio中的Gradle Console在执行gradle任务的时候会有输出，可以仔细观察一下。</p>
+<p>hello任务定义的这么复杂干啥？我直接就叫hello不行吗?不行，each就是遍历variants，如果每个都叫hello，多个variant都一样，岂不是傻傻分不清楚，加上variant的name做后缀，才有任务的区分。</p>
+<p>关键来了，dx.taskDependencies.getDependencies(dx)会获取dx任务的所有依赖，让hello任务依赖dx任务的所有依赖，再让dx任务依赖hello任务，这样就可以加入某个任务到构建流程了，是不是感觉非常灵活。</p>
+<p>我突然想到，用doFirst的方式加入一个action到dx任务中，应该也可以达到上面效果。</p>
+<h5 id="任务监听"><a href="#任务监听" class="headerlink" title="任务监听"></a>任务监听</h5><p>你想知道每个执行任务的运行时间吗？你想知道每个执行任务都是干嘛的吗？把下面这段脚本加入build.gradle中即可：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">class TimingsListener implements TaskExecutionListener, BuildListener &#123;</div><div class="line">    private Clock clock</div><div class="line">    private timings = []</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void beforeExecute(Task task) &#123;</div><div class="line">        clock = new org.gradle.util.Clock()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void afterExecute(Task task, TaskState taskState) &#123;</div><div class="line">        def ms = clock.timeInMs</div><div class="line">        timings.add([ms, task.path])</div><div class="line">        task.project.logger.warn &quot;$&#123;task.path&#125; took $&#123;ms&#125;ms&quot;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void buildFinished(BuildResult result) &#123;</div><div class="line">        println &quot;Task timings:&quot;</div><div class="line">        for (timing in timings) &#123;</div><div class="line">            if (timing[0] &gt;= 50) &#123;</div><div class="line">                printf &quot;%7sms  %s\n&quot;, timing</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    @Override</div><div class="line">    void buildStarted(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void projectsEvaluated(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void projectsLoaded(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void settingsEvaluated(Settings settings) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">gradle.addListener new TimingsListener()</div></pre></td></tr></table></figure></p>
+<p>上面是对每个任务计时的一个例子，想要了解每个任务的作用，你可以修改上面的脚本，打印出每个任务的inputs和outputs。比如assembleDebug那么多依赖任务，每个都是干什么的，一会compile，一会generate，有什么区别？看到每个task的输入输出，就可以大体看出它的作用。如果对assemble的每个任务监听，你会发现改一行代码build的时间主要花费在了dex上，buck牛逼的地方就是对这个地方进行了优化，大大减少了增量编译运行的时间。</p>
+<h5 id="buildscript方法"><a href="#buildscript方法" class="headerlink" title="buildscript方法"></a>buildscript方法</h5><p>Android项目中，根工程默认的build.gradle应该是这样的：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// Top-level build file where you can add configuration options common to all sub-projects/modules.</div><div class="line"></div><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>一会一个jcenter()这是在干什么？buildscript方法的作用是配置脚本的依赖，而我们平常用的compile是配置project的依赖。repositories的意思就是需要包的时候到哥这里来找，然后你以为com.android.tools.build:gradle:1.2.3会从jcenter那里下载了是吧，图样图森破，不信加入下面这段脚本看看输出：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    repositories.each &#123;</div><div class="line">        println it.getUrl()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>结果是这样的：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/gradle/m2repository/ https://jcenter.bintray.com/</div></pre></td></tr></table></figure></p>
+<p>我靠，仓库竟然直接在Android Studio应用内部，所以说你去掉buildscript的jcenter()完全没有关系啊，下面还有更爽的，我们知道有依赖传递，上面classpath 中的gradle依赖gradle-core，gradle-core依赖lint，lint依赖lint-checks，lint-checks最后依赖到了asm，并且这个根目录中的依赖配置会传到所有工程的配置文件，所以如果你要引用asm相关的类，不用设置classpath，直接import就可以了。你怎么知道前面的依赖关系的？看上面m2repository目录中对应的pom文件就可以了。
+为什么讲到ASM呢？<a href="http://asm.ow2.org/" target="_blank" rel="external">ASM</a>又是个比较刁的东西，可以直接用来操纵Java字节码，达到动态更改class文件的效果。可以用ASM<a href="http://developer.51cto.com/art/201309/410861_all.htm" target="_blank" rel="external">面向切面编程</a>，达到解耦效果。<a href="http://tech.meituan.com/mt-android-auto-split-dex.html" target="_blank" rel="external">Android DEX自动拆包及动态加载</a>简介中提到的class依赖分析和R常量替换的脚本都可以用ASM来搞</p>
+<h5 id="引入脚本"><a href="#引入脚本" class="headerlink" title="引入脚本"></a>引入脚本</h5><p>脚本写多了，都挤在一个build.gradle里也不好，人长大了总要自己出去住，那可以把部分脚本抽出去吗？当然可以，新建一个other.gradle把脚本抽离，然后在build.gradle中添加apply from ‘other.gradle’即可，抽出去以后你会发现本来可以直接import的asm包找不到了，怎么回事？根工程中配置的buildscript会传递到所有工程，但只会传到build.gradle脚本中，其他脚本可不管，所以你要在other.gradle中重新配置buildscript，并且other.gradle中的repositories不再包含m2repository目录，自己配置jcenter()又会导致依赖重新下载到~/.gradle/caches目录。如果不想额外下载，也可以在other.gradle中这么搞：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven &#123;</div><div class="line">            url rootProject.buildscript.repositories[0].getUrl()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="获取AndroidManifest文件"><a href="#获取AndroidManifest文件" class="headerlink" title="获取AndroidManifest文件"></a>获取AndroidManifest文件</h5><p><a href="http://tools.android.com/tech-docs/new-build-system/applicationid-vs-packagename" target="_blank" rel="external">ApplicationId versus PackageName</a>提到，gradle中的applicationid用来区分应用，manifest中packageName用来指定R文件包名，并且各个productFlavor 的manifest中的packageName应该一致。applicationid只是gradle脚本中的定义，其实最后生成的apk中的manifest文件的packageName还是会被applicationid替换掉。</p>
+<p>那获取R文件的包名怎么搞？要获取AndroidManifest中package属性，并且这个manifest要是起始的文件，因为最终文件中的package属性会被applicationid冲掉，由于各个manifest中的package属性一样，并且非主manifest可以没有package属性，所以只有获取主manifest的package属性才是最准确的。</p>
+<p>def manifestFile = android.sourceSets.main.manifest.srcFile
+def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</p>
+<h5 id="无用资源"><a href="#无用资源" class="headerlink" title="无用资源"></a><a href="https://developer.android.com/studio/build/shrink-code" target="_blank" rel="external">无用资源</a></h5><h5 id="transitive-true"><a href="#transitive-true" class="headerlink" title="transitive = true"></a><code>transitive = true</code></h5><p>transitive dependencies 被称为依赖的依赖，称为“间接依赖”比较合适。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">compile(&apos;com.meituan.android.terminus:library:6.6.1.16@aar&apos;)&#123;</div><div class="line">        transitive = true</div><div class="line">        exclude module: &apos;hotel_model&apos;</div><div class="line">        exclude module: &apos;base_model&apos;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>在后面加上@aar，意指你只是下载该aar包，而并不下载该aar包所依赖的其他库，那如果想在使用@aar的前提下还能下载其依赖库，则需要添加transitive=true的条件。 
+排除 transitive dependencies 
+通过configuration或者dependency可以除去 transitive dependencies：</p>
+<p>build.gradle</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">configurations &#123;</div><div class="line">    compile.exclude module: &apos;commons&apos;</div><div class="line">    all*.exclude group: &apos;org.gradle.test.excludes&apos;, module: &apos;reports&apos;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile(&quot;org.gradle.test.excludes:api:1.0&quot;) &#123;</div><div class="line">        exclude module: &apos;shared&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果在configuration中定义一个exclude,那么所有依赖的transitive dependency (指定的)都会被去除。 
+定义exclude时候，或只指定group, 或只指定module名字，或二者都指定。</p>
+<p>不是所有的transitive dependency 都可以被去除的，如runtime时候使用到的。一般来说，runtime时候用不到的，或者目标环境及平台已经包含该依赖的可以执行exclude去除。</p>
+<p>那exclude选per-dependency还是per-configuration?，大多数情况我们都选用per-configuration，下面是一些使用exclude的典型场合： </p>
+<ul>
+<li>有licensing问题 </li>
+<li>从远程仓库上无法获取到依赖 </li>
+<li>runtime时候用不到 </li>
+<li>有版本冲突</li>
+</ul>
+<p>可以给dependencies统一指定transitive为false，再次执行dependencies可以看到如下结果。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">configurations.all &#123;</div><div class="line">   transitive = false</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">   androidTestCompile(&apos;com.android.support.test:runner:0.2&apos;)</div><div class="line">   androidTestCompile(&apos;com.android.support.test:rules:0.2&apos;)</div><div class="line">   androidTestCompile(&apos;com.android.support.test.espresso:espresso-core:2.1&apos;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="exclude的疑问"><a href="#exclude的疑问" class="headerlink" title="exclude的疑问"></a>exclude的疑问</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">exclude module: &apos;base_model&apos;</div></pre></td></tr></table></figure>
+<p>和
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">exclude group:&apos;com.name.group&apos; module:&apos;base_model&apos;</div></pre></td></tr></table></figure></p>
+<p>的区别是？
+经过测试，二者的作用是完全一样的。 </p>
+<h5 id="force-true"><a href="#force-true" class="headerlink" title="force=true"></a>force=true</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">compile(&apos;com.squareup.okhttp:okhttp-mt:2.5.0&apos;) &#123;</div><div class="line">        force = true</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上，我们在依赖okhttp的时候很可能发生冲突，就比如依赖的依赖中也包含了okhttp，这种场合下，就会产生版本冲突的问题，加上force = true表明的意思就是即使在有依赖库版本冲突的情况下坚持使用被标注的这个依赖库版本。</p>
+<h5 id="gradle命令"><a href="#gradle命令" class="headerlink" title="gradle命令"></a>gradle命令</h5><ul>
+<li>gradlew projects:查看所有项目</li>
+<li>gradlew tasks:查看任务信息</li>
+</ul>
+<h5 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h5><ul>
+<li><a href="https://blog.csdn.net/qinxiandiqi/article/details/44458707" target="_blank" rel="external">建立企业内部maven服务器并使用Android Studio发布公共项目</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/04/03/ml-anaconda-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/04/03/ml-anaconda-intro/" itemprop="url">
+                  anaconda环境搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-03T15:54:06+08:00">
+                2018-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！</p>
+<p>官网下载地址为：<a href="https://www.anaconda.com/download/" target="_blank" rel="external">https://www.anaconda.com/download/</a></p>
+<h4 id="安装anaconda"><a href="#安装anaconda" class="headerlink" title="安装anaconda"></a>安装anaconda</h4><p>对于Mac、Linux系统，Anaconda安装好后，实际上就是在主目录下多了个文件夹（~/anaconda）而已，Windows会写入注册表。安装时，安装程序会把bin目录加入PATH（Linux/Mac写入~/.bashrc，Windows添加到系统变量PATH），这些操作也完全可以自己完成。以Linux/Mac为例，安装完成后设置PATH的操作是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 将anaconda的bin目录加入PATH，根据版本不同，也可能是~/anaconda3/bin</div><div class="line">echo &apos;export PATH=&quot;~/anaconda2/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</div><div class="line"># 更新bashrc以立即生效</div><div class="line">source ~/.bashrc</div></pre></td></tr></table></figure>
+<p>配置好PATH后，可以通过which conda或conda –version命令检查是否正确。假如安装的是Python 2.7对应的版本，运行python –version或python -V可以得到Python 2.7.12 :: Anaconda 4.1.1 (64-bit)，也说明该发行版默认的环境是Python 2.7。</p>
+<h4 id="Conda的环境管理"><a href="#Conda的环境管理" class="headerlink" title="Conda的环境管理"></a>Conda的环境管理</h4><p>Conda的环境管理功能允许我们同时安装若干不同版本的Python，并能自由切换。对于上述安装过程，假设我们采用的是Python 2.7对应的安装包，那么Python 2.7就是默认的环境（默认名字是root，注意这个root不是超级管理员的意思）。</p>
+<p>假设我们需要安装Python 3.4，此时，我们需要做的操作如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"># 创建一个名为python34的环境，指定Python版本是3.4（不用管是3.4.x，conda会为我们自动寻找3.4.x中的最新版本）</div><div class="line">conda create --name python34 python=3.4</div><div class="line"></div><div class="line"># 安装好后，使用activate激活某个环境</div><div class="line">activate python34 # for Windows</div><div class="line">source activate python34 # for Linux &amp; Mac</div><div class="line"># 激活后，会发现terminal输入的地方多了python34的字样，实际上，此时系统做的事情就是把默认2.7环境从PATH中去除，再把3.4对应的命令加入PATH</div><div class="line"></div><div class="line"># 此时，再次输入</div><div class="line">python --version</div><div class="line"># 可以得到`Python 3.4.5 :: Anaconda 4.1.1 (64-bit)`，即系统已经切换到了3.4的环境</div><div class="line"></div><div class="line"># 如果想返回默认的python 2.7环境，运行</div><div class="line">deactivate python34 # for Windows</div><div class="line">source deactivate python34 # for Linux &amp; Mac</div><div class="line"></div><div class="line"># 删除一个已有的环境</div><div class="line">conda remove --name python34 --all</div></pre></td></tr></table></figure>
+<p>用户安装的不同python环境都会被放在目录~/anaconda/envs下，可以在命令中运行conda info -e查看已安装的环境，当前被激活的环境会显示有一个星号或者括号。</p>
+<p>说明：有些用户可能经常使用python 3.4环境，因此直接把~/anaconda/envs/python34下面的bin或者Scripts加入PATH，去除anaconda对应的那个bin目录。这个办法，怎么说呢，也是可以的，但总觉得不是那么elegant……</p>
+<p>如果直接按上面说的这么改PATH，你会发现conda命令又找不到了（当然找不到啦，因为conda在~/anaconda/bin里呢），这时候怎么办呢？方法有二：1. 显式地给出conda的绝对地址 2. 在python34环境中也安装conda工具（推荐）。</p>
+<h4 id="Conda的包管理"><a href="#Conda的包管理" class="headerlink" title="Conda的包管理"></a>Conda的包管理</h4><p>Conda的包管理就比较好理解了，这部分功能与pip类似。</p>
+<p>例如，如果需要安装scipy：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 安装scipy</div><div class="line">conda install scipy</div><div class="line"># conda会从从远程搜索scipy的相关信息和依赖项目，对于python 3.4，conda会同时安装numpy和mkl（运算加速的库）</div><div class="line"></div><div class="line"># 查看已经安装的packages</div><div class="line">conda list</div><div class="line"># 最新版的conda是从site-packages文件夹中搜索已经安装的包，不依赖于pip，因此可以显示出通过各种方式安装的包</div></pre></td></tr></table></figure></p>
+<p>conda的一些常用操作如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">conda的一些常用操作如下：</div><div class="line"></div><div class="line"># 查看当前环境下已安装的包</div><div class="line">conda list</div><div class="line"></div><div class="line"># 查看某个指定环境的已安装包</div><div class="line">conda list -n python34</div><div class="line"></div><div class="line"># 查找package信息</div><div class="line">conda search numpy</div><div class="line"></div><div class="line"># 安装package</div><div class="line">conda install -n python34 numpy</div><div class="line"># 如果不用-n指定环境名称，则被安装在当前活跃环境</div><div class="line"># 也可以通过-c指定通过某个channel安装</div><div class="line"></div><div class="line"># 更新package</div><div class="line">conda update -n python34 numpy</div><div class="line"></div><div class="line"># 删除package</div><div class="line">conda remove -n python34 numpy</div></pre></td></tr></table></figure></p>
+<p>前面已经提到，conda将conda、python等都视为package，因此，完全可以使用conda来管理conda和python的版本，例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 更新conda，保持conda最新</div><div class="line">conda update conda</div><div class="line"></div><div class="line"># 更新anaconda</div><div class="line">conda update anaconda</div><div class="line"></div><div class="line"># 更新python</div><div class="line">conda update python</div><div class="line"># 假设当前环境是python 3.4, conda会将python升级为3.4.x系列的当前最新版本</div></pre></td></tr></table></figure>
+<p>补充：如果创建新的python环境，比如3.4，运行conda create -n python34 python=3.4之后，conda仅安装python 3.4相关的必须项，如python, pip等，如果希望该环境像默认环境那样，安装anaconda集合包，只需要：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在当前环境下安装anaconda包集合</div><div class="line">conda install anaconda</div><div class="line"></div><div class="line"># 结合创建环境的命令，以上操作可以合并为</div><div class="line">conda create -n python34 python=3.4 anaconda</div><div class="line"># 也可以不用全部安装，根据需求安装自己需要的package即可</div></pre></td></tr></table></figure></p>
+<h5 id="通过pip将packages安装到Conda环境中"><a href="#通过pip将packages安装到Conda环境中" class="headerlink" title="通过pip将packages安装到Conda环境中"></a>通过pip将packages安装到Conda环境中</h5><p>发行版Anaconda附带安装了200多个Python软件包，还可以使用conda install 命令快速轻松地安装许多软件包。</p>
+<p>除了安装和管理软件包的实用程序外，conda还拥有创建虚拟环境的能力，这些虚拟环境是在没有任何Python包预先加载的情况下创建的。
+但是不是所有的软件包都可以通过 conda 安装，如果你想要一个不可用的软件，那么你将不得不使用备用软件包管理器pip。Anaconda的软件包管理器conda和pip如何相互交互？
+目前有两种方法:</p>
+<h6 id="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><a href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：" class="headerlink" title="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："></a>一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</h6><ol>
+<li>使用conda create - name virtual_env_name 创建您的虚拟环境，用虚拟环境的 名称 替换virtual_env_name</li>
+<li>使用source activate virtual_env_name切换到您的虚拟环境 ，再次用您的虚拟环境的名称替换virtual_env_name</li>
+<li>运行conda install pip ，它会将pip安装到您的虚拟环境目录中</li>
+<li>后续直接使用以下两步即可：1）source activate virtual_env_name 2）pip install ‘package_name’</li>
+</ol>
+<h6 id="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><a href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。" class="headerlink" title="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"></a>二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</h6><ol>
+<li>运行conda install pip ，它会将pip安装到您的Anaconda虚拟环境目录中。</li>
+<li>你需要找到你的Anaconda bin目录运行pip，如：//anaconda/bin/pip install package_name将软件包安装到您的虚拟环境中 。</li>
+</ol>
+<h4 id="设置国内镜像"><a href="#设置国内镜像" class="headerlink" title="设置国内镜像"></a>设置国内镜像</h4><p>如果需要安装很多packages，你会发现conda下载的速度经常很慢，因为Anaconda.org的服务器在国外。所幸的是，清华TUNA镜像源有Anaconda仓库的镜像，我们将其加入conda的配置即可：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 添加Anaconda的TUNA镜像</div><div class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</div><div class="line"># TUNA的help中镜像地址加有引号，需要去掉</div><div class="line"></div><div class="line"># 设置搜索时显示通道地址</div><div class="line">conda config --set show_channel_urls yes</div></pre></td></tr></table></figure></p>
+<p>执行完上述命令后，会生成<code>~/.condarc(Linux/Mac)</code>或<code>C:\Users\USER_NAME\.condarc</code>文件，记录着我们对conda的配置，直接手动创建、编辑该文件是相同的效果。</p>
+<h4 id="为vscode配置集成环境"><a href="#为vscode配置集成环境" class="headerlink" title="为vscode配置集成环境"></a>为vscode配置集成环境</h4><p>VS Code下载地址为： <a href="https://code.visualstudio.com/Download" target="_blank" rel="external">https://code.visualstudio.com/Download</a>
+安装完anaconda会自动提示安装VS Code,如果已安装就不会安装,只会安装插件Anaconda Extension.</p>
+<h5 id="添加Python编译配置"><a href="#添加Python编译配置" class="headerlink" title="添加Python编译配置"></a>添加Python编译配置</h5><p>首选项-&gt;设置，打开一个setting.json
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//配置python的路径</div><div class="line">     &quot;python.pythonPath&quot;: &quot;D:/Program Files/Anaconda3/python&quot;,</div><div class="line">     &quot;editor.fontFamily&quot;: &quot;Consolas&quot;,</div><div class="line">     //忽略pylint检查代码时，出现无谓的波浪线的问题</div><div class="line">     &quot;python.linting.pylintArgs&quot;: [</div><div class="line">         &quot;--disable=W,C&quot;</div><div class="line">     ]</div></pre></td></tr></table></figure></p>
+<h5 id="Python脚本编译测试"><a href="#Python脚本编译测试" class="headerlink" title="Python脚本编译测试"></a>Python脚本编译测试</h5><p>新建test.py，代码如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># plot a sine wave from 0 to 4pi  </div><div class="line">from pylab import *  </div><div class="line">x_values = arange(0.0, math.pi * 4, 0.01)  </div><div class="line">y_values = sin(x_values)  </div><div class="line">plot(x_values, y_values, linewidth=1.0)  </div><div class="line">xlabel(&apos;x&apos;)  </div><div class="line">ylabel(&apos;sin(x)&apos;)  </div><div class="line">title(&apos;Simple plot&apos;)  </div><div class="line">grid(True)  </div><div class="line">savefig(&quot;sin.png&quot;)  </div><div class="line">show()</div></pre></td></tr></table></figure></p>
+<p>我们可以看到，代码中调用了matplotlib数据包，并且代码编译通过，显示出所打印的正弦波图像。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/03/04/media-signal-digitization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/04/media-signal-digitization/" itemprop="url">
+                  多媒体技术(四)之音频,视频信号及数字化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T22:55:11+08:00">
+                2018-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h4><p>宽应用的领域非常多，可以用来标识信号传输的数据传输能力、标识单位时间内通过链路的数据量、标识显示器的显示能力。</p>
+<ol>
+<li>在模拟信号系统又叫频宽，是指在固定的时间可传输的资料数量，亦即在传输管道中可以传递数据的能力。通常以每秒传送周期或赫兹(Hz)来表示。</li>
+<li>在数字设备中，带宽指单位时间能通过链路的数据量。通常以bps来表示，即每秒可传输之位数。</li>
+<li>信号的带宽是指该信号所包含的各种不同频率成分所占据的频率范围。频宽对基本输出入系统 (BIOS ) 设备尤其重要，如快速磁盘驱动器会受低频宽的总线所阻碍。</li>
+</ol>
+<p>带宽：带宽是反映信号频率通过能力，带宽越大，对信号中的各种频率成分（特别是高频成分）能准确有效地放大与显示，也就较为准确，如果带宽不够，那就会损失很多高频成分，信号自然就显示不准确了，出现较大误差。
+在一秒的时间内最大最多能通过的信号，所以带宽要大于等于最高频率fmax.
+采样率： 而采样率是将模拟量转换为数字量时对信号转换的频率（即每秒采集次数），这个频率越高，单位时间内对信号的采集就越多，信号中的信息就保留越多，丢失信息就少，转换出的数字量就能准确反映信号的数值.</p>
+<p>香农采样定理：采样定理说明采样频率与信号频谱之间的关系，是连续信号离散化的基本依据，在进行模拟/数字信号的转换过程中，当采样频率fs.max大于信号中最高频率fmax的2倍时(fs.max&gt;2fmax)，采样之后的数字信号完整地保留了原始信号中的信息，一般实际应用中保证采样频率为信号最高频率的2.56～4倍；采样定理又称奈奎斯特定理。
+在工程中为了方便计算机的计算，一般去fs=2.56fmax.
+一个正弦波形至少可用2个点来描述.
+对连续信号进行等间隔采样时，如果采样频率不满足采样定理，采样后信号的频率就会发生混叠，即高于奈奎斯特频率的频率成分将被重构成低于奈奎斯特频率的信号,如果发生混叠，就无法准确的重建出原始声音的音频信号。</p>
+<p>如何查看最高频率(或者是感兴趣的)呢？
+用AU打开一段音频，在波形下边打开频域图，看看你感兴趣的谐波或者共振峰的频域的什么范围，找出最大值，即可确定为带宽，那么 采样率 ＝ 带宽＊2.5</p>
+<p>频段,是一个有关通讯和声音理学方面的词语,通讯方面的频段意思是指一定的无线电波的频率范围；声音和音乐中的频段是指声音频率而言,人耳对声音频率的感觉是从最低的20Hz到最高的20KHz,而人的语音频率范围则集中在80Hz~12kHz之间,不同频段的声音对人的感受是不同的.
+带宽（band width）又叫频宽,是指在固定的的时间可传输的资料数量,亦即在传输管道中可以传递数据的能力.在数字设备中,频宽通常以bps表示,即每秒可传输之位数.在模拟设备中,频宽通常以每秒传送周期或赫兹 (Hz)来表示.
+速率：是物体运动的快慢,即速率是速度的大小或等价于路程的变化率.在初中物理中被称为速度,但应与高中物理中的速度加以区别.在网络应用中应该是传输速度之比.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/03/04/media-graphic-resolution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/04/media-graphic-resolution/" itemprop="url">
+                  多媒体技术(1.1)之图像分辨率
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T22:44:11+08:00">
+                2018-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。</p>
+<ul>
+<li><strong>相机的分辨率</strong>，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机来说，把像素和图片物理尺寸联系起来是没有什么意义的，因为相机总是在缩放物体的图像。</li>
+<li><strong>扫描仪和打印机的分辨率</strong>，往往是它们能在单位物理面积内扫描/打印多少个微小的点（像素或墨点），单位一般分别是 PPI（像素/每英寸）和 DPI（点/英寸）──因为把它们的像素/点和物理尺寸联系起来是有意义的。为什么不写它们能扫描/打印包含多少像素/点的图片呢？因为它们扫描/打印的图片尺寸不定呀！所以我们只能以单位面积来描述。</li>
+<li><strong>显示器</strong> 能显示包含多少像素的图像的能力是固定的，所以我们可以像描述相机一样说它「1440 × 900 像素」。而它的物理尺寸是有意义的，所以也可以像描述扫描仪一样说它有多少 PPI，此时我们经常用「像素密度」来特指这个 PPI 参数。</li>
+<li>为什么上面说了这么多，却一直不说图片？因为图片是穿梭在上面说的这些设备之间的东西，它的「分辨率」概念和相机、扫描仪、打印机、显示器都有关。图片的分辨率一般有两种，一种是像相机一样描述总共有多少个像素（如「10 M」）或写成像素数量的乘法（如「4000 × 2672 像素」），另一种是像打印机一样使用 DPI 来确定图片的每一个像素（视作一个「点」）和实际的一个长度单位（英寸）之间的大小比例（比如「300 DPI」）。<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="像素"><a href="#像素" class="headerlink" title="像素"></a>像素</h4></li>
+</ul>
+<p><img src="http://images.wodekouwei.com/media/resolution1.jpg" alt="image">
+组成这张图的单位是一个格子一个格子的颜色小方块组成的，这种小方块就叫做像素。像素就是图像显示的基本元素。</p>
+<p>通过一点的排列，最终就会形式我们看到的图片，这类图片我们把它叫做“栅格图”、“点阵图”，所以你现在懂PS里图片拖进去后为什么要右键图层栅格化对象吧。</p>
+<p>像素都是正方形?
+不一定，我们看一张图:
+<img src="http://images.wodekouwei.com/media/resolution2.jpg" alt="image"></p>
+<p>根据显示媒介的不同可能会对像素值进行压缩或者扩大。大家在PS中新建画布的时候最下面有一个选择：
+<img src="http://images.wodekouwei.com/media/resolution3.jpg" alt="image"></p>
+<p>单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。
+图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。</p>
+<h4 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h4><p>是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个像素来反映红黄过渡和30个像素来反映，自然30个像素反映色阶细腻，多20个来过渡。。
+放大像素就是插值，如原来1英寸里10像素，放大到30个，那新增加的20个像素哪里来，是软件根据像素周围取样来加出来，因为加出来的像素颜色不能准确到位，就会不清晰，模糊了。。
+如分辨率减小，尺寸不变，像素会被拿掉，那就是像素连续色调产生断层了，模糊自然产生。。
+还有个概念，72分辨率是显示器的物理分辨率，图片像素尺寸和显示器尺寸同比显示，大了，图片会超出屏幕来显示，所以有显示大小和实际大小。。</p>
+<p>分辨率其实包含两个概念的：</p>
+<ol>
+<li>图像分辨率:就是说该图像的宽高上的像素点数。这个值在一开始图案生成的时候就已经确定下来。</li>
+<li>显示（单位）分辨率：在显示媒介上在单位长度内显示多少像素（相对值，这个和你的显示终端的分辨率有关）</li>
+</ol>
+<p>在单位上，分辨率是以DPI和PPI来作为单位的</p>
+<ul>
+<li>像素/英寸 Dots Per Inch</li>
+<li>像素/厘米 Pixel Per Inch</li>
+</ul>
+<p>图像清晰有两个因素决定：</p>
+<ul>
+<li>显示媒介的分辨率</li>
+<li>图片的分辨率</li>
+<li>查看的空间距离</li>
+</ul>
+<p>根据行业里的规则，一般来说，打印的出图DPI一般300即可满足需求。还记得乔布斯给苹果定义的视网膜屏幕吗？它将960×640的像素压缩到一个3.5英寸的显示屏内。也就是说，该屏幕的像素密度达到326像素/英寸（ppi），称之为“视网膜屏幕”。但是，如果你隔老远看手机屏幕，基本上你就告别视网膜屏幕了.一般来说，电子设备在0.3-0.4米的范围内使用300dpi即可很清晰.所以你可以推，你家里的电视如果观赏距离是3-4m那么像素值30dpi即可。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>图片大小的4个容易混淆的概念</p>
+<ul>
+<li>像素数目(Pixels):宽1024px,高768px</li>
+<li>实际尺寸(Print Size):厘米,英尺Inch</li>
+<li>分辨率(Resolution):DPI(dots per inch)</li>
+<li><p>占用磁盘空间:几兆M,几k</p>
+</li>
+<li><p>像素数目(垂直或水平)=分辨率*实际尺寸</p>
+</li>
+<li>Pixels = Resolution(DPI)x Print size(in inches)</li>
+<li>图片质量取决于:像素数目;颜色种类(位深度)</li>
+<li>平时所说的屏幕分辨率,相机分辨率,其实指的是像素数目</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/27/media-graphic-frequency/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1542,737 +2297,6 @@ I did ./configure to make a makefile</li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/issue-python/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/16/issue-python/" itemprop="url">
-                  python常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:09:41+08:00">
-                2018-01-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt"><a href="#OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt" class="headerlink" title="OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt"></a><code>OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt</code></h5><p>在用下列名字安装时
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install Scrapy</div><div class="line">sudo pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
-<p>出现下列错误
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">Found existing installation: six 1.4.1</div><div class="line"></div><div class="line">    DEPRECATION: Uninstalling a distutils installed project (six) has been deprecated and will be removed in a future version. This is due to the fact that uninstalling a distutils project will only partially uninstall the project.</div><div class="line"></div><div class="line">    Uninstalling six-1.4.1:</div><div class="line"></div><div class="line">Exception:</div><div class="line"></div><div class="line">Traceback (most recent call last):</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/basecommand.py&quot;, line 215, in main</div><div class="line"></div><div class="line">    status = self.run(options, args)</div><div class="line"></div><div class="line">  File &quot;/Library/python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/commands/install.py&quot;, line 342, in run</div><div class="line"></div><div class="line">    prefix=options.prefix_path,</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_set.py&quot;, line 778, in install</div><div class="line"></div><div class="line">    requirement.uninstall(auto_confirm=True)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_install.py&quot;, line 754, in uninstall</div><div class="line"></div><div class="line">    paths_to_remove.remove(auto_confirm)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_uninstall.py&quot;, line 115, in remove</div><div class="line"></div><div class="line">    renames(path, new_path)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/utils/__init__.py&quot;, line 267, in renames</div><div class="line"></div><div class="line">    shutil.move(old, new)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 302, in move</div><div class="line"></div><div class="line">    copy2(src, real_dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 131, in copy2</div><div class="line"></div><div class="line">    copystat(src, dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 103, in copystat</div><div class="line"></div><div class="line">    os.chflags(dst, st.st_flags)</div><div class="line"></div><div class="line">OSError: [Errno 1] Operation not permitted: &apos;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info&apos;</div></pre></td></tr></table></figure></p>
-<p>Scrapy，virtualenvwrapper需要依赖six，在安装six的时候发现系统已经有一个six-1.4.1，但是virtualenvwrapper需要six-1.9.0，于是想先卸载老版本的six，此时问题来了，发现没有权限卸载，此时我就纳闷，加上sudo，还是没权限。于是Google之，最终还是在万能的GitHub找到答案。six-1.4.1是系统内置的packages，因 系统集成保护 你是没有权限去修改/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info目录的。因此在安装virtualenvwrapper的时候需要选择忽略six的安装：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo pip install virtualenvwrapper --upgrade --ignore-installed six</div><div class="line">sudo pip install Scrapy --upgrade --ignore-installed six</div></pre></td></tr></table></figure></p>
-<p>如果使用requirements安装,也使用:<code>sudo -H pip install -r requirements.txt --upgrade --ignore-installed six</code></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/tips-android-inject1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/16/tips-android-inject1/" itemprop="url">
-                  android逆向(1)之root方式注入apk
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:06:20+08:00">
-                2018-01-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="第一步-注入动态库到目标进程"><a href="#第一步-注入动态库到目标进程" class="headerlink" title="第一步,注入动态库到目标进程"></a>第一步,注入动态库到目标进程</h3><ol>
-<li>启动注入程序,入口main函数中输入将被注入的进程名称以及欲注入动态库路径;</li>
-<li>根据进程名获取进程id:打开<code>/proc</code>目录,读取<code>/proc/%d/cmdline</code>;</li>
-<li>attach到目标进程:<code>ptrace(PTRACE_ATTACH, pid, NULL, 0)</code>并暂停目前进程;</li>
-<li>读取寄存器值:<code>ptrace(PTRACE_GETREGS, pid, NULL, regs)</code>,并保持读取到的寄存器;</li>
-<li>获取被加载的动态库中mmap函数地址,获取被加载动态库中函数地址的方法是,获取本地libc.so模块和被加载动态库中libc.so模块中各自起始地址,local_addr-local_handle的值为指定函数(如mmap)在该模块中的偏移量，然后再加上remote_handle，结果就为指定函数在目的进程的虚拟地址,获取模块起始地址的方法是读取进程对应的<code>/proc/self/maps</code>或<code>/proc/%d/maps</code>文件;</li>
-<li>调用被加载库的mmap方法申请空间:<code>ptrace_call(target_pid, (uint32_t)func_addr, parameters, param_num, regs)</code>;</li>
-<li>获取申请空间时的R0寄存器,arm中R0~R3作为传递参数的寄存器,R0可以获取到申请空间的起始地址;</li>
-<li>获取被加载库中dlopen,dlsym,dlclose,dlerror函数地址;</li>
-<li>将被加载动态库的路径写入到mmap分配的栈空间:<code>ptrace(PTRACE_PEEKTEXT, pid, dest, 0);</code>;</li>
-<li>调用远程函数的dlopen函数打开要被注入的动态库;</li>
-<li>调用<code>dlsym</code>获取加载动态库目标函数符号对应地址,并调用目标函数,完成注入;</li>
-<li>调用dlclose关闭被注入库;</li>
-<li>完成注入;</li>
-</ol>
-<h3 id="动态库中加载目标apk-aar"><a href="#动态库中加载目标apk-aar" class="headerlink" title="动态库中加载目标apk(aar)"></a>动态库中加载目标apk(aar)</h3><ol>
-<li>入口函数中启动新线程,并调用<code>pthread_detach(tid)</code>将新线程设置为detach状态,可自动回收资源;</li>
-<li>新线程中调用<code>AndroidRuntime::getJavaVM();</code>获取JavaVM对象并Attach当前线程到JavaVM:<code>jvm-&gt;AttachCurrentThread(&amp;jni_env, NULL);</code>获取到jni env;</li>
-<li>找到<code>dalvik/system/DexClassLoader</code>类,并获取其构造方法<code>public DexClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</code>的methodid及<code>public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException</code>的methodid;</li>
-<li>找到类<code>java/lang/ClassLoader</code>,获取其静态方法<code>Gpublic static ClassLoader getSystemClassLoader()</code>的MethodID,调用静态方法getSystemClassLoader获取系统ClassLoader;</li>
-<li>基于系统ClassLoader,以及DexClassClassLoader构造方法MethodID创建DexClassLoader对象:<code>jni_env-&gt;NewObject(dexloader_claxx, dexloader_init_method, apk_path, dex_out_path, lib_path, class_loader);</code>,要传入DexClassloader jclass,DexClassLoader构造方法id,要被加载的apk路径,dex输出路径,动态库路径,以及父(即系统)ClassLoader;</li>
-<li>调用DexClassLoader的loadClass方法id加载apk中被调起的类:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
-<li>调用动态加载到的apk中类的方法:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
-<li>线程与JavaVM脱离:<code>jvm-&gt;DetachCurrentThread();</code>;</li>
-</ol>
-<h3 id="java中获取context"><a href="#java中获取context" class="headerlink" title="java中获取context"></a>java中获取context</h3>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/15/docker-env-create/" itemprop="url">
-                  docker简介及环境搭建
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:00:03+08:00">
-                2018-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="docker是什么"><a href="#docker是什么" class="headerlink" title="docker是什么"></a>docker是什么</h3><p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
-Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
-<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
-<h3 id="Docker-三个基本概念"><a href="#Docker-三个基本概念" class="headerlink" title="Docker 三个基本概念"></a>Docker 三个基本概念</h3><ul>
-<li>镜像（Image）:Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</li>
-<li>容器（Container）:镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</li>
-<li>仓库（Repository）:镜像构建完成后，可以很容易的在当前宿主上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest作为默认标签。用 Docker 的时候，需要经常从官方获取镜像，但是由于显而易见的网络原因，拉取镜像的过程非常耗时，严重影响使用 Docker 的体验。因此 DaoCloud等加速器服务商 推出了加速器工具解决这个难题，通过智能路由和缓存机制，极大提升了国内网络访问 Docker Hub 的速度，目前已经拥有了广泛的用户群体，并得到了 Docker 官方的大力推荐。如果您是在国内的网络环境使用 Docker，那么 Docker 加速器一定能帮助到您。docker常用仓库:<a href="https://hub.docker.com/explore/" target="_blank" rel="external">https://hub.docker.com/explore/</a></li>
-</ul>
-<blockquote>
-<p><a href="https://www.daocloud.io/mirror#accelerator-doc" target="_blank" rel="external">docker daocloud加速器</a>:</p>
-<ul>
-<li>linux:<code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://311e425f.m.daocloud.io</code>,该脚本可以将 –registry-mirror 加入到你的 Docker 配置文件 /etc/docker/daemon.json 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同</li>
-<li>Mac:右键点击桌面顶栏的 docker 图标，选择 Preferences ，在 Daemon 标签（Docker 17.03 之前版本为 Advanced 标签）下的 Registry mirrors 列表中加入下面的镜像地址:<code>http://311e425f.m.daocloud.io</code>,点击 Apply &amp; Restart 按钮使设置生效。</li>
-<li>Windows: 在桌面右下角状态栏中右键 docker 图标，修改在 Docker Daemon 标签页中的 json ，把下面的地址:<code>http://311e425f.m.daocloud.io</code>,加到”registry-mirrors”的数组里。点击 Apply 。</li>
-</ul>
-</blockquote>
-<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="mac下安装docker"><a href="#mac下安装docker" class="headerlink" title="mac下安装docker"></a>mac下安装docker</h4><p><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="external">官方mac的安装步骤</a>
-下载<a href="https://link.jianshu.com/?t=https://download.docker.com/mac/stable/Docker.dmg" target="_blank" rel="external">docker.dmg</a>文件，然后点击，一步步操作</p>
-<p>检测Docker Engine, Docker Compose, 和Docker Machine的版本:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">docker version</div><div class="line">Client:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Tue Mar 28 00:40:02 2017</div><div class="line"> OS/Arch:      darwin/amd64</div><div class="line"></div><div class="line">Server:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27 (minimum version 1.12)</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Fri Mar 24 00:00:50 2017</div><div class="line"> OS/Arch:      linux/amd64</div><div class="line"> Experimental: true</div><div class="line"></div><div class="line">docker-compose --version</div><div class="line">docker-compose version 1.11.2, build dfed245</div><div class="line"></div><div class="line">docker-machine --version</div><div class="line">docker-machine version 0.10.0, build 76ed2a6</div></pre></td></tr></table></figure></p>
-<h3 id="运行官网提供的二个简单列子"><a href="#运行官网提供的二个简单列子" class="headerlink" title="运行官网提供的二个简单列子"></a>运行官网提供的二个简单列子</h3><p>拉取hello-world镜像
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull hello-world</div></pre></td></tr></table></figure></p>
-<p>查看hello-world镜像信息：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker images hello-world</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">hello-world         latest              1815c82652c0        5 days ago          1.84 kB</div></pre></td></tr></table></figure></p>
-<p>根据镜像生成对应容器
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run hello-world</div></pre></td></tr></table></figure></p>
-<p>ps不加参数只会把当前运行的Community打印出来，查看当前所有的Community，加上-a参数。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure></p>
-<p>当然也可以根据镜像生成一个具体名称的镜像，先删除当前容器
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 60</div></pre></td></tr></table></figure></p>
-<p>当然如果当前容器正在运行，要删除这个容器，则使用命令
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm -f 60</div></pre></td></tr></table></figure></p>
-<p>使用镜像生成具体名称的容器：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name miaozhihao hello-world</div></pre></td></tr></table></figure></p>
-<p>于更多的docker run的命令可以使用来查看
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --help</div></pre></td></tr></table></figure></p>
-<p><strong>第二个examples，启动docker的web服务</strong>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
-<p>-p参数是使用宿主机的80映射容器的80端口
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">curl localhost:80</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</div><div class="line">&lt;style&gt;</div><div class="line">    body &#123;</div><div class="line">        width: 35em;</div><div class="line">        margin: 0 auto;</div><div class="line">        font-family: Tahoma, Verdana, Arial, sans-serif;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</div><div class="line">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</div><div class="line">working. Further configuration is required.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;For online documentation and support please refer to</div><div class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</div><div class="line">Commercial support is available at</div><div class="line">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>交互式终端方式进入 webserver容器，
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec -it webserver bash</div></pre></td></tr></table></figure></p>
-<p>修改nginx的显示页面：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@41b6804c716e:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</div><div class="line">root@41b6804c716e:/# exit</div><div class="line">exit</div></pre></td></tr></table></figure></p>
-<p>修改了容器的文件，也就是改动了容器的存储层。我们可以通过 docker diff
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">docker diff webserver</div><div class="line">C /root</div><div class="line">A /root/.bash_history</div><div class="line">C /run</div><div class="line">A /run/nginx.pid</div><div class="line">C /usr/share/nginx/html/index.html</div><div class="line">C /var/cache/nginx</div><div class="line">A /var/cache/nginx/client_temp</div><div class="line">A /var/cache/nginx/fastcgi_temp</div><div class="line">A /var/cache/nginx/proxy_temp</div><div class="line">A /var/cache/nginx/scgi_temp</div><div class="line">A /var/cache/nginx/uwsgi_temp</div></pre></td></tr></table></figure></p>
-<p>使用docker commit生成镜像
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker commit --author &quot;zhihao.miao &lt;1026145686@qq.com&gt;&quot; --message &quot;修改了默认网页&quot; webserver nginx:v2</div><div class="line">sha256:0a34c054b8a826d85dddf4d1dbdd3028ab890feff4c8a0844e9b98dd146c2e07</div></pre></td></tr></table></figure></p>
-<p>–autho 指定作者 –message表示容器的一些信息
-查看当前nginx镜像：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker images nginx</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">nginx               v2                  0a34c054b8a8        11 seconds ago      109 MB</div><div class="line">nginx               latest              958a7ae9e569        4 weeks ago         109 MB</div></pre></td></tr></table></figure></p>
-<p>查看当前所有的容器，包括运行的和停止的
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div><div class="line">\CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                    PORTS                NAMES</div><div class="line">41b6804c716e        nginx                                 &quot;nginx -g &apos;daemon ...&quot;   3 minutes ago       Up 3 minutes              0.0.0.0:80-&gt;80/tcp   webserver</div><div class="line">85612b405cda        miaozhihao001dockerhub/commit_test1   &quot;nginx -g &apos;daemon ...&quot;   20 hours ago        Exited (0) 3 hours ago                         nginx_web</div><div class="line">9ef1fb35d7aa        ubuntu:14.04                          &quot;/bin/bash&quot;              20 hours ago        Exited (0) 20 hours ago                        commit_test</div><div class="line">bf8320b9e445        ubuntu:14.04                          &quot;/bin/bash&quot;              24 hours ago        Exited (0) 24 hours ago                        sharp_curie</div><div class="line">9f9767eb8aaf        hello-world                           &quot;/hello&quot;                 10 days ago         Exited (0) 10 days ago                         miaozhihao</div></pre></td></tr></table></figure></p>
-<p>启动新的容器
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker run --name newwebserver -d -p 80:80 nginx:v2</div><div class="line">3619b34ed347cf1ae2ee3ab32c419140871f3084b9a1325ab5d8c6155d43bf06</div><div class="line">➜ curl localhost:80</div><div class="line">&lt;h1&gt;Hello, Docker!&lt;/h1&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="创建自己的docker镜像"><a href="#创建自己的docker镜像" class="headerlink" title="创建自己的docker镜像"></a>创建自己的docker镜像</h3><p>编辑Dockerfile文件，填入以下内容：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM docker/whalesay:latest</div><div class="line">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</div><div class="line">CMD /usr/games/fortune -a | cowsay</div></pre></td></tr></table></figure></p>
-<p>运行以下命令创建名为docker-whale的镜像：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-whale .</div></pre></td></tr></table></figure></p>
-<ul>
-<li><code>-t</code>： 给tag命令</li>
-<li><code>.</code>： Dockerfile文件所在路径</li>
-</ul>
-<h4 id="docker-tag-push-pull"><a href="#docker-tag-push-pull" class="headerlink" title="docker tag push pull"></a>docker tag push pull</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 8e15421920b1 xulingfeng/docker-whale:latest</div></pre></td></tr></table></figure>
-<p>上传操作
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push xulingfeng/docker-whale</div></pre></td></tr></table></figure></p>
-<p>下载操作
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull centos</div></pre></td></tr></table></figure></p>
-<h4 id="交互式的操作"><a href="#交互式的操作" class="headerlink" title="交互式的操作"></a>交互式的操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -t -i ubuntu /bin/bash</div></pre></td></tr></table></figure>
-<ul>
-<li>t 分配了一个终端在新的容器中</li>
-<li><code>-i</code> 允许你和容器进行交互操作</li>
-<li><code>/bin/bash</code> 启动容器中的Bash shell</li>
-</ul>
-<h4 id="docker的守护状态，也就是后台运行"><a href="#docker的守护状态，也就是后台运行" class="headerlink" title="docker的守护状态，也就是后台运行"></a>docker的守护状态，也就是后台运行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d ubuntu /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</div></pre></td></tr></table></figure>
-<ul>
-<li>docker run 运行容器</li>
-<li>-d 让容器在后台运行</li>
-<li>ubuntu 你希望运行容器的镜像</li>
-</ul>
-<h4 id="查看docker容器运行日志"><a href="#查看docker容器运行日志" class="headerlink" title="查看docker容器运行日志"></a>查看docker容器运行日志</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 容器名</div></pre></td></tr></table></figure>
-<ul>
-<li><code>-f</code> 类似与 <code>tail -f</code></li>
-</ul>
-<h4 id="使用docker运行web应用"><a href="#使用docker运行web应用" class="headerlink" title="使用docker运行web应用"></a>使用docker运行web应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp python app.py</div></pre></td></tr></table></figure>
-<ul>
-<li><code>-d</code>：代表后台运行该容器</li>
-<li><code>-P</code>：映射容器中的web应用端口号到你的主机上32768-61000中的某一个端口。这样你可以访问该容器中的web应用</li>
-<li><code>training/webapp</code>： 一个已经构建好的镜像，包含一个简单的python flask框架web应用</li>
-<li><code>python app.py</code>：这个命令用来启动容器中的web</li>
-</ul>
-<p>成功运行以上命令后，运行：
-<code>docker ps</code>
-查看到容器的5000端口号映射到了本地的32768，浏览器访问<a href="http://127.0.0.1:32768" target="_blank" rel="external">http://127.0.0.1:32768</a> 看到helloworld 成功提示</p>
-<h4 id="自定义主机端口号"><a href="#自定义主机端口号" class="headerlink" title="自定义主机端口号"></a>自定义主机端口号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:5000 training/webapp python app.py</div></pre></td></tr></table></figure>
-<ul>
-<li>-p 80:5000 将本机的80端口绑定容器内的5000端口，本地直接访问 <code>http://127.0.0.1</code> 即可</li>
-</ul>
-<h4 id="查看容器的进程"><a href="#查看容器的进程" class="headerlink" title="查看容器的进程"></a>查看容器的进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker top 容器名</div></pre></td></tr></table></figure>
-<h4 id="检查容器的状态信息"><a href="#检查容器的状态信息" class="headerlink" title="检查容器的状态信息"></a>检查容器的状态信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 容器名</div></pre></td></tr></table></figure>
-<h4 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search 内容</div></pre></td></tr></table></figure>
-<h4 id="创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson"><a href="#创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson" class="headerlink" title="创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson"></a>创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson</h4><p><strong>centos镜像，分解步骤如下</strong></p>
-<ul>
-<li>首先添加额外源:<code>yum install -y epel-release</code></li>
-<li>安装编译环境:<code>yum install -y gcc automake autoconf libtool make gcc-c++</code></li>
-<li>安装wget命令:<code>yum install -y wget</code></li>
-<li>安装openssl-devel python的pip命令依赖:<code>yum install -y openssl-devel</code></li>
-<li>下载python3.5.2最新包:<code>wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</code></li>
-<li>解压python3.5.2压缩包并编译安装:<code>tar -zxvf /software/Python-3.5.2.tgz -C /software/</code>与<code>./configure &amp;&amp; make -j2&amp;&amp; make install -j2</code></li>
-<li>更新pip:<code>pip install --upgrade pip</code>与<code>pip install --upgrade setuptools</code></li>
-<li>安装所需的第三方包:<code>pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</code></li>
-</ul>
-<h4 id="通过Dockerfile构建镜像"><a href="#通过Dockerfile构建镜像" class="headerlink" title="通过Dockerfile构建镜像"></a>通过Dockerfile构建镜像</h4><p>Dockerfile:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">FROM centos:latest</div><div class="line">RUN yum install -y epel-release</div><div class="line">RUN yum install -y gcc automake autoconf libtool make gcc-c++</div><div class="line">RUN yum install -y wget</div><div class="line">RUN yum install -y openssl-devel</div><div class="line">RUN wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</div><div class="line">RUN tar -zxvf /software/Python-3.5.2.tgz -C /software/</div><div class="line">RUN cd /software/Python-3.5.2/ &amp;&amp; ./configure python3 &amp;&amp; make -j2&amp;&amp; make install -j2</div><div class="line">RUN pip install --upgrade pip</div><div class="line">RUN pip install --upgrade setuptools</div><div class="line">RUN pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</div></pre></td></tr></table></figure></p>
-<p>在Dockerfile目录中执行：<code>docker build -t 名字:版本 .</code></p>
-<h4 id="兼容docker-for-mac-和-pycharm"><a href="#兼容docker-for-mac-和-pycharm" class="headerlink" title="兼容docker for mac 和 pycharm"></a>兼容docker for mac 和 pycharm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install socat</div><div class="line">socat TCP-LISTEN:2376,reuseaddr,fork,bind=127.0.0.1 UNIX-CLIENT:/var/run/docker.sock</div></pre></td></tr></table></figure>
-<h3 id="一些docker命令总结"><a href="#一些docker命令总结" class="headerlink" title="一些docker命令总结"></a>一些docker命令总结</h3><ul>
-<li>docker images :查看当前宿主机的所有镜像。</li>
-<li>docker images ubuntu：根据仓库名列出镜像</li>
-<li>docker images ubuntu:14.04:指定仓库名和标签</li>
-<li>docker build -t webservice .:表示使用当前目录下的DockerFile来生成镜像，-t参数的值表示镜像的tagname，如果DockerFile在当前路径下则使用.，如果不在当前路径下则使用相对路径。</li>
-<li>docker ps -a: 没有-a参数表示显示当前宿主机的正在运行的容器，加上-a表示显示当前宿主机所有的容器，包括已经退出的容器。</li>
-<li>docker run -d -p 2222:22 –name base centos:7.1
-表示根据指定的镜像后台运行容器，容器的名字是base（–name就是指定容器的名字)，centos:7.1表示镜像的名字，-p参数表示当前宿主机的2222端口对应容器的22端口。-d参数表示（Run container in background and print container ID）</li>
-<li>docker exec -it base /bin/bash
-以交互式命令进入base容器并且执行/bin/bash命令</li>
-<li>docker rmi webservice:删除webservice镜像</li>
-<li>docker rm base: 删除base容器，如果base正在运行，则可以使用docker rm -f base进行强行删除</li>
-<li>docker start 启动容器</li>
-<li>docker stop 停止容器</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/14/tips-android-pluggable-7/" itemprop="url">
-                  Android插件化(六)基础之Binder
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-14T13:47:58+08:00">
-                2018-01-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2322,7 +2346,7 @@ Docker 在容器的基础上，进行了进一步的封装，从文件系统、�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">116</span>
+                <span class="site-state-item-count">120</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2344,7 +2368,7 @@ Docker 在容器的基础上，进行了进一步的封装，从文件系统、�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">57</span>
+                <span class="site-state-item-count">58</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

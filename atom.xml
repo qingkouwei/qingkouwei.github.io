@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2018-10-31T10:38:17.313Z</updated>
+  <updated>2018-11-06T14:56:03.694Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -16,13 +16,242 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>tips-hashmap</title>
+    <link href="http://wodekouwei.com/2018/11/06/tips-hashmap/"/>
+    <id>http://wodekouwei.com/2018/11/06/tips-hashmap/</id>
+    <published>2018-11-06T14:56:03.000Z</published>
+    <updated>2018-11-06T14:56:03.694Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>tips-android-event-dispatch</title>
+    <link href="http://wodekouwei.com/2018/11/06/tips-android-event-dispatch/"/>
+    <id>http://wodekouwei.com/2018/11/06/tips-android-event-dispatch/</id>
+    <published>2018-11-06T14:55:54.000Z</published>
+    <updated>2018-11-06T14:55:54.144Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Android内存</title>
+    <link href="http://wodekouwei.com/2018/11/06/tips-android-memory/"/>
+    <id>http://wodekouwei.com/2018/11/06/tips-android-memory/</id>
+    <published>2018-11-06T14:41:22.000Z</published>
+    <updated>2018-11-06T14:43:58.132Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="dumpsys-meminfo"><a href="#dumpsys-meminfo" class="headerlink" title="dumpsys meminfo"></a>dumpsys meminfo</h4><p><code>adb shell dumpsys meminfo -a &lt;process id&gt;/&lt;process name&gt;</code>来查看一个进程的memory。截图如下：
+<img src="http://images.wodekouwei.com/technology/memory1.png" alt="image"></p>
+<p>Naitve Heap Size: 从mallinfo usmblks获得，代表最大总共分配空间</p>
+<p>Native Heap Alloc: 从mallinfo uorblks获得，总共分配空间</p>
+<p>Native Heap Free: 从mallinfo fordblks获得，代表总共剩余空间 </p>
+<p>Native Heap Size 约等于Native Heap Alloc + Native Heap Free</p>
+<p>mallinfo是一个C库， mallinfo 函数提供了各种各样的通过C的malloc（）函数分配的内存的统计信息。</p>
+<p>Dalvik Heap Size:从Runtime totalMemory()获得，Dalvik Heap总共的内存大小。</p>
+<p>Dalvik Heap Alloc: Runtime totalMemory()-freeMemory() ，Dalvik Heap分配的内存大小。</p>
+<p>Dalvik Heap Free:从Runtime freeMemory()获得，Dalvik Heap剩余的内存大小。</p>
+<p>Dalvik Heap Size 约等于Dalvik  Heap Alloc + Dalvik  Heap Free</p>
+<p>OtherPss, include Cursor,Ashmem, Other Dev, .so mmap, .jar mmap, .apk mmap, .ttf mmap, .dex mmap, Other mmap, Unkown统计信息都可以在process的smap文件看到。</p>
+<p>Objects and SQL 信息都是从Android Debug信息中获得。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">其他类型               smap 路径名称          描述</div><div class="line"></div><div class="line">Cursor                  /dev/ashmem/Cursor  Cursor消耗的内存(KB)</div><div class="line"></div><div class="line">Ashmem               /dev/ashmem            匿名共享内存用来提供共享内存通过分配一个多个进程</div><div class="line"></div><div class="line">                                                         可以共享的带名称的内存块</div><div class="line"></div><div class="line">Other dev             /dev/                        内部driver占用的在 “Other dev”                                                 </div><div class="line"></div><div class="line">.so mmap             .so                            C 库代码占用的内存</div><div class="line"></div><div class="line">.jar mmap            .jar                           Java 文件代码占用的内存</div><div class="line"></div><div class="line">.apk mmap           .apk                           apk代码占用的内存</div><div class="line"></div><div class="line">.ttf mmap              .ttf                           ttf 文件代码占用的内存</div><div class="line"></div><div class="line">.dex mmap             .dex                         Dex 文件代码占用的内存</div><div class="line"></div><div class="line">Other mmap                                          其他文件占用的内存</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;dumpsys-meminfo&quot;&gt;&lt;a href=&quot;#dumpsys-meminfo&quot; class=&quot;headerlink&quot; title=&quot;dumpsys meminfo&quot;&gt;&lt;/a&gt;dumpsys meminfo&lt;/h4&gt;&lt;p&gt;&lt;code&gt;adb shell du
+    
+    </summary>
+    
+      <category term="tips" scheme="http://wodekouwei.com/categories/tips/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="interview" scheme="http://wodekouwei.com/tags/interview/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>rxjava用法</title>
+    <link href="http://wodekouwei.com/2018/11/05/l-rxjava/"/>
+    <id>http://wodekouwei.com/2018/11/05/l-rxjava/</id>
+    <published>2018-11-05T08:35:48.000Z</published>
+    <updated>2018-11-05T10:38:15.087Z</updated>
+    
+    <content type="html"><![CDATA[<p>现在越来越多Android开发者使用到RxJava，在Android使用RxJava主要有如下好处： 
+1，轻松切换线程。以前我们切换线程主要使用Handler等手段来做。 
+2，轻松解决回调的嵌套问题。现在的app业务逻辑越来越复杂，多的时候3，4层回调嵌套，使得代码可维护性变得很差。RxJava链式调用使得这些调用变得扁平化。</p>
+<p>随着RxJava的流行，越来越多的开源项目开始支持RxJava，像Retrofit、GreenDao等。这些开源项目支持RxJava使得我们解决复杂业务变得非常方便。</p>
+<p>但是这些还不够，有的时候我们自己的封装的业务也需要支持RxJava，举个例子：查询数据、处理本地文件等操作，总而言之就是一些耗时任务。而且还要处理这些操作的成功、失败、线程切换等操作。 </p>
+<h4 id="RX操作符之Observable的创建方式"><a href="#RX操作符之Observable的创建方式" class="headerlink" title="RX操作符之Observable的创建方式"></a>RX操作符之Observable的创建方式</h4><h5 id="创建方式一-just、from、repeat、repeatWhen"><a href="#创建方式一-just、from、repeat、repeatWhen" class="headerlink" title="创建方式一:just、from、repeat、repeatWhen"></a>创建方式一:just、from、repeat、repeatWhen</h5><h6 id="1-just方法"><a href="#1-just方法" class="headerlink" title="1.just方法"></a>1.just方法</h6><p>创建发送指定值的Observerble，just只是简单的原样发射，将数组或Iterable当做单个数据。如果传递的值为null，则发送的Observable的值为null。参数最多为9个
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Observable&lt;String&gt; myObservable = Observable.just(&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;);</div><div class="line"></div><div class="line">       Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">           @Override</div><div class="line">           public void onNext(String s) &#123;</div><div class="line">               System.out.println(s);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onCompleted() &#123;</div><div class="line">               System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onError(Throwable e) &#123;</div><div class="line">               System.out.println(&quot;onError....................&quot;);</div><div class="line">           &#125;</div><div class="line">       &#125;;</div><div class="line"></div><div class="line">       myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">onCompleted.............</div></pre></td></tr></table></figure></p>
+<h6 id="2-from方法"><a href="#2-from方法" class="headerlink" title="2.from方法"></a>2.from方法</h6><p>将数据转换成为Observables，而不是需要混合使用Observables和其它类型的数据
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">String[]items = &#123;&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;,&quot;just1&quot;&#125;;</div><div class="line"></div><div class="line">       Observable&lt;String&gt; myObservable = Observable.from(items);</div><div class="line"></div><div class="line">       Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">           @Override</div><div class="line">           public void onNext(String s) &#123;</div><div class="line">               System.out.println(s);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onCompleted() &#123;</div><div class="line">               System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onError(Throwable e) &#123;</div><div class="line">               System.out.println(&quot;onError....................&quot;);</div><div class="line">           &#125;</div><div class="line">       &#125;;</div><div class="line"></div><div class="line">       myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">just1</div><div class="line">onCompleted.............</div></pre></td></tr></table></figure></p>
+<h6 id="3-repeat方法"><a href="#3-repeat方法" class="headerlink" title="3.repeat方法"></a>3.repeat方法</h6><p>repeat()重复地执行某个操作，如果不传递参数，结果将会被无限地重复执行，默认在trampoline调度器上执行，该方法为非静态方法，不可以直接通过Observable来调用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">String[]items = &#123;&quot;just1&quot;,&quot;just2&quot;,&quot;just3&quot;,&quot;just4&quot;,&quot;just5&quot;,&quot;just6&quot;&#125;;</div><div class="line"></div><div class="line">       Observable&lt;String&gt; myObservable = Observable.from(items).repeat();</div><div class="line"></div><div class="line"></div><div class="line">       Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">           @Override</div><div class="line">           public void onNext(String s) &#123;</div><div class="line">               System.out.println(s);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onCompleted() &#123;</div><div class="line">               System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onError(Throwable e) &#123;</div><div class="line">               System.out.println(&quot;onError....................&quot;);</div><div class="line">           &#125;</div><div class="line">       &#125;;</div><div class="line"></div><div class="line">       myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>repeat()如果传入数字类型的参数，则重复地执行指定次数的某个操作，默认在trampoline调度器上执行，不可以直接通过Observable来调用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">String[]items = &#123;&quot;just1&quot;,&quot;just2&quot;,&quot;just3&quot;,&quot;just4&quot;,&quot;just5&quot;,&quot;just6&quot;&#125;;</div><div class="line"> </div><div class="line">        Observable&lt;String&gt; myObservable = Observable.from(items).repeat(2);</div><div class="line"> </div><div class="line"> </div><div class="line">        Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onNext(String s) &#123;</div><div class="line">                System.out.println(s);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onCompleted() &#123;</div><div class="line">                System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onError(Throwable e) &#123;</div><div class="line">                System.out.println(&quot;onError....................&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"> </div><div class="line">        myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>repeatWhen()不是缓存和重放原始Observable的数据序列，而是有条件的重新订阅和发射原来的Observable,当Observable中的call()方法中调用了重复执行的代码时，onNext()将会被重复执行。如果该方法执行后返回void，则结束执行
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">final String[]items = &#123;&quot;just1&quot;,&quot;just2&quot;,&quot;just3&quot;,&quot;just4&quot;,&quot;just5&quot;,&quot;just6&quot;&#125;;</div><div class="line"></div><div class="line">       Observable&lt;String&gt; myObservable = Observable.from(items).repeatWhen(new Func1&lt;Observable&lt;? extends Void&gt;, Observable&lt;?&gt;&gt;() &#123;</div><div class="line">           @Override</div><div class="line">           public Observable&lt;?&gt; call(Observable&lt;? extends Void&gt; observable) &#123;</div><div class="line">               return observable.delay(5, TimeUnit.SECONDS);</div><div class="line">           &#125;</div><div class="line">       &#125;);</div><div class="line"></div><div class="line"></div><div class="line">       Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">           @Override</div><div class="line">           public void onNext(String s) &#123;</div><div class="line">               System.out.println(&quot;onNext..................&quot;+s);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onCompleted() &#123;</div><div class="line">               System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           @Override</div><div class="line">           public void onError(Throwable e) &#123;</div><div class="line">               System.out.println(&quot;onError....................&quot;);</div><div class="line">           &#125;</div><div class="line">       &#125;;</div><div class="line"></div><div class="line">       myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>doWhile 属于可选包rxjava-computation-expressions，不是RxJava标准操作符的一部分。doWhile在原始序列的每次重复后检查某个条件，如果满足条件才重复发射。
+whileDo 属于可选包rxjava-computation-expressions，不是RxJava标准操作符的一部分。whileDo在原始序列的每次重复前检查某个条件，如果满足条件才重复发射。</p>
+<h5 id="创建方式二-defer、range、interval、timer、Empty、Never、Throw"><a href="#创建方式二-defer、range、interval、timer、Empty、Never、Throw" class="headerlink" title="创建方式二:defer、range、interval、timer、Empty、Never、Throw"></a>创建方式二:defer、range、interval、timer、Empty、Never、Throw</h5><h6 id="1-defer"><a href="#1-defer" class="headerlink" title="1.defer"></a>1.defer</h6><p>Defer操作符会一直等待直到有观察者订阅它，然后它使用Observable工厂方法生成一个Observable。它对每个观察者都这样做，因此尽管每个订阅者都以为自己订阅的是同一个Observable，事实上每个订阅者获取的是它们自己的单独的数据序列。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">String[]items = &#123;&quot;just1&quot;,&quot;just2&quot;,&quot;just3&quot;,&quot;just4&quot;,&quot;just5&quot;,&quot;just6&quot;&#125;;</div><div class="line"> </div><div class="line">    Observable&lt;String&gt; myObservable = Observable.from(items);</div><div class="line"> </div><div class="line">    Subscriber&lt;String&gt; mySubscriber = new Subscriber&lt;String&gt;() &#123;</div><div class="line">        @Override</div><div class="line">        public void onNext(String s) &#123;</div><div class="line">            System.out.println(&quot;onNext.................&quot;+s);</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        @Override</div><div class="line">        public void onCompleted() &#123;</div><div class="line">            System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        @Override</div><div class="line">        public void onError(Throwable e) &#123;</div><div class="line">            System.out.println(&quot;onError....................&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"> </div><div class="line">    Subscriber&lt;String&gt; mySubscriber1 = new Subscriber&lt;String&gt;() &#123;</div><div class="line">        @Override</div><div class="line">        public void onNext(String s) &#123;</div><div class="line">            System.out.println(&quot;onNext.................&quot;+s);</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        @Override</div><div class="line">        public void onCompleted() &#123;</div><div class="line">            System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        @Override</div><div class="line">        public void onError(Throwable e) &#123;</div><div class="line">            System.out.println(&quot;onError....................&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"> </div><div class="line">    myObservable.subscribe(mySubscriber);</div><div class="line">    myObservable.subscribe(mySubscriber1);</div></pre></td></tr></table></figure></p>
+<p><img src="http://images.wodekouwei.com/technology/rxjava1.png" alt="image">
+尽管打印的结果一样，但是它们不是取自同一个Observable的数据</p>
+<h6 id="2-Range"><a href="#2-Range" class="headerlink" title="2.Range"></a>2.Range</h6><p>创建一个发射特定整数序列的Observable,接收两个参数，第一个参数是范围的起始值，第二个参数是范围的数据数目，即需要多产生多少个这样的值。如果你将第二个参数设为0，将导致Observable不发射任何数据（如果设置为负数，会抛异常）。range默认不在任何特定的调度器上执行。有一个变体可以通过可选参数指定Scheduler。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">String[]items = &#123;&quot;just1&quot;,&quot;just2&quot;,&quot;just3&quot;,&quot;just4&quot;,&quot;just5&quot;,&quot;just6&quot;&#125;;</div><div class="line"> </div><div class="line">        Observable&lt;Integer&gt; myObservable = Observable.range(5,10);</div><div class="line"> </div><div class="line"> </div><div class="line">        Subscriber&lt;Integer&gt; mySubscriber = new Subscriber&lt;Integer&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onNext(Integer s) &#123;</div><div class="line">                System.out.println(&quot;onNext.................&quot;+s);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onCompleted() &#123;</div><div class="line">                System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onError(Throwable e) &#123;</div><div class="line">                System.out.println(&quot;onError....................&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"> </div><div class="line">        myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p><img src="http://images.wodekouwei.com/technology/rxjava2.png" alt="image"></p>
+<h6 id="3-Interval"><a href="#3-Interval" class="headerlink" title="3.Interval"></a>3.Interval</h6><p>Interval操作符返回一个Observable，它按固定的时间间隔发射一个无限递增的整数序列。RxJava将这个操作符实现为interval方法。它接受一个表示时间间隔的参数和一个表示时间单位的参数。结果递增且不断增加
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Observable&lt;Long&gt; myObservable = Observable.interval(2,TimeUnit.SECONDS);</div><div class="line">        Subscriber&lt;Long&gt; mySubscriber = new Subscriber&lt;Long&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onNext(Long s) &#123;</div><div class="line">                System.out.println(&quot;onNext.................&quot;+s);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onCompleted() &#123;</div><div class="line">                System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onError(Throwable e) &#123;</div><div class="line">                System.out.println(&quot;onError....................&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"> </div><div class="line">        myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p><img src="http://images.wodekouwei.com/technology/rxjava3.png" alt="image"></p>
+<h6 id="4-Timer"><a href="#4-Timer" class="headerlink" title="4.Timer"></a>4.Timer</h6><p>创建一个Observable，它在一个给定的延迟后发射一个特殊的值,延迟2s后发送数据
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Observable&lt;Long&gt; myObservable = Observable</div><div class="line">                .timer(2,TimeUnit.SECONDS);</div><div class="line">        Subscriber&lt;Long&gt; mySubscriber = new Subscriber&lt;Long&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onNext(Long s) &#123;</div><div class="line">                System.out.println(&quot;onNext.................&quot;+s);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onCompleted() &#123;</div><div class="line">                System.out.println(&quot;onCompleted.................&quot;);</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            @Override</div><div class="line">            public void onError(Throwable e) &#123;</div><div class="line">                System.out.println(&quot;onError....................&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">        myObservable.subscribe(mySubscriber);</div></pre></td></tr></table></figure></p>
+<p>结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">onNext.................0</div><div class="line">onCompleted.................</div></pre></td></tr></table></figure></p>
+<h6 id="5-Empty"><a href="#5-Empty" class="headerlink" title="5.Empty"></a>5.Empty</h6><p>创建一个不发射任何数据但是正常终止的Observable</p>
+<h6 id="6-Never"><a href="#6-Never" class="headerlink" title="6.Never"></a>6.Never</h6><p>创建一个不发射数据也不终止的Observable</p>
+<h6 id="7-Throw"><a href="#7-Throw" class="headerlink" title="7.Throw"></a>7.Throw</h6><p>创建一个不发射数据以一个错误终止的Observable</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;现在越来越多Android开发者使用到RxJava，在Android使用RxJava主要有如下好处： 
+1，轻松切换线程。以前我们切换线程主要使用Handler等手段来做。 
+2，轻松解决回调的嵌套问题。现在的app业务逻辑越来越复杂，多的时候3，4层回调嵌套，使得代码可维
+    
+    </summary>
+    
+      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
+    
+    
+      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
+    
+      <category term="rxjava" scheme="http://wodekouwei.com/tags/rxjava/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java GC</title>
     <link href="http://wodekouwei.com/2018/10/31/tips-gc/"/>
     <id>http://wodekouwei.com/2018/10/31/tips-gc/</id>
     <published>2018-10-31T10:37:21.000Z</published>
-    <updated>2018-10-31T10:38:17.313Z</updated>
+    <updated>2018-11-06T14:47:55.403Z</updated>
+    
+    <content type="html"><![CDATA[<p>要想深入了解Java的GC(Garbage Collection)，我们应该先探寻如下三个问题：</p>
+<p>What? – 哪些内存需要回收？
+When? – 什么时候回收？
+How? – 如何回收？</p>
+<h3 id="GC-Definition"><a href="#GC-Definition" class="headerlink" title="GC Definition"></a>GC Definition</h3><p>Definition: Program itself finds and collects memory which is useless. It is a form of automatic memory management which doesn’t need programmers release memory.
+Java中为什么会有GC机制呢？</p>
+<ul>
+<li>安全性考虑；– for security.</li>
+<li>减少内存泄露；– erase memory leak in some degree.</li>
+<li>减少程序员工作量。– Programmers don’t worry about memory releasing.</li>
+</ul>
+<h3 id="What-–-哪些内存需要回收？"><a href="#What-–-哪些内存需要回收？" class="headerlink" title="What? – 哪些内存需要回收？"></a>What? – 哪些内存需要回收？</h3><p>我们知道，内存运行时JVM会有一个运行时数据区来管理内存。它主要包括5大部分：程序计数器(Program Counter Register)、虚拟机栈(VM Stack)、本地方法栈(Native Method Stack)、方法区(Method Area)、堆(Heap).</p>
+<p>而其中程序计数器、虚拟机栈、本地方法栈是每个线程私有的内存空间，随线程而生，随线程而亡。例如栈中每一个栈帧中分配多少内存基本上在类结构去诶是哪个下来时就已知了，因此这3个区域的内存分配和回收都是确定的，无需考虑内存回收的问题。</p>
+<p>但方法区和堆就不同了，一个接口的多个实现类需要的内存可能不一样，我们只有在程序运行期间才会知道会创建哪些对象，这部分内存的分配和回收都是动态的，GC主要关注的是这部分内存。</p>
+<blockquote>
+<p>总而言之，GC主要进行回收的内存是JVM中的方法区和堆；涉及到多线程(指堆)、多个对该对象不同类型的引用(指方法区)，才会涉及GC的回收。</p>
+</blockquote>
+<h3 id="When-–-什么时候回收？"><a href="#When-–-什么时候回收？" class="headerlink" title="When? – 什么时候回收？"></a>When? – 什么时候回收？</h3><h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>在面试中经常会碰到这样一个问题（事实上笔者也碰到过）：如何判断一个对象已经死去？</p>
+<p>很容易想到的一个答案是：对一个对象添加引用计数器。每当有地方引用它时，计数器值加1；当引用失效时，计数器值减1.而当计数器的值为0时这个对象就不会再被使用，判断为已死。是不是简单又直观。然而，很遗憾。这种做法是错误的！为什么是错的呢？事实上，用引用计数法确实在大部分情况下是一个不错的解决方案，而在实际的应用中也有不少案例，但它却无法解决对象之间的循环引用问题。比如对象A中有一个字段指向了对象B，而对象B中也有一个字段指向了对象A，而事实上他们俩都不再使用，但计数器的值永远都不可能为0，也就不会被回收，然后就发生了内存泄露。。</p>
+<p>所以，正确的做法应该是怎样呢？
+在Java，C#等语言中，比较主流的判定一个对象已死的方法是：可达性分析(Reachability Analysis).
+所有生成的对象都是一个称为”GC Roots”的根的子树。从GC Roots开始向下搜索，搜索所经过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链可以到达时，就称这个对象是不可达的（不可引用的），也就是可以被GC回收了。如下图所示：
+<img src="http://images.wodekouwei.com/technology/gc1.png" alt="image"></p>
+<p>在 Java 语言中，可作为 GC Roots 的对象包括下面几种：</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中 JNI（即一般说的 Native 方法）引用的对象</li>
+</ul>
+<p>无论是引用计数器还是可达性分析，判定对象是否存活都与引用有关！那么，如何定义对象的引用呢？</p>
+<p>我们希望给出这样一类描述：当内存空间还够时，能够保存在内存中；如果进行了垃圾回收之后内存空间仍旧非常紧张，则可以抛弃这些对象。所以根据不同的需求，给出如下四种引用，根据引用类型的不同，GC回收时也会有不同的操作：</p>
+<ul>
+<li>强引用(Strong Reference):Object obj = new Object();只要强引用还存在，GC永远不会回收掉被引用的对象。</li>
+<li>软引用(Soft Reference)：描述一些还有用但非必需的对象。在系统将会发生内存溢出之前，会把这些对象列入回收范围进行二次回收（即系统将会发生内存溢出了，才会对他们进行回收。）</li>
+<li>弱引用(Weak Reference):程度比软引用还要弱一些。这些对象只能生存到下次GC之前。当GC工作时，无论内存是否足够都会将其回收（即只要进行GC，就会对他们进行回收。）</li>
+<li>虚引用(Phantom Reference):一个对象是否存在虚引用，完全不会对其生存时间构成影响。</li>
+</ul>
+<h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><p>What部分我们已经提到，GC主要回收的是堆和方法区中的内存，而上面的How主要是针对对象的回收，他们一般位于堆内。那么，方法区中的东西该怎么回收呢？</p>
+<p>关于方法区中需要回收的是一些废弃的常量和无用的类。</p>
+<ol>
+<li>废弃的常量的回收。这里看引用计数就可以了。没有对象引用该常量就可以放心的回收了。</li>
+<li>无用的类的回收。什么是无用的类呢？<ul>
+<li>该类所有的实例都已经被回收。也就是Java堆中不存在该类的任何实例；</li>
+<li>加载该类的ClassLoader已经被回收；</li>
+<li>该类对应的java.lang.Class对象没有任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>总而言之，对于堆中的对象，主要用可达性分析判断一个对象是否还存在引用，如果该对象没有任何引用就应该被回收。而根据我们实际对引用的不同需求，又分成了4中引用，每种引用的回收机制也是不同的。对于方法区中的常量和类，当一个常量没有任何对象引用它，它就可以被回收了。而对于类，如果可以判定它为无用类，就可以被回收了。</p>
+</blockquote>
+<h3 id="How-–-如何回收？"><a href="#How-–-如何回收？" class="headerlink" title="How? – 如何回收？"></a>How? – 如何回收？</h3><h4 id="标记-清除-Mark-Sweep-算法"><a href="#标记-清除-Mark-Sweep-算法" class="headerlink" title="标记-清除(Mark-Sweep)算法"></a>标记-清除(Mark-Sweep)算法</h4><p>分为两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。
+缺点：效率问题，标记和清除两个过程的效率都不高；空间问题，会产生很多碎片。</p>
+<h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><p>将可用内存按容量划分为大小相等的两块，每次只用其中一块。当这一块用完了，就将还存活的对象复制到另外一块上面，然后把原始空间全部回收。高效、简单。
+缺点：将内存缩小为原来的一半。</p>
+<h4 id="标记-整理-Mark-Compat-算法"><a href="#标记-整理-Mark-Compat-算法" class="headerlink" title="标记-整理(Mark-Compat)算法"></a>标记-整理(Mark-Compat)算法</h4><p>标记过程与标记-清除算法过程一样，但后面不是简单的清除，而是让所有存活的对象都向一端移动，然后直接清除掉端边界以外的内存。</p>
+<h4 id="分代收集-Generational-Collection-算法"><a href="#分代收集-Generational-Collection-算法" class="headerlink" title="分代收集(Generational Collection)算法"></a>分代收集(Generational Collection)算法</h4><p>新生代中，每次垃圾收集时都有大批对象死去，只有少量存活，就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集；
+老年代中，其存活率较高、没有额外空间对它进行分配担保，就应该使用“标记-整理”或“标记-清理”算法进行回收。</p>
+<h3 id="一些收集器"><a href="#一些收集器" class="headerlink" title="一些收集器"></a>一些收集器</h3><h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><p>单线程收集器，表示在它进行垃圾收集时，必须暂停其他所有的工作线程，直到它收集结束。”Stop The World”.</p>
+<h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><p>实际就是Serial收集器的多线程版本。</p>
+<ul>
+<li>并发(Parallel):指多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态；</li>
+<li>并行(Concurrent):指用户线程与垃圾收集线程同时执行，用户程序在继续运行，而垃圾收集程序运行于另一个CPU上。</li>
+</ul>
+<p>####Parallel Scavenge收集器
+该收集器比较关注吞吐量(Throughout)(CPU用于用户代码的时间与CPU总消耗时间的比值)，保证吞吐量在一个可控的范围内。</p>
+<h4 id="CMS-Concurrent-Mark-Sweep-收集器"><a href="#CMS-Concurrent-Mark-Sweep-收集器" class="headerlink" title="CMS(Concurrent Mark Sweep)收集器"></a>CMS(Concurrent Mark Sweep)收集器</h4><p>CMS收集器是一种以获得最短停顿时间为目标的收集器。</p>
+<h4 id="G1-Garbage-First-收集器"><a href="#G1-Garbage-First-收集器" class="headerlink" title="G1(Garbage First)收集器"></a>G1(Garbage First)收集器</h4><p>从JDK1.7 Update 14之后的HotSpot虚拟机正式提供了商用的G1收集器，与其他收集器相比，它具有如下优点：并行与并发；分代收集；空间整合；可预测的停顿等。</p>
+<blockquote>
+<p>本部分主要分析了三种不同的垃圾回收算法：Mark-Sweep, Copy, Mark-Compact. 每种算法都有不同的优缺点，也有不同的适用范围。而JVM中对垃圾回收器并没有严格的要求，不同的收集器会结合多个算法进行垃圾回收</p>
+</blockquote>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p>Java技术体系中所提倡的自动内存管理最终可以归结为自动化的解决2个问题：给对象分配内存以及回收分配给对象的内存。</p>
+<h4 id="对象优先在Eden分配"><a href="#对象优先在Eden分配" class="headerlink" title="对象优先在Eden分配"></a>对象优先在Eden分配</h4><p>大多数情况下，对象在新生代Eden区分配。当Eden区没有足够的内存时，虚拟机将发起一次Minor GC。</p>
+<ul>
+<li>Minor GC(新生代GC):指发生在新生代的垃圾收集动作，因为Java对象大多都具备朝生夕灭的特性，所以Minor GC发生的非常频繁。</li>
+<li>Full GC/Major GC(老年代GC):指发生在老年代的GC，出现了Major GC，经常会伴随至少一次的Minor GC。</li>
+</ul>
+<h4 id="大对象直接进老年代"><a href="#大对象直接进老年代" class="headerlink" title="大对象直接进老年代"></a>大对象直接进老年代</h4><p>大对象是指需要大量连续内存空间的Java对象（例如很长的字符串以及数组）。</p>
+<h4 id="长期存活的对象将进入老年代"><a href="#长期存活的对象将进入老年代" class="headerlink" title="长期存活的对象将进入老年代"></a>长期存活的对象将进入老年代</h4><p>JVM为每个对象定义一个对象年龄计数器。</p>
+<ul>
+<li>如果对象在Eden出生并经历过第一次Minor GC后仍然存活，并且能够被Survivor容纳，则应该被移动到Survivor空间中，并且年龄对象设置为1；</li>
+<li>对象在Survivor区中每熬过一次Minor GC，年龄就会增加1岁，当它的年龄增加到一定程度(默认为15岁，可通过参数-XX:MaxTenuringThreshold设置)，就会被晋升到老年代中。</li>
+<li>要注意的是：JVM并不是永远的要求对象的年龄必须达到MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一般，年龄大于等于该年龄的对象就可以直接进入老年代，无需等到MaxTenuringThreshold中要求的年龄。</li>
+</ul>
+<h5 id="空间分配担保"><a href="#空间分配担保" class="headerlink" title="空间分配担保"></a>空间分配担保</h5><p>= 在发生Minor GC之前，虚拟机会先检查老年代最大可用的连续空间是否大于新生代所有对象总空间，如果这个条件成立，则进行Minor GC是安全的；</p>
+<ul>
+<li>如果不成立，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。如果允许，则急促检查老年代最大可用连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，将尝试着进行一次Minor GC，尽管它是有风险的；</li>
+<li>如果小于或者HandePromotionFailure设置为不允许冒险，则这时要改为进行一次Full GC.</li>
+</ul>
+]]></content>
     
     <summary type="html">
+    
+      &lt;p&gt;要想深入了解Java的GC(Garbage Collection)，我们应该先探寻如下三个问题：&lt;/p&gt;
+&lt;p&gt;What? – 哪些内存需要回收？
+When? – 什么时候回收？
+How? – 如何回收？&lt;/p&gt;
+&lt;h3 id=&quot;GC-Definition&quot;&gt;&lt;a href
     
     </summary>
     
@@ -40,9 +269,91 @@
     <link href="http://wodekouwei.com/2018/10/31/tips-innerclass/"/>
     <id>http://wodekouwei.com/2018/10/31/tips-innerclass/</id>
     <published>2018-10-31T10:32:17.000Z</published>
-    <updated>2018-10-31T10:33:54.348Z</updated>
+    <updated>2018-11-05T15:09:56.503Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-内部类基础"><a href="#1-内部类基础" class="headerlink" title="1.内部类基础"></a>1.内部类基础</h3><p>在Java中，可以将一个类定义在另一个类里面或者一个方法里面，这样的类称为内部类。广泛意义上的内部类一般来说包括这四种：成员内部类、局部内部类、匿名内部类和静态内部类。下面就先来了解一下这四种内部类的用法。</p>
+<h4 id="1-1-成员内部类"><a href="#1-1-成员内部类" class="headerlink" title="1.1.成员内部类"></a>1.1.成员内部类</h4><p>成员内部类是最普通的内部类，它的定义为位于另一个类的内部，形如下面的形式：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class Circle &#123;</div><div class="line">    double radius = 0;</div><div class="line">     </div><div class="line">    public Circle(double radius) &#123;</div><div class="line">        this.radius = radius;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    class Draw &#123;     //内部类</div><div class="line">        public void drawSahpe() &#123;</div><div class="line">            System.out.println(&quot;drawshape&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这样看起来，类Draw像是类Circle的一个成员，Circle称为外部类。成员内部类可以无条件访问外部类的所有成员属性和成员方法（包括private成员和静态成员）。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class Circle &#123;</div><div class="line">    private double radius = 0;</div><div class="line">    public static int count =1;</div><div class="line">    public Circle(double radius) &#123;</div><div class="line">        this.radius = radius;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    class Draw &#123;     //内部类</div><div class="line">        public void drawSahpe() &#123;</div><div class="line">            System.out.println(radius);  //外部类的private成员</div><div class="line">            System.out.println(count);   //外部类的静态成员</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>不过要注意的是，当成员内部类拥有和外部类同名的成员变量或者方法时，会发生隐藏现象，即默认情况下访问的是成员内部类的成员。如果要访问外部类的同名成员，需要以下面的形式进行访问：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">外部类.this.成员变量</div><div class="line">外部类.this.成员方法</div></pre></td></tr></table></figure></p>
+<p>虽然成员内部类可以无条件地访问外部类的成员，而外部类想访问成员内部类的成员却不是这么随心所欲了。在外部类中如果要访问成员内部类的成员，必须先创建一个成员内部类的对象，再通过指向这个对象的引用来访问：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">class Circle &#123;</div><div class="line">    private double radius = 0;</div><div class="line"> </div><div class="line">    public Circle(double radius) &#123;</div><div class="line">        this.radius = radius;</div><div class="line">        getDrawInstance().drawSahpe();   //必须先创建成员内部类的对象，再进行访问</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    private Draw getDrawInstance() &#123;</div><div class="line">        return new Draw();</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    class Draw &#123;     //内部类</div><div class="line">        public void drawSahpe() &#123;</div><div class="line">            System.out.println(radius);  //外部类的private成员</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>成员内部类是依附外部类而存在的，也就是说，如果要创建成员内部类的对象，前提是必须存在一个外部类的对象。创建成员内部类对象的一般方式如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String[] args)  &#123;</div><div class="line">        //第一种方式：</div><div class="line">        Outter outter = new Outter();</div><div class="line">        Outter.Inner inner = outter.new Inner();  //必须通过Outter对象来创建</div><div class="line">         </div><div class="line">        //第二种方式：</div><div class="line">        Outter.Inner inner1 = outter.getInnerInstance();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Outter &#123;</div><div class="line">    private Inner inner = null;</div><div class="line">    public Outter() &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    public Inner getInnerInstance() &#123;</div><div class="line">        if(inner == null)</div><div class="line">            inner = new Inner();</div><div class="line">        return inner;</div><div class="line">    &#125;</div><div class="line">      </div><div class="line">    class Inner &#123;</div><div class="line">        public Inner() &#123;</div><div class="line">             </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="1-2-局部内部类"><a href="#1-2-局部内部类" class="headerlink" title="1.2.局部内部类"></a>1.2.局部内部类</h4><p>局部内部类是定义在一个方法或者一个作用域里面的类，它和成员内部类的区别在于局部内部类的访问仅限于方法内或者该作用域内。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">class People&#123;</div><div class="line">    public People() &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Man&#123;</div><div class="line">    public Man()&#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    public People getWoman()&#123;</div><div class="line">        class Woman extends People&#123;   //局部内部类</div><div class="line">            int age =0;</div><div class="line">        &#125;</div><div class="line">        return new Woman();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意，局部内部类就像是方法里面的一个局部变量一样，是不能有public、protected、private以及static修饰符的。</p>
+<h4 id="1-3-匿名内部类"><a href="#1-3-匿名内部类" class="headerlink" title="1.3.匿名内部类"></a>1.3.匿名内部类</h4><p>匿名内部类应该是平时我们编写代码时用得最多的，在编写事件监听的代码时使用匿名内部类不但方便，而且使代码更加容易维护。下面这段代码是一段Android事件监听代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">scan_bt.setOnClickListener(new OnClickListener() &#123;</div><div class="line">             </div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                // TODO Auto-generated method stub</div><div class="line">                 </div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">         </div><div class="line">        history_bt.setOnClickListener(new OnClickListener() &#123;</div><div class="line">             </div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                // TODO Auto-generated method stub</div><div class="line">                 </div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>这段代码为两个按钮设置监听器，这里面就使用了匿名内部类。这段代码中的：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">new OnClickListener() &#123;</div><div class="line">             </div><div class="line">            @Override</div><div class="line">            public void onClick(View v) &#123;</div><div class="line">                // TODO Auto-generated method stub</div><div class="line">                 </div><div class="line">            &#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>就是匿名内部类的使用。代码中需要给按钮设置监听器对象，使用匿名内部类能够在实现父类或者接口中的方法情况下同时产生一个相应的对象，但是前提是这个父类或者接口必须先存在才能这样使用。当然像下面这种写法也是可以的，跟上面使用匿名内部类达到效果相同。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">private void setListener()</div><div class="line">&#123;</div><div class="line">    scan_bt.setOnClickListener(new Listener1());       </div><div class="line">    history_bt.setOnClickListener(new Listener2());</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Listener1 implements View.OnClickListener&#123;</div><div class="line">    @Override</div><div class="line">    public void onClick(View v) &#123;</div><div class="line">    // TODO Auto-generated method stub</div><div class="line">             </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Listener2 implements View.OnClickListener&#123;</div><div class="line">    @Override</div><div class="line">    public void onClick(View v) &#123;</div><div class="line">    // TODO Auto-generated method stub</div><div class="line">             </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这种写法虽然能达到一样的效果，但是既冗长又难以维护，所以一般使用匿名内部类的方法来编写事件监听代码。同样的，匿名内部类也是不能有访问修饰符和static修饰符的。</p>
+<p>匿名内部类是唯一一种没有构造器的类。正因为其没有构造器，所以匿名内部类的使用范围非常有限，大部分匿名内部类用于接口回调。匿名内部类在编译的时候由系统自动起名为Outter$1.class。一般来说，匿名内部类用于继承其他类或是实现接口，并不需要增加额外的方法，只是对继承方法的实现或是重写。</p>
+<h4 id="1-4-静态内部类"><a href="#1-4-静态内部类" class="headerlink" title="1.4.静态内部类"></a>1.4.静态内部类</h4><p>静态内部类也是定义在另一个类里面的类，只不过在类的前面多了一个关键字static。静态内部类是不需要依赖于外部类的，这点和类的静态成员属性有点类似，并且它不能使用外部类的非static成员变量或者方法，这点很好理解，因为在没有外部类的对象的情况下，可以创建静态内部类的对象，如果允许访问外部类的非static成员就会产生矛盾，因为外部类的非static成员必须依附于具体的对象。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String[] args)  &#123;</div><div class="line">        Outter.Inner inner = new Outter.Inner();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Outter &#123;</div><div class="line">    public Outter() &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    static class Inner &#123;</div><div class="line">        public Inner() &#123;</div><div class="line">             </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="2-深入理解内部类"><a href="#2-深入理解内部类" class="headerlink" title="2.深入理解内部类"></a>2.深入理解内部类</h3><h4 id="2-1-为什么成员内部类可以无条件访问外部类的成员？"><a href="#2-1-为什么成员内部类可以无条件访问外部类的成员？" class="headerlink" title="2.1.为什么成员内部类可以无条件访问外部类的成员？"></a>2.1.为什么成员内部类可以无条件访问外部类的成员？</h4><p>在此之前，我们已经讨论过了成员内部类可以无条件访问外部类的成员，那具体究竟是如何实现的呢？下面通过反编译字节码文件看看究竟。事实上，编译器在进行编译的时候，会将成员内部类单独编译成一个字节码文件，下面是Outter.java的代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class Outter &#123;</div><div class="line">    private Inner inner = null;</div><div class="line">    public Outter() &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    public Inner getInnerInstance() &#123;</div><div class="line">        if(inner == null)</div><div class="line">            inner = new Inner();</div><div class="line">        return inner;</div><div class="line">    &#125;</div><div class="line">      </div><div class="line">    protected class Inner &#123;</div><div class="line">        public Inner() &#123;</div><div class="line">             </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译之后，出现了两个字节码文件：</p>
+<ul>
+<li>Outter$Inner.class</li>
+<li>Outter.class
+反编译Outter$Inner.class文件得到下面信息：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">E:\Workspace\Test\bin\com\cxh\test2&gt;javap -v Outter$Inner</div><div class="line">Compiled from &quot;Outter.java&quot;</div><div class="line">public class com.cxh.test2.Outter$Inner extends java.lang.Object</div><div class="line">  SourceFile: &quot;Outter.java&quot;</div><div class="line">  InnerClass:</div><div class="line">   #24= #1 of #22; //Inner=class com/cxh/test2/Outter$Inner of class com/cxh/tes</div><div class="line">t2/Outter</div><div class="line">  minor version: 0</div><div class="line">  major version: 50</div><div class="line">  Constant pool:</div><div class="line">const #1 = class        #2;     //  com/cxh/test2/Outter$Inner</div><div class="line">const #2 = Asciz        com/cxh/test2/Outter$Inner;</div><div class="line">const #3 = class        #4;     //  java/lang/Object</div><div class="line">const #4 = Asciz        java/lang/Object;</div><div class="line">const #5 = Asciz        this$0;</div><div class="line">const #6 = Asciz        Lcom/cxh/test2/Outter;;</div><div class="line">const #7 = Asciz        &lt;init&gt;;</div><div class="line">const #8 = Asciz        (Lcom/cxh/test2/Outter;)V;</div><div class="line">const #9 = Asciz        Code;</div><div class="line">const #10 = Field       #1.#11; //  com/cxh/test2/Outter$Inner.this$0:Lcom/cxh/t</div><div class="line">est2/Outter;</div><div class="line">const #11 = NameAndType #5:#6;//  this$0:Lcom/cxh/test2/Outter;</div><div class="line">const #12 = Method      #3.#13; //  java/lang/Object.&quot;&lt;init&gt;&quot;:()V</div><div class="line">const #13 = NameAndType #7:#14;//  &quot;&lt;init&gt;&quot;:()V</div><div class="line">const #14 = Asciz       ()V;</div><div class="line">const #15 = Asciz       LineNumberTable;</div><div class="line">const #16 = Asciz       LocalVariableTable;</div><div class="line">const #17 = Asciz       this;</div><div class="line">const #18 = Asciz       Lcom/cxh/test2/Outter$Inner;;</div><div class="line">const #19 = Asciz       SourceFile;</div><div class="line">const #20 = Asciz       Outter.java;</div><div class="line">const #21 = Asciz       InnerClasses;</div><div class="line">const #22 = class       #23;    //  com/cxh/test2/Outter</div><div class="line">const #23 = Asciz       com/cxh/test2/Outter;</div><div class="line">const #24 = Asciz       Inner;</div><div class="line"> </div><div class="line">&#123;</div><div class="line">final com.cxh.test2.Outter this$0;</div><div class="line"> </div><div class="line">public com.cxh.test2.Outter$Inner(com.cxh.test2.Outter);</div><div class="line">  Code:</div><div class="line">   Stack=2, Locals=2, Args_size=2</div><div class="line">   0:   aload_0</div><div class="line">   1:   aload_1</div><div class="line">   2:   putfield        #10; //Field this$0:Lcom/cxh/test2/Outter;</div><div class="line">   5:   aload_0</div><div class="line">   6:   invokespecial   #12; //Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</div><div class="line">   9:   return</div><div class="line">  LineNumberTable:</div><div class="line">   line 16: 0</div><div class="line">   line 18: 9</div><div class="line"> </div><div class="line">  LocalVariableTable:</div><div class="line">   Start  Length  Slot  Name   Signature</div><div class="line">   0      10      0    this       Lcom/cxh/test2/Outter$Inner;</div><div class="line"> </div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>第11行到35行是常量池的内容，下面逐一第38行的内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">final com.cxh.test2.Outter this$0;</div></pre></td></tr></table></figure></p>
+<p>这行是一个指向外部类对象的指针，看到这里想必大家豁然开朗了。也就是说编译器会默认为成员内部类添加了一个指向外部类对象的引用，那么这个引用是如何赋初值的呢？下面接着看内部类的构造器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public com.cxh.test2.Outter$Inner(com.cxh.test2.Outter);</div></pre></td></tr></table></figure></p>
+<p>从这里可以看出，虽然我们在定义的内部类的构造器是无参构造器，编译器还是会默认添加一个参数，该参数的类型为指向外部类对象的一个引用，所以成员内部类中的Outter this&amp;0 指针便指向了外部类对象，因此可以在成员内部类中随意访问外部类的成员。从这里也间接说明了成员内部类是依赖于外部类的，如果没有创建外部类的对象，则无法对Outter this&amp;0引用进行初始化赋值，也就无法创建成员内部类的对象了。</p>
+<h4 id="2-2-为什么局部内部类和匿名内部类只能访问局部final变量？"><a href="#2-2-为什么局部内部类和匿名内部类只能访问局部final变量？" class="headerlink" title="2.2.为什么局部内部类和匿名内部类只能访问局部final变量？"></a>2.2.为什么局部内部类和匿名内部类只能访问局部final变量？</h4><p>想必这个问题也曾经困扰过很多人，在讨论这个问题之前，先看下面这段代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String[] args)  &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    public void test(final int b) &#123;</div><div class="line">        final int a = 10;</div><div class="line">        new Thread()&#123;</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(a);</div><div class="line">                System.out.println(b);</div><div class="line">            &#125;;</div><div class="line">        &#125;.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这段代码会被编译成两个class文件：Test.class和Test1.class。默认情况下，编译器会为匿名内部类和局部内部类起名为Outterx.class（x为正整数）。test方法中的匿名内部类的名字被起为 Test$1。上段代码中，如果把变量a和b前面的任一个final去掉，这段代码都编译不过。我们先考虑这样一个问题：当test方法执行完毕之后，变量a的生命周期就结束了，而此时Thread对象的生命周期很可能还没有结束，那么在Thread的run方法中继续访问变量a就变成不可能了，但是又要实现这样的效果，怎么办呢？Java采用了 复制  的手段来解决这个问题。将这段代码的字节码反编译可以得到下面的内容：
+<img src="http://images.wodekouwei.com/technology/innerclass1.jpg" alt="image">
+我们看到在run方法中有一条指令：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bipush 10</div></pre></td></tr></table></figure></p>
+<p>这条指令表示将操作数10压栈，表示使用的是一个本地局部变量。这个过程是在编译期间由编译器默认进行，如果这个变量的值在编译期间可以确定，则编译器默认会在匿名内部类（局部内部类）的常量池中添加一个内容相等的字面量或直接将相应的字节码嵌入到执行字节码中。这样一来，匿名内部类使用的变量是另一个局部变量，只不过值和方法中局部变量的值相等，因此和方法中的局部变量完全独立开。</p>
+<p>下面再看一个例子：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String[] args)  &#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    public void test(final int a) &#123;</div><div class="line">        new Thread()&#123;</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(a);</div><div class="line">            &#125;;</div><div class="line">        &#125;.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>反编译得到
+<img src="http://images.wodekouwei.com/technology/innerclass2.jpg" alt="image"></p>
+<p>我们看到匿名内部类Test$1的构造器含有两个参数，一个是指向外部类对象的引用，一个是int型变量，很显然，这里是将变量test方法中的形参a以参数的形式传进来对匿名内部类中的拷贝（变量a的拷贝）进行赋值初始化。</p>
+<p>也就说如果局部变量的值在编译期间就可以确定，则直接在匿名内部里面创建一个拷贝。如果局部变量的值无法在编译期间确定，则通过构造器传参的方式来对拷贝进行初始化赋值。</p>
+<p>从上面可以看出，在run方法中访问的变量a根本就不是test方法中的局部变量a。这样一来就解决了前面所说的 生命周期不一致的问题。但是新的问题又来了，既然在run方法中访问的变量a和test方法中的变量a不是同一个变量，当在run方法中改变变量a的值的话，会出现什么情况？</p>
+<p>对，会造成数据不一致性，这样就达不到原本的意图和要求。为了解决这个问题，java编译器就限定必须将变量a限制为final变量，不允许对变量a进行更改（对于引用类型的变量，是不允许指向新的对象），这样数据不一致性的问题就得以解决了。</p>
+<p>到这里，想必大家应该清楚为何 方法中的局部变量和形参都必须用final进行限定了。</p>
+<h4 id="2-3-静态内部类有特殊的地方吗？"><a href="#2-3-静态内部类有特殊的地方吗？" class="headerlink" title="2.3.静态内部类有特殊的地方吗？"></a>2.3.静态内部类有特殊的地方吗？</h4><p>从前面可以知道，静态内部类是不依赖于外部类的，也就说可以在不创建外部类对象的情况下创建内部类的对象。另外，静态内部类是不持有指向外部类对象的引用的，这个可以尝试反编译class文件看一下就知道了，是没有Outter this&amp;0引用的。</p>
+<h3 id="3-内部类的使用场景和好处"><a href="#3-内部类的使用场景和好处" class="headerlink" title="3.内部类的使用场景和好处"></a>3.内部类的使用场景和好处</h3><p>为什么在Java中需要内部类？总结一下主要有以下四点：</p>
+<ol>
+<li>每个内部类都能独立的继承一个接口的实现，所以无论外部类是否已经继承了某个(接口的)实现，对于内部类都没有影响。内部类使得多继承的解决方案变得完整，</li>
+<li>方便将存在一定逻辑关系的类组织在一起，又可以对外界隐藏。</li>
+<li>方便编写事件驱动程序</li>
+<li>方便编写线程代码</li>
+</ol>
+<p>个人觉得第一点是最重要的原因之一，内部类的存在使得Java的多继承机制变得更加完善。</p>
+<h3 id="4-常见的与内部类相关的笔试面试题"><a href="#4-常见的与内部类相关的笔试面试题" class="headerlink" title="4.常见的与内部类相关的笔试面试题"></a>4.常见的与内部类相关的笔试面试题</h3><h4 id="4-1-根据注释填写-1-，-2-，-3-处的代码"><a href="#4-1-根据注释填写-1-，-2-，-3-处的代码" class="headerlink" title="4.1.根据注释填写(1)，(2)，(3)处的代码"></a>4.1.根据注释填写(1)，(2)，(3)处的代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class Test&#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">           // 初始化Bean1</div><div class="line">           (1)</div><div class="line">           bean1.I++;</div><div class="line">           // 初始化Bean2</div><div class="line">           (2)</div><div class="line">           bean2.J++;</div><div class="line">           //初始化Bean3</div><div class="line">           (3)</div><div class="line">           bean3.k++;</div><div class="line">    &#125;</div><div class="line">    class Bean1&#123;</div><div class="line">           public int I = 0;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    static class Bean2&#123;</div><div class="line">           public int J = 0;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">class Bean&#123;</div><div class="line">    class Bean3&#123;</div><div class="line">           public int k = 0;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从前面可知，对于成员内部类，必须先产生外部类的实例化对象，才能产生内部类的实例化对象。而静态内部类不用产生外部类的实例化对象即可产生内部类的实例化对象。</p>
+<p>创建静态内部类对象的一般形式为：  外部类类名.内部类类名 xxx = new 外部类类名.内部类类名()
+创建成员内部类对象的一般形式为：  外部类类名.内部类类名 xxx = 外部类对象名.new 内部类类名()
+因此，（1），（2），（3）处的代码分别为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Test test = new Test();    </div><div class="line">Test.Bean1 bean1 = test.new Bean1();</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Test.Bean2 b2 = new Test.Bean2();</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Bean bean = new Bean();     </div><div class="line">Bean.Bean3 bean3 =  bean.new Bean3();</div></pre></td></tr></table></figure>
+<h4 id="4-2-下面这段代码的输出结果是什么？"><a href="#4-2-下面这段代码的输出结果是什么？" class="headerlink" title="4.2.下面这段代码的输出结果是什么？"></a>4.2.下面这段代码的输出结果是什么？</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public class Test &#123;</div><div class="line">    public static void main(String[] args)  &#123;</div><div class="line">        Outter outter = new Outter();</div><div class="line">        outter.new Inner().print();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line">class Outter</div><div class="line">&#123;</div><div class="line">    private int a = 1;</div><div class="line">    class Inner &#123;</div><div class="line">        private int a = 2;</div><div class="line">        public void print() &#123;</div><div class="line">            int a = 3;</div><div class="line">            System.out.println(&quot;局部变量：&quot; + a);</div><div class="line">            System.out.println(&quot;内部类变量：&quot; + this.a);</div><div class="line">            System.out.println(&quot;外部类变量：&quot; + Outter.this.a);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">3</div><div class="line">2</div><div class="line">1</div></pre></td></tr></table></figure>
+<p>最后补充一点知识：关于成员内部类的继承问题。一般来说，内部类是很少用来作为继承用的。但是当用来继承的话，要注意两点：</p>
+<ol>
+<li>成员内部类的引用方式必须为 Outter.Inner.</li>
+<li>构造器中必须有指向外部类对象的引用，并通过这个引用调用super()。这段代码摘自《Java编程思想》<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">class WithInner &#123;</div><div class="line">    class Inner&#123;</div><div class="line">         </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class InheritInner extends WithInner.Inner &#123;</div><div class="line">      </div><div class="line">    // InheritInner() 是不能通过编译的，一定要加上形参</div><div class="line">    InheritInner(WithInner wi) &#123;</div><div class="line">        wi.super(); //必须有这句调用</div><div class="line">    &#125;</div><div class="line">  </div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        WithInner wi = new WithInner();</div><div class="line">        InheritInner obj = new InheritInner(wi);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
     
     <summary type="html">
+    
+      &lt;h3 id=&quot;1-内部类基础&quot;&gt;&lt;a href=&quot;#1-内部类基础&quot; class=&quot;headerlink&quot; title=&quot;1.内部类基础&quot;&gt;&lt;/a&gt;1.内部类基础&lt;/h3&gt;&lt;p&gt;在Java中，可以将一个类定义在另一个类里面或者一个方法里面，这样的类称为内部类。广泛意义上的内部类
     
     </summary>
     
@@ -60,7 +371,7 @@
     <link href="http://wodekouwei.com/2018/10/25/tips-thread/"/>
     <id>http://wodekouwei.com/2018/10/25/tips-thread/</id>
     <published>2018-10-25T07:08:43.000Z</published>
-    <updated>2018-11-01T09:02:20.547Z</updated>
+    <updated>2018-11-06T14:58:31.097Z</updated>
     
     <content type="html"><![CDATA[<h3 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h3><h4 id="线程5种状态"><a href="#线程5种状态" class="headerlink" title="线程5种状态"></a>线程5种状态</h4><p><img src="http://images.wodekouwei.com/technology/thread-lifecycle.jpeg" alt="image"></p>
 <ol>
@@ -83,7 +394,84 @@
 2) 一个未捕获的异常终止了run方法而使线程猝死。
 为了确定线程在当前是否存活着（就是要么是可运行的，要么是被阻塞了），需要使用isAlive方法。如果是可运行或被阻塞，这个方法返回true； 如果线程仍旧是new状态且不是可运行的， 或者线程死亡了，则返回false.</li>
 </ol>
-<h4 id="线程同步的7种方式"><a href="#线程同步的7种方式" class="headerlink" title="线程同步的7种方式"></a>线程同步的7种方式</h4><h4 id="分析Java线程中断机制stop和interrupted的用法"><a href="#分析Java线程中断机制stop和interrupted的用法" class="headerlink" title="分析Java线程中断机制stop和interrupted的用法"></a>分析Java线程中断机制stop和interrupted的用法</h4><p>当我们点击某个杀毒软件的取消按钮来停止查杀病毒时，当我们在控制台敲入quit命令以结束某个后台服务时……都需要通过一个线程去取消另一个线程正在执行的任务。Java没有提供一种安全直接的方法来停止某个线程，但是Java提供了中断机制。如果对Java中断没有一个全面的了解，可能会误以为被中断的线程将立马退出运行，但事实并非如此。中断机制是如何工作的？捕获或检测到中断后，是抛出InterruptedException还是重设中断状态以及在方法中吞掉中断状态会有什么后果？Thread.stop与中断相比又有哪些异同？什么情况下需要使用中断？中断的原理Java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理中断。这好比是家里的父母叮嘱在外的子女要注意身体，但子女是否注意身体，怎么注意身体则完全取决于自己。Java中断模型也是这么简单，每个线程对象里都有一个boolean类型的标识（不一定就要是Thread类的字段，实际上也的确不是，这几个方法最终都是通过native方法来完成的），代表着是否有中断请求（该请求可以来自所有线程，包括被中断的线程本身）。例如，当线程t1想中断线程t2，只需要在线程t1中将线程t2对象的中断标识置为true，然后线程2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像这个线程没有被中断一样。java.lang.Thread类提供了几个方法来操作这个中断状态，这些方法包括：</p>
+<h4 id="线程同步的7种方式"><a href="#线程同步的7种方式" class="headerlink" title="线程同步的7种方式"></a>线程同步的7种方式</h4><p>java允许多线程并发控制，当多个线程同时操作一个可共享的资源变量时（如数据的增删改查）， 将会导致数据不准确，相互之间产生冲突，因此加入同步锁以避免在该线程没有完成操作之前，被其他线程的调用，从而保证了该变量的唯一性和准确性。</p>
+<h5 id="方式1-同步方法"><a href="#方式1-同步方法" class="headerlink" title="方式1:同步方法"></a>方式1:同步方法</h5><p>即有synchronized关键字修饰的方法。 由于java的每个对象都有一个内置锁，当用此关键字修饰方法时， 内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态。
+代码如： 
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public synchronized void save()&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>注： synchronized关键字也可以修饰静态方法，此时如果调用该静态方法，将会锁住整个类</p>
+<h5 id="方式2-同步代码块"><a href="#方式2-同步代码块" class="headerlink" title="方式2:同步代码块"></a>方式2:同步代码块</h5><p>即有synchronized关键字修饰的语句块。 被该关键字修饰的语句块会自动被加上内置锁，从而实现同步
+代码如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">synchronized(object)&#123; </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注：同步是一种高开销的操作，因此应该尽量减少同步的内容。通常没有必要同步整个方法，使用synchronized代码块同步关键代码即可。 </p>
+<h5 id="方式3-使用特殊域变量-volatile-实现线程同步"><a href="#方式3-使用特殊域变量-volatile-实现线程同步" class="headerlink" title="方式3:使用特殊域变量(volatile)实现线程同步"></a>方式3:使用特殊域变量(volatile)实现线程同步</h5><ol>
+<li>volatile关键字为域变量的访问提供了一种免锁机制， </li>
+<li>使用volatile修饰域相当于告诉虚拟机该域可能会被其他线程更新， </li>
+<li>因此每次使用该域就要重新计算，而不是使用寄存器中的值 </li>
+<li>volatile不会提供任何原子操作，它也不能用来修饰final类型的变量<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">    //需要同步的变量加上volatile</div><div class="line">    private volatile int account = 100;</div><div class="line"></div><div class="line">    public int getAccount() &#123;</div><div class="line">        return account;</div><div class="line">    &#125;</div><div class="line">    //这里不再需要synchronized </div><div class="line">    public void save(int money) &#123;</div><div class="line">        account += money;</div><div class="line">    &#125;</div><div class="line">｝</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注：多线程中的非同步问题主要出现在对域的读写上，如果让域自身避免这个问题，则就不需要修改操作该域的方法。 用final域，有锁保护的域和volatile域可以避免非同步的问题。 </p>
+<h5 id="方式4-使用重入锁实现线程同步"><a href="#方式4-使用重入锁实现线程同步" class="headerlink" title="方式4:使用重入锁实现线程同步"></a>方式4:使用重入锁实现线程同步</h5><p>在JavaSE5.0中新增了一个java.util.concurrent包来支持同步。 
+ReentrantLock类是可重入、互斥、实现了Lock接口的锁，它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力
+ReenreantLock类的常用方法有：</p>
+<ol>
+<li>ReentrantLock() : 创建一个ReentrantLock实例 </li>
+<li>lock() : 获得锁 </li>
+<li>unlock() : 释放锁 </li>
+</ol>
+<p>注：ReentrantLock()还有一个可以创建公平锁的构造方法，但由于能大幅度降低程序运行效率，不推荐使用 
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">    </div><div class="line">    private int account = 100;</div><div class="line">    //需要声明这个锁</div><div class="line">    private Lock lock = new ReentrantLock();</div><div class="line">    public int getAccount() &#123;</div><div class="line">        return account;</div><div class="line">    &#125;</div><div class="line">    //这里不再需要synchronized </div><div class="line">    public void save(int money) &#123;</div><div class="line">        lock.lock();</div><div class="line">        try&#123;</div><div class="line">            account += money;</div><div class="line">        &#125;finally&#123;</div><div class="line">            lock.unlock();</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">｝</div></pre></td></tr></table></figure></p>
+<p>注：关于Lock对象和synchronized关键字的选择： </p>
+<ol>
+<li>最好两个都不用，使用一种java.util.concurrent包提供的机制，能够帮助用户处理所有与锁相关的代码。 </li>
+<li>如果synchronized关键字能满足用户的需求，就用synchronized，因为它能简化代码 </li>
+<li>如果需要更高级的功能，就用ReentrantLock类，此时要注意及时释放锁，否则会出现死锁，通常在finally代码释放锁 </li>
+</ol>
+<h5 id="方式5-使用局部变量实现线程同步"><a href="#方式5-使用局部变量实现线程同步" class="headerlink" title="方式5:使用局部变量实现线程同步"></a>方式5:使用局部变量实现线程同步</h5><p>如果使用ThreadLocal管理变量，则每一个使用该变量的线程都获得该变量的副本， 副本之间相互独立，这样每一个线程都可以随意修改自己的变量副本，而不会对其他线程产生影响。</p>
+<p> ThreadLocal 类的常用方法</p>
+<ul>
+<li>ThreadLocal() : 创建一个线程本地变量 </li>
+<li>get() : 返回此线程局部变量的当前线程副本中的值 </li>
+<li>initialValue() : 返回此线程局部变量的当前线程的”初始值” </li>
+<li>set(T value) : 将此线程局部变量的当前线程副本中的值设置为value</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class Bank&#123;</div><div class="line">    //使用ThreadLocal类管理共享变量account</div><div class="line">    private static ThreadLocal&lt;Integer&gt; account = new ThreadLocal&lt;Integer&gt;()&#123;</div><div class="line">        @Override</div><div class="line">        protected Integer initialValue()&#123;</div><div class="line">            return 100;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    public void save(int money)&#123;</div><div class="line">        account.set(account.get()+money);</div><div class="line">    &#125;</div><div class="line">    public int getAccount()&#123;</div><div class="line">        return account.get();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注：ThreadLocal与同步机制 </p>
+<ol>
+<li>ThreadLocal与同步机制都是为了解决多线程中相同变量的访问冲突问题。 </li>
+<li>前者采用以”空间换时间”的方法，后者采用以”时间换空间”的方式</li>
+</ol>
+<h5 id="方式6-使用阻塞队列实现线程同步"><a href="#方式6-使用阻塞队列实现线程同步" class="headerlink" title="方式6:使用阻塞队列实现线程同步"></a>方式6:使用阻塞队列实现线程同步</h5><p>前面5种同步方式都是在底层实现的线程同步，但是我们在实际开发当中，应当尽量远离底层结构。使用javaSE5.0版本中新增的java.util.concurrent包将有助于简化开发。 这里主要是使用LinkedBlockingQueue<e>来实现线程的同步.
+LinkedBlockingQueue<e>是一个基于已连接节点的，范围任意的blocking queue。 队列是先进先出的顺序（FIFO），关于队列以后会详细讲解~ 
+LinkedBlockingQueue 类常用方法 </e></e></p>
+<ul>
+<li>LinkedBlockingQueue() : 创建一个容量为Integer.MAX_VALUE的LinkedBlockingQueue </li>
+<li>put(E e) : 在队尾添加一个元素，如果队列满则阻塞 </li>
+<li>size() : 返回队列中的元素个数 </li>
+<li>take() : 移除并返回队头元素，如果队列空则阻塞 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">package com.xhj.thread;</div><div class="line"></div><div class="line">import java.util.Random;</div><div class="line">import java.util.concurrent.LinkedBlockingQueue;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 用阻塞队列实现线程同步 LinkedBlockingQueue的使用</div><div class="line"> * </div><div class="line"> * @author XIEHEJUN</div><div class="line"> * </div><div class="line"> */</div><div class="line">public class BlockingSynchronizedThread &#123;</div><div class="line">    /**</div><div class="line">     * 定义一个阻塞队列用来存储生产出来的商品</div><div class="line">     */</div><div class="line">    private LinkedBlockingQueue&lt;Integer&gt; queue = new LinkedBlockingQueue&lt;Integer&gt;();</div><div class="line">    /**</div><div class="line">     * 定义生产商品个数</div><div class="line">     */</div><div class="line">    private static final int size = 10;</div><div class="line">    /**</div><div class="line">     * 定义启动线程的标志，为0时，启动生产商品的线程；为1时，启动消费商品的线程</div><div class="line">     */</div><div class="line">    private int flag = 0;</div><div class="line"></div><div class="line">    private class LinkBlockThread implements Runnable &#123;</div><div class="line">        @Override</div><div class="line">        public void run() &#123;</div><div class="line">            int new_flag = flag++;</div><div class="line">            System.out.println(&quot;启动线程 &quot; + new_flag);</div><div class="line">            if (new_flag == 0) &#123;</div><div class="line">                for (int i = 0; i &lt; size; i++) &#123;</div><div class="line">                    int b = new Random().nextInt(255);</div><div class="line">                    System.out.println(&quot;生产商品：&quot; + b + &quot;号&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        queue.put(b);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;仓库中还有商品：&quot; + queue.size() + &quot;个&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(100);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125; else &#123;</div><div class="line">                for (int i = 0; i &lt; size / 2; i++) &#123;</div><div class="line">                    try &#123;</div><div class="line">                        int n = queue.take();</div><div class="line">                        System.out.println(&quot;消费者买去了&quot; + n + &quot;号商品&quot;);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;仓库中还有商品：&quot; + queue.size() + &quot;个&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(100);</div><div class="line">                    &#125; catch (Exception e) &#123;</div><div class="line">                        // TODO: handle exception</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        BlockingSynchronizedThread bst = new BlockingSynchronizedThread();</div><div class="line">        LinkBlockThread lbt = bst.new LinkBlockThread();</div><div class="line">        Thread thread1 = new Thread(lbt);</div><div class="line">        Thread thread2 = new Thread(lbt);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注：BlockingQueue<e>定义了阻塞队列的常用方法，尤其是三种添加元素的方法，我们要多加注意，当队列满时：</e></p>
+<ul>
+<li>add()方法会抛出异常</li>
+<li>offer()方法返回false</li>
+<li>put()方法会阻塞</li>
+</ul>
+<h5 id="方式7-使用原子变量实现线程同步"><a href="#方式7-使用原子变量实现线程同步" class="headerlink" title="方式7:使用原子变量实现线程同步"></a>方式7:使用原子变量实现线程同步</h5><p>需要使用线程同步的根本原因在于对普通变量的操作不是原子的。</p>
+<p>那么什么是原子操作呢？原子操作就是指将读取变量值、修改变量值、保存变量值看成一个整体来操作,即-这几种行为要么同时完成，要么都不完成。在java的util.concurrent.atomic包中提供了创建了原子类型变量的工具类，使用该类可以简化线程同步。</p>
+<p>其中AtomicInteger 表可以用原子方式更新int的值，可用在应用程序中(如以原子方式增加的计数器)，
+但不能用于替换Integer；可扩展Number，允许那些处理机遇数字类的工具和实用工具进行统一访问。</p>
+<p>AtomicInteger类常用方法：</p>
+<ul>
+<li>AtomicInteger(int initialValue) : 创建具有给定初始值的新的AtomicInteger</li>
+<li>addAddGet(int dalta) : 以原子方式将给定值与当前值相加</li>
+<li>get() : 获取当前值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">        private AtomicInteger account = new AtomicInteger(100);</div><div class="line"></div><div class="line">        public AtomicInteger getAccount() &#123;</div><div class="line">            return account;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public void save(int money) &#123;</div><div class="line">            account.addAndGet(money);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>补充–原子操作主要有：
+对于引用变量和大多数原始变量(long和double除外)的读写操作；
+对于所有使用volatile修饰的变量(包括long和double)的读写操作。</p>
+<h4 id="线程局部存储ThreadLocal"><a href="#线程局部存储ThreadLocal" class="headerlink" title="线程局部存储ThreadLocal"></a>线程局部存储ThreadLocal</h4><h4 id="分析Java线程中断机制stop和interrupted的用法"><a href="#分析Java线程中断机制stop和interrupted的用法" class="headerlink" title="分析Java线程中断机制stop和interrupted的用法"></a>分析Java线程中断机制stop和interrupted的用法</h4><p>当我们点击某个杀毒软件的取消按钮来停止查杀病毒时，当我们在控制台敲入quit命令以结束某个后台服务时……都需要通过一个线程去取消另一个线程正在执行的任务。Java没有提供一种安全直接的方法来停止某个线程，但是Java提供了中断机制。如果对Java中断没有一个全面的了解，可能会误以为被中断的线程将立马退出运行，但事实并非如此。中断机制是如何工作的？捕获或检测到中断后，是抛出InterruptedException还是重设中断状态以及在方法中吞掉中断状态会有什么后果？Thread.stop与中断相比又有哪些异同？什么情况下需要使用中断？中断的原理Java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理中断。这好比是家里的父母叮嘱在外的子女要注意身体，但子女是否注意身体，怎么注意身体则完全取决于自己。Java中断模型也是这么简单，每个线程对象里都有一个boolean类型的标识（不一定就要是Thread类的字段，实际上也的确不是，这几个方法最终都是通过native方法来完成的），代表着是否有中断请求（该请求可以来自所有线程，包括被中断的线程本身）。例如，当线程t1想中断线程t2，只需要在线程t1中将线程t2对象的中断标识置为true，然后线程2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像这个线程没有被中断一样。java.lang.Thread类提供了几个方法来操作这个中断状态，这些方法包括：</p>
 <ul>
 <li>public static boolean interrupted测试当前线程是否已经中断。线程的中断状态 由该方法清除。换句话说，如果连续两次调用该方法，则第二次调用将返回false（在第一次调用已清除了其中断状态之后，且第二次调用检验完中断状态前，当前线程再次中断的情况除外）。</li>
 <li>public boolean isInterrupted()测试线程是否已经中断。线程的中断状态不受该方法的影响。</li>
@@ -841,288 +1229,6 @@ Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 
       <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
     
       <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>gradle系列之配置</title>
-    <link href="http://wodekouwei.com/2018/07/06/gradle-config/"/>
-    <id>http://wodekouwei.com/2018/07/06/gradle-config/</id>
-    <published>2018-07-06T07:16:08.000Z</published>
-    <updated>2018-07-06T08:53:58.343Z</updated>
-    
-    <content type="html"><![CDATA[<p>AndroidStudio中build.gradle配置信息
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">// Top-level build file where you can add configuration options common to all sub-projects/modules.</div><div class="line">// Gradle中可以使用“//”或“/**/”来添加注释，与Java类似。</div><div class="line">// 根目录下的build.gradle用于添加子工程或模块共用的配置项。</div><div class="line"> </div><div class="line">// &quot;buildscript&quot;的类型为script block，而且是最上层的script block，用于配置Gradle的Project实例。其API文档为https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:buildscript(groovy.lang.Closure)</div><div class="line">// 其余的根script block有&quot;allprojects&quot;, &quot;dependencies&quot;, &quot;configurations&quot;等，更多的可见https://docs.gradle.org/current/dsl/的“Build script structure”一节。</div><div class="line">// Script Block是一种method的调用，传入的参数为configuration closure。执行后会对Project的属性进行配置。</div><div class="line">// 此处的&quot;buildscript&quot;用于配置Project的build script的classpath。</div><div class="line">    buildscript &#123;</div><div class="line">    // 如果需要的话，从https://jcenter.bintray.com/下载code reposities。</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    // 定义classpath，gradle会从“repositories”中下载对应版本的Gradle。如果使用gradle wrapper的话，感觉这个配置会被忽略。Wrapper会自己去下载所使用的gradle版本。</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:2.1.3&apos;</div><div class="line">        // NOTE: Do not place your application dependencies here; they belong</div><div class="line">        // in the individual module build.gradle files</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">// 该配置会被应用到所有的子工程。</div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">// 运行gradle clean时，执行此处定义的task。</div><div class="line">// 该任务继承自Delete，删除根目录中的build目录。</div><div class="line">// 相当于执行Delete.delete(rootProject.buildDir)。</div><div class="line">// gradle使用groovy语言，调用method时可以不用加（）。</div><div class="line">task clean(type: Delete) &#123;</div><div class="line">    delete rootProject.buildDir</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。而在build.gradle文件中直接声明的依赖项、仓库地址等信息是项目自身需要的资源。</p>
-<p>gradle是由groovy语言编写的，支持groovy语法，可以灵活的使用已有的各种ant插件、基于jvm的类库，这也是它比maven、ant等构建脚本强大的原因。虽然gradle支持开箱即用，但是如果你想在脚本中使用一些第三方的插件、类库等，就需要自己手动添加对这些插件、类库的引用。而这些插件、类库又不是直接服务于项目的，而是支持其它build脚本的运行。所以你应当将这部分的引用放置在buildscript代码块中。gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
-<p>举个例子，假设我们要编写一个task，用于解析csv文件并输出其内容。虽然我们可以使用gradle编写解析csv文件的代码，但其实apache有个库已经实现了一个解析csv文件的库供我们直接使用。我们如果想要使用这个库，需要在gradle.build文件中加入对该库的引用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">classpath &apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">import org.apache.commons.csv.*</div><div class="line">task printCSV() &#123;</div><div class="line">doLast &#123;</div><div class="line">def records = CSVFormat.EXCEL.parse(new FileReader(&apos;config/sample.csv&apos;))</div><div class="line">for (item in records) &#123;</div><div class="line">print item.get(0) + &apos; &apos;</div><div class="line">println item.get(1)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>buildscript代码块中的repositories和dependencies的使用方式与直接在build.gradle文件中的使用方式几乎完全一样。唯一不同之处是在buildscript代码块中你可以对dependencies使用classpath声明。该classpath声明说明了在执行其余的build脚本时，class loader可以使用这些你提供的依赖项。这也正是我们使用buildscript代码块的目的。</p>
-<p>而如果你的项目中需要使用该类库的话，就需要定义在buildscript代码块之外的dependencies代码块中。所以有可能会看到在build.gradle中出现以下代码：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">compile &apos;org.springframework.ws:spring-ws-core:2.2.0.RELEASE&apos;,</div><div class="line">&apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">buildscript &#123;</div><div class="line">repositories &#123;</div><div class="line">mavenLocal()</div><div class="line">mavenCentral()</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">classpath &apos;org.apache.commons:commons-csv:1.0&apos;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">import org.apache.commons.csv.*</div><div class="line">task printCSV() &#123;</div><div class="line">doLast &#123;</div><div class="line">def records = CSVFormat.EXCEL.parse(new FileReader(&apos;config/sample.csv&apos;))</div><div class="line">for (item in records) &#123;</div><div class="line">print item.get(0) + &apos; &apos;</div><div class="line">println item.get(1)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="依赖更新"><a href="#依赖更新" class="headerlink" title="依赖更新"></a>依赖更新</h5><p>项目依赖的远程包如果有更新，会有提醒或者自动更新吗？ 不会的，需要你手动设置changing标记为true，这样gradle会每24小时检查更新，通过更改resolutionStrategy可以修改检查周期。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">configurations.all &#123;</div><div class="line">    // check for updates every build</div><div class="line">    resolutionStrategy.cacheChangingModulesFor 0, &apos;seconds&apos;</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">    compile group: &quot;group&quot;, name: &quot;projectA&quot;, version: &quot;1.1-SNAPSHOT&quot;, changing: true</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>之前上传aar同一版本到maven仓库，但依赖却没有更新，该怎么办呢?可以直接删除本地缓存，缓存在~/.gradle/caches目录下，删除缓存后，下次运行就会自动重新下载远程依赖了。</p>
-<h5 id="取消任务"><a href="#取消任务" class="headerlink" title="取消任务"></a>取消任务</h5><p>项目构建过程中那么多任务，有些test相关的任务可能根本不需要，可以直接关掉，在build.gradle中加入如下脚本：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">tasks.whenTaskAdded &#123; task -&gt;</div><div class="line">    if (task.name.contains(&apos;AndroidTest&apos;)) &#123;</div><div class="line">        task.enabled = false</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>tasks会获取当前project中所有的task，enabled属性控制任务开关，whenTaskAdded后面的闭包会在gradle配置阶段完成。</p>
-<h5 id="加入任务"><a href="#加入任务" class="headerlink" title="加入任务"></a>加入任务</h5><p>任务可以取消了，但还不尽兴啊，想加入任务怎么搞？前面讲了dependsOn的方法，那就拿过来用啊，但是原有任务的依赖关系你又不是很清楚，甚至任务名称都不知道，怎么搞？</p>
-<p>比如我想在执行dex打包之前，加入一个hello任务，可以这么写：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">afterEvaluate &#123;</div><div class="line">    android.applicationVariants.each &#123; variant -&gt;</div><div class="line">        def dx = tasks.findByName(&quot;dex$&#123;variant.name.capitalize()&#125;&quot;)</div><div class="line">        def hello = &quot;hello$&#123;variant.name.capitalize()&#125;&quot;</div><div class="line">        task(hello) &lt;&lt; &#123;</div><div class="line">            println &quot;hello&quot;</div><div class="line">        &#125;</div><div class="line">        tasks.findByName(hello).dependsOn dx.taskDependencies.getDependencies(dx)</div><div class="line">        dx.dependsOn tasks.findByName(hello)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>afterEvaluate是什么鸟？你可以理解为在配置阶段要结束，项目评估完会走到这一步。</p>
-<p>variant呢？variant = productFlavors+ buildTypes，所以dex打包的任务可能就是dexCommonDebug。</p>
-<p>你怎么知道dex任务的具体名称？Android Studio中的Gradle Console在执行gradle任务的时候会有输出，可以仔细观察一下。</p>
-<p>hello任务定义的这么复杂干啥？我直接就叫hello不行吗?不行，each就是遍历variants，如果每个都叫hello，多个variant都一样，岂不是傻傻分不清楚，加上variant的name做后缀，才有任务的区分。</p>
-<p>关键来了，dx.taskDependencies.getDependencies(dx)会获取dx任务的所有依赖，让hello任务依赖dx任务的所有依赖，再让dx任务依赖hello任务，这样就可以加入某个任务到构建流程了，是不是感觉非常灵活。</p>
-<p>我突然想到，用doFirst的方式加入一个action到dx任务中，应该也可以达到上面效果。</p>
-<h5 id="任务监听"><a href="#任务监听" class="headerlink" title="任务监听"></a>任务监听</h5><p>你想知道每个执行任务的运行时间吗？你想知道每个执行任务都是干嘛的吗？把下面这段脚本加入build.gradle中即可：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">class TimingsListener implements TaskExecutionListener, BuildListener &#123;</div><div class="line">    private Clock clock</div><div class="line">    private timings = []</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void beforeExecute(Task task) &#123;</div><div class="line">        clock = new org.gradle.util.Clock()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void afterExecute(Task task, TaskState taskState) &#123;</div><div class="line">        def ms = clock.timeInMs</div><div class="line">        timings.add([ms, task.path])</div><div class="line">        task.project.logger.warn &quot;$&#123;task.path&#125; took $&#123;ms&#125;ms&quot;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void buildFinished(BuildResult result) &#123;</div><div class="line">        println &quot;Task timings:&quot;</div><div class="line">        for (timing in timings) &#123;</div><div class="line">            if (timing[0] &gt;= 50) &#123;</div><div class="line">                printf &quot;%7sms  %s\n&quot;, timing</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    @Override</div><div class="line">    void buildStarted(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void projectsEvaluated(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void projectsLoaded(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    void settingsEvaluated(Settings settings) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">gradle.addListener new TimingsListener()</div></pre></td></tr></table></figure></p>
-<p>上面是对每个任务计时的一个例子，想要了解每个任务的作用，你可以修改上面的脚本，打印出每个任务的inputs和outputs。比如assembleDebug那么多依赖任务，每个都是干什么的，一会compile，一会generate，有什么区别？看到每个task的输入输出，就可以大体看出它的作用。如果对assemble的每个任务监听，你会发现改一行代码build的时间主要花费在了dex上，buck牛逼的地方就是对这个地方进行了优化，大大减少了增量编译运行的时间。</p>
-<h5 id="buildscript方法"><a href="#buildscript方法" class="headerlink" title="buildscript方法"></a>buildscript方法</h5><p>Android项目中，根工程默认的build.gradle应该是这样的：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// Top-level build file where you can add configuration options common to all sub-projects/modules.</div><div class="line"></div><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>一会一个jcenter()这是在干什么？buildscript方法的作用是配置脚本的依赖，而我们平常用的compile是配置project的依赖。repositories的意思就是需要包的时候到哥这里来找，然后你以为com.android.tools.build:gradle:1.2.3会从jcenter那里下载了是吧，图样图森破，不信加入下面这段脚本看看输出：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    repositories.each &#123;</div><div class="line">        println it.getUrl()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>结果是这样的：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/gradle/m2repository/ https://jcenter.bintray.com/</div></pre></td></tr></table></figure></p>
-<p>我靠，仓库竟然直接在Android Studio应用内部，所以说你去掉buildscript的jcenter()完全没有关系啊，下面还有更爽的，我们知道有依赖传递，上面classpath 中的gradle依赖gradle-core，gradle-core依赖lint，lint依赖lint-checks，lint-checks最后依赖到了asm，并且这个根目录中的依赖配置会传到所有工程的配置文件，所以如果你要引用asm相关的类，不用设置classpath，直接import就可以了。你怎么知道前面的依赖关系的？看上面m2repository目录中对应的pom文件就可以了。
-为什么讲到ASM呢？<a href="http://asm.ow2.org/" target="_blank" rel="external">ASM</a>又是个比较刁的东西，可以直接用来操纵Java字节码，达到动态更改class文件的效果。可以用ASM<a href="http://developer.51cto.com/art/201309/410861_all.htm" target="_blank" rel="external">面向切面编程</a>，达到解耦效果。<a href="http://tech.meituan.com/mt-android-auto-split-dex.html" target="_blank" rel="external">Android DEX自动拆包及动态加载</a>简介中提到的class依赖分析和R常量替换的脚本都可以用ASM来搞</p>
-<h5 id="引入脚本"><a href="#引入脚本" class="headerlink" title="引入脚本"></a>引入脚本</h5><p>脚本写多了，都挤在一个build.gradle里也不好，人长大了总要自己出去住，那可以把部分脚本抽出去吗？当然可以，新建一个other.gradle把脚本抽离，然后在build.gradle中添加apply from ‘other.gradle’即可，抽出去以后你会发现本来可以直接import的asm包找不到了，怎么回事？根工程中配置的buildscript会传递到所有工程，但只会传到build.gradle脚本中，其他脚本可不管，所以你要在other.gradle中重新配置buildscript，并且other.gradle中的repositories不再包含m2repository目录，自己配置jcenter()又会导致依赖重新下载到~/.gradle/caches目录。如果不想额外下载，也可以在other.gradle中这么搞：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven &#123;</div><div class="line">            url rootProject.buildscript.repositories[0].getUrl()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:1.2.3&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="获取AndroidManifest文件"><a href="#获取AndroidManifest文件" class="headerlink" title="获取AndroidManifest文件"></a>获取AndroidManifest文件</h5><p><a href="http://tools.android.com/tech-docs/new-build-system/applicationid-vs-packagename" target="_blank" rel="external">ApplicationId versus PackageName</a>提到，gradle中的applicationid用来区分应用，manifest中packageName用来指定R文件包名，并且各个productFlavor 的manifest中的packageName应该一致。applicationid只是gradle脚本中的定义，其实最后生成的apk中的manifest文件的packageName还是会被applicationid替换掉。</p>
-<p>那获取R文件的包名怎么搞？要获取AndroidManifest中package属性，并且这个manifest要是起始的文件，因为最终文件中的package属性会被applicationid冲掉，由于各个manifest中的package属性一样，并且非主manifest可以没有package属性，所以只有获取主manifest的package属性才是最准确的。</p>
-<p>def manifestFile = android.sourceSets.main.manifest.srcFile
-def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</p>
-<h5 id="无用资源"><a href="#无用资源" class="headerlink" title="无用资源"></a><a href="https://developer.android.com/studio/build/shrink-code" target="_blank" rel="external">无用资源</a></h5><h5 id="transitive-true"><a href="#transitive-true" class="headerlink" title="transitive = true"></a><code>transitive = true</code></h5><p>transitive dependencies 被称为依赖的依赖，称为“间接依赖”比较合适。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">compile(&apos;com.meituan.android.terminus:library:6.6.1.16@aar&apos;)&#123;</div><div class="line">        transitive = true</div><div class="line">        exclude module: &apos;hotel_model&apos;</div><div class="line">        exclude module: &apos;base_model&apos;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>在后面加上@aar，意指你只是下载该aar包，而并不下载该aar包所依赖的其他库，那如果想在使用@aar的前提下还能下载其依赖库，则需要添加transitive=true的条件。 
-排除 transitive dependencies 
-通过configuration或者dependency可以除去 transitive dependencies：</p>
-<p>build.gradle</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">configurations &#123;</div><div class="line">    compile.exclude module: &apos;commons&apos;</div><div class="line">    all*.exclude group: &apos;org.gradle.test.excludes&apos;, module: &apos;reports&apos;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile(&quot;org.gradle.test.excludes:api:1.0&quot;) &#123;</div><div class="line">        exclude module: &apos;shared&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果在configuration中定义一个exclude,那么所有依赖的transitive dependency (指定的)都会被去除。 
-定义exclude时候，或只指定group, 或只指定module名字，或二者都指定。</p>
-<p>不是所有的transitive dependency 都可以被去除的，如runtime时候使用到的。一般来说，runtime时候用不到的，或者目标环境及平台已经包含该依赖的可以执行exclude去除。</p>
-<p>那exclude选per-dependency还是per-configuration?，大多数情况我们都选用per-configuration，下面是一些使用exclude的典型场合： </p>
-<ul>
-<li>有licensing问题 </li>
-<li>从远程仓库上无法获取到依赖 </li>
-<li>runtime时候用不到 </li>
-<li>有版本冲突</li>
-</ul>
-<p>可以给dependencies统一指定transitive为false，再次执行dependencies可以看到如下结果。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">configurations.all &#123;</div><div class="line">   transitive = false</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">   androidTestCompile(&apos;com.android.support.test:runner:0.2&apos;)</div><div class="line">   androidTestCompile(&apos;com.android.support.test:rules:0.2&apos;)</div><div class="line">   androidTestCompile(&apos;com.android.support.test.espresso:espresso-core:2.1&apos;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="exclude的疑问"><a href="#exclude的疑问" class="headerlink" title="exclude的疑问"></a>exclude的疑问</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">exclude module: &apos;base_model&apos;</div></pre></td></tr></table></figure>
-<p>和
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">exclude group:&apos;com.name.group&apos; module:&apos;base_model&apos;</div></pre></td></tr></table></figure></p>
-<p>的区别是？
-经过测试，二者的作用是完全一样的。 </p>
-<h5 id="force-true"><a href="#force-true" class="headerlink" title="force=true"></a>force=true</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">compile(&apos;com.squareup.okhttp:okhttp-mt:2.5.0&apos;) &#123;</div><div class="line">        force = true</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如上，我们在依赖okhttp的时候很可能发生冲突，就比如依赖的依赖中也包含了okhttp，这种场合下，就会产生版本冲突的问题，加上force = true表明的意思就是即使在有依赖库版本冲突的情况下坚持使用被标注的这个依赖库版本。</p>
-<h5 id="gradle命令"><a href="#gradle命令" class="headerlink" title="gradle命令"></a>gradle命令</h5><ul>
-<li>gradlew projects:查看所有项目</li>
-<li>gradlew tasks:查看任务信息</li>
-</ul>
-<h5 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h5><ul>
-<li><a href="https://blog.csdn.net/qinxiandiqi/article/details/44458707" target="_blank" rel="external">建立企业内部maven服务器并使用Android Studio发布公共项目</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;AndroidStudio中build.gradle配置信息
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;li
-    
-    </summary>
-    
-      <category term="Gradle" scheme="http://wodekouwei.com/categories/Gradle/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="Gradle" scheme="http://wodekouwei.com/tags/Gradle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>anaconda环境搭建</title>
-    <link href="http://wodekouwei.com/2018/04/03/ml-anaconda-intro/"/>
-    <id>http://wodekouwei.com/2018/04/03/ml-anaconda-intro/</id>
-    <published>2018-04-03T07:54:06.000Z</published>
-    <updated>2018-09-17T08:47:16.136Z</updated>
-    
-    <content type="html"><![CDATA[<p>anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！</p>
-<p>官网下载地址为：<a href="https://www.anaconda.com/download/" target="_blank" rel="external">https://www.anaconda.com/download/</a></p>
-<h4 id="安装anaconda"><a href="#安装anaconda" class="headerlink" title="安装anaconda"></a>安装anaconda</h4><p>对于Mac、Linux系统，Anaconda安装好后，实际上就是在主目录下多了个文件夹（~/anaconda）而已，Windows会写入注册表。安装时，安装程序会把bin目录加入PATH（Linux/Mac写入~/.bashrc，Windows添加到系统变量PATH），这些操作也完全可以自己完成。以Linux/Mac为例，安装完成后设置PATH的操作是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 将anaconda的bin目录加入PATH，根据版本不同，也可能是~/anaconda3/bin</div><div class="line">echo &apos;export PATH=&quot;~/anaconda2/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</div><div class="line"># 更新bashrc以立即生效</div><div class="line">source ~/.bashrc</div></pre></td></tr></table></figure>
-<p>配置好PATH后，可以通过which conda或conda –version命令检查是否正确。假如安装的是Python 2.7对应的版本，运行python –version或python -V可以得到Python 2.7.12 :: Anaconda 4.1.1 (64-bit)，也说明该发行版默认的环境是Python 2.7。</p>
-<h4 id="Conda的环境管理"><a href="#Conda的环境管理" class="headerlink" title="Conda的环境管理"></a>Conda的环境管理</h4><p>Conda的环境管理功能允许我们同时安装若干不同版本的Python，并能自由切换。对于上述安装过程，假设我们采用的是Python 2.7对应的安装包，那么Python 2.7就是默认的环境（默认名字是root，注意这个root不是超级管理员的意思）。</p>
-<p>假设我们需要安装Python 3.4，此时，我们需要做的操作如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"># 创建一个名为python34的环境，指定Python版本是3.4（不用管是3.4.x，conda会为我们自动寻找3.4.x中的最新版本）</div><div class="line">conda create --name python34 python=3.4</div><div class="line"></div><div class="line"># 安装好后，使用activate激活某个环境</div><div class="line">activate python34 # for Windows</div><div class="line">source activate python34 # for Linux &amp; Mac</div><div class="line"># 激活后，会发现terminal输入的地方多了python34的字样，实际上，此时系统做的事情就是把默认2.7环境从PATH中去除，再把3.4对应的命令加入PATH</div><div class="line"></div><div class="line"># 此时，再次输入</div><div class="line">python --version</div><div class="line"># 可以得到`Python 3.4.5 :: Anaconda 4.1.1 (64-bit)`，即系统已经切换到了3.4的环境</div><div class="line"></div><div class="line"># 如果想返回默认的python 2.7环境，运行</div><div class="line">deactivate python34 # for Windows</div><div class="line">source deactivate python34 # for Linux &amp; Mac</div><div class="line"></div><div class="line"># 删除一个已有的环境</div><div class="line">conda remove --name python34 --all</div></pre></td></tr></table></figure>
-<p>用户安装的不同python环境都会被放在目录~/anaconda/envs下，可以在命令中运行conda info -e查看已安装的环境，当前被激活的环境会显示有一个星号或者括号。</p>
-<p>说明：有些用户可能经常使用python 3.4环境，因此直接把~/anaconda/envs/python34下面的bin或者Scripts加入PATH，去除anaconda对应的那个bin目录。这个办法，怎么说呢，也是可以的，但总觉得不是那么elegant……</p>
-<p>如果直接按上面说的这么改PATH，你会发现conda命令又找不到了（当然找不到啦，因为conda在~/anaconda/bin里呢），这时候怎么办呢？方法有二：1. 显式地给出conda的绝对地址 2. 在python34环境中也安装conda工具（推荐）。</p>
-<h4 id="Conda的包管理"><a href="#Conda的包管理" class="headerlink" title="Conda的包管理"></a>Conda的包管理</h4><p>Conda的包管理就比较好理解了，这部分功能与pip类似。</p>
-<p>例如，如果需要安装scipy：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 安装scipy</div><div class="line">conda install scipy</div><div class="line"># conda会从从远程搜索scipy的相关信息和依赖项目，对于python 3.4，conda会同时安装numpy和mkl（运算加速的库）</div><div class="line"></div><div class="line"># 查看已经安装的packages</div><div class="line">conda list</div><div class="line"># 最新版的conda是从site-packages文件夹中搜索已经安装的包，不依赖于pip，因此可以显示出通过各种方式安装的包</div></pre></td></tr></table></figure></p>
-<p>conda的一些常用操作如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">conda的一些常用操作如下：</div><div class="line"></div><div class="line"># 查看当前环境下已安装的包</div><div class="line">conda list</div><div class="line"></div><div class="line"># 查看某个指定环境的已安装包</div><div class="line">conda list -n python34</div><div class="line"></div><div class="line"># 查找package信息</div><div class="line">conda search numpy</div><div class="line"></div><div class="line"># 安装package</div><div class="line">conda install -n python34 numpy</div><div class="line"># 如果不用-n指定环境名称，则被安装在当前活跃环境</div><div class="line"># 也可以通过-c指定通过某个channel安装</div><div class="line"></div><div class="line"># 更新package</div><div class="line">conda update -n python34 numpy</div><div class="line"></div><div class="line"># 删除package</div><div class="line">conda remove -n python34 numpy</div></pre></td></tr></table></figure></p>
-<p>前面已经提到，conda将conda、python等都视为package，因此，完全可以使用conda来管理conda和python的版本，例如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 更新conda，保持conda最新</div><div class="line">conda update conda</div><div class="line"></div><div class="line"># 更新anaconda</div><div class="line">conda update anaconda</div><div class="line"></div><div class="line"># 更新python</div><div class="line">conda update python</div><div class="line"># 假设当前环境是python 3.4, conda会将python升级为3.4.x系列的当前最新版本</div></pre></td></tr></table></figure>
-<p>补充：如果创建新的python环境，比如3.4，运行conda create -n python34 python=3.4之后，conda仅安装python 3.4相关的必须项，如python, pip等，如果希望该环境像默认环境那样，安装anaconda集合包，只需要：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在当前环境下安装anaconda包集合</div><div class="line">conda install anaconda</div><div class="line"></div><div class="line"># 结合创建环境的命令，以上操作可以合并为</div><div class="line">conda create -n python34 python=3.4 anaconda</div><div class="line"># 也可以不用全部安装，根据需求安装自己需要的package即可</div></pre></td></tr></table></figure></p>
-<h5 id="通过pip将packages安装到Conda环境中"><a href="#通过pip将packages安装到Conda环境中" class="headerlink" title="通过pip将packages安装到Conda环境中"></a>通过pip将packages安装到Conda环境中</h5><p>发行版Anaconda附带安装了200多个Python软件包，还可以使用conda install 命令快速轻松地安装许多软件包。</p>
-<p>除了安装和管理软件包的实用程序外，conda还拥有创建虚拟环境的能力，这些虚拟环境是在没有任何Python包预先加载的情况下创建的。
-但是不是所有的软件包都可以通过 conda 安装，如果你想要一个不可用的软件，那么你将不得不使用备用软件包管理器pip。Anaconda的软件包管理器conda和pip如何相互交互？
-目前有两种方法:</p>
-<h6 id="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："><a href="#一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：" class="headerlink" title="一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来："></a>一、以下是如何在conda虚拟环境中使用pip安装软件包。首先要建立起来：</h6><ol>
-<li>使用conda create - name virtual_env_name 创建您的虚拟环境，用虚拟环境的 名称 替换virtual_env_name</li>
-<li>使用source activate virtual_env_name切换到您的虚拟环境 ，再次用您的虚拟环境的名称替换virtual_env_name</li>
-<li>运行conda install pip ，它会将pip安装到您的虚拟环境目录中</li>
-<li>后续直接使用以下两步即可：1）source activate virtual_env_name 2）pip install ‘package_name’</li>
-</ol>
-<h6 id="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"><a href="#二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。" class="headerlink" title="二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。"></a>二、第二种方法不单独创建虚拟环境，直接用Anaconda本身的虚拟环境。个人还是建议第一种。</h6><ol>
-<li>运行conda install pip ，它会将pip安装到您的Anaconda虚拟环境目录中。</li>
-<li>你需要找到你的Anaconda bin目录运行pip，如：//anaconda/bin/pip install package_name将软件包安装到您的虚拟环境中 。</li>
-</ol>
-<h4 id="设置国内镜像"><a href="#设置国内镜像" class="headerlink" title="设置国内镜像"></a>设置国内镜像</h4><p>如果需要安装很多packages，你会发现conda下载的速度经常很慢，因为Anaconda.org的服务器在国外。所幸的是，清华TUNA镜像源有Anaconda仓库的镜像，我们将其加入conda的配置即可：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 添加Anaconda的TUNA镜像</div><div class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</div><div class="line"># TUNA的help中镜像地址加有引号，需要去掉</div><div class="line"></div><div class="line"># 设置搜索时显示通道地址</div><div class="line">conda config --set show_channel_urls yes</div></pre></td></tr></table></figure></p>
-<p>执行完上述命令后，会生成<code>~/.condarc(Linux/Mac)</code>或<code>C:\Users\USER_NAME\.condarc</code>文件，记录着我们对conda的配置，直接手动创建、编辑该文件是相同的效果。</p>
-<h4 id="为vscode配置集成环境"><a href="#为vscode配置集成环境" class="headerlink" title="为vscode配置集成环境"></a>为vscode配置集成环境</h4><p>VS Code下载地址为： <a href="https://code.visualstudio.com/Download" target="_blank" rel="external">https://code.visualstudio.com/Download</a>
-安装完anaconda会自动提示安装VS Code,如果已安装就不会安装,只会安装插件Anaconda Extension.</p>
-<h5 id="添加Python编译配置"><a href="#添加Python编译配置" class="headerlink" title="添加Python编译配置"></a>添加Python编译配置</h5><p>首选项-&gt;设置，打开一个setting.json
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//配置python的路径</div><div class="line">     &quot;python.pythonPath&quot;: &quot;D:/Program Files/Anaconda3/python&quot;,</div><div class="line">     &quot;editor.fontFamily&quot;: &quot;Consolas&quot;,</div><div class="line">     //忽略pylint检查代码时，出现无谓的波浪线的问题</div><div class="line">     &quot;python.linting.pylintArgs&quot;: [</div><div class="line">         &quot;--disable=W,C&quot;</div><div class="line">     ]</div></pre></td></tr></table></figure></p>
-<h5 id="Python脚本编译测试"><a href="#Python脚本编译测试" class="headerlink" title="Python脚本编译测试"></a>Python脚本编译测试</h5><p>新建test.py，代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># plot a sine wave from 0 to 4pi  </div><div class="line">from pylab import *  </div><div class="line">x_values = arange(0.0, math.pi * 4, 0.01)  </div><div class="line">y_values = sin(x_values)  </div><div class="line">plot(x_values, y_values, linewidth=1.0)  </div><div class="line">xlabel(&apos;x&apos;)  </div><div class="line">ylabel(&apos;sin(x)&apos;)  </div><div class="line">title(&apos;Simple plot&apos;)  </div><div class="line">grid(True)  </div><div class="line">savefig(&quot;sin.png&quot;)  </div><div class="line">show()</div></pre></td></tr></table></figure></p>
-<p>我们可以看到，代码中调用了matplotlib数据包，并且代码编译通过，显示出所打印的正弦波图像。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;anaconda指的是一个开源的Python发行版本，其包含了conda、Python等180多个科学包及其依赖项。因为包含了大量的科学包，比如ipython、ipython notebook、numpy等一些数据分析包，这样我们不必单独的安装各种工具包，简单有效！&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="ml" scheme="http://wodekouwei.com/categories/ml/"/>
-    
-    
-      <category term="ml" scheme="http://wodekouwei.com/tags/ml/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>多媒体技术(四)之音频,视频信号及数字化</title>
-    <link href="http://wodekouwei.com/2018/03/04/media-signal-digitization/"/>
-    <id>http://wodekouwei.com/2018/03/04/media-signal-digitization/</id>
-    <published>2018-03-04T14:55:11.000Z</published>
-    <updated>2018-03-04T15:19:57.557Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h4><p>宽应用的领域非常多，可以用来标识信号传输的数据传输能力、标识单位时间内通过链路的数据量、标识显示器的显示能力。</p>
-<ol>
-<li>在模拟信号系统又叫频宽，是指在固定的时间可传输的资料数量，亦即在传输管道中可以传递数据的能力。通常以每秒传送周期或赫兹(Hz)来表示。</li>
-<li>在数字设备中，带宽指单位时间能通过链路的数据量。通常以bps来表示，即每秒可传输之位数。</li>
-<li>信号的带宽是指该信号所包含的各种不同频率成分所占据的频率范围。频宽对基本输出入系统 (BIOS ) 设备尤其重要，如快速磁盘驱动器会受低频宽的总线所阻碍。</li>
-</ol>
-<p>带宽：带宽是反映信号频率通过能力，带宽越大，对信号中的各种频率成分（特别是高频成分）能准确有效地放大与显示，也就较为准确，如果带宽不够，那就会损失很多高频成分，信号自然就显示不准确了，出现较大误差。
-在一秒的时间内最大最多能通过的信号，所以带宽要大于等于最高频率fmax.
-采样率： 而采样率是将模拟量转换为数字量时对信号转换的频率（即每秒采集次数），这个频率越高，单位时间内对信号的采集就越多，信号中的信息就保留越多，丢失信息就少，转换出的数字量就能准确反映信号的数值.</p>
-<p>香农采样定理：采样定理说明采样频率与信号频谱之间的关系，是连续信号离散化的基本依据，在进行模拟/数字信号的转换过程中，当采样频率fs.max大于信号中最高频率fmax的2倍时(fs.max&gt;2fmax)，采样之后的数字信号完整地保留了原始信号中的信息，一般实际应用中保证采样频率为信号最高频率的2.56～4倍；采样定理又称奈奎斯特定理。
-在工程中为了方便计算机的计算，一般去fs=2.56fmax.
-一个正弦波形至少可用2个点来描述.
-对连续信号进行等间隔采样时，如果采样频率不满足采样定理，采样后信号的频率就会发生混叠，即高于奈奎斯特频率的频率成分将被重构成低于奈奎斯特频率的信号,如果发生混叠，就无法准确的重建出原始声音的音频信号。</p>
-<p>如何查看最高频率(或者是感兴趣的)呢？
-用AU打开一段音频，在波形下边打开频域图，看看你感兴趣的谐波或者共振峰的频域的什么范围，找出最大值，即可确定为带宽，那么 采样率 ＝ 带宽＊2.5</p>
-<p>频段,是一个有关通讯和声音理学方面的词语,通讯方面的频段意思是指一定的无线电波的频率范围；声音和音乐中的频段是指声音频率而言,人耳对声音频率的感觉是从最低的20Hz到最高的20KHz,而人的语音频率范围则集中在80Hz~12kHz之间,不同频段的声音对人的感受是不同的.
-带宽（band width）又叫频宽,是指在固定的的时间可传输的资料数量,亦即在传输管道中可以传递数据的能力.在数字设备中,频宽通常以bps表示,即每秒可传输之位数.在模拟设备中,频宽通常以每秒传送周期或赫兹 (Hz)来表示.
-速率：是物体运动的快慢,即速率是速度的大小或等价于路程的变化率.在初中物理中被称为速度,但应与高中物理中的速度加以区别.在网络应用中应该是传输速度之比.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;带宽&quot;&gt;&lt;a href=&quot;#带宽&quot; class=&quot;headerlink&quot; title=&quot;带宽&quot;&gt;&lt;/a&gt;带宽&lt;/h4&gt;&lt;p&gt;宽应用的领域非常多，可以用来标识信号传输的数据传输能力、标识单位时间内通过链路的数据量、标识显示器的显示能力。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;在
-    
-    </summary>
-    
-      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>多媒体技术(1.1)之图像分辨率</title>
-    <link href="http://wodekouwei.com/2018/03/04/media-graphic-resolution/"/>
-    <id>http://wodekouwei.com/2018/03/04/media-graphic-resolution/</id>
-    <published>2018-03-04T14:44:11.000Z</published>
-    <updated>2018-03-05T05:46:50.854Z</updated>
-    
-    <content type="html"><![CDATA[<p>「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。</p>
-<ul>
-<li><strong>相机的分辨率</strong>，往往指的是它的「像素规模」，即它能拍出含有多少个像素的照片。我们可以简单地说「10 M（一千万像素，有时也写成 10 MP）」，也可以写成「4000 × 2672 像素」。对相机来说，把像素和图片物理尺寸联系起来是没有什么意义的，因为相机总是在缩放物体的图像。</li>
-<li><strong>扫描仪和打印机的分辨率</strong>，往往是它们能在单位物理面积内扫描/打印多少个微小的点（像素或墨点），单位一般分别是 PPI（像素/每英寸）和 DPI（点/英寸）──因为把它们的像素/点和物理尺寸联系起来是有意义的。为什么不写它们能扫描/打印包含多少像素/点的图片呢？因为它们扫描/打印的图片尺寸不定呀！所以我们只能以单位面积来描述。</li>
-<li><strong>显示器</strong> 能显示包含多少像素的图像的能力是固定的，所以我们可以像描述相机一样说它「1440 × 900 像素」。而它的物理尺寸是有意义的，所以也可以像描述扫描仪一样说它有多少 PPI，此时我们经常用「像素密度」来特指这个 PPI 参数。</li>
-<li>为什么上面说了这么多，却一直不说图片？因为图片是穿梭在上面说的这些设备之间的东西，它的「分辨率」概念和相机、扫描仪、打印机、显示器都有关。图片的分辨率一般有两种，一种是像相机一样描述总共有多少个像素（如「10 M」）或写成像素数量的乘法（如「4000 × 2672 像素」），另一种是像打印机一样使用 DPI 来确定图片的每一个像素（视作一个「点」）和实际的一个长度单位（英寸）之间的大小比例（比如「300 DPI」）。<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="像素"><a href="#像素" class="headerlink" title="像素"></a>像素</h4></li>
-</ul>
-<p><img src="http://images.wodekouwei.com/media/resolution1.jpg" alt="image">
-组成这张图的单位是一个格子一个格子的颜色小方块组成的，这种小方块就叫做像素。像素就是图像显示的基本元素。</p>
-<p>通过一点的排列，最终就会形式我们看到的图片，这类图片我们把它叫做“栅格图”、“点阵图”，所以你现在懂PS里图片拖进去后为什么要右键图层栅格化对象吧。</p>
-<p>像素都是正方形?
-不一定，我们看一张图:
-<img src="http://images.wodekouwei.com/media/resolution2.jpg" alt="image"></p>
-<p>根据显示媒介的不同可能会对像素值进行压缩或者扩大。大家在PS中新建画布的时候最下面有一个选择：
-<img src="http://images.wodekouwei.com/media/resolution3.jpg" alt="image"></p>
-<p>单指是没大小的和面积概念的，不能说，一个像素固定是多少平方微米吧。只有在单位面积分辨率里，像素有了大小。如1分辨率/英寸，就是这个像素是1英寸大。72分辨率就是1英寸长，宽段里都有72个像素。。
-图片是像素为最基本单位，给像素赋予不同明暗的颜色，组成位图图片。。</p>
-<h4 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h4><p>是图像清晰度，像素密度排列，像素在单位面积里排列越密，反映色阶过渡是越细，当然就越清晰，画面细腻。。如同面积里，10个像素来反映红黄过渡和30个像素来反映，自然30个像素反映色阶细腻，多20个来过渡。。
-放大像素就是插值，如原来1英寸里10像素，放大到30个，那新增加的20个像素哪里来，是软件根据像素周围取样来加出来，因为加出来的像素颜色不能准确到位，就会不清晰，模糊了。。
-如分辨率减小，尺寸不变，像素会被拿掉，那就是像素连续色调产生断层了，模糊自然产生。。
-还有个概念，72分辨率是显示器的物理分辨率，图片像素尺寸和显示器尺寸同比显示，大了，图片会超出屏幕来显示，所以有显示大小和实际大小。。</p>
-<p>分辨率其实包含两个概念的：</p>
-<ol>
-<li>图像分辨率:就是说该图像的宽高上的像素点数。这个值在一开始图案生成的时候就已经确定下来。</li>
-<li>显示（单位）分辨率：在显示媒介上在单位长度内显示多少像素（相对值，这个和你的显示终端的分辨率有关）</li>
-</ol>
-<p>在单位上，分辨率是以DPI和PPI来作为单位的</p>
-<ul>
-<li>像素/英寸 Dots Per Inch</li>
-<li>像素/厘米 Pixel Per Inch</li>
-</ul>
-<p>图像清晰有两个因素决定：</p>
-<ul>
-<li>显示媒介的分辨率</li>
-<li>图片的分辨率</li>
-<li>查看的空间距离</li>
-</ul>
-<p>根据行业里的规则，一般来说，打印的出图DPI一般300即可满足需求。还记得乔布斯给苹果定义的视网膜屏幕吗？它将960×640的像素压缩到一个3.5英寸的显示屏内。也就是说，该屏幕的像素密度达到326像素/英寸（ppi），称之为“视网膜屏幕”。但是，如果你隔老远看手机屏幕，基本上你就告别视网膜屏幕了.一般来说，电子设备在0.3-0.4米的范围内使用300dpi即可很清晰.所以你可以推，你家里的电视如果观赏距离是3-4m那么像素值30dpi即可。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>图片大小的4个容易混淆的概念</p>
-<ul>
-<li>像素数目(Pixels):宽1024px,高768px</li>
-<li>实际尺寸(Print Size):厘米,英尺Inch</li>
-<li>分辨率(Resolution):DPI(dots per inch)</li>
-<li><p>占用磁盘空间:几兆M,几k</p>
-</li>
-<li><p>像素数目(垂直或水平)=分辨率*实际尺寸</p>
-</li>
-<li>Pixels = Resolution(DPI)x Print size(in inches)</li>
-<li>图片质量取决于:像素数目;颜色种类(位深度)</li>
-<li>平时所说的屏幕分辨率,相机分辨率,其实指的是像素数目</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;「分辨率」这个概念还有「解析度」等说法，所以能从字面上看出来，它描述的其实就是图像包含多少细节、有多「清晰」。但具体到怎么用数字来描述一个图像有多少细节，就有很多个描述的角度，于是「分辨率」有很多种意思。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;相机的分辨率&lt;/stron
-    
-    </summary>
-    
-      <category term="media" scheme="http://wodekouwei.com/categories/media/"/>
-    
-    
-      <category term="多媒体" scheme="http://wodekouwei.com/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/"/>
     
   </entry>
   

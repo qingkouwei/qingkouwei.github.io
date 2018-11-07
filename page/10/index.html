@@ -323,6 +323,808 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/27/gl-glBlendFunc/" itemprop="url">
+                  OpenGL混色
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-27T10:44:39+08:00">
+                2017-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。
+假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把将要绘制上去的红色和原来的绿色进行混合，于是得到一种新的颜色，看上去就好像玻璃是半透明的。
+要使用OpenGL的混合功能，只需要调用：<code>glEnable(GL_BLEND);</code>即可。要关闭OpenGL的混合功能，只需要调用：<code>glDisable(GL_BLEND);</code>即可。
+<strong>注意：</strong> 只有在RGBA模式下，才可以使用混合功能，颜色索引模式下是无法使用混合功能的。</p>
+<h3 id="1-源因子和目标因子"><a href="#1-源因子和目标因子" class="headerlink" title="1.源因子和目标因子"></a>1.源因子和目标因子</h3><p>混合需要把原来的颜色和将要画上去的颜色找出来，经过某种方式处理后得到一种新的颜色。这里把将要画上去的颜色称为“源颜色”，把原来的颜色称为“目标颜色”。
+OpenGL 会把源颜色和目标颜色各自取出，并乘以一个系数（源颜色乘以的系数称为“源因子”，目标颜色乘以的系数称为“目标因子”），然后相加，这样就得到了新的颜 色。（也可以不是相加，新版本的OpenGL可以设置运算方式，包括加、减、取两者中较大的、取两者中较小的、逻辑运算等）
+下面用数学公式来表达一下这个运算方式。假设源颜色的四个分量（指红色，绿色，蓝色，alpha值）是(Rs, Gs, Bs,  As)，目标颜色的四个分量是(Rd, Gd, Bd, Ad)，又设源因子为(Sr, Sg, Sb, Sa)，目标因子为(Dr, Dg, Db,  Da)。则混合产生的新颜色可以表示为：
+<code>(Rs*Sr+Rd*Dr, Gs*Sg+Gd*Dg, Bs*Sb+Bd*Db, As*Sa+Ad*Da)</code>
+如果颜色的某一分量超过了1.0，则它会被自动截取为1.0，不需要考虑越界的问题。</p>
+<p>源因子和目标因子是可以通过<code>glBlendFunc</code>函数来进行设置的。glBlendFunc有两个参数，前者表示源因子，后者表示目标因子。这两个参数可以是多种值，下面介绍比较常用的几种。</p>
+<ul>
+<li>GL_ZERO：表示使用0.0作为因子，实际上相当于不使用这种颜色参与混合运算。</li>
+<li>GL_ONE：表示使用1.0作为因子，实际上相当于完全的使用了这种颜色参与混合运算。</li>
+<li>GL_SRC_ALPHA：表示使用源颜色的alpha值来作为因子。</li>
+<li>GL_DST_ALPHA：表示使用目标颜色的alpha值来作为因子。</li>
+<li>GL_ONE_MINUS_SRC_ALPHA：表示用1.0减去源颜色的alpha值来作为因子。</li>
+<li>GL_ONE_MINUS_DST_ALPHA：表示用1.0减去目标颜色的alpha值来作为因子。</li>
+<li>GL_SRC_COLOR: 把源颜色的四个分量分别作为因子的四个分量</li>
+<li>GL_ONE_MINUS_SRC_COLOR</li>
+<li>GL_DST_COLOR</li>
+<li>GL_ONE_MINUS_DST_COLOR
+GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目标因子，GL_DST_COLOR与GL_ONE_MINUS_DST_COLOR在OpenGL 旧版本中只能用于设置源因子。新版本的OpenGL则没有这个限制，并且支持新的GL_CONST_COLOR（设定一种常数颜色，将其四个分量分别作为 因子的四个分量）、GL_ONE_MINUS_CONST_COLOR、GL_CONST_ALPHA、 GL_ONE_MINUS_CONST_ALPHA。另外还有GL_SRC_ALPHA_SATURATE。新版本的OpenGL还允许颜色的alpha 值和RGB值采用不同的混合因子。</li>
+</ul>
+<h3 id="2-模式示例"><a href="#2-模式示例" class="headerlink" title="2.模式示例"></a>2.模式示例</h3><ul>
+<li>如果设置了glBlendFunc(GL_ONE, GL_ZERO);，则表示完全使用源颜色，完全不使用目标颜色，因此画面效果和不使用混合的时候一致（当然效率可能会低一点点）。如果没有设置源因子和目标因子，则默认情况就是这样的设置。</li>
+<li>如果设置了glBlendFunc(GL_ZERO, GL_ONE);，则表示完全不使用源颜色，因此无论你想画什么，最后都不会被画上去了。（但这并不是说这样设置就没有用，有些时候可能有特殊用途）</li>
+<li>如果设置了glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);，则表示源颜色乘以自身的alpha 值，目标颜色乘以1.0减去源颜色的alpha值，这样一来，源颜色的alpha值越大，则产生的新颜色中源颜色所占比例就越大，而目标颜色所占比例则减 小。这种情况下，我们可以简单的将源颜色的alpha值理解为“不透明度”。这也是混合时最常用的方式。</li>
+<li>如果设置了glBlendFunc(GL_ONE, GL_ONE);，则表示完全使用源颜色和目标颜色，最终的颜色实际上就是两种颜色的简单相加。例如红色(1, 0, 0)和绿色(0, 1, 0)相加得到(1, 1, 0)，结果为黄色。
+注意：
+所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。</li>
+</ul>
+<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
+<p>模式二:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
+<p>模式一是传统的alpha通道混合，这种模式下颜色和alpha值是分立的，rgb决定颜色，alpha决定..（英文是决定how solid it is 水平有限找不到准确的中文来表达）
+在数学上表达式是：<code>blend(source, dest) = (source.rgb * source.a) + (dest.rgb * (1 – source.a)).</code>要注意的是这种模式下，透明只跟alpha有关，跟rgb值无关，一个透明的颜色，不透明的颜色有相同的rgb值，只要alpha=0即可。</p>
+<p>模式二是alpha预乘的混合（Premultiplied Alpha Blending），这种模式下rgb与alpha是联系在一起的，数学上的表达式是
+<code>blend(source, dest) = source.rgb + (dest.rgb * (1 – source.a))</code>,在这种模式下，透明的表示是rgb值都为0.</p>
+<h3 id="4-EGLSurface背景透明设置"><a href="#4-EGLSurface背景透明设置" class="headerlink" title="4.EGLSurface背景透明设置"></a>4.EGLSurface背景透明设置</h3><p>在OpenGL绘制中,除了设置混色外,还要设置EGLSurface配置支持Alpha,如果不设置EGL相关的EGLSurface支持透明,就算OpenGL函数中开启混色,绘制完成后仍是有黑色背景.</p>
+<h4 id="4-1GLSurfaceView"><a href="#4-1GLSurfaceView" class="headerlink" title="4.1GLSurfaceView"></a>4.1GLSurfaceView</h4><p>在onSurfaceCreated里，调用GLES20.glClearColor(0f, 0f, 0f, 0f);alpha为0，即透明。</p>
+<p>然后，对surfaceview要作一定处理：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</div><div class="line">TestRenderer renderer = new TestRenderer();</div><div class="line">mGLSurfaceView.setRender(renderer);</div><div class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</div><div class="line">mGLSurfaceView.setZOrderOnTop(true);</div></pre></td></tr></table></figure></p>
+<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">int[] CONFIG_RGBA = &#123;</div><div class="line">          EGL10.EGL_RED_SIZE, 8,</div><div class="line">          EGL10.EGL_GREEN_SIZE, 8,</div><div class="line">          EGL10.EGL_BLUE_SIZE, 8,</div><div class="line">          EGL10.EGL_ALPHA_SIZE, 8,</div><div class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</div><div class="line">          EGL10.EGL_NONE</div><div class="line">  &#125;;</div></pre></td></tr></table></figure></p>
+<h3 id="5-实现三维混合"><a href="#5-实现三维混合" class="headerlink" title="5.实现三维混合"></a>5.实现三维混合</h3><p>在进行三维场景的混合时必须注意的是深度缓冲。</p>
+<p>深度缓冲是这样一段数据，它记录了每一个像素距离观察者有多近。在启用深度缓冲测试的情况下，如果将要绘制的像素比原来的像素更近，则像素将被绘制。否则,像素就会被忽略掉，不进行绘制。这在绘制不透明的物体时非常有用——不管是先绘制近的物体再绘制远的物体，还是先绘制远的物体再绘制近的物体，或者干脆以 混乱的顺序进行绘制，最后的显示结果总是近的物体遮住远的物体。
+然而在你需要实现半透明效果时，发现一切都不是那么美好了。如果你绘制了一个近距离的半透明物体，则它在深度缓冲区内保留了一些信息，使得远处的物体将无法再被绘制出来。虽然半透明的物体仍然半透明，但透过它看到的却不是正确的内容了。
+要 解决以上问题，需要在绘制半透明物体时将深度缓冲区设置为只读，这样一来，虽然半透明物体被绘制上去了，深度缓冲区还保持在原来的状态。如果再有一个物体 出现在半透明物体之后，在不透明物体之前，则它也可以被绘制（因为此时深度缓冲区中记录的是那个不透明物体的深度）。以后再要绘制不透明物体时，只需要再 将深度缓冲区设置为可读可写的形式即可。怎么绘制一个一部分半透明一部分不透明的物体？这个好办，只需要把物体分为两个部分，一部分全是半透明 的，一部分全是不透明的，分别绘制就可以了。
+即使使用了以上技巧，我们仍然不能随心所欲的按照混乱顺序来进行绘制。必须是先绘制不透明的物体，然 后绘制透明的物体。否则，假设背景为蓝色，近处一块红色玻璃，中间一个绿色物体。如果先绘制红色半透明玻璃的话，它先和蓝色背景进行混合，则以后绘制中间 的绿色物体时，想单独与红色玻璃混合已经不能实现了。
+总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
+调用glDepthMask(GL_FALSE);可将深度缓冲区设置为只读形式。调用glDepthMask(GL_TRUE);可将深度缓冲区设置为可读可写形式。</p>
+<blockquote>
+<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="external">glBlendFunc函数官网文档</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/25/tips-android-mediacodec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/25/tips-android-mediacodec/" itemprop="url">
+                  android系统编码MediaCodec
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T16:03:24+08:00">
+                2017-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="android编码器局限性"><a href="#android编码器局限性" class="headerlink" title="android编码器局限性"></a>android编码器局限性</h3><h4 id="1-颜色格式问题"><a href="#1-颜色格式问题" class="headerlink" title="1. 颜色格式问题"></a>1. 颜色格式问题</h4><p>MediaCodec在初始化的时候，在configure的时候，需要传入一个MediaFormat对象，当作为编码器使用的时候，我们一般需要在MediaFormat中指定视频的宽高，帧率，码率，I帧间隔等基本信息，除此之外，还有一个重要的信息就是，指定编码器接受的YUV帧的颜色格式。这个是因为由于YUV根据其采样比例，UV分量的排列顺序有很多种不同的颜色格式，而对于Android的摄像头在onPreviewFrame输出的YUV帧格式，如果没有配置任何参数的情况下，基本上都是NV21格式，但Google对MediaCodec的API在设计和规范的时候，显得很不厚道，过于贴近Android的HAL层了，导致了NV21格式并不是所有机器的MediaCodec都支持这种格式作为编码器的输入格式！</p>
+<p>因此，在初始化MediaCodec的时候，我们需要通过codecInfo.getCapabilitiesForType来查询机器上的MediaCodec实现具体支持哪些YUV格式作为输入格式，一般来说，起码在4.4+的系统上，这两种格式在大部分机器都有支持：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Plannder</div><div class="line">MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlannder</div></pre></td></tr></table></figure></p>
+<p>两种格式分别是YUV420P和NV21，如果机器上只支持YUV420P格式的情况下，则需要先将摄像头输出的NV21格式先转换成YUV420P，才能送入编码器进行编码，否则最终出来的视频就会花屏，或者颜色出现错乱</p>
+<p>这个算是一个不大不小的坑，基本上用上了MediaCodec进行视频编码都会遇上这个问题</p>
+<h4 id="2-编码器支持特性相当有限"><a href="#2-编码器支持特性相当有限" class="headerlink" title="2. 编码器支持特性相当有限"></a>2. 编码器支持特性相当有限</h4><p>如果使用MediaCodec来编码H264视频流，对于H264格式来说，会有一些针对压缩率以及码率相关的视频质量设置，典型的诸如Profile(baseline, main, high)，Profile Level, Bitrate mode(CBR, CQ, VBR)，合理配置这些参数可以让我们在同等的码率下，获得更高的压缩率，从而提升视频的质量，Android也提供了对应的API进行设置，可以设置到MediaFormat中这些设置项:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MediaFormat.KEY_BITRATE_MODE</div><div class="line">MediaFormat.KEY_PROFILE</div><div class="line">MediaFormat.KEY_LEVEL</div></pre></td></tr></table></figure></p>
+<p>但问题是，对于Profile，Level, Bitrate mode这些设置，在大部分手机上都是不支持的，即使是设置了最终也不会生效，例如设置了Profile为high，最后出来的视频依然还会是Baseline….</p>
+<p>这个问题，在7.0以下的机器几乎是必现的，其中一个可能的原因是，Android在源码层级hardcode了profile的的设置：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//XXXX</div><div class="line">if(h264type.eProfile != OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ALOGW(&quot;Use baseline profile instead of %d for AVC recording&quot;, h264type.eProfile);</div><div class="line">  h264type.eProfile = OMX_VIDEO_AVCProfileBaseline;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Android直到7.0之后才取消了这段地方的Hardcode:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if(h264type.eProfile == OMX_VIDEO_AVCProfileBaseline)&#123;</div><div class="line">  ....</div><div class="line">&#125;else if(h264type.eProfile == OMX_VIDEO_AVCProfileMain</div><div class="line">  || h264type.eProfile == OMX_VIDEO_AVCProfileBaseHigh)</div><div class="line">  .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个问题可以说间接导致了MediaCodec编码出来的视频质量偏低，同等码率下，难以获得跟软编码甚至iOS那样的视频质量。</p>
+<h4 id="3-16位对齐要求"><a href="#3-16位对齐要求" class="headerlink" title="3. 16位对齐要求"></a>3. 16位对齐要求</h4><p>前面说到，MediaCodec这个API在设计的时候，过于贴近HAL层，这在很多Soc的实现上，是直接把传入MediaCodec的buffer，在不经过任何前置处理的情况下就直接送入了Soc中。而在编码h264视频流的时候，由于h264的编码块大小一般是16x16，于是乎在一开始设置视频的宽高的时候，如果设置了一个没有对齐16的大小，例如960x540，在某些cpu上，最终编码出来的视频就会直接花屏！</p>
+<p>很明显这还是因为厂商在实现这个API的时候，对传入的数据缺少校验以及前置处理导致的，目前来看，华为，三星的Soc出现这个问题会比较频繁，其他厂商的一些早期Soc也有这种问题，一般来说解决方法还是在设置视频宽高的时候，统一设置成对齐16位之后的大小就好了。</p>
+<h4 id="4-软编解码介绍"><a href="#4-软编解码介绍" class="headerlink" title="4.软编解码介绍"></a>4.软编解码介绍</h4><p>除了使用MediaCodec进行编码之外，另外一种比较流行的方案就是使用ffmpeg+x264/openh264进行软编码，ffmpeg是用于一些视频帧的预处理。这里主要是使用x264/openh264作为视频的编码器。</p>
+<ol>
+<li>x264基本上被认为是当今市面上最快的商用视频编码器，而且基本上所有h264的特性都支持，通过合理配置各种参数还是能够得到较好的压缩率和编码速度的，限于篇幅，这里不再阐述h264的参数配置，有兴趣可以看下这两篇文章对x264编码参数的调优：</li>
+</ol>
+<ul>
+<li><a href="https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn" target="_blank" rel="external">https://www.nmm-hd.org/d/index.php?title=X264%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D&amp;variant=zh-cn</a></li>
+<li><a href="http://www.cnblogs.com/wainiwann/p/5647521.html" target="_blank" rel="external">http://www.cnblogs.com/wainiwann/p/5647521.html</a></li>
+</ul>
+<ol>
+<li>openh264(<a href="https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。" target="_blank" rel="external">https://github.com/cisco/openh264)则是由思科开源的另外一个h264编码器，项目在2013年开源，对比起x264来说略显年轻，不过由于思科支付满了h264的年度专利费，所以对于外部用户来说，相当于可以直接免费使用了，另外，firefox直接内置了openh264，作为其在webRTC中的视频的编解码器使用。</a></li>
+</ol>
+<p>但对比起x264，openh264在h264高级特性的支持比较差：</p>
+<ul>
+<li>Profile只支持到baseline, level 5.2</li>
+<li>多线程编码只支持slice based，不支持frame based的多线程编码</li>
+</ul>
+<p>从编码效率上来看，openh264的速度也并不会比x264快，不过其最大的好处，还是能够直接免费使用吧。</p>
+<blockquote>
+<p>参考<a href="https://mp.weixin.qq.com/s/gwjL2OuoLVExbhYtbdpF2g" target="_blank" rel="external">微信Android视频编码爬过的那些坑</a></p>
+</blockquote>
+<h3 id="android编码器支持参数"><a href="#android编码器支持参数" class="headerlink" title="android编码器支持参数"></a>android编码器支持参数</h3><h4 id="Supported-Media-Formats"><a href="#Supported-Media-Formats" class="headerlink" title="Supported Media Formats"></a><a href="https://developer.android.com/guide/topics/media/media-formats.html" target="_blank" rel="external">Supported Media Formats</a></h4><p><strong>Video encoding recommendations</strong>
+The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the H.264 Baseline Profile codec. The same recommendations apply to the Main Profile codec, which is only available in Android 6.0 and later.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>176 x 144 px</td>
+<td>480 x 360 px</td>
+<td>1280 x 720 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>12 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>56 Kbps</td>
+<td>500 Kbps</td>
+<td>2 Mbps</td>
+</tr>
+<tr>
+<td>Audio codec</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+<td>AAC-LC</td>
+</tr>
+<tr>
+<td>Audio channels</td>
+<td>1 (mono)</td>
+<td>2 (stereo)</td>
+<td>2 (stereo)</td>
+</tr>
+<tr>
+<td>Audio bitrate</td>
+<td>24 Kbps</td>
+<td>128 Kbps</td>
+<td>192 Kbps</td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the Android media framework video encoding profiles and parameters recommended for playback using the VP8 media codec.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD (Low quality)</th>
+<th>SD (High quality)</th>
+<th>HD 720p (N/A on all devices)</th>
+<th>HD 1080p (N/A on all devices)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video resolution</td>
+<td>320 x 180 px</td>
+<td>640 x 360 px</td>
+<td>1280 x 720 px</td>
+<td>1920 x 1080 px</td>
+</tr>
+<tr>
+<td>Video frame rate</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+<td>30 fps</td>
+</tr>
+<tr>
+<td>Video bitrate</td>
+<td>800 Kbps</td>
+<td>2 Mbps</td>
+<td>4 Mbps</td>
+<td>10 Mbps</td>
+</tr>
+</tbody>
+</table>
+<h4 id="CamcorderProfile"><a href="#CamcorderProfile" class="headerlink" title="CamcorderProfile"></a><a href="https://developer.android.com/reference/android/media/CamcorderProfile.html" target="_blank" rel="external">CamcorderProfile</a></h4><p>Retrieves the predefined camcorder profile settings for camcorder applications. These settings are read-only.</p>
+<p>The compressed output from a recording session with a given CamcorderProfile contains two tracks: one for audio and one for video.</p>
+<p>Each profile specifies the following set of parameters:</p>
+<ul>
+<li>The file output format</li>
+<li>Video codec format</li>
+<li>Video bit rate in bits per second</li>
+<li>Video frame rate in frames per second</li>
+<li>Video frame width and height,</li>
+<li>Audio codec format</li>
+<li>Audio bit rate in bits per second,</li>
+<li>Audio sample rate</li>
+<li>Number of audio channels for recording.</li>
+</ul>
+<h3 id="Android编码器常见问题"><a href="#Android编码器常见问题" class="headerlink" title="Android编码器常见问题"></a>Android编码器常见问题</h3><h4 id="MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored"><a href="#MediaCodec-KEY-FRAME-RATE-seems-to-be-ignored" class="headerlink" title="MediaCodec KEY_FRAME_RATE seems to be ignored"></a><a href="https://stackoverflow.com/questions/22336604/mediacodec-key-frame-rate-seems-to-be-ignored" target="_blank" rel="external">MediaCodec KEY_FRAME_RATE seems to be ignored</a></h4><p><strong>总结起来就是和输入编码器的帧率有关系</strong></p>
+<p>I am trying to modify the source for screenrecord in android 4.4 and lower the captured frame rate, but no matter what value I put in:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">format-&gt;setFloat(&quot;frame-rate&quot;, 5);</div></pre></td></tr></table></figure></p>
+<p>the result is always the same ( a very high frame rate )
+Is the encoder ignoring this property ? how can I control the frame rate ?</p>
+<p>The frame-rate value is not ignored, but it doesn’t do what you want.</p>
+<p>The combination of frame-rate and i-frame-interval determines how often I-frames (also called “sync frames”) appear in the encoded output. The frame rate value might also play a role in meeting the bitrate target on some devices, but I’m not sure about that (see e.g. this post).</p>
+<p>The MediaCodec encoder does not drop frames. If you want to reduce the frame rate, you have to do so by sending fewer frames to it.</p>
+<p>The screenrecord command doesn’t “sample” the screen at a fixed frame rate. Instead, every frame it receives from the surface compositor (SurfaceFlinger) is sent to the encoder, with an appropriate time stamp. If screenrecord receives 60 frames per seconds, you’ll have 60fps output. If it receives 10 frames in quick succession, followed by nothing for 5 seconds, followed by a couple more, you’ll have exactly that in the output file.</p>
+<p>You can modify screenrecord to drop frames, but you have to be a bit careful. If you try to reduce the maximum frame rate from 60fps to 30fps by dropping every-other frame, you run the risk that in a “frame0 - frame1 - long_pause - frame2” sequence you’ll drop frame1, and the video will hold on frame0 instead, showing a not-quite-complete animation. So you need to buffer up a frame, and then encode or drop frame N-1 if the difference in presentation times between that and frame N is ~17ms.</p>
+<p>The tricky part is that screenrecord, in its default operating mode, directs the frames to the encoder without touching them, so all you see is the encoded output. You can’t arbitrarily drop individual frames of encoded data, so you really want to prevent the encoder from seeing them in the first place. If you use the screenrecord v1.1 sources you can tap into “overlay” mode, used for –bugreport, to have the frames pass through screenrecord on their way to the encoder.</p>
+<p>In some respects it might be simpler to write a post-processor that reduces the frame rate. I don’t know how much quality would be lost by decoding and re-encoding the video.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/20/media-storage-and-transfer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/20/media-storage-and-transfer/" itemprop="url">
+                  多媒体技术(三)之多媒体信息的存储与传输编码
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-20T23:10:09+08:00">
+                2017-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/20/media-compress/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/20/media-compress/" itemprop="url">
+                  多媒体技术(五)之数字音频视频信号的压缩
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-20T23:09:04+08:00">
+                2017-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><blockquote>
+<p><a href="http://blog.csdn.net/u013354805/article/details/50112353" target="_blank" rel="external">数字视频编码概述(熵编码/Huffman编码)</a></p>
+<h4 id="1-数字视频压缩的必要性和可能性"><a href="#1-数字视频压缩的必要性和可能性" class="headerlink" title="1. 数字视频压缩的必要性和可能性"></a>1. 数字视频压缩的必要性和可能性</h4><p>按ITU-R BT. 601建议，数字化后的输入图像格式为720<em>576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit，
+则数码率：(720 </em> 576 + 360 <em> 576 + 360 </em> 576) <em> 25帧/s </em> 8bit = 165.888Mbit/s。
+如果视频信号数字化后直接存放在650MB的光盘中，在不考虑音频信号的情况下，每张光盘只能存储31s的视频信号。
+数据压缩的理论基础是信息论。从信息论的角度来看，压缩就是去掉数据中的冗余，即保留不确定的信息，去掉确定的信息（可推知的），也就是用一种更接近信息本质的描述来代替原有冗余的描述。数据图像和视频数据中存在着大量的数据冗余和主观视觉冗余，因此图像和视频数据压缩不仅是必要的，而且也是可能的。</p>
+</blockquote>
+<h5 id="1-1-空间冗余"><a href="#1-1-空间冗余" class="headerlink" title="1.1 空间冗余"></a>1.1 空间冗余</h5><p>空间冗余也称空域冗余，是一种与像素间相关性直接联系的数据冗余。例如：数字图像的亮度信号和色度信号在空间域（X，Y坐标系）虽然属于一个随机场分布，但是他们可以看成为一个平稳的马尔可夫场。通俗讲，图像像素点在空间域中的亮度值和色度信号值，除了边界轮毂外，都是缓慢变化。因此，图像的帧内编码，即以减少空间冗余进行数据压缩。</p>
+<h5 id="1-2-时间冗余"><a href="#1-2-时间冗余" class="headerlink" title="1.2 时间冗余"></a>1.2 时间冗余</h5><p>时间冗余也称为时域冗余，它是针对视频序列图像而言的。视频序列每秒有25 ~ 30帧图像，相邻帧之间的时间间隔很小（例如，帧频为25Hz的电视信号，期帧间间隔只有 0.04s）,使得图像有很强的相关性。因此，对于视频压缩而言，通常采用运动估值和运动补偿预测技术来消除时间冗余。</p>
+<h5 id="1-3-统计冗余"><a href="#1-3-统计冗余" class="headerlink" title="1.3 统计冗余"></a>1.3 统计冗余</h5><p>统计冗余也称编码表示冗余或符合冗余。由信息论的有关原来可知，为了表示图像数据的一个像素点，只要按其信息熵的大小分配相应的比特数即可。若用相同码长表示不同出现概率的符号，则会造成比特数的浪费。如果采用可变长编码技术，对出现概率大的符号用短码字表示，对出现概率小的符号用长码字表示，则可去除符号冗余，从而节约码字，这就是熵编码的思想。</p>
+<h5 id="1-4-结构冗余"><a href="#1-4-结构冗余" class="headerlink" title="1.4 结构冗余"></a>1.4 结构冗余</h5><p>在有些图像的部分区域内有着很相似的纹理结构，或是图像的各个部分之间存在着某种关系，例如自相似性等，这些都是结构冗余的表现。分形图像编码的基本思想就是利用了结构冗余。</p>
+<h5 id="1-5-知识冗余"><a href="#1-5-知识冗余" class="headerlink" title="1.5 知识冗余"></a>1.5 知识冗余</h5><p>在某些特定的应用场合，编码对象中包含的信息与某些先验的基本知识有关。这时，可以利用这些先验知识为编码对象建立模型。通过提取模型参数，对参数进行编码，而不是对图像像素值直接进行编码，可以达到非常高的压缩比。这是模型基编码（或称知识基编码、语义基编码）的基本思想。</p>
+<h5 id="1-6-人眼的视觉冗余"><a href="#1-6-人眼的视觉冗余" class="headerlink" title="1.6 人眼的视觉冗余"></a>1.6 人眼的视觉冗余</h5><p>视觉冗余度是相对于人眼的视觉特性而言。压缩视觉冗余的核心思想是去掉那些相对人眼而言是看不到的或可有可无的图像数据。对视觉冗余的压缩通常反映在各种具体的压缩编码中。如对于离散余弦变换（DCT）系数的直流与低频部分采用细量化，而对高频部分采用粗量化。在帧间预测编码中，高压缩比的预测帧及双向预测帧的采用，也是利用了人眼对运动图像细节不敏感的特性。</p>
+<h4 id="2-无失真编码和限失真编码"><a href="#2-无失真编码和限失真编码" class="headerlink" title="2. 无失真编码和限失真编码"></a>2. 无失真编码和限失真编码</h4><p>从信息论的角度出发，根据解码后还原的数据是否与原始数据完全相同，可将数据压缩方法分为两大类：无失真编码和限失真编码。</p>
+<h5 id="无失真编码："><a href="#无失真编码：" class="headerlink" title="无失真编码："></a>无失真编码：</h5><p>无失真编码又称无损编码、信息保持编码、熵编码。</p>
+<p>熵指的是具体数据所含的平均信息量，定义为在不丢失信息的前提下描述该信息内容所需的最小比特数。</p>
+<p>熵编码事纯粹基于信号统计特性的一种编码方法，他利用信源概率分布的不均匀性，通过变长编码来减少信源数据冗余，解码后还原的数据与压缩编码前的原始数据完全相同而不引入任何失真。</p>
+<p>但无失真编码的压缩比较低，可达到的最高压缩比受到信源熵的理论限制：一般是2:1到5:1。最常用的无失真编码方法有哈夫曼（Huffman）编码、算术编码和游程编码（Run-Length Encoding，RLE）等。</p>
+<h5 id="限失真编码："><a href="#限失真编码：" class="headerlink" title="限失真编码："></a>限失真编码：</h5><p>限失真编码也称有损编码、非信息保持编码、熵压缩编码。也就是说，解码后还原的数据与压缩编码前的原始数据有差别的，编码会一定程度的失真。</p>
+<p>限失真编码方法利用了人类视觉的感知特性，允许压缩过程中损失一部分信息，虽然在解码时不能完全恢复原始数据，但是如果把失真控制在视觉阈值一下或者控制在可容忍的限度你，则不影响人们对图像的理解，却换来了高压缩比。在限失真编码中，允许的是真愈大，则可达到的压缩比愈高。</p>
+<p>常见的限失真编码方法：预测编码、变化编码、矢量量化、基于模型编码等。</p>
+<h4 id="3-熵编码"><a href="#3-熵编码" class="headerlink" title="3. 熵编码"></a>3. 熵编码</h4><h5 id="3-1-熵-Entropy-：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。"><a href="#3-1-熵-Entropy-：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。" class="headerlink" title="3.1 熵(Entropy)：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。"></a>3.1 熵(Entropy)：信源的平均信息量，更精确的描述为表示信源所有符号包含信息的平均比特数。</h5><ul>
+<li>信源编码要尽可能的减少信源的冗余，使之接近熵</li>
+<li>用更少的比特传递更多的信源信息</li>
+</ul>
+<h4 id="3-2-熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化"><a href="#3-2-熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化" class="headerlink" title="3.2 熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化"></a>3.2 熵编码：数据压缩中根据信源消息的概率模型使消息的熵最小化</h4><ul>
+<li>无损压缩</li>
+<li>变长压缩</li>
+</ul>
+<h3 id="压缩编码基础"><a href="#压缩编码基础" class="headerlink" title="压缩编码基础"></a>压缩编码基础</h3><h4 id="H-264中普通I帧和IDR帧究竟有什么区别"><a href="#H-264中普通I帧和IDR帧究竟有什么区别" class="headerlink" title="H.264中普通I帧和IDR帧究竟有什么区别"></a>H.264中普通I帧和IDR帧究竟有什么区别</h4><p>在MPEG2中，有个重要的概念叫GOP(group of pictures)，假设编码的帧类型为：IBBPBBPBBPBBIBBPBBPBBPBBI…, 那么这个IBBPBBPBBPBB就叫一个GOP. 由于误差会积累，但MPEG2中的I帧可以阻断误差的积累，也就是说，在MPEG中I帧后面的帧永远不会参考I帧前面的帧，也就是说，一个GOP中的帧永远不会参考前一个GOP中的帧.(另外说句题外话：B帧可以参考下一个GOP的I帧，但在MPEG2中，B帧不会作为参考帧，所以B帧不会导致误差积累)</p>
+<p>在H.264中就不同了.很多人说，在H.264中没有I帧这个概念了，当然这也是有道理的，标准中的确没有这么叫，但是，为了方便，也可以延续I帧这个概念，那么H.264中什么叫I帧呢？
+定义：H.264中的I帧是指帧中的宏块都是采用帧内预测方式，在H.264中有两种I帧: 普通I帧和IDR帧（特殊I帧）.</p>
+<p>在H.264中，是IDR帧阻断了误差的积累, IDR帧后面的帧都不能参考该IDR帧前面的帧. 在H.264中，普通的I帧并没有阻断误差的积累，那就是说普通I帧后面的帧就可以参考该I帧之前的帧么？</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/20/media-video/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1554,829 +2356,6 @@ I帧编码是为了减少空间域冗余，P帧和B帧是为了减少时间域�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/jni-intro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/jni-intro/" itemprop="url">
-                  jni介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T22:23:23+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="NDK技巧"><a href="#NDK技巧" class="headerlink" title="NDK技巧"></a>NDK技巧</h3><ol>
-<li>加快ndk-build编译速度
-NDK编译时加上-j参数,如:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -j4 # -j4,让make最多允许4个编译命令同时执行</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>测试后编译速度至少可以提高一倍</p>
-<h3 id="native崩溃分析"><a href="#native崩溃分析" class="headerlink" title="native崩溃分析"></a>native崩溃分析</h3><h4 id="定位crash错误位置"><a href="#定位crash错误位置" class="headerlink" title="定位crash错误位置"></a>定位crash错误位置</h4><p>首先我们要先把Logcat里的show only selected application选项改成No Filters, 这时就能看到系统打印出的DEBUG信息.
-在DEBUG信息里找到backtrace, 这段就是系统给出的造成崩溃的信息, 但仅仅给出了是哪个函数, 而没有准确给出是那一行代码造成的崩溃.
-记下#00 pc 00013122(红框3)这个信息, 这个信息就是用来定位崩溃代码的地址
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.580 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/HwDecodeWrapper: dequeueOutputBuffer = -1</div><div class="line">12-27 10:45:41.590 6189-6761/com.wodekouwei.demo E/mediacodec: [oar_mediacodec_receive_frame():266]outbufidx:-1</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Build fingerprint: &apos;Huawei/H60-L03/hwH60:5.1.1/HDH60-L03/C01B535:user/release-keys&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: Revision: &apos;0&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: ABI: &apos;arm&apos;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: pid: 6189, tid: 6762, name: Thread-4510  &gt;&gt;&gt; com.wodekouwei.demo &lt;&lt;&lt;</div><div class="line">12-27 10:45:41.595 4901-4901/? I/DEBUG: signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 0x428d738d</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r0 428d737d  r1 b86eae00  r2 00000001  r3 00000000</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r4 b8836580  r5 b88365c0  r6 b8836580  r7 9e4e0d48</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     r8 b8836588  r9 b8836588  sl b6da8871  fp 9e4e0dd0</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     ip a1ca2c90  sp 9e4e0cc0  lr a1c358c7  pc a1c35b4c  cpsr 200f0030</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG: backtrace:</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #00 pc 000ccb4c  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #01 pc 000cc8c3  /data/app/com.wodekouwei.demo-1/lib/arm/liboarp-lib.so (oar_player_gl_thread+214)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #02 pc 0001688f  /system/lib/libc.so (__pthread_start(void*)+30)</div><div class="line">12-27 10:45:41.610 4901-4901/? I/DEBUG:     #03 pc 000148a3  /system/lib/libc.so (__start_thread+6)</div><div class="line">12-27 10:45:42.005 3655-3655/? E/Thermal-daemon: [ap] temp_new :34  temp_old :33</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:3001] from screen [on:0 period:-1780713098] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.385 5083-5397/? E/WifiStateMachine:  L2ConnectedState !CMD_RSSI_POLL 16 0 &quot;wonxing-H3C&quot; 3c:8c:40:e1:dd:b1 rssi=-50 f=2437 sc=100 link=72 tx=5.5, 0.0, 0.0  rx=1.0 bcn=0 [on:0 tx:0 rx:0 period:1] from screen [on:0 period:-1780713097] gl hn u24 rssi=-45 ag=0 hr ticks 0,1,56 ls-=0 [56,56,60,60,65] brc=0 lrc=0</div><div class="line">12-27 10:45:42.390 5083-5397/? E/WifiStateMachine: fetchRssiLinkSpeedAndFrequencyNative rssi=-49 linkspeed=26 SSID=&quot;wonxing-H3C&quot;</div></pre></td></tr></table></figure></p>
-<p>想要准确定位崩溃代码的地址的话我们就需要用到ndk工具包里的adrr2line这个工具了
-首先先找到这个工具, linux系统这个工具在如下位置
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/gavinandre/Documents/Android/android-sdk-linux/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line</div></pre></td></tr></table></figure></p>
-<p>在该目录下做个软链接后就能在任何目录使用这个命令了
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s arm-linux-androideabi-addr2line /usr/local/bin/addr2line</div></pre></td></tr></table></figure></p>
-<p>找到造成崩溃的so文件地址, 在app目录下搜索so文件
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;liboarp-lib.so&quot;                                                                                           ✘</div><div class="line">./app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/cmake/debug/obj/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/liboarp-lib.so</div><div class="line">./srsrtmpplayer/build/intermediates/intermediate-jars/debug/jni/armeabi-v7a/liboarp-lib.so</div></pre></td></tr></table></figure></p>
-<p>可以看到android studio编译后生成了许多so文件, 以我的经验正确的so文件一般是这个文件:<code>./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so</code>
-然后就可以使用addrline命令了, 格式是a<code>ddr2line -e 文件位置 崩溃地址</code>:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">addr2line -e ./srsrtmpplayer/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/liboarp-lib.so 000ccb4c</div></pre></td></tr></table></figure></p>
-<p>如果so文件正确的话会打印如下信息,oar_player_gl_thread.c就是崩溃的cpp文件, 152, 然后检查下定位出来的位置是否在DEBUG信息里给出的函数里
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">oar_player_gl_thread.c:152</div></pre></td></tr></table></figure></p>
-<p>如果so文件错误的话会打印问号或者一个不对的位置, 这时就要换so文件多尝试了</p>
-<h3 id="C回调JAVA"><a href="#C回调JAVA" class="headerlink" title="C回调JAVA"></a>C回调JAVA</h3><ol>
-<li><p>c中返回一个字符串</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">（*env）-&gt;NewStringUTF(env,&quot;Huazi 华仔&quot;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中返回一个数组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.....................  </div><div class="line">  int i = 0;  </div><div class="line">  jintArray array;  </div><div class="line">  array =(*env)-&gt;NewIntArray(env,8);  </div><div class="line">  for(;i&lt;8;i++)  </div><div class="line"></div><div class="line">// 赋值成 0 ~ 7  </div><div class="line">      (*env)-&gt;SetObjectArrayElement(env,array,i,i);  </div><div class="line">  &#125;  </div><div class="line">  return array;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中使用调用传入的参数是数组array 是传入的数组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.........  </div><div class="line"> int sum =0, i;  </div><div class="line"> int len = (*env)-&gt;GetArrayLength(env,array);  </div><div class="line"> jint *element =(*env)-&gt;GetIntArrayElement(env,array,0);  </div><div class="line"> for(i=0;i&lt;len;i++)  </div><div class="line"> &#123;  </div><div class="line">     sum+= *(element+i);  </div><div class="line"> &#125;  </div><div class="line"> return sum;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中调用java中类的方法 没有参数 只有返回值String</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型  </div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">  jmethodID mid;  </div><div class="line">  jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line"> mid =(*env)-&gt;GetMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);//TestMethod java中的方法名  </div><div class="line"> jstring msg =(*env)-&gt;CallObjectMethod(env,object,mid); //object 注意下是jni传过来的jobject  </div><div class="line"> return msg;</div></pre></td></tr></table></figure>
-</li>
-<li><p>c中调用java中类的静态方法 没有参数 只有返回值String</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//@&quot;()Ljava/lang/String;&quot; 表示参数为空 返回值是String类型</div><div class="line">JNIEXPORT jstring JNICALLJava_com_huazi_Demo_getCallBack(JNIENV env,jobject object)&#123;  </div><div class="line">    jmethodID mid;  </div><div class="line">    jclass cls =(*env)-&gt;FindClass(env,&quot;com/huazi/Demo&quot;); //后面是包名+类名  </div><div class="line">   mid =(*env)-&gt;GeStatictMethodID(env,cls,&quot;TestMethod&quot;,&quot;()Ljava/lang/String;&quot;);// TestMethod java中的方法名  </div><div class="line">   jstring msg =(*env)-&gt;CallStaticObjectMethod(env,cls,mid); //object 注意下是jni传过来的jobject  </div><div class="line">   return msg;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/07/ffmpeg-compile-mac/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/07/ffmpeg-compile-mac/" itemprop="url">
-                  FFMPEG编译之Mac
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T21:28:32+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
-                    <span itemprop="name">FFMPEG</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Mac下FFMPEG使用"><a href="#Mac下FFMPEG使用" class="headerlink" title="Mac下FFMPEG使用"></a>Mac下FFMPEG使用</h3><p>There are a few ways to get FFmpeg on OS X.</p>
-<ol>
-<li>One is to build it yourself. Compiling on Mac OS X is as easy as any other <code>*</code>nix machine, there are just a few caveats(警告). The general procedure is get the source, then ./configure <flags>; make &amp;&amp; sudo make install, though specific configure flags are possible.</flags></li>
-<li>Another is to use some “build helper” tool, to install it for you. For example, homebrew or macports, see the homebrew section in this document.</li>
-<li>Alternatively, if you are unable to compile, or do not want to install homebrew, you can simply download a static build for OS X, but it may not contain the features you want. Typically this involves unzipping an FFmpeg distribution file [like .zip file], then running it from within the newly extracted files/directories.</li>
-</ol>
-<h3 id="手动编译FFMPEG"><a href="#手动编译FFMPEG" class="headerlink" title="手动编译FFMPEG"></a>手动编译FFMPEG</h3><h4 id="1-下载FFMPEG源码"><a href="#1-下载FFMPEG源码" class="headerlink" title="1.下载FFMPEG源码"></a>1.下载FFMPEG源码</h4><p>使用<code>git clone https://github.com/FFmpeg/FFmpeg</code>从github下载ffmpeg源码,切换到要使用的目标分支(这里使用release/3.3):<code>git checkout -b r3.3 origin/release/3.3</code>,或者直接从github下载分支<code>release/3.3</code>的压缩包,解压.</p>
-<h4 id="2-准备Xcode"><a href="#2-准备Xcode" class="headerlink" title="2.准备Xcode"></a>2.准备Xcode</h4><p>Starting with Lion 10.7, Xcode is available for free from the Mac App Store and is required to compile anything on your Mac. Make sure you install the Command Line Tools from Preferences &gt; Downloads &gt; Components. Older versions are still available with an AppleID and free Developer account at ​developer.apple.com.</p>
-<h4 id="3-准备HomeBrew工具"><a href="#3-准备HomeBrew工具" class="headerlink" title="3.准备HomeBrew工具"></a>3.准备HomeBrew工具</h4><p>To get ffmpeg for OS X, you first have to install ​Homebrew. If you don’t want to use Homebrew, see the section below.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
-<p>Then:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install automake fdk-aac git lame libass libtool libvorbis libvpx \</div><div class="line">opus sdl shtool texi2html theora wget x264 x265 xvid yasm</div></pre></td></tr></table></figure></p>
-<p>Mac OS X Lion comes with Freetype already installed (older versions may need ‘X11’ selected during installation), but in an atypical location: /usr/X11. Running freetype-config in Terminal can give the locations of the individual folders, like headers, and libraries, so be prepared to add lines like CFLAGS=<code>freetype-config --cflags</code> LDFLAGS=<code>freetype-config --libs</code> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig before ./configure or add them to your $HOME/.profile file.</p>
-<h4 id="4-编译"><a href="#4-编译" class="headerlink" title="4.编译"></a>4.编译</h4><p>Once you have compiled all of the codecs/libraries you want, you can now download the FFmpeg source either with Git or the from release tarball links on the website. Study the output of ./configure –help and make sure you’ve enabled all the features you want, remembering that –enable-nonfree and –enable-gpl will be necessary for some of the dependencies above. A sample command is:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git clone http://source.ffmpeg.org/git/ffmpeg.git ffmpeg</div><div class="line">cd ffmpeg</div><div class="line">./configure  --prefix=/usr/local/ffmpeg --enable-gpl --enable-nonfree --enable-libass \</div><div class="line">--enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \</div><div class="line">--enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid</div><div class="line">make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
-<p><code>--prefix</code>指定编译完成后安装路径,这里指定到<code>/usr/local/ffmpeg</code>,安装完成会在<code>/usr/local/ffmpeg</code>下生成:bin,include,lib,share四个目录</p>
-<h3 id="安装环境介绍"><a href="#安装环境介绍" class="headerlink" title="安装环境介绍"></a>安装环境介绍</h3><p>A package consists of several related files which are installed in several directories. The configure step usually allows the user to specify the so-called install prefix, and is usually specified through the configure option configure –prefix=PREFIX, where PREFIX usually is by default /usr/local. The prefix specifies the common directory where all the components are installed.</p>
-<p>The following directories are usually involved in the installation:</p>
-<ul>
-<li><code>PREFIX/bin</code>: contains the generated binaries (e.g. ffmpeg, ffplay, ffprobe etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/include</code>: contains the library headers (e.g. libavutil/avstring.h, libavcodec/avcodec.h, libavformat/avformat.h etc. in case of FFmpeg) required to compile applications linked against the package libraries</li>
-<li><code>PREFIX/lib</code>: contains the generated libraries (e.g. libavutil, libavcodec, libavformat etc. in the case of FFmpeg)</li>
-<li><code>PREFIX/share</code>: contains various system-independent components; especially documentation files and examples
-By specifying the prefix it is possible to define the installation layout.</li>
-</ul>
-<p>By using a shared prefix like /usr/local/, different packages will be installed in the same directory, so in general it will be more difficult to revert the installation.</p>
-<p>Using a prefix like /opt/PROJECT/, the project will be installed in a dedicated directory, and to remove from the system you can simply remove the /opt/PREFIX path. On the other hand, such installation will require to edit all the environment variables to point to the custom path.</p>
-<h3 id="Environment-variables"><a href="#Environment-variables" class="headerlink" title="Environment variables"></a>Environment variables</h3><p>Several variables defined in the environment affect your package install. In particular, depending on your installation prefix, you may need to update some of these variables in order to make sure that the installed components can be found by the system tools.</p>
-<p>The list of environment variables can be shown through the command env.</p>
-<p>A list of the affected variables follows:</p>
-<ul>
-<li>PATH: defines the list of :-separated paths where the system looks for binaries. For example if you install your package in /usr/local/, you should update the PATH so that it will contain /usr/local/bin. This can be done for example through the command export PATH=/usr/local/bin:$PATH.</li>
-<li>LD_LIBRARY_PATH: contains the :-separated paths where the system looks for libraries. For example if you install your package in /usr/local/, you should update the LD_LIBRARY_PATH so that it will contain /usr/local/lib. This can be done for example through the command export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH. This variable is sometimes deprecated in favor of the use of ldconfig.</li>
-<li>CFLAGS: contains flags used by the C compiler, and usually includes preprocessing directives like -IPREFIX/include or compilation flags. Custom CFLAGS are usually prefixed to the source package compiler flags by the source package build system. Alternatively many build systems allow to specify the configure option -extra-cflags.</li>
-<li>LDFLAGS: these are directives used by the linker, and usually include linking directives like -LPREFIX/lib needed to find libraries installed in custom paths. Custom LDFLAGS are usually prefixed to the source package linker flags by the source package build system. Alternatively, many build systems allow to specify the configure option -extra-ldflags.</li>
-<li>PKG_CONFIG_PATH: contains the :-separated paths used by pkg-config to detect the pkg-config files used by many build systems to detect the custom CFLAGS/LDFLAGS used by a specific library.
-In case you installed a package in a non standard path, you need to update these environment libraries so that system tools will be able to detect the package components. This is especially required when running a configure script for a package relying on other installed libraries/headers/tools.</li>
-</ul>
-<p>Environment variables are usually defined in the profile file, for example .profile defined in the user directory for sh/bash users, and in /etc/profile. This file can be edited to permanently set the custom environment. Alternatively, the variables can be set in a script or in a particular shell session.</p>
-<p>Remember to export the variables to the child process, e.g. using the export command. Read the fine documentation of your shell for more detailed information.</p>
-<h3 id="MAC下的动态链接库"><a href="#MAC下的动态链接库" class="headerlink" title="MAC下的动态链接库"></a>MAC下的动态链接库</h3><h4 id="扩展名"><a href="#扩展名" class="headerlink" title="扩展名"></a>扩展名</h4><p>Windows下.DLL,Linux下.so,Mac OS X下的扩展名是.dylib。
-.dylib是Mach-O格式，也就是Mac OS X下的二进制文件格式。Mac OS X提供了一系列
-工具，用于创建和访问动态链接库。</p>
-<ul>
-<li>编译器/usr/bin/cc，也就是gcc了，Apple改过的。这个主要还是一个壳，去调用其他
-的一些部件。当然同时还有/usr/bin/c++，等等。</li>
-<li>汇编器/usr/bin/as</li>
-<li>链接器/usr/bin/ld</li>
-</ul>
-<h4 id="MAC下创建动态链接库步骤"><a href="#MAC下创建动态链接库步骤" class="headerlink" title="MAC下创建动态链接库步骤:"></a>MAC下创建动态链接库步骤:</h4><ol>
-<li>首先是生成module文件，也就是.o文件。这跟一般的unix没什么区别。例如<code>cc -c a.c b.c</code>,就得到a.o和b.o</li>
-<li>可以用ld来合并.o文件，比如<code>ld -r -o c.o a.o b.o</code></li>
-<li>然后可以用libtool来创建动态链接库:<code>libtool -dynamic -o c.dylib a.o b.o</code>.（ 这里也可以用<code>libtool -static -o c.a a.o b.o</code>就创建静态库）</li>
-</ol>
-<p>如果用gcc直接编译，我记得linux下一般是可以:
-<code>gcc -shared -o c.so a.c b.c</code>
-而在Mac OS X下需要:
-<code>gcc -dynamiclib -o c.dylib a.c b.c</code></p>
-<h4 id="动态链接库的工具"><a href="#动态链接库的工具" class="headerlink" title="动态链接库的工具"></a>动态链接库的工具</h4><p>nm是最常用的，这个用法跟linux下差不多:<code>nm c.dylib</code>,可以看到导出符号表，等等。
-另一个常用的工具是otool，这个是Mac OS X独有的。比如想看看c.dylib的依赖关系<code>otool -L c.dylib</code></p>
-<h3 id="官网方法"><a href="#官网方法" class="headerlink" title="官网方法"></a>官网方法</h3><ul>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="external">CompilationGuide-Generic</a></li>
-<li><a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX" target="_blank" rel="external">CompilationGuide-MacOSX</a></li>
-</ul>
-<h3 id="编译ffmpeg3-3结果没有ffplay"><a href="#编译ffmpeg3-3结果没有ffplay" class="headerlink" title="编译ffmpeg3.3结果没有ffplay"></a>编译ffmpeg3.3结果没有ffplay</h3><p>因为系统没有sdl环境或sdl版本不匹配,ffmpeg3.3需要sdl2</p>
-<p><a href="http://www.libsdl.org/download-2.0.php" target="_blank" rel="external">http://www.libsdl.org/download-2.0.php</a> 下载Source Code SDL2-2.0.5.zip - GPG signed,解压缩,执行命令:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure  </div><div class="line">make  </div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
-<p>进行编译</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/06/03/gl-fbo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/03/gl-fbo/" itemprop="url">
-                  OpenGL Frame Buffer Object(FBO)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-03T18:57:30+08:00">
-                2017-06-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenGL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Update: Framebuffer object extension is promoted as a core feature of OpenGL version 3.0, and is approved by ARB combining the following extensions;</p>
-<ul>
-<li>EXT_framebuffer_object</li>
-<li>EXT_framebuffer_blit</li>
-<li>EXT_framebuffer_multisample</li>
-<li>EXT_packed_depth_stencil</li>
-</ul>
-<hr>
-<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>In <a href="http://www.songho.ca/opengl/gl_pipeline.html" target="_blank" rel="external">OpenGL rendering pipeline</a>, the geometry data and textures are transformed and passed several tests, and then finally rendered onto a screen as 2D pixels. The final rendering destination of the OpenGL pipeline is called framebuffer. Framebuffer is a collection of 2D arrays or storages utilized by OpenGL; colour buffers, depth buffer, stencil buffer and accumulation buffer. By default, OpenGL uses the framebuffer as a rendering destination that is created and managed entirely by the window system. This default framebuffer is called window-system-provided framebuffer.
-在OpenGL渲染管线中，几何数据和纹理经过多次转化和多次测试，最后以二维像素的形式显示在屏幕上。OpenGL管线的最终渲染目的地被称作帧缓存（framebuffer）。帧缓冲是一些二维数组和OpenG所使用的存储区的集合：颜色缓存、深度缓存、模板缓存和累计缓存。一般情况下，帧缓存完全由window系统生成和管理，由OpenGL使用。这个默认的帧缓存被称作“window系统生成”（window-system-provided）的帧缓存。</p>
-<p>The OpenGL extension, GL_ARB_framebuffer_object provides an interface to create additional non-displayable framebuffer objects (FBO). This framebuffer is called application-created framebuffer in order to distinguish from the default window-system-provided framebuffer. By using framebuffer object (FBO), an OpenGL application can redirect the rendering output to the application-created framebuffer object (FBO) other than the traditional window-system-provided framebuffer. And, it is fully controlled by OpenGL.
-在OpenGL扩展中，GL_EXT_framebuffer_object提供了一种创建额外的不能显示的帧缓存对象的接口。为了和默认的“window系统生成”的帧缓存区别，这种帧缓冲成为应用程序帧缓存（application-createdframebuffer）。通过使用帧缓存对象（FBO），OpenGL可以将显示输出到引用程序帧缓存对象，而不是传统的“window系统生成”帧缓存。而且，它完全受OpenGL控制。</p>
-<p>Similar to window-system-provided framebuffer, a FBO contains a collection of rendering destinations; color, depth and stencil buffer. (Note that accumulation buffer is not defined in FBO.) These logical buffers in a FBO are called framebuffer-attachable images, which are 2D arrays of pixels that can be attached to a framebuffer object.
-相似于window系统提供的帧缓存，一个FBO也包含一些存储颜色、深度和模板数据的区域。（注意：没有累积缓存）我们把FBO中这些逻辑缓存称之为“帧缓存关联图像”，它们是一些能够和一个帧缓存对象关联起来的二维数组像素。</p>
-<p>There are two types of framebuffer-attachable images; texture images and renderbuffer images. If an image of a texture object is attached to a framebuffer, OpenGL performs “render to texture”. And if an image of a renderbuffer object is attached to a framebuffer, then OpenGL performs “offscreen rendering”.
-有两种类型的“帧缓存关联图像”：纹理图像（texture images）和渲染缓存图像（renderbuffer images）。如果纹理对象的图像数据关联到帧缓存，OpenGL执行的是“渲染到纹理”（render to texture）操作。如果渲染缓存的图像数据关联到帧缓存，OpenGL执行的是离线渲染（offscreen rendering）。</p>
-<p>By the way, renderbuffer object is a new type of storage object defined in GL_ARB_framebuffer_object extension. It is used as a rendering destination for a single 2D image during rendering process.
-这里要提到的是，渲染缓存对象是在GL_EXT_framebuffer_object扩展中定义的一种新的存储类型。在渲染过程中它被用作存储单幅二维图像。</p>
-<p>The following diagram shows the connectivity among the framebuffer object, texture object and renderbuffer object. Multiple texture objects or renderbuffer objects can be attached to a framebuffer object through the attachment points.
-下面这幅图显示了帧缓存对象、纹理对象和渲染缓存对象之间的联系。多多个纹理对象或者渲染缓存对象能够通过关联点关联到一个帧缓存对象上。</p>
-<p><img src="http://images.wodekouwei.com/gl/gl_fbo01.png" alt="image">
-There are multiple color attachment points (GL_COLOR_ATTACHMENT0,…, GL_COLOR_ATTACHMENTn), one depth attachment point (GL_DEPTH_ATTACHMENT), and one stencil attachment point (GL_STENCIL_ATTACHMENT) in a framebuffer object. The number of color attachment points is implementation dependent, but each FBO must have at least one color attachement point. You can query the maximum number of color attachement points with GL_MAX_COLOR_ATTACHMENTS, which are supported by a graphics card. The reason that a FBO has multiple color attachement points is to allow to render the color buffer to multiple destinations at the same time. This “multiple render targets” (MRT) can be accomplished by GL_ARB_draw_buffers extension. Notice that the framebuffer object itself does not have any image storage(array) in it, but, it has only multiple attachment points.
-在一个帧缓存对象中有多个颜色关联点（GL_COLOR_ATTACHMENT0_EXT,…,GL_COLOR_ATTACHMENTn_EXT），一个深度关联点（GL_DEPTH_ATTACHMENT_EXT），和一个模板关联点（GL_STENCIL_ATTACHMENT_EXT）。每个FBO中至少有一个颜色关联点，其数目与实体显卡相关。可以通过GL_MAX_COLOR_ATTACHMENTS_EXT来查询颜色关联点的最大数目。FBO有多个颜色关联点的原因是这样可以同时将颜色而换成渲染到多个FBO关联区。这种“多渲染目标”（multiple rendertargets,MRT）可以通过GL_ARB_draw_buffers扩展实现。需要注意的是：FBO本身并没有任何图像存储区，只有多个关联点。</p>
-<p>Framebuffer object (FBO) provides an efficient switching mechanism; detach the previous framebuffer-attachable image from a FBO, and attach a new framebuffer-attachable image to the FBO. Switching framebuffer-attachable images is much faster than switching between FBOs. FBO provides glFramebufferTexture2D() to switch 2D texture objects, and glFramebufferRenderbuffer() to switch renderbuffer objects.
-FBO提供了一种高效的切换机制；将前面的帧缓存关联图像从FBO分离，然后把新的帧缓存关联图像关联到FBO。在帧缓存关联图像之间切换比在FBO之间切换要快得多。FBO提供了glFramebufferTexture2DEXT()来切换2D纹理对象和glFramebufferRenderbufferEXT()来切换渲染缓存对象。</p>
-<hr>
-<h3 id="Creating-Frame-Buffer-Object-FBO"><a href="#Creating-Frame-Buffer-Object-FBO" class="headerlink" title="Creating Frame Buffer Object (FBO)"></a>Creating Frame Buffer Object (FBO)</h3><p>Creating framebuffer objects is similar to generating <a href="http://www.songho.ca/opengl/gl_vbo.html" target="_blank" rel="external">vertex buffer objects (VBO)</a>.
-创建FBO和产生VBO类似。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">void glGenFramebuffers(GLsizei n, GLuint* ids)</div><div class="line">void glDeleteFramebuffers(GLsizei n, const GLuint* ids)</div></pre></td></tr></table></figure></p>
-<p>glGenFramebuffers() requires 2 parameters; the first one is the number of framebuffers to create, and the second parameter is the pointer to a GLuint variable or an array to store a single ID or multiple IDs. It returns the IDs of unused framebuffer objects. ID 0 means the default framebuffer, which is the window-system-provided framebuffer.
-glGenFramebuffersEXT()需要两个参数：第一个是要创建的帧缓存的数目，第二个是指向存储一个或者多个ID的变量或数组的指针。它返回未使用的FBO的ID。ID为0表示默认帧缓存，即window系统提供的帧缓存。</p>
-<p>And, FBO may be deleted by calling glDeleteFramebuffers() when it is not used anymore.
-当FBO不再被使用时，FBO可以通过调用glDeleteFrameBuffersEXT()来删除。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">glBindFramebuffer()</div></pre></td></tr></table></figure>
-<p>Once a FBO is created, it has to be bound before using it.
-一旦一个FBO被创建，在使用它之前必须绑定。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void glBindFramebuffer(GLenum target, GLuint id)</div></pre></td></tr></table></figure>
-<p>The first parameter, target, should be GL_FRAMEBUFFER, and the second parameter is the ID of a framebuffer object. Once a FBO is bound, all OpenGL operations affect onto the current bound framebuffer object. The object ID 0 is reserved for the default window-system provided framebuffer. Therefore, in order to unbind the current framebuffer (FBO), use ID 0 in glBindFramebuffer().
-第一个参数target应该是GL_FRAMEBUFFER_EXT，第二个参数是FBO的ID号。一旦FBO被绑定，之后的所有的OpenGL操作都会对当前所绑定的FBO造成影响。ID号为0表示缺省帧缓存，即默认的window提供的帧缓存。因此，在glBindFramebufferEXT()中将ID号设置为0可以解绑定当前FBO。</p>
-<hr>
-<h3 id="Renderbuffer-Object"><a href="#Renderbuffer-Object" class="headerlink" title="Renderbuffer Object"></a>Renderbuffer Object</h3><p>In addition, renderbuffer object is newly introduced for offscreen rendering. It allows to render a scene directly to a renderbuffer object, instead of rendering to a texture object. Renderbuffer is simply a data storage object containing a single image of a renderable internal format. It is used to store OpenGL logical buffers that do not have corresponding texture format, such as stencil or depth buffer.</p>
-<p>另外，渲染缓存是为离线渲染而新引进的。它允许将一个场景直接渲染到一个渲染缓存对象中，而不是渲染到纹理对象中。渲染缓存对象是用于存储单幅图像的数据存储区域。该图像按照一种可渲染的内部格式存储。它用于存储没有相关纹理格式的OpenGL逻辑缓存，比如模板缓存或者深度缓存。</p>
-<h4 id="glGenRenderbuffers"><a href="#glGenRenderbuffers" class="headerlink" title="glGenRenderbuffers()"></a>glGenRenderbuffers()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">void glGenRenderbuffers(GLsizei n, GLuint* ids)</div><div class="line">void glDeleteRenderbuffers(GLsizei n, const Gluint* ids)</div></pre></td></tr></table></figure>
-<p>Once a renderbuffer is created, it returns non-zero positive integer. ID 0 is reserved for OpenGL.
-一旦一个渲染缓存被创建，它返回一个非零的正整数。ID为0是OpenGL保留值。</p>
-<h4 id="glBindRenderbuffer"><a href="#glBindRenderbuffer" class="headerlink" title="glBindRenderbuffer()"></a>glBindRenderbuffer()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void glBindRenderbuffer(GLenum target, GLuint id)</div></pre></td></tr></table></figure>
-<p>Same as other OpenGL objects, you have to bind the current renderbuffer object before referencing it. The target parameter should be GL_RENDERBUFFER for renderbuffer object.
-和OpenGL中其他对象一样，在引用渲染缓存之前必须绑定当前渲染缓存对象。他target参数应该是GL_RENDERBUFFER_EXT。</p>
-<h4 id="glRenderbufferStorage"><a href="#glRenderbufferStorage" class="headerlink" title="glRenderbufferStorage()"></a>glRenderbufferStorage()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glRenderbufferStorage(GLenum  target,</div><div class="line">                           GLenum  internalFormat,</div><div class="line">                           GLsizei width,</div><div class="line">                           GLsizei height)</div></pre></td></tr></table></figure>
-<p>When a renderbuffer object is created, it does not have any data storage, so we have to allocate a memory space for it. This can be done by using glRenderbufferStorage(). The first parameter must be GL_RENDERBUFFER. The second parameter would be color-renderable (GL_RGB, GL_RGBA, etc.), depth-renderable (GL_DEPTH_COMPONENT), or stencil-renderable formats (GL_STENCIL_INDEX). The width and height are the dimension of the renderbuffer image in pixels.
-当一个渲染缓存被创建，它没有任何数据存储区域，所以我们还要为他分配空间。这可以通过用glRenderbufferStorageEXT()实现。第一个参数必须是GL_RENDERBUFFER_EXT。第二个参数可以是用于颜色的（GL_RGB，GL_RGBA，etc.），用于深度的（GL_DEPTH_COMPONENT），或者是用于模板的格式（GL_STENCIL_INDEX）。Width和height是渲染缓存图像的像素维度。
-The width and height should be less than GL_MAX_RENDERBUFFER_SIZE, otherwise, it generates GL_INVALID_VALUE error.
-width和height必须比GL_MAX_RENDERBUFFER_SIZE_EXT小，否则将会产生GL_UNVALID_VALUE错误。</p>
-<h4 id="glGetRenderbufferParameteriv"><a href="#glGetRenderbufferParameteriv" class="headerlink" title="glGetRenderbufferParameteriv()"></a>glGetRenderbufferParameteriv()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void glGetRenderbufferParameteriv(GLenum target,</div><div class="line">                                  GLenum param,</div><div class="line">                                  GLint* value)</div></pre></td></tr></table></figure>
-<p>You also get various parameters of the currently bound renderbuffer object. target should be GL_RENDERBUFFER, and the second parameter is the name of parameter. The last is the pointer to an integer variable to store the returned value. The available names of the renderbuffer parameters are;
-我们也可以得到当前绑定的渲染缓存对象的一些参数。Target应该是GL_RENDERBUFFER_EXT，第二个参数是所要得到的参数名字。最后一个是指向存储返回值的整型量的指针。渲染缓存的变量名有如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">GL_RENDERBUFFER_WIDTH</div><div class="line">GL_RENDERBUFFER_HEIGHT</div><div class="line">GL_RENDERBUFFER_INTERNAL_FORMAT</div><div class="line">GL_RENDERBUFFER_RED_SIZE</div><div class="line">GL_RENDERBUFFER_GREEN_SIZE</div><div class="line">GL_RENDERBUFFER_BLUE_SIZE</div><div class="line">GL_RENDERBUFFER_ALPHA_SIZE</div><div class="line">GL_RENDERBUFFER_DEPTH_SIZE</div><div class="line">GL_RENDERBUFFER_STENCIL_SIZE</div></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="Attaching-images-to-FBO"><a href="#Attaching-images-to-FBO" class="headerlink" title="Attaching images to FBO"></a>Attaching images to FBO</h3><p>FBO itself does not have any image storage(buffer) in it. Instead, we must attach framebuffer-attachable images (texture or renderbuffer objects) to the FBO. This mechanism allows that FBO quickly switch (detach and attach) the framebuffer-attachable images in a FBO. It is much faster to switch framebuffer-attachable images than to switch between FBOs. And, it saves unnecessary data copies and memory consumption. For example, a texture can be attached to multiple FBOs, and its image storage can be shared by multiple FBOs.
-FBO本身没有图像存储区。我们必须帧缓存关联图像（纹理或渲染对象）关联到FBO。这种机制允许FBO快速地切换（分离和关联）帧缓存关联图像。切换帧缓存关联图像比在FBO之间切换要快得多。而且，它节省了不必要的数据拷贝和内存消耗。比如，一个纹理可以被关联到多个FBO上，图像存储区可以被多个FBO共享。</p>
-<h4 id="Attaching-a-2D-texture-image-to-FBO"><a href="#Attaching-a-2D-texture-image-to-FBO" class="headerlink" title="Attaching a 2D texture image to FBO"></a>Attaching a 2D texture image to FBO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">glFramebufferTexture2D(GLenum target,</div><div class="line">                       GLenum attachmentPoint,</div><div class="line">                       GLenum textureTarget,</div><div class="line">                       GLuint textureId,</div><div class="line">                       GLint  level)</div></pre></td></tr></table></figure>
-<p>glFramebufferTexture2D() is to attach a 2D texture image to a FBO. The first parameter must be GL_FRAMEBUFFER, and the second parameter is the attachment point where to connect the texture image. A FBO has multiple color attachment points (GL_COLOR_ATTACHMENT0, …, GL_COLOR_ATTACHMENTn), GL_DEPTH_ATTACHMENT, and GL_STENCIL_ATTACHMENT. The third parameter, “textureTarget” is GL_TEXTURE_2D in most cases. The fourth parameter is the identifier of the texture object. The last parameter is the mipmap level of the texture to be attached.
-glFramebufferTexture2DEXT()把一幅纹理图像关联到一个FBO。第一个参数一定是GL_FRAMEBUFFER_EXT，第二个参数是关联纹理图像的关联点。第三个参数textureTarget在多数情况下是GL_TEXTURE_2D。第四个参数是纹理对象的ID号。最后一个参数是要被关联的纹理的mipmap等级
-If the textureId parameter is set to 0, then, the texture image will be detached from the FBO. If a texture object is deleted while it is still attached to a FBO, then, the texture image will be automatically detached from the currently bound FBO. However, if it is attached to multiple FBOs and deleted, then it will be detached from only the bound FBO, but will not be detached from any other un-bound FBOs.
-如果参数textureId被设置为0，那么纹理图像将会被从FBO分离。如果纹理对象在依然关联在FBO上时被删除，那么纹理对象将会自动从当前帮的FBO上分离。然而，如果它被关联到多个FBO上然后被删除，那么它将只被从绑定的FBO上分离，而不会被从其他非绑定的FBO上分离。</p>
-<h4 id="Attaching-a-Renderbuffer-image-to-FBO"><a href="#Attaching-a-Renderbuffer-image-to-FBO" class="headerlink" title="Attaching a Renderbuffer image to FBO"></a>Attaching a Renderbuffer image to FBO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glFramebufferRenderbuffer(GLenum target,</div><div class="line">                               GLenum attachmentPoint,</div><div class="line">                               GLenum renderbufferTarget,</div><div class="line">                               GLuint renderbufferId)</div></pre></td></tr></table></figure>
-<p>A renderbuffer image can be attached by calling glFramebufferRenderbuffer(). The first and second parameters are same as glFramebufferTexture2D(). The third parameter must be GL_RENDERBUFFER, and the last parameter is the ID of the renderbuffer object.
-通过调用glFramebufferRenderbufferEXT()可以关联渲染缓存图像。前两个参数和glFramebufferTexture2DEXT()一样。第三个参数只能是GL_RENDERBUFFER_EXT，最后一个参数是渲染缓存对象的ID号。
-If renderbufferId parameter is set to 0, the renderbuffer image will be detached from the attachment point in the FBO. If a renderbuffer object is deleted while it is still attached in a FBO, then it will be automatically detached from the bound FBO. However, it will not be detached from any other non-bound FBOs.
-如果参数renderbufferId被设置为0，渲染缓存图像将会从FBO的关联点分离。如果渲染缓存图像在依然关联在FBO上时被删除，那么纹理对象将会自动从当前绑定的FBO上分离，而不会从其他非绑定的FBO上分离。</p>
-<hr>
-<h3 id="FBO-with-MSAA-Multi-Sample-Anti-Aliasing"><a href="#FBO-with-MSAA-Multi-Sample-Anti-Aliasing" class="headerlink" title="FBO with MSAA (Multi Sample Anti Aliasing)"></a>FBO with MSAA (Multi Sample Anti Aliasing)</h3><p>When you render to a FBO, anti-aliasing is not automatically enabled even if you properly create a OpenGL rendering context with the multisampling attribute (SAMPLEBUFFERS_ARB) for window-system-provided framebuffer.</p>
-<p>In order to activate multisample anti-aliasing mode for rendering to a FBO, you need to prepare and attach multisample images to a FBO’s color and/or depth attachement points.</p>
-<p>FBO extension provides glRenderbufferStorageMultisample() to create a renderbuffer image for multisample anti-aliasing rendering mode.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">void glRenderbufferStorageMultisample(GLenum  target,</div><div class="line">                                      GLsizei samples,</div><div class="line">                                      GLenum  internalFormat,</div><div class="line">                                      GLsizei width,</div><div class="line">                                      GLsizei height)</div></pre></td></tr></table></figure>
-<p>It adds new parameter, samples on top of glRenderbufferStorage(), which is the number of multisamples for anti-aliased rendering mode. If it is 0, then no MSAA mode is enabled and glRenderbufferStorage() is called instead. You can query the maximum number of samples with GL_MAX_SAMPLES token in glGetIntegerv().</p>
-<p>The following code is to create a FBO with multisample colorbuffer and depthbuffer images. Note that if multiple images are attached to a FBO, then all images must have the same number of multisamples. Otherwise, the FBO status is incomplete.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">// create a 4x MSAA renderbuffer object for colorbuffer</div><div class="line">int msaa = 4;</div><div class="line">GLuint rboColorId;</div><div class="line">glGenRenderbuffers(1, &amp;rboColorId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboColorId);</div><div class="line">glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_RGB8, width, height);</div><div class="line"></div><div class="line">// create a 4x MSAA renderbuffer object for depthbuffer</div><div class="line">GLuint rboDepthId;</div><div class="line">glGenRenderbuffers(1, &amp;rboDepthId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboDepthId);</div><div class="line">glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa, GL_DEPTH_COMPONENT, width, height);</div><div class="line"></div><div class="line">// create a 4x MSAA framebuffer object</div><div class="line">GLuint fboId;</div><div class="line">glGenFramebuffers(1, &amp;fboMsaaId);</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboMsaaId);</div><div class="line"></div><div class="line">// attach colorbuffer image to FBO</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,       // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_COLOR_ATTACHMENT0, // 2. color attachment point</div><div class="line">                          GL_RENDERBUFFER,      // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboColorId);          // 4. rbo ID</div><div class="line"></div><div class="line">// attach depthbuffer image to FBO</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,       // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_DEPTH_ATTACHMENT,  // 2. depth attachment point</div><div class="line">                          GL_RENDERBUFFER,      // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboDepthId);          // 4. rbo ID</div><div class="line"></div><div class="line">// check FBO status</div><div class="line">GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);</div><div class="line">if(status != GL_FRAMEBUFFER_COMPLETE)</div><div class="line">    fboUsed = false;</div></pre></td></tr></table></figure>
-<p>It is important to know that glRenderbufferStorageMultisample() only enables MSAA rendering to FBO. However, you cannot directly use the result from MSAA FBO. If you need to transfer the result to a texture or other non-multisampled framebuffer, you have to convert (downsample) the result to single-sample image using glBlitFramebuffer().</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">void glBlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, // source rectangle</div><div class="line">                       GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, // destination rect</div><div class="line">                       GLbitfield mask,</div><div class="line">                       GLenum filter)</div></pre></td></tr></table></figure>
-<p>glBlitFramebuffer() copies a rectangle of images from the source (GL_READ_BUFFER) to the destination framebuffer (GL_DRAW_BUFFER). The “mask” parameter is to specify which buffers are copied, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT and/or GL_STENCIL_BUFFER_BIT. The last parameter, “filter” is to specify the interpolation mode if the source and destination rectangles are not same. It is either GL_NEAREST or GL_LINEAR.</p>
-<p>The following code is to transfer a multisampled image from a FBO to another non-multisampled FBO. Notice it requires an additional FBO to get the result of MSAA rendering. Please see fboMsaa.zip for details to perform render-to-texture with MSAA.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// copy rendered image from MSAA (multi-sample) to normal (single-sample)</div><div class="line">// NOTE: The multi samples at a pixel in read buffer will be converted</div><div class="line">// to a single sample at the target pixel in draw buffer.</div><div class="line">glBindFramebuffer(GL_READ_FRAMEBUFFER, fboMsaaId); // src FBO (multi-sample)</div><div class="line">glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);     // dst FBO (single-sample)</div><div class="line"></div><div class="line">glBlitFramebuffer(0, 0, width, height,             // src rect</div><div class="line">                  0, 0, width, height,             // dst rect</div><div class="line">                  GL_COLOR_BUFFER_BIT,             // buffer mask</div><div class="line">                  GL_LINEAR);                      // scale filter</div></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="Checking-FBO-Status"><a href="#Checking-FBO-Status" class="headerlink" title="Checking FBO Status"></a>Checking FBO Status</h3><p>Once attachable images (textures and renderbuffers) are attached to a FBO and before performing FBO operation, you must validate if the FBO status is complete or incomplete by using glCheckFramebufferStatus(). If the FBO is not complete, then any drawing and reading command (glBegin(), glCopyTexImage2D(), etc) will be failed.</p>
-<p>一旦关联图像（纹理和渲染缓存）被关联到FBO上，在执行FBO的操作之前，你必须检查FBO的状态，这可以通过调用glCheckFramebufferStatusEXT()实现。如果这个FBObuilding完整，那么任何绘制和读取命令（glBegin(),glCopyTexImage2D(), etc）都会失败。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GLenum glCheckFramebufferStatus(GLenum target)</div></pre></td></tr></table></figure>
-<p>glCheckFramebufferStatus() validates all its attached images and framebuffer parameters on the currently bound FBO. And, this function cannot be called within glBegin()/glEnd() pair. The target parameter should be GL_FRAMEBUFFER. It returns non-zero value after checking the FBO. If all requirements and rules are satisfied, then it returns GL_FRAMEBUFFER_COMPLETE. Otherwise, it returns a relevant error value, which tells what rule is violated.
-glCheckFramebufferStatusEXT()检查当前帧缓存的关联图像和帧缓存参数。这个函数不能在glBegin()/glEnd()之间调用。Target参数必须为GL_FRAMEBUFFER_EXT。它返回一个非零值。如果所有要求和准则都满足，它返回GL_FRAMEBUFFER_COMPLETE_EXT。否则，返回一个相关错误代码告诉我们哪条准则没有满足。</p>
-<p>The rules of FBO completeness are:</p>
-<ul>
-<li>The width and height of framebuffer-attachable image must be not zero.</li>
-<li>If an image is attached to a color attachment point, then the image must have a color-renderable internal format. (GL_RGBA, GL_DEPTH_COMPONENT, GL_LUMINANCE, etc)</li>
-<li>If an image is attached to GL_DEPTH_ATTACHMENT, then the image must have a depth-renderable internal format. (GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, etc)</li>
-<li>If an image is attached to GL_STENCIL_ATTACHMENT, then the image must have a stencil-renderable internal format. (GL_STENCIL_INDEX, GL_STENCIL_INDEX8, etc)</li>
-<li>FBO must have at least one image attached.</li>
-<li>All images attached a FBO must have the same width and height.</li>
-<li>All images attached the color attachment points must have the same internal format.</li>
-</ul>
-<p>FBO完整性准则有：</p>
-<ol>
-<li>帧缓存关联图像的宽度和高度必须非零。</li>
-<li>如果一幅图像被关联到一个颜色关联点，那么这幅图像必须有颜色可渲染的内部格式（GL_RGBA, GL_DEPTH_COMPONENT, GL_LUMINANCE, etc)。</li>
-<li>如果一幅被图像关联到GL_DEPTH_ATTACHMENT_EXT，那么这幅图像必须有深度可渲染的内部格式(GL_DEPTH_COMPONENT,GL_DEPTH_COMPONENT24_EXT, etc)。</li>
-<li>如果一幅被图像关联到GL_STENCIL_ATTACHMENT_EXT，那么这幅图像必须有模板可渲染的内部格式(GL_STENCIL_INDEX,GL_STENCIL_INDEX8_EXT, etc)。</li>
-<li>FBO至少有一幅图像关联。</li>
-<li>被关联到FBO的缩影图像必须有相同的宽度和高度。</li>
-<li>被关联到颜色关联点上的所有图像必须有相同的内部格式。</li>
-</ol>
-<p>Note that even though all of the above conditions are satisfied, your OpenGL driver may not support some combinations of internal formats and parameters. If a particular implementation is not supported by OpenGL driver, then glCheckFramebufferStatus() returns GL_FRAMEBUFFER_UNSUPPORTED.
-注意：即使以上所有条件都满足，你的OpenGL驱动也可能不支持某些格式和参数的组合。如果一种特别的实现不被OpenGL驱动支持，那么glCheckFramebufferStatusEXT()返回GL_FRAMEBUFFER_UNSUPPORTED_EXT。</p>
-<p>The sample code provides some utility functions to report the information of the current FBO; printFramebufferInfo() and checkFramebufferStatus().</p>
-<p><a href="http://www.programcreek.com/java-api-examples/index.php?class=javax.media.opengl.GL&amp;method=GL_FRAMEBUFFER_COMPLETE_EXT" target="_blank" rel="external">Java Code Examples for javax.media.opengl.GL.GL_FRAMEBUFFER_COMPLETE_EXT</a></p>
-<hr>
-<h3 id="GL-EXT-discard-framebuffer"><a href="#GL-EXT-discard-framebuffer" class="headerlink" title="GL_EXT_discard_framebuffer"></a>GL_EXT_discard_framebuffer</h3><h4 id="Overview-1"><a href="#Overview-1" class="headerlink" title="Overview"></a>Overview</h4><p>This extension provides a new command, DiscardFramebufferEXT, which causes the contents of the named framebuffer attachable images to become undefined.  The contents of the specified buffers are undefined until a subsequent operation modifies the content, and only the modified region is guaranteed to hold valid content.  Effective usage of this command may provide an implementation with new optimization opportunities.
-Some OpenGL ES implementations cache framebuffer images in a small pool of fast memory.  Before rendering, these implementations must load the existing contents of one or more of the logical buffers (color, depth, stencil, etc.) into this memory.  After rendering, some or all of these buffers are likewise stored back to external memory so their contents can be used again in the future.  In many applications, some or all of the logical buffers  are cleared at the start of rendering.  If so, the effort to load or store those buffers is wasted.</p>
-<p>Even without this extension, if a frame of rendering begins with a full-screen Clear, an OpenGL ES implementation may optimize away the loading of framebuffer contents prior to rendering the frame.  With this extension, an application can use DiscardFramebufferEXT to signal that framebuffer contents will no longer be needed.  In this case an OpenGL ES implementation may also optimize away the storing back of framebuffer contents after rendering the frame.</p>
-<h4 id="Issues"><a href="#Issues" class="headerlink" title="Issues"></a>Issues</h4><p>1) Should DiscardFramebufferEXT’s argument be a list of COLOR_ATTACHMENTx enums, or should it use the same bitfield from Clear and BlitFramebuffer?</p>
-<p>RESOLVED: We’ll use a sized list of framebuffer attachments.  This will give us some future-proofing for when MRTs and multisampled FBOs are supported.</p>
-<p>2) What happens if the app discards only one of the depth and stencil attachments, but those are backed by the same packed_depth_stencil buffer?
-  a) Generate an error
-  b) Both images become undefined
-  c) Neither image becomes undefined
-  d) Only one of the images becomes undefined
-  RESOLVED: (b) which sort of falls out of Issue 4.</p>
-<p>3) How should DiscardFramebufferEXT interact with the default framebuffer?
-  a) Generate an error
-  b) Ignore the hint silently
-  c) The contents of the specified attachments become undefined
-  RESOLVED: (c), with appropriate wording to map FBO attachments to the corresponding default framebuffer’s logical buffers</p>
-<p>4) What happens when you discard an attachment that doesn’t exist?  This is the case where a framebuffer is complete but doesn’t have, for example, a stencil attachment, yet the app tries to discard the stencil attachment.
-  a) Generate an error
-  b) Ignore the hint silently</p>
-<p>  RESOLVED: (b) for two reasons.  First, this is just a hint anyway, and if we required error detection, then suddenly an implementation can’t trivially ignore it.  Second, this is consistent with Clear, which ignores specified buffers that aren’t present.</p>
-<hr>
-<h3 id="Example-Render-To-Texture"><a href="#Example-Render-To-Texture" class="headerlink" title="Example: Render To Texture"></a>Example: Render To Texture</h3><p>Sometimes, you need to generate dynamic textures on the fly. The most common examples are generating mirroring/reflection effects, dynamic cube/environment maps and shadow maps. Dynamic texturing can be accomplished by rendering the scene to a texture. A traditional way of render-to-texture is to draw a scene to the framebuffer as normal, and then copy the framebuffer image to a texture by using glCopyTexSubImage2D().
-有时候，你需要产生动态纹理。比较常见的例子是产生镜面反射效果、动态环境贴图和阴影等效果。动态纹理可以通过把场景渲染到纹理来实现。渲染到纹理的一种传统方式是将场景绘制到普通的帧缓存上，然后调用glCopyTexSubImage2D()拷贝帧缓存图像至纹理。</p>
-<p>Using FBO, we can render a scene directly onto a texture, so we don’t have to use the window-system-provided framebuffer at all. Further more, we can eliminate an additional data copy (from framebuffer to texture).
-使用FBO，我们能够将场景直接渲染到纹理，所以我们不必使用window系统提供的帧缓存。并且，我们能够去除额外的数据拷贝（从帧缓存到纹理）；。</p>
-<p>This demo program performs render to texture operation with/without FBO, and compares the performance difference. Other than performance gain, there is another advantage of using FBO. If the texture resolution is larger than the size of the rendering window in traditional render-to-texture mode (without FBO), then the area out of the window region will be clipped. However, FBO does not suffer from this clipping problem. You can create a framebuffer-renderable image larger than the display window.
-这个demo实现了使用FBO和不使用FBO两种情况下渲染到纹理的操作，并且比较了性能差异。除了能够获得性能上的提升，使用FBO的还有另外一个优点。在传统的渲染到纹理的模式中（不使用FBO），如果纹理分辨率比渲染窗口的尺寸大，超出窗口区域的部分将被剪切掉。然后，使用FBO就不会有这个问题。你可以产生比显示窗口大的帧缓存渲染图像。</p>
-<p>The following codes is to setup a FBO and framebuffer-attachable images before the rendering loop is started. Note that not only a texture image is attached to the FBO, but also, a renderbuffer image is attached to the depth attachment point of the FBO. We do not actually use this depth buffer, however, the FBO itself needs it for depth test. If we don’t attach this depth renderable image to the FBO, then the rendering output will be corrupted because of missing depth test. If stencil test is also required during FBO rendering, then additional renderbuffer image should be attached to GL_STENCIL_ATTACHMENT.
-以下代码在渲染循环开始之前，对FBO和帧缓存关联图像进行了初始化。注意只有一幅纹理图像被关联到FBO，但是，一个深度渲染图像被关联到FBO的深度关联点。实际上我们并没有使用这个深度缓存，但是FBO本身需要它进行深度测试。如果我们不把这个深度可渲染的图像关联到FBO，那么由于缺少深度测试渲染输出结果是不正确的。如果在FBO渲染期间模板测试也是必要的，那么也需要把额外的渲染图像和GL_STENCIL_ATTACHMENT_EXT关联起来。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">// create a texture object</div><div class="line">GLuint textureId;</div><div class="line">glGenTextures(1, &amp;textureId);</div><div class="line">glBindTexture(GL_TEXTURE_2D, textureId);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);</div><div class="line">glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);</div><div class="line">glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap</div><div class="line">glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,</div><div class="line">             GL_RGBA, GL_UNSIGNED_BYTE, 0);</div><div class="line">glBindTexture(GL_TEXTURE_2D, 0);</div><div class="line"></div><div class="line">// create a renderbuffer object to store depth info</div><div class="line">GLuint rboId;</div><div class="line">glGenRenderbuffers(1, &amp;rboId);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, rboId);</div><div class="line">glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT,</div><div class="line">                      TEXTURE_WIDTH, TEXTURE_HEIGHT);</div><div class="line">glBindRenderbuffer(GL_RENDERBUFFER, 0);</div><div class="line"></div><div class="line">// create a framebuffer object</div><div class="line">GLuint fboId;</div><div class="line">glGenFramebuffers(1, &amp;fboId);</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboId);</div><div class="line"></div><div class="line">// attach the texture to FBO color attachment point</div><div class="line">glFramebufferTexture2D(GL_FRAMEBUFFER,        // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                       GL_COLOR_ATTACHMENT0,  // 2. attachment point</div><div class="line">                       GL_TEXTURE_2D,         // 3. tex target: GL_TEXTURE_2D</div><div class="line">                       textureId,             // 4. tex ID</div><div class="line">                       0);                    // 5. mipmap level: 0(base)</div><div class="line"></div><div class="line">// attach the renderbuffer to depth attachment point</div><div class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,      // 1. fbo target: GL_FRAMEBUFFER</div><div class="line">                          GL_DEPTH_ATTACHMENT, // 2. attachment point</div><div class="line">                          GL_RENDERBUFFER,     // 3. rbo target: GL_RENDERBUFFER</div><div class="line">                          rboId);              // 4. rbo ID</div><div class="line"></div><div class="line">// check FBO status</div><div class="line">GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);</div><div class="line">if(status != GL_FRAMEBUFFER_COMPLETE)</div><div class="line">    fboUsed = false;</div><div class="line"></div><div class="line">// switch back to window-system-provided framebuffer</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, 0);</div><div class="line">...</div></pre></td></tr></table></figure></p>
-<p>The rendering procedure of render-to-texture is almost same as normal drawing. We only need to switch the rendering destination from the window-system-provided to the non-displayable, application-created framebuffer (FBO).
-渲染到纹理的过程和普通的绘制过程基本一样。我们只需要把渲染的目的地由window系统提供的帧缓存改成不可显示的应用程序创建的帧缓存（FBO）就可以了。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">// set rendering destination to FBO</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, fboId);</div><div class="line"></div><div class="line">// clear buffers</div><div class="line">glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</div><div class="line"></div><div class="line">// draw a scene to a texture directly</div><div class="line">draw();</div><div class="line"></div><div class="line">// unbind FBO</div><div class="line">glBindFramebuffer(GL_FRAMEBUFFER, 0);</div><div class="line"></div><div class="line">// trigger mipmaps generation explicitly</div><div class="line">// NOTE: If GL_GENERATE_MIPMAP is set to GL_TRUE, then glCopyTexSubImage2D()</div><div class="line">// triggers mipmap generation automatically. However, the texture attached</div><div class="line">// onto a FBO should generate mipmaps manually via glGenerateMipmap().</div><div class="line">glBindTexture(GL_TEXTURE_2D, textureId);</div><div class="line">glGenerateMipmap(GL_TEXTURE_2D);</div><div class="line">glBindTexture(GL_TEXTURE_2D, 0);</div><div class="line">...</div></pre></td></tr></table></figure></p>
-<p>Note that glGenerateMipmap() is also included as part of FBO extension in order to generate mipmaps explicitly after modifying the base level texture image. If GL_GENERATE_MIPMAP is set to GL_TRUE, then glTex{Sub}Image2D() and glCopyTex{Sub}Image2D() trigger automatic mipmap generation (in OpenGL version 1.4 or greater). However, FBO operation does not generate its mipmaps automatically when the base level texture is modified because FBO does not call glCopyTex{Sub}Image2D() to modify the texture. Therefore, glGenerateMipmap() must be explicitly called for mipmap generation.
-注意到，glGenerateMipmapEXT()也是作为FBO扩展的一部分，用来在改变了纹理图像的基级之后显式生成mipmap的。如果GL_GENERATE_MIPMAP被设置为GL_TRUE，那么glTex{Sub}Image2D()和 glCopyTex{Sub}Image2D()将会启用自动mipmap生成（在OpenGL版本1.4或者更高版本中）。然后，当纹理基级被改变时，FBO操作不会自动产生mipmaps。因为FBO不会调用glCopyTex{Sub}Image2D()来修改纹理。因此，要产生mipmap，glGenerateMipmapEXT()必须被显示调用。</p>
-<h2 id="If-you-need-to-a-post-processing-of-the-texture-it-is-possible-to-combine-with-Pixel-Buffer-Object-PBO-to-modify-the-texture-efficiently"><a href="#If-you-need-to-a-post-processing-of-the-texture-it-is-possible-to-combine-with-Pixel-Buffer-Object-PBO-to-modify-the-texture-efficiently" class="headerlink" title="If you need to a post processing of the texture, it is possible to combine with Pixel Buffer Object (PBO) to modify the texture efficiently."></a>If you need to a post processing of the texture, it is possible to combine with Pixel Buffer Object (PBO) to modify the texture efficiently.</h2><h3 id="PBuffer-vs-FBO"><a href="#PBuffer-vs-FBO" class="headerlink" title="PBuffer vs FBO"></a>PBuffer vs FBO</h3><p>opengles2.0渲染到纹理的方法有三种：</p>
-<ol>
-<li>使用glCopyTexImage2D或者glCopyTexSubImage2D，这两个函数，复制framebuffer中的像素到纹理缓存里面，但这两个函数性能比较低下，并且要求纹理的尺寸必须小于等于framebuffer的尺寸。</li>
-<li>使用一个附加到纹理的pbuffer，来执行渲染到纹理的操作。我们知道，窗口系统为我们提供的surface必须添加到一个渲染环境里面，但是，在某些平台上要求每个pbuffer和窗口系统提供的surface都需要一个单独的context，所以如果要渲染到pbuffer里面的话，就会发生context的切换，这种切换操作时很耗时的。</li>
-<li>使用fbo，rbo等，这种是最高效的。</li>
-</ol>
-<p>pbuffer跟framebuffer功能是一样的，都是用来做渲染到一个off-screen surface上的，但是如果要做的是渲染到一个纹理上，还是使用framebuffer，效率高些。pbuffer的用途是：渲染到纹理上，随后这个纹理可以给其他API用的，比如openVG。创建pbuffer的过程跟创建窗口surface差不多的：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">EGLSurface eglCreatePbufferSurface(EGLDisplay display,EGLConfig config,const EGLint *attribList);</div></pre></td></tr></table></figure></p>
-<p>需要在attribList指定一些pbuffer的属性。选择config的时候需要指定：EGL_SURFACE_TYPE：EGL_PBUFFER_BIT</p>
-<p>频繁的在自己创建的fbo和窗口系统创建的vbo之间切换，比较影响性能。不要在每一帧都去创建，销毁fbo，vbo对象。要一次创建多次使用。如果一个纹理attach到一个fbo的attachment point，就要尽量避免调用glTexImage2D或glTexSubImage2D,glCopyTexImage2D等去修改纹理的值。</p>
-<h2 id="Presumably-eglSwapBuffers-has-no-effect-on-PBufferSurface-since-it-is-not-double-buffer-surface-but-if-it-is-you-would-try-to-read-pixels-from-undefined-buffer-with-undefined-result"><a href="#Presumably-eglSwapBuffers-has-no-effect-on-PBufferSurface-since-it-is-not-double-buffer-surface-but-if-it-is-you-would-try-to-read-pixels-from-undefined-buffer-with-undefined-result" class="headerlink" title="Presumably eglSwapBuffers has no effect on PBufferSurface (since it is not double-buffer surface) but if it is you would try to read pixels from undefined buffer, with undefined result.."></a><a href="https://stackoverflow.com/questions/28817777/pbuffer-vs-fbo-in-egl-offscreen-rendering" target="_blank" rel="external">Presumably eglSwapBuffers has no effect on PBufferSurface (since it is not double-buffer surface) but if it is you would try to read pixels from undefined buffer, with undefined result..</a></h2><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
-<p><a href="http://www.songho.ca/opengl/gl_fbo.html" target="_blank" rel="external">原文</a>
-<a href="http://blog.csdn.net/xiajun07061225/article/details/7283929" target="_blank" rel="external">译文</a></p>
-<p><a href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_discard_framebuffer.txt" target="_blank" rel="external">GL_EXT_discard_framebuffer</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/05/04/android-view-textureview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/04/android-view-textureview/" itemprop="url">
-                  android textureview处理预览摄像头变形问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T20:03:05+08:00">
-                2017-05-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当TextureView的大小和匹配到的摄像头PreviewSize宽高比例不完全一致时,TextureView可通过setTransform函数对预览画面进行处理后再显示到TextureView,如下对图形居中裁剪:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public void sizeNotify(Camera.Size size) &#123;</div><div class="line">            float viewWidth = getWidth();</div><div class="line">            float viewHeight = getHeight();</div><div class="line"></div><div class="line">            float scaleX = 1.0f;</div><div class="line">            float scaleY = 1.0f;</div><div class="line">            int mPreviewWidth = size.width;</div><div class="line">            int mPreviewHeight = size.height;</div><div class="line">            if(viewWidth &lt; viewHeight) &#123;</div><div class="line">                mPreviewWidth = size.height;</div><div class="line">                mPreviewHeight = size.width;</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            if (mPreviewWidth &gt; viewWidth &amp;&amp; mPreviewHeight &gt; viewHeight) &#123;</div><div class="line">                scaleX = mPreviewWidth / viewWidth;</div><div class="line">                scaleY = mPreviewHeight / viewHeight;</div><div class="line">            &#125; else if (mPreviewWidth &lt; viewWidth &amp;&amp; mPreviewHeight &lt; viewHeight) &#123;</div><div class="line">                scaleY = viewWidth / mPreviewWidth;</div><div class="line">                scaleX = viewHeight / mPreviewHeight;</div><div class="line">            &#125; else if (viewWidth &gt; mPreviewWidth) &#123;</div><div class="line">                scaleY = (viewWidth / mPreviewWidth) / (viewHeight / mPreviewHeight);</div><div class="line">            &#125; else if (viewHeight &gt; mPreviewHeight) &#123;</div><div class="line">                scaleX = (viewHeight / mPreviewHeight) / (viewWidth / mPreviewWidth);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Calculate pivot points, in our case crop from center</div><div class="line">            int pivotPointX = (int) (viewWidth / 2);</div><div class="line">            int pivotPointY = (int) (viewHeight / 2);</div><div class="line"></div><div class="line">            Matrix matrix = new Matrix();</div><div class="line">            matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);</div><div class="line">            /*Log.e(TAG, &quot;viewsize:&quot; + viewWidth + &quot; * &quot; + viewHeight +</div><div class="line">                    &quot;;prviewSize:&quot; + mPreviewWidth + &quot; * &quot; + mPreviewHeight +</div><div class="line">                    &quot;;scale:&quot; + scaleX + &quot; * &quot; + scaleY +</div><div class="line">                    &quot;;pivot:&quot; + pivotPointX + &quot; * &quot; + pivotPointY);*/</div><div class="line">            setTransform(matrix);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>TextureView中setTransform函数说明:
-Sets the transform to associate with this texture view. The specified transform applies to the underlying surface texture and does not affect the size or position of the view itself, only of its content.</p>
-<p>Some transforms might prevent the content from drawing all the pixels contained within this view’s bounds. In such situations, make sure this texture view is not marked opaque.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2426,7 +2405,7 @@ Sets the transform to associate with this texture view. The specified transform 
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">116</span>
+                <span class="site-state-item-count">120</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2448,7 +2427,7 @@ Sets the transform to associate with this texture view. The specified transform 
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">57</span>
+                <span class="site-state-item-count">58</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
