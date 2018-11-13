@@ -323,6 +323,970 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-4/" itemprop="url">
+                  Android插件化(四)基础之Hook
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:22:24+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="1、寻找Hook点的原则"><a href="#1、寻找Hook点的原则" class="headerlink" title="1、寻找Hook点的原则"></a>1、寻找Hook点的原则</h4><p>Android中主要是依靠分析系统源码类来做到的，首先我们得找到被Hook的对象，我称之为Hook点；什么样的对象比较好Hook呢？一般来说，静态变量和单例变量是相对不容易改变，是一个比较好的hook点，而普通的对象有易变的可能，每个版本都不一样，处理难度比较大。我们根据这个原则找到所谓的Hook点。</p>
+<h4 id="2、寻找Hook点"><a href="#2、寻找Hook点" class="headerlink" title="2、寻找Hook点"></a>2、寻找Hook点</h4><p>通常点击一个Button就开始Activity跳转了，这中间发生了什么，我们如何Hook,来实现Activity启动的拦截呢？
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, OtherActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>我们的目的是要拦截startActivity方法，跟踪源码，发现最后启动Activity是由Instrumentation类的execStartActivity做到的。其实这个类相当于启动Activity的中间者，启动Activity中间都是由它来操作的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public ActivityResult execStartActivity(</div><div class="line">            Context who, IBinder contextThread, IBinder token, Activity target,</div><div class="line">            Intent intent, int requestCode, Bundle options) &#123;</div><div class="line">        IApplicationThread whoThread = (IApplicationThread) contextThread;</div><div class="line">        ....</div><div class="line">        try &#123;</div><div class="line">            intent.migrateExtraStreamToClipData();</div><div class="line">            intent.prepareToLeaveProcess(who);</div><div class="line"></div><div class="line">        //通过ActivityManagerNative.getDefault()获取一个对象，开始启动新的Activity</div><div class="line">            int result = ActivityManagerNative.getDefault()</div><div class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</div><div class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</div><div class="line">                        token, target != null ? target.mEmbeddedID : null,</div><div class="line">                        requestCode, 0, null, options);</div><div class="line"></div><div class="line"></div><div class="line">            checkStartActivityResult(result, intent);</div><div class="line">        &#125; catch (RemoteException e) &#123;</div><div class="line">            throw new RuntimeException(&quot;Failure from system&quot;, e);</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>对于ActivityManagerNative这个东东，熟悉Activity/Service启动过程的都不陌生
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public abstract class ActivityManagerNative extends Binder implements IActivityManager</div></pre></td></tr></table></figure></p>
+<p>继承了Binder，实现了一个IActivityManager接口，这就是为了远程服务通信做准备的”Stub”类，一个完整的AID L有两部分，一个是个跟服务端通信的Stub,一个是跟客户端通信的Proxy。ActivityManagerNative就是Stub,阅读源码发现在ActivityManagerNative 文件中还有个ActivityManagerProxy，这里就多不扯了。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">static public IActivityManager getDefault() &#123;</div><div class="line">    return gDefault.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ActivityManagerNative.getDefault()获取的是一个IActivityManager对象，由IActivityManager去启动Activity，IActivityManager的实现类是ActivityManagerService，ActivityManagerService是在另外一个进程之中，所有Activity 启动是一个跨进程的通信的过程，所以真正启动Activity的是通过远端服务ActivityManagerService来启动的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private static final Singleton&lt;IActivityManager&gt; gDefault = new Singleton&lt;IActivityManager&gt;() &#123;</div><div class="line">        protected IActivityManager create() &#123;</div><div class="line">            IBinder b = ServiceManager.getService(&quot;activity&quot;);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service binder = &quot; + b);</div><div class="line">            &#125;</div><div class="line">            IActivityManager am = asInterface(b);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service = &quot; + am);</div><div class="line">            &#125;</div><div class="line">            return am;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>实gDefalut借助Singleton实现的单例模式，而在内部可以看到先从ServiceManager中获取到AMS远端服务的Binder对象，然后使用asInterface方法转化成本地化对象，我们目的是拦截startActivity,所以改变IActivityManager对象可以做到这个一点，这里gDefault又是静态的，根据Hook原则，这是一个比较好的Hook点。</p>
+<h4 id="3、Hook掉startActivity，输出日志"><a href="#3、Hook掉startActivity，输出日志" class="headerlink" title="3、Hook掉startActivity，输出日志"></a>3、Hook掉startActivity，输出日志</h4><p>我们先实现一个小需求，启动Activity的时候打印一条日志，写一个工具类HookUtil。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">public class HookUtil &#123;</div><div class="line"></div><div class="line">    private Class&lt;?&gt; proxyActivity;</div><div class="line"></div><div class="line">    private Context context;</div><div class="line"></div><div class="line">    public HookUtil(Class&lt;?&gt; proxyActivity, Context context) &#123;</div><div class="line">        this.proxyActivity = proxyActivity;</div><div class="line">        this.context = context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void hookAms() &#123;</div><div class="line"></div><div class="line">        //一路反射，直到拿到IActivityManager的对象</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; ActivityManagerNativeClss = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</div><div class="line">            Field defaultFiled = ActivityManagerNativeClss.getDeclaredField(&quot;gDefault&quot;);</div><div class="line">            defaultFiled.setAccessible(true);</div><div class="line">            Object defaultValue = defaultFiled.get(null);</div><div class="line">            //反射SingleTon</div><div class="line">            Class&lt;?&gt; SingletonClass = Class.forName(&quot;android.util.Singleton&quot;);</div><div class="line">            Field mInstance = SingletonClass.getDeclaredField(&quot;mInstance&quot;);</div><div class="line">            mInstance.setAccessible(true);</div><div class="line">            //到这里已经拿到ActivityManager对象</div><div class="line">            Object iActivityManagerObject = mInstance.get(defaultValue);</div><div class="line"></div><div class="line"></div><div class="line">            //开始动态代理，用代理对象替换掉真实的ActivityManager，瞒天过海</div><div class="line">            Class&lt;?&gt; IActivityManagerIntercept = Class.forName(&quot;android.app.IActivityManager&quot;);</div><div class="line"></div><div class="line">            AmsInvocationHandler handler = new AmsInvocationHandler(iActivityManagerObject);</div><div class="line"></div><div class="line">            Object proxy = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class&lt;?&gt;[]&#123;IActivityManagerIntercept&#125;, handler);</div><div class="line"></div><div class="line">            //现在替换掉这个对象</div><div class="line">            mInstance.set(defaultValue, proxy);</div><div class="line"></div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private class AmsInvocationHandler implements InvocationHandler &#123;</div><div class="line"></div><div class="line">        private Object iActivityManagerObject;</div><div class="line"></div><div class="line">        private AmsInvocationHandler(Object iActivityManagerObject) &#123;</div><div class="line">            this.iActivityManagerObject = iActivityManagerObject;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line"></div><div class="line">            Log.i(&quot;HookUtil&quot;, method.getName());</div><div class="line">            //我要在这里搞点事情</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;Activity已经开始启动&quot;);</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;小弟到此一游！！！&quot;);</div><div class="line">            &#125;</div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>结合注释应该很容易看懂，在Application中配置一下
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        HookUtil hookUtil=new HookUtil(SecondActivity.class, this);</div><div class="line">        hookUtil.hookAms()；</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，我们成功的Hook掉了startActivity，输出了一条日志。有了上面的基础，现在我们开始来点有用的东西，Activity不用在清单文件中注册，就可以启动起来，这个怎么搞呢？</p>
+<h4 id="4、无需注册，启动Activity"><a href="#4、无需注册，启动Activity" class="headerlink" title="4、无需注册，启动Activity"></a>4、无需注册，启动Activity</h4><p>如下，TargetActivity没有在清单文件中注册，怎么去启动TargetActivity？
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, TargetActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这个思路可以是这样，上面已经拦截了启动Activity流程，在invoke中我们可以得到启动参数intent信息，那么就在这里，我们可以自己构造一个假的Activity信息的intent，这个Intent启动的Activity是在清单文件中注册的，当真正启动的时候（ActivityManagerService校验清单文件之后），用真实的Intent把代理的Intent在调换过来，然后启动即可。</p>
+<p>首先获取真实启动参数intent信息
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                //换掉</div><div class="line">                Intent intent = null;</div><div class="line">                int index = 0;</div><div class="line">                for (int i = 0; i &lt; args.length; i++) &#123;</div><div class="line">                    Object arg = args[i];</div><div class="line">                    if (arg instanceof Intent) &#123;</div><div class="line">                        //说明找到了startActivity的Intent参数</div><div class="line">                        intent = (Intent) args[i];</div><div class="line">                        //这个意图是不能被启动的，因为Acitivity没有在清单文件中注册</div><div class="line">                        index = i;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">               //伪造一个代理的Intent，代理Intent启动的是proxyActivity</div><div class="line">                Intent proxyIntent = new Intent();</div><div class="line">                ComponentName componentName = new ComponentName(context, proxyActivity);</div><div class="line">                proxyIntent.setComponent(componentName);</div><div class="line">                proxyIntent.putExtra(&quot;oldIntent&quot;, intent);</div><div class="line">                args[index] = proxyIntent;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>有了上面的两个步骤,这个代理的Intent是可以通过ActivityManagerService检验的，因为我在清单文件中注册过
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;.ProxyActivity&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>为了不启动ProxyActivity，现在我们需要找一个合适的时机，把真实的Intent换过了来，启动我们真正想启动的Activity。看过Activity的启动流程的朋友，我们都知道这个过程是由Handler发送消息来实现的，可是通过Handler处理消息的代码来看，消息的分发处理是有顺序的，下面是Handler处理消息的代码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public void dispatchMessage(Message msg) &#123;</div><div class="line">        if (msg.callback != null) &#123;</div><div class="line">            handleCallback(msg);</div><div class="line">        &#125; else &#123;</div><div class="line">            if (mCallback != null) &#123;</div><div class="line">                if (mCallback.handleMessage(msg)) &#123;</div><div class="line">                    return;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            handleMessage(msg);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>handler处理消息的时候，首先去检查是否实现了callback接口，如果有实现的话，那么会直接执行接口方法，然后才是handleMessage方法，最后才是执行重写的handleMessage方法，我们一般大部分时候都是重写了handleMessage方法,而ActivityThread主线程用的正是重写的方法，这种方法的优先级是最低的，我们完全可以实现接口来替换掉系统Handler的处理过程。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void hookSystemHandler() &#123;</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; activityThreadClass = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod(&quot;currentActivityThread&quot;);</div><div class="line">            currentActivityThreadMethod.setAccessible(true);</div><div class="line">            //获取主线程对象</div><div class="line">            Object activityThread = currentActivityThreadMethod.invoke(null);</div><div class="line">            //获取mH字段</div><div class="line">            Field mH = activityThreadClass.getDeclaredField(&quot;mH&quot;);</div><div class="line">            mH.setAccessible(true);</div><div class="line">            //获取Handler</div><div class="line">            Handler handler = (Handler) mH.get(activityThread);</div><div class="line">            //获取原始的mCallBack字段</div><div class="line">            Field mCallBack = Handler.class.getDeclaredField(&quot;mCallback&quot;);</div><div class="line">            mCallBack.setAccessible(true);</div><div class="line">            //这里设置了我们自己实现了接口的CallBack对象</div><div class="line">            mCallBack.set(handler, new ActivityThreadHandlerCallback(handler)) ;</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>自定义Callback类
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">private class ActivityThreadHandlerCallback implements Handler.Callback &#123;</div><div class="line"></div><div class="line">        private Handler handler;</div><div class="line"></div><div class="line">        private ActivityThreadHandlerCallback(Handler handler) &#123;</div><div class="line">            this.handler = handler;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public boolean handleMessage(Message msg) &#123;</div><div class="line">            Log.i(&quot;HookAmsUtil&quot;, &quot;handleMessage&quot;);</div><div class="line">            //替换之前的Intent</div><div class="line">            if (msg.what ==100) &#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity&quot;);</div><div class="line">                handleLauchActivity(msg);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            handler.handleMessage(msg);</div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        private void handleLauchActivity(Message msg) &#123;</div><div class="line">            Object obj = msg.obj;//ActivityClientRecord</div><div class="line">            try&#123;</div><div class="line">                Field intentField = obj.getClass().getDeclaredField(&quot;intent&quot;);</div><div class="line">                intentField.setAccessible(true);</div><div class="line">                Intent proxyInent = (Intent) intentField.get(obj);</div><div class="line">                Intent realIntent = proxyInent.getParcelableExtra(&quot;oldIntent&quot;);</div><div class="line">                if (realIntent != null) &#123;</div><div class="line">                    proxyInent.setComponent(realIntent.getComponent());</div><div class="line">                &#125;</div><div class="line">            &#125;catch (Exception e)&#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity falied&quot;);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>最后在application中注入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        //这个ProxyActivity在清单文件中注册过，以后所有的Activitiy都可以用ProxyActivity无需声明，绕过监测</div><div class="line">        HookAmsUtil hookAmsUtil = new HookAmsUtil(ProxyActivity.class, this);</div><div class="line">        hookAmsUtil.hookSystemHandler();</div><div class="line">        hookAmsUtil.hookAms();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-3/" itemprop="url">
+                  Android插件化(三)基础之Android应用程序资源的编译和打包过程分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:19:09+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Android资源加载常规思路"><a href="#Android资源加载常规思路" class="headerlink" title="Android资源加载常规思路"></a>Android资源加载常规思路</h3><h4 id="getResourcesForApplication"><a href="#getResourcesForApplication" class="headerlink" title="getResourcesForApplication"></a>getResourcesForApplication</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//首先，通过包名获取该包名的Resources对象</div><div class="line">Resources res= pm.getResourcesForApplication(packageName);</div><div class="line">//根据约定好的名字，去取资源id；</div><div class="line">int id=res.getIdentifier(&quot;a&quot;,&quot;drawable&quot;,packageName);//根据名字取id</div><div class="line">//根据资源id，取出资源</div><div class="line">Drawable drawable=res.getDrawable(id)</div></pre></td></tr></table></figure>
+<h3 id="Android-Apk打包流程"><a href="#Android-Apk打包流程" class="headerlink" title="Android Apk打包流程"></a>Android Apk打包流程</h3><ol>
+<li>打包资源文件,生成R.java文件;</li>
+<li>处理aidl文件,生成相应java文件;</li>
+<li>编译工程源文件,生成相应class文件;</li>
+<li>转换所有class文件,生成classes.dex文件;</li>
+<li>打包生成apk文件;</li>
+<li>对apk文件进行签名;</li>
+<li>对签名后的apk文件进行对齐处理;</li>
+</ol>
+<p><img src="http://images.wodekouwei.com/technology/app_package.png" alt="image"></p>
+<p>打包过程使用的工具</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>功能介绍</th>
+<th>在操作系统中的路径</th>
+<th>源码路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aapt（Android Asset Package Tool）</td>
+<td>Android资源打包工具</td>
+<td><code>${ANDROID_SDK_HOME} /build-tools/</code> <code>ANDROID_VERSION/aapt</code></td>
+<td><code>frameworks\base\tools\aap</code></td>
+</tr>
+<tr>
+<td>aidl（android interface definition language）</td>
+<td>Android接口描述语言，将aidl转化为.java文件的工具</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/aidl</code></td>
+<td><code>frameworks\base\tools\aidl</code></td>
+</tr>
+<tr>
+<td>javac</td>
+<td>Java Compiler</td>
+<td><code>${JDK_HOME}/javac</code>或<code>/usr/bin/javac</code></td>
+</tr>
+<tr>
+<td>dex</td>
+<td>转化.class文件为Davik VM能识别的.dex文件</td>
+<td><code>${ANDROID_SDK_HOME}/build-tools/</code> <code>ANDROID_VERSION/dx</code></td>
+<td></td>
+</tr>
+<tr>
+<td>apkbuilder</td>
+<td>生成apk包</td>
+<td><code>${ANDROID_SDK_HOME}/tools/apkbuilder</code></td>
+<td><code>sdk\sdkmanager\libs\sdklib\</code> <code>src\com\android\sdklib\build\ApkBuilderMain.java</code></td>
+</tr>
+<tr>
+<td>jarsigner</td>
+<td>.jar文件的签名工具</td>
+<td>${JDK_HOME}/jarsigner或/usr/bin/jarsigner</td>
+<td></td>
+</tr>
+<tr>
+<td>zipalign</td>
+<td>字节码对齐工具</td>
+<td><code>${ANDROID_SDK_HOME}/tools</code>和<code>/zipalign</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="第一步-打包资源文件-生成R-java文件"><a href="#第一步-打包资源文件-生成R-java文件" class="headerlink" title="第一步: 打包资源文件,生成R.java文件"></a>第一步: 打包资源文件,生成R.java文件</h5><p>【输入】Resource文件（就是工程中res中的文件）、Assets文件（相当于另外一种资源，这种资源Android系统并不像对res中的文件那样优化它）、AndroidManifest.xml文件（包名就是从这里读取的，因为生成R.java文件需要包名）、Android基础类库（Android.jar文件）
+【工具】aapt工具
+【输出】打包好的资源（bin目录中的resources.ap<em>文件）、R.java文件（gen目录中）
+打包资源的工具aapt，大部分文本格式的XML资源文件会被编译成二进制格式的XML资源文件，除了assets和res/raw资源被原装不动地打包进APK之外，其它的资源都会被编译或者处理。 。
+生成过程主要是调用了aapt源码目录下的Resource.cpp文件中的buildResource（）函数，该函数首先检查AndroidManifest.xml的合法性，然后对res目录下的资源子目录进行处理，处理的函数为makeFileResource（），处理的内容包括资源文件名的合法性检查，向资源表table添加条目等，处理完后调用compileResourceFile（）函数编译res与asserts目录下的资源并生成resources.arsc文件，compileResourceFile（）函数位于aapt源码目录的ResourceTable.cpp文件中，该函数最后会调用parseAndAddEntry（）函数生成R.java文件，完成资源编译后，接下来调用compileXmlfile()函数对res目录的子目录下的xml文件分别进行编译，这样处理过的xml文件就简单的被“加密”了，最后将所有的资源与编译生成的resorces.arsc文件以及“加密”过的AndroidManifest.xml文件打包压缩成resources.ap</em>文件（使用Ant工具命令行编译则会生成与build.xml中“project name”指定的属性同名的ap_文件）。
+关于这一步更详细的流程可阅读<a href="http://blog.csdn.net/luoshengyang/article/details/8744683" target="_blank" rel="external">http://blog.csdn.net/luoshengyang/article/details/8744683</a></p>
+<p>res目录有9种目录</p>
+<ul>
+<li>–animator。这类资源以XML文件保存在res/animator目录下，用来描述属性动画。</li>
+<li>–anim。这类资源以XML文件保存在res/anim目录下，用来描述补间动画。</li>
+<li>–color。这类资源以XML文件保存在res/color目录下，用描述对象颜色状态选择子。</li>
+<li>–drawable。这类资源以XML或者Bitmap文件保存在res/drawable目录下，用来描述可绘制对象。例如，我们可以在里面放置一些图片（.png, .9.png, .jpg, .gif），来作为程序界面视图的背景图。注意，保存在这个目录中的Bitmap文件在打包的过程中，可能会被优化的。例如，一个不需要多于256色的真彩色PNG文件可能会被转换成一个只有8位调色板的PNG面板，这样就可以无损地压缩图片，以减少图片所占用的内存资源。</li>
+<li>–layout。这类资源以XML文件保存在res/layout目录下，用来描述应用程序界面布局。</li>
+<li>–menu。这类资源以XML文件保存在res/menu目录下，用来描述应用程序菜单。</li>
+<li>–raw。这类资源以任意格式的文件保存在res/raw目录下，它们和assets类资源一样，都是原装不动地打包在apk文件中的，不过它们会被赋予资源ID，这样我们就可以在程序中通过ID来访问它们。例如，假设在res/raw目录下有一个名称为filename的文件，并且它在编译的过程，被赋予的资源ID为R.raw.filename，那么就可以使用以下代码来访问它：<code>Resources res = getResources();  
+InputStream is = res .openRawResource(R.raw.filename);</code></li>
+<li>–values。这类资源以XML文件保存在res/values目录下，用来描述一些简单值，例如，数组、颜色、尺寸、字符串和样式值等，一般来说，这六种不同的值分别保存在名称为arrays.xml、colors.xml、dimens.xml、strings.xml和styles.xml文件中。</li>
+<li>–xml。这类资源以XML文件保存在res/xml目录下，一般就是用来描述应用程序的配置信息。</li>
+</ul>
+<h5 id="第二步：处理aidl文件，生成相应的java文件。"><a href="#第二步：处理aidl文件，生成相应的java文件。" class="headerlink" title="第二步：处理aidl文件，生成相应的java文件。"></a>第二步：处理aidl文件，生成相应的java文件。</h5><p>输入】源码文件、aidl文件、framework.aidl文件
+【工具】aidl工具
+【输出】对应的.java文件
+对于没有使用到aidl的android工程，这一步可以跳过。aidl工具解析接口定义文件并生成相应的java代码供程序调用。</p>
+<h5 id="第三步：编译工程源代码，生成下相应的class文件。"><a href="#第三步：编译工程源代码，生成下相应的class文件。" class="headerlink" title="第三步：编译工程源代码，生成下相应的class文件。"></a>第三步：编译工程源代码，生成下相应的class文件。</h5><p>【输入】源码文件（包括R.java和AIDL生成的.java文件）、库文件（.jar文件）
+【工具】javac工具
+【输出】.class文件
+这一步调用了javac编译工程src目录下所有的java源文件，生成的class文件位于工程的<code>bin\classes</code>目录下，上图假定编译工程源代码时程序是基于android SDK开发的，实际开发过程中，也有可能会使用android NDK来编译native代码，因此，如果可能的话，这一步还需要使用android NDK编译C/C++代码，当然，编译C/C++代码的步骤也可以提前到第一步或第二步。</p>
+<h5 id="第四步：转换所有的class文件，生成classes-dex文件。"><a href="#第四步：转换所有的class文件，生成classes-dex文件。" class="headerlink" title="第四步：转换所有的class文件，生成classes.dex文件。"></a>第四步：转换所有的class文件，生成classes.dex文件。</h5><p>【输入】 .class文件（包括Aidl生成.class文件，R生成的.class文件，源文件生成的.class文件），库文件（.jar文件）
+【工具】javac工具
+【输出】.dex文件
+前面多次提到，android系统dalvik虚拟机的可执行文件为dex格式，程序运行所需的classes.dex文件就是在这一步生成的，使用的工具为dx，dx工具主要的工作是将java字节码转换为dalvik字节码、压缩常量池、消除冗余信息等。</p>
+<h5 id="第五步：打包生成apk。"><a href="#第五步：打包生成apk。" class="headerlink" title="第五步：打包生成apk。"></a>第五步：打包生成apk。</h5><p>【输入】打包后的资源文件、打包后类文件（.dex文件）、libs文件（包括.so文件，当然很多工程都没有这样的文件，如果你不使用C/C++开发的话）
+【工具】apkbuilder工具
+【输出】未签名的.apk文件
+打包工具为apkbuilder，apkbuilder为一个脚本文件，实际调用的是<code>android-sdk\tools\lib\sdklib.jar</code>文件中的<code>com.android.sdklib.build.ApkBuilderMain</code>类。它的代码实现位于android系统源码的<code>sdk\sdkmanager\libs\sdklib\src\com\android\sdklib\build\ApkBuilderMain.java</code>文件，代码构建了一个ApkBuilder类，然后以包含resources.arsc的文件为基础生成apk文件，这个文件一般为ap_结尾，接着调用addSourceFolder()函数添加工程资源，addSourceFolder()会调用processFileForResource（）函数往apk文件中添加资源，处理的内容包括res目录与asserts目录中的文件，添加完资源后调用addResourceFromJar（）函数往apk文件中写入依赖库，接着调用addNativeLibraries()函数添加工程libs目录下的Native库（通过android NDK编译生成的so或bin文件），最后调用sealApk（）关闭apk文件。</p>
+<h5 id="第六步：对apk文件进行签名。"><a href="#第六步：对apk文件进行签名。" class="headerlink" title="第六步：对apk文件进行签名。"></a>第六步：对apk文件进行签名。</h5><p>【输入】未签名的.apk文件
+【工具】jarsigner
+【输出】签名的.apk文件
+android的应用程序需要签名才能在android设备上安装，签名apk文件有两种情况：一种是在调试程序时进行签名，使用eclipse开发android程序时，在编译调试程序时会自己使用一个debug.keystore对apk进行签名；另一种是打包发布时对程序进行签名，这种情况下需要提供一个符合android开发文档中要求的签名文件。签名的方法也分两种：一种是使用jdk中提供的jarsigner工具签名；另一种是使用android源码中提供的signapk工具，它的代码位于android系统源码<code>build\tools\signapk</code>目录下。</p>
+<h5 id="第七步：对签名后的apk文件进行对齐处理。"><a href="#第七步：对签名后的apk文件进行对齐处理。" class="headerlink" title="第七步：对签名后的apk文件进行对齐处理。"></a>第七步：对签名后的apk文件进行对齐处理。</h5><p>【输入】签名后的.apk文件
+【工具】zipalign工具
+【输出】对齐后的.apk文件
+这一步需要使用的工具为zipalign，它位于<code>android-sdk\tools</code>目录，源码位于android系统源码的<code>build\tools\zipalign</code>目录，它的主要工作是将spk包进行对齐处理，使spk包中的所有资源文件距离文件起始偏移为4字节整数倍，这样通过内存映射访问apk文件时速度会更快，验证apk文件是否对齐过的工作由ZipAlign.cpp文件的verify()函数完成，处理对齐的工作则由process（）函数完成。</p>
+<p>以一个具体项目中包含的具体文件为例作图如下：
+<img src="http://images.wodekouwei.com/technology/app_package2.png" alt="image"></p>
+<h3 id="APK文件内容解析"><a href="#APK文件内容解析" class="headerlink" title="APK文件内容解析"></a>APK文件内容解析</h3><p>android的项目经过编译和打包，形成了:</p>
+<ul>
+<li>.dex 文件</li>
+<li>resources.arsc</li>
+<li>uncompiled resources</li>
+<li>AndroidManifest.xml</li>
+</ul>
+<p>解压一个普通的apk文件,解压出来的文件如下:</p>
+<ul>
+<li>META-INF文件夹</li>
+<li>res文件夹</li>
+<li>AndroidManifest.xml</li>
+<li>classes.dex</li>
+<li>resources.arsc</li>
+</ul>
+<p>classes.dex 是.dex文件。
+resources.arsc是resources resources文件。
+AndroidManifest.xml是AndroidManifest.xml文件。
+res是uncompiled resources。
+META-INF是签名文件夹。</p>
+<p>META-INF其中有三个文件：</p>
+<ul>
+<li>CERT.RSA</li>
+<li>CERT.SF</li>
+<li>MANIFEST.MF</li>
+</ul>
+<p>MANIFEST.MF文件
+版本号以及每一个文件的哈希值（BASE64）。包括资源文件。这个是对每个文件的整体进行SHA1(hash)。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Manifest-Version: 1.0</div><div class="line">Built-By: Generated-by-ADT</div><div class="line">Created-By: Android Gradle 2.2.0</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.SF
+这个是对每个文件的头3行进行SHA1 hash。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Signature-Version: 1.0</div><div class="line">X-Android-APK-Signed: 2</div><div class="line">SHA1-Digest-Manifest: QxOfCCAuQtZnHh0YRNnoxmiHT80=</div><div class="line">Created-By: 1.0 (Android)</div><div class="line">Name: res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png</div><div class="line">SHA1-Digest: I9s6aQ5VyOLrNo4odqSij549Oyo=</div><div class="line">Name: res/drawable-mdpi-v4/abc_textfield_search_default_mtrl_alpha.9.png</div><div class="line">SHA1-Digest: D6dilO+UMcglambujyMOhNbLZuY=</div><div class="line">……</div></pre></td></tr></table></figure></p>
+<p>CERT.RSA
+这个文件保存了签名和公钥证书。</p>
+<h3 id="插件化中资源冲突解决"><a href="#插件化中资源冲突解决" class="headerlink" title="插件化中资源冲突解决"></a>插件化中资源冲突解决</h3><p>如果需要宿主、插件之间使用同一套资源管理器，那么我们需要将插件的资源路径添加到宿主的AssetManager中。</p>
+<p>我们知道，apk包括代码和资源，在apk编译过程中，dex工具将代码打包成.dex文件，资源文件会由aapt工具生成对应的ID，aapt在打包的时候组织成resources.arsc文件，resources.arsc文件是用来描述资源ID和资源位置配置信息，从18个维度描述了一个资源ID的配置信息（语言、分辨率等），就是资源ID和资源的索引表。资源的ID生成是有规则的，规则：0xPPTTNNNN，由8位16进制组成，其中：
+PP段：表示资源的包空间：0x01表示系统资源空间，0x7f表示应用资源空间。
+TT段：表示资源类型。
+NNNN段：4个16进制表示资源id，一个apk中同一类型资源从0000开始递增。
+例如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">nt anim pop_dialog_in 0x7f040000</div><div class="line">int anim pop_dialog_out 0x7f040001</div><div class="line">int anim slide_left_in 0x7f040002</div><div class="line">int anim slide_left_out 0x7f040003</div><div class="line">int anim slide_right_in 0x7f040004</div><div class="line">int anim slide_right_out 0x7f040005</div><div class="line">int anim update_loading_progressbar_anim 0x7f040006</div><div class="line">int array indicator_tab_icon 0x7f050001</div><div class="line">int array indicator_tab_titlt 0x7f050000</div></pre></td></tr></table></figure></p>
+<p>现在问题来了，宿主apk和插件apk是独立编译出来的两个独立的apk，那么其中就有资源ID相同的情况出现，从而产生资源ID冲突。如何解决这个问题？看了一些开源框架，解决的办法就是修改资源ID的PP段，大体有两种做法：</p>
+<ol>
+<li><strong>修改aapt源码，定制aapt工具编译期间修改PP段。</strong>
+DynamicAPK的做法就是如此，定制aapt，替换google的原始aapt，在编译的时候可以传入参数修改PP段：例如传入0x05编译得到的资源的PP段就是0x05。个人觉得这个做法不是太灵活，入侵了原有的开发编译流程，不好维护。</li>
+<li><strong>修改aapt的产物，即，编译后期重新整理插件Apk的资源，编排ID。</strong>
+前面说过apk编译之后会生成ID以及对应的索引表resorce.arsc，那么我们能不能后期修改相关ID及索引表呢？答案是肯定的，个人比较赞同这种思路，不用入侵原有编译流程。</li>
+</ol>
+<p>插件可能是 Apk 也可能是 so 格式，不管哪一种，都不会生成 R.id ，从而没办法使用。这个问题有好几种解决方案。一种是是重写 Context 的 getAsset 、 getResource 之类的方法，偷换概念，让插件读取插件里的资源，但缺点就是宿主和插件的资源 id 会冲突，需要重写 AAPT 。另一种是重写 AMS中保存的插件列表，从而让宿主和插件分别去加载各自的资源而不会冲突。第三种方法，就是打包后，执行一个脚本，修改生成包中资源id。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-2/" itemprop="url">
+                  Android插件化(三)基础之反射与代理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:38:36+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-反射"><a href="#1-反射" class="headerlink" title="1.反射"></a>1.反射</h3><p>反射机制中的类：</p>
+<ul>
+<li>java.lang.Class;                </li>
+<li>java.lang.reflect.Constructor;</li>
+<li>java.lang.reflect.Field;</li>
+<li>java.lang.reflect.Method;</li>
+<li>java.lang.reflect.Modifier;</li>
+</ul>
+<ol>
+<li><p>获取Class的三种方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/第一种方式：  </div><div class="line">Classc1 = Class.forName(&quot;Employee&quot;);  </div><div class="line">//第二种方式：  </div><div class="line">//java中每个类型都有class 属性.  </div><div class="line">Classc2 = Employee.class;  </div><div class="line"></div><div class="line">//第三种方式：  </div><div class="line">//java语言中任何一个java对象都有getClass 方法  </div><div class="line">Employeee = new Employee();  </div><div class="line">Classc3 = e.getClass(); //c3是运行时类 (e的运行时类是Employee)</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Class c =Class.forName(&quot;Employee&quot;);  </div><div class="line"></div><div class="line">//创建此Class 对象所表示的类的一个新实例  </div><div class="line">Objecto = c.newInstance(); //调用了Employee的无参数构造方法.</div></pre></td></tr></table></figure>
+</li>
+<li><p>获取属性：分为所有的属性和指定的属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">//获取整个类  </div><div class="line">Class c = Class.forName(&quot;java.lang.Integer&quot;);  </div><div class="line">  //获取所有的属性?  </div><div class="line">Field[] fs = c.getDeclaredFields();  </div><div class="line"></div><div class="line">//定义可变长的字符串，用来存储属性  </div><div class="line">StringBuffer sb = new StringBuffer();  </div><div class="line">//通过追加的方法，将每个属性拼接到此字符串中  </div><div class="line">//最外边的public定义  </div><div class="line">sb.append(Modifier.toString(c.getModifiers()) + &quot; class &quot; + c.getSimpleName() +&quot;&#123;\n&quot;);  </div><div class="line">//里边的每一个属性  </div><div class="line">for(Field field:fs)&#123;  </div><div class="line">    sb.append(&quot;\t&quot;);//空格  </div><div class="line">    sb.append(Modifier.toString(field.getModifiers())+&quot; &quot;);//获得属性的修饰符，例如public，static等等  </div><div class="line">    sb.append(field.getType().getSimpleName() + &quot; &quot;);//属性的类型的名字  </div><div class="line">    sb.append(field.getName()+&quot;;\n&quot;);//属性的名字+回车  </div><div class="line">&#125;  </div><div class="line">sb.append(&quot;&#125;&quot;);  </div><div class="line">System.out.println(sb);  </div><div class="line"></div><div class="line"></div><div class="line">//获取特定属性</div><div class="line">//获取类  </div><div class="line">Class c = Class.forName(&quot;User&quot;);  </div><div class="line">//获取id属性  </div><div class="line">Field idF = c.getDeclaredField(&quot;id&quot;);  </div><div class="line">//实例化这个类赋给o  </div><div class="line">Object o = c.newInstance();  </div><div class="line">//打破封装  </div><div class="line">idF.setAccessible(true); //使用反射机制可以打破封装性，导致了java对象的属性不安全。  </div><div class="line">//给o对象的id属性赋值&quot;110&quot;  </div><div class="line">idF.set(o, &quot;110&quot;); //set  </div><div class="line">//get  </div><div class="line">System.out.println(idF.get(o));</div></pre></td></tr></table></figure>
+</li>
+<li><p>关键字</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>方法关键字</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getDeclaredMethods()</td>
+<td>获取所有的方法</td>
+</tr>
+<tr>
+<td>getReturnType()</td>
+<td>获得方法的放回类型</td>
+</tr>
+<tr>
+<td>getParameterTypes()</td>
+<td>获得方法的传入参数类型</td>
+</tr>
+<tr>
+<td>getDeclaredMethod(“方法名”,参数类型.class,……)</td>
+<td>获得特定的方法</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>构造方法关键字</td>
+<td>含义</td>
+</tr>
+<tr>
+<td>getDeclaredConstructors()</td>
+<td>获取所有的构造方法</td>
+</tr>
+<tr>
+<td>getDeclaredConstructor(参数类型.class,……)</td>
+<td>获取特定的构造方法</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>父类和父接口</td>
+<td>含义</td>
+</tr>
+<tr>
+<td>getSuperclass()</td>
+<td>获取某类的父类</td>
+</tr>
+<tr>
+<td>getInterfaces()</td>
+<td>获取某类实现的接口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-代理模式"><a href="#2-代理模式" class="headerlink" title="2.代理模式"></a>2.代理模式</h3><p>定义：给某个对象提供一个代理对象，并由代理对象控制对于原对象的访问，即客户不直接操控原对象，而是通过代理对象间接地操控原对象。
+<img src="http://images.wodekouwei.com/technology/oh3VMNs.gif" alt="image"></p>
+<ul>
+<li>RealSubject 是原对象（本文把原对象称为”委托对象”），Proxy 是代理对象。</li>
+<li>Subject 是委托对象和代理对象都共同实现的接口。</li>
+<li>Request() 是委托对象和代理对象共同拥有的方法。</li>
+</ul>
+<p>Java 实现上面的UML图的代码（即实现静态代理）为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class ProxyDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        RealSubject subject = new RealSubject();</div><div class="line">        Proxy p = new Proxy(subject);</div><div class="line">        p.request();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">interface Subject&#123;</div><div class="line">    void request();</div><div class="line">&#125;</div><div class="line"></div><div class="line">class RealSubject implements Subject&#123;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;request&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Proxy implements Subject&#123;</div><div class="line">    private Subject subject;</div><div class="line">    public Proxy(Subject subject)&#123;</div><div class="line">        this.subject = subject;</div><div class="line">    &#125;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;PreProcess&quot;);</div><div class="line">        subject.request();</div><div class="line">        System.out.println(&quot;PostProcess&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代理的实现分为：</p>
+<ul>
+<li>静态代理：代理类是在编译时就实现好的。也就是说 Java 编译完成后代理类是一个实际的 class 文件。</li>
+<li>动态代理：代理类是在运行时生成的。也就是说 Java 编译完之后并没有实际的 class 文件，而是在运行时动态生成的类字节码，并加载到JVM中。</li>
+</ul>
+<h4 id="2-1Java-实现动态代理"><a href="#2-1Java-实现动态代理" class="headerlink" title="2.1Java 实现动态代理"></a>2.1Java 实现动态代理</h4><p>首先先说明几个词：</p>
+<ul>
+<li>委托类和委托对象：委托类是一个类，委托对象是委托类的实例。</li>
+<li>代理类和代理对象：代理类是一个类，代理对象是代理类的实例。</li>
+</ul>
+<p>Java实现动态代理的大致步骤如下：</p>
+<ol>
+<li>定义一个委托类和公共接口。</li>
+<li>自己定义一个类（调用处理器类，即实现 InvocationHandler 接口），这个类的目的是指定运行时将生成的代理类需要完成的具体任务（包括Preprocess和Postprocess），即代理类调用任何方法都会经过这个调用处理器类（在本文最后一节对此进行解释）。</li>
+<li>生成代理对象（当然也会生成代理类），需要为他指定(1)委托对象(2)实现的一系列接口(3)调用处理器类的实例。因此可以看出一个代理对象对应一个委托对象，对应一个调用处理器实例。</li>
+</ol>
+<p>Java 实现动态代理主要涉及以下几个类：
+<code>java.lang.reflect.Proxy</code>: 这是生成代理类的主类，通过 Proxy 类生成的代理类都继承了 Proxy 类，即 DynamicProxyClass extends Proxy。
+<code>java.lang.reflect.InvocationHandler</code>: 这里称他为”调用处理器”，他是一个接口，我们动态生成的代理类需要完成的具体内容需要自己定义一个类，而这个类必须实现 InvocationHandler 接口。</p>
+<p>Proxy 类主要方法为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//创建代理对象  </div><div class="line">static Object newProxyInstance(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler h)</div></pre></td></tr></table></figure></p>
+<p>这个静态函数的第一个参数是类加载器对象（即哪个类加载器来加载这个代理类到 JVM 的方法区），第二个参数是接口（表明你这个代理类需要实现哪些接口），第三个参数是调用处理器类实例（指定代理类中具体要干什么）。这个函数是 JDK 为了程序员方便创建代理对象而封装的一个函数，因此你调用newProxyInstance()时直接创建了代理对象（略去了创建代理类的代码）。其实他主要完成了以下几个工作：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static Object newProxyInstance(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler handler)</div><div class="line">&#123;</div><div class="line">    //1. 根据类加载器和接口创建代理类</div><div class="line">    Class clazz = Proxy.getProxyClass(loader, interfaces);</div><div class="line">    //2. 获得代理类的带参数的构造函数</div><div class="line">    Constructor constructor = clazz.getConstructor(new Class[] &#123; InvocationHandler.class &#125;);</div><div class="line">    //3. 创建代理对象，并制定调用处理器实例为参数传入</div><div class="line">    Interface Proxy = (Interface)constructor.newInstance(new Object[] &#123;handler&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Proxy 类还有一些静态方法，比如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">InvocationHandler getInvocationHandler(Object proxy): 获得代理对象对应的调用处理器对象。</div><div class="line">Class getProxyClass(ClassLoader loader, Class[] interfaces): 根据类加载器和实现的接口获得代理类。</div></pre></td></tr></table></figure></p>
+<p>Proxy 类中有一个映射表，映射关系为：(<classloader>,(<interfaces>,<proxyclass>) )，可以看出一级key为类加载器，根据这个一级key获得二级映射表，二级key为接口数组，因此可以看出：一个类加载器对象和一个接口数组确定了一个代理类。</proxyclass></interfaces></classloader></p>
+<p>我们写一个简单的例子来阐述 Java 实现动态代理的整个过程：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">public class DynamicProxyDemo01 &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        RealSubject realSubject = new RealSubject();    //1.创建委托对象</div><div class="line">        ProxyHandler handler = new ProxyHandler(realSubject);   //2.创建调用处理器对象</div><div class="line">        Subject proxySubject = (Subject)Proxy.newProxyInstance(RealSubject.class.getClassLoader(),</div><div class="line">        RealSubject.class.getInterfaces(), handler);    //3.动态生成代理对象</div><div class="line">        proxySubject.request(); //4.通过代理对象调用方法</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 接口</div><div class="line"> */</div><div class="line">interface Subject&#123;</div><div class="line">    void request();</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 委托类</div><div class="line"> */</div><div class="line">class RealSubject implements Subject&#123;</div><div class="line">    public void request()&#123;</div><div class="line">        System.out.println(&quot;====RealSubject Request====&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 代理类的调用处理器</div><div class="line"> */</div><div class="line">class ProxyHandler implements InvocationHandler&#123;</div><div class="line">    private Subject subject;</div><div class="line">    public ProxyHandler(Subject subject)&#123;</div><div class="line">        this.subject = subject;</div><div class="line">    &#125;</div><div class="line">    @Override</div><div class="line">    public Object invoke(Object proxy, Method method, Object[] args)</div><div class="line">            throws Throwable &#123;</div><div class="line">        System.out.println(&quot;====before====&quot;);//定义预处理的工作，当然你也可以根据 method 的不同进行不同的预处理工作</div><div class="line">        Object result = method.invoke(subject, args);</div><div class="line">        System.out.println(&quot;====after====&quot;);</div><div class="line">        return result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>InvocationHandler 接口中有方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">invoke(Object proxy, Method method, Object[] args)</div></pre></td></tr></table></figure></p>
+<p>这个函数是在代理对象调用任何一个方法时都会调用的，方法不同会导致第二个参数method不同，第一个参数是代理对象（表示哪个代理对象调用了method方法），第二个参数是 Method 对象（表示哪个方法被调用了），第三个参数是指定调用方法的参数。</p>
+<p>动态生成的代理类具有几个特点：</p>
+<ul>
+<li>继承 Proxy 类，并实现了在Proxy.newProxyInstance()中提供的接口数组。</li>
+<li>public final。</li>
+<li>命名方式为 $ProxyN，其中N会慢慢增加，一开始是 $Proxy1，接下来是$Proxy2…</li>
+<li>有一个参数为 InvocationHandler 的构造函数。这个从 Proxy.newProxyInstance() 函数内部的clazz.getConstructor(new Class[] { InvocationHandler.class }) 可以看出。</li>
+</ul>
+<p>Java 实现动态代理的缺点：因为 Java 的单继承特性（每个代理类都继承了 Proxy 类），只能针对接口创建代理类，不能针对类创建代理类。</p>
+<blockquote>
+<p>不难发现，代理类的实现是有很多共性的（重复代码），动态代理的好处在于避免了这些重复代码，只需要关注操作。</p>
+</blockquote>
+<h4 id="2-2Java-动态代理的内部实现"><a href="#2-2Java-动态代理的内部实现" class="headerlink" title="2.2Java 动态代理的内部实现"></a>2.2Java 动态代理的内部实现</h4><p>现在我们就会有一个问题： Java 是怎么保证代理对象调用的任何方法都会调用 InvocationHandler 的 invoke() 方法的？</p>
+<p>这就涉及到动态代理的内部实现。假设有一个接口 Subject，且里面有 int request(int i) 方法，则生成的代理类大致如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public final class $Proxy1 extends Proxy implements Subject&#123;</div><div class="line">    private InvocationHandler h;</div><div class="line">    private $Proxy1()&#123;&#125;</div><div class="line">    public $Proxy1(InvocationHandler h)&#123;</div><div class="line">        this.h = h;</div><div class="line">    &#125;</div><div class="line">    public int request(int i)&#123;</div><div class="line">        Method method = Subject.class.getMethod(&quot;request&quot;, new Class[]&#123;int.class&#125;); //创建method对象</div><div class="line">        return (Integer)h.invoke(this, method, new Object[]&#123;new Integer(i)&#125;); //调用了invoke方法</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过上面的方法就成功调用了 invoke() 方法。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-1/" itemprop="url">
+                  Android插件化(二)基础之类加载器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T16:35:40+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-什么是ClassLoader"><a href="#1-什么是ClassLoader" class="headerlink" title="1.什么是ClassLoader"></a>1.什么是ClassLoader</h3><p>当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
+<h3 id="2-Java-ClassLoader"><a href="#2-Java-ClassLoader" class="headerlink" title="2.Java ClassLoader"></a>2.Java ClassLoader</h3><h4 id="2-1-Java默认提供的三个ClassLoader"><a href="#2-1-Java默认提供的三个ClassLoader" class="headerlink" title="2.1.Java默认提供的三个ClassLoader"></a>2.1.Java默认提供的三个ClassLoader</h4><ol>
+<li>BootStrap ClassLoader：
+称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();  </div><div class="line">for (int i = 0; i &lt; urls.length; i++) &#123;  </div><div class="line">    System.out.println(urls[i].toExternalForm());  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以下内容是上述程序从本机JDK环境所获得的结果：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar</div><div class="line">file:/Applications/Android%20Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<p>其实上述结果也是通过查找sun.boot.class.path这个系统属性所得知的。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(System.getProperty(&quot;sun.boot.class.path&quot;));</div></pre></td></tr></table></figure></p>
+<p>打印结果:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/resources.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/rt.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/sunrsasign.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jsse.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jce.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/charsets.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/lib/jfr.jar:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/jre/classes</div></pre></td></tr></table></figure></p>
+<ol>
+<li>Extension ClassLoader：
+称为扩展类加载器，负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</li>
+<li>App ClassLoader：
+称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。</li>
+</ol>
+<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是Bootstrap ClassLoader不继承自ClassLoader，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
+<h4 id="2-2ClassLoader加载类的原理"><a href="#2-2ClassLoader加载类的原理" class="headerlink" title="2.2ClassLoader加载类的原理"></a>2.2ClassLoader加载类的原理</h4><p>ClassLoader使用的是双亲委托模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
+<p>这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到安全因素，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
+<p>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的。只有两者同时满足的情况下，JVM才认为这两个class是相同的。就算两个class是同一份class字节码，如果被两个不同的ClassLoader实例所加载，JVM也会认为它们是两个不同class。比如网络上的一个Java类org.classloader.simple.NetClassLoaderSimple，javac编译之后生成字节码文件NetClassLoaderSimple.class，ClassLoaderA和ClassLoaderB这两个类加载器并读取了NetClassLoaderSimple.class文件，并分别定义出了java.lang.Class实例来表示这个类，对于JVM来说，它们是两个不同的实例对象，但它们确实是同一份字节码文件，如果试图将这个Class实例生成具体的对象进行转换时，就会抛运行时异常java.lang.ClassCaseException，提示这是两个不同的类型。现在通过实例来验证上述所描述的是否正确:</p>
+<ol>
+<li>在web服务器上建一个org.classloader.simple.NetClassLoaderSimple.java类<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.classloader.simple;  </div><div class="line"></div><div class="line">public class NetClassLoaderSimple &#123;  </div><div class="line"></div><div class="line">    private NetClassLoaderSimple instance;  </div><div class="line"></div><div class="line">    public void setNetClassLoaderSimple(Object obj) &#123;  </div><div class="line">        this.instance = (NetClassLoaderSimple)obj;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>org.classloader.simple.NetClassLoaderSimple类的setNetClassLoaderSimple方法接收一个Object类型参数，并将它强制转换成org.classloader.simple.NetClassLoaderSimple类型。</p>
+<ol>
+<li>测试两个class是否相同
+<code>NetWorkClassLoader.java</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">package classloader;</div><div class="line"></div><div class="line">import java.io.ByteArrayOutputStream;</div><div class="line">import java.io.InputStream;</div><div class="line">import java.net.URL;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 加载网络class的ClassLoader</div><div class="line"> */</div><div class="line">public class NetworkClassLoader extends ClassLoader &#123;</div><div class="line"></div><div class="line">	private String rootUrl;</div><div class="line"></div><div class="line">	public NetworkClassLoader(String rootUrl) &#123;</div><div class="line">		this.rootUrl = rootUrl;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@Override</div><div class="line">	protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException &#123;</div><div class="line">		Class clazz = null;//this.findLoadedClass(name); // 父类已加载</div><div class="line">		//if (clazz == null) &#123;	//检查该类是否已被加载过</div><div class="line">			byte[] classData = getClassData(name);	//根据类的二进制名称,获得该class文件的字节码数组</div><div class="line">			if (classData == null) &#123;</div><div class="line">				throw new ClassNotFoundException();</div><div class="line">			&#125;</div><div class="line">			clazz = defineClass(name, classData, 0, classData.length);	//将class的字节码数组转换成Class类的实例</div><div class="line">		//&#125;</div><div class="line">		return clazz;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private byte[] getClassData(String name) &#123;</div><div class="line">		InputStream is = null;</div><div class="line">		try &#123;</div><div class="line">			String path = classNameToPath(name);</div><div class="line">			URL url = new URL(path);</div><div class="line">			byte[] buff = new byte[1024*4];</div><div class="line">			int len = -1;</div><div class="line">			is = url.openStream();</div><div class="line">			ByteArrayOutputStream baos = new ByteArrayOutputStream();</div><div class="line">			while((len = is.read(buff)) != -1) &#123;</div><div class="line">				baos.write(buff,0,len);</div><div class="line">			&#125;</div><div class="line">			return baos.toByteArray();</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125; finally &#123;</div><div class="line">			if (is != null) &#123;</div><div class="line">			   try &#123;</div><div class="line">			      is.close();</div><div class="line">			   &#125; catch(IOException e) &#123;</div><div class="line">			      e.printStackTrace();</div><div class="line">			   &#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private String classNameToPath(String name) &#123;</div><div class="line">		return rootUrl + &quot;/&quot; + name.replace(&quot;.&quot;, &quot;/&quot;) + &quot;.class&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">package classloader;  </div><div class="line"></div><div class="line">public class NewworkClassLoaderTest &#123;  </div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;  </div><div class="line">        try &#123;  </div><div class="line">            //测试加载网络中的class文件  </div><div class="line">            String rootUrl = &quot;http://localhost:8080/httpweb/classes&quot;;  </div><div class="line">            String className = &quot;org.classloader.simple.NetClassLoaderSimple&quot;;  </div><div class="line">            NetworkClassLoader ncl1 = new NetworkClassLoader(rootUrl);  </div><div class="line">            NetworkClassLoader ncl2 = new NetworkClassLoader(rootUrl);  </div><div class="line">            Class&lt;?&gt; clazz1 = ncl1.loadClass(className);  </div><div class="line">            Class&lt;?&gt; clazz2 = ncl2.loadClass(className);  </div><div class="line">            Object obj1 = clazz1.newInstance();  </div><div class="line">            Object obj2 = clazz2.newInstance();  </div><div class="line">            clazz1.getMethod(&quot;setNetClassLoaderSimple&quot;, Object.class).invoke(obj1, obj2);  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先获得网络上一个class文件的二进制名称，然后通过自定义的类加载器NetworkClassLoader创建两个实例，并根据网络地址分别加载这份class，并得到这两个ClassLoader实例加载后生成的Class实例clazz1和clazz2，最后将这两个Class实例分别生成具体的实例对象obj1和obj2，再通过反射调用clazz1中的setNetClassLoaderSimple方法。</p>
+<p>结果抛出<code>java.lang.ClassCastgException</code>,虽然是同一份class字节码文件，但是由于被两个不同的ClassLoader实例所加载，所以JVM认为它们就是两个不同的类。</p>
+<h4 id="2-3ClassLoader的体系架构："><a href="#2-3ClassLoader的体系架构：" class="headerlink" title="2.3ClassLoader的体系架构："></a>2.3ClassLoader的体系架构：</h4><p><img src="http://images.wodekouwei.com/technology/classloader.gif" alt="iamge"></p>
+<p>打印ClassLoader类的层次结构:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ClassLoader loader = ClassLoaderTest.class.getClassLoader();    //获得加载ClassLoaderTest.class这个类的类加载器  </div><div class="line">while(loader != null) &#123;  </div><div class="line">    System.out.println(loader);  </div><div class="line">    loader = loader.getParent();    //获得父类加载器的引用  </div><div class="line">&#125;  </div><div class="line">System.out.println(loader);</div></pre></td></tr></table></figure></p>
+<p>输出:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</div><div class="line">sun.misc.Launcher$ExtClassLoader@1540e19d</div><div class="line">null</div></pre></td></tr></table></figure></p>
+<p>第一行结果说明：ClassLoaderTest的类加载器是AppClassLoader。</p>
+<p>第二行结果说明：AppClassLoader的类加器是ExtClassLoader，即parent=ExtClassLoader。</p>
+<p>第三行结果说明：ExtClassLoader的类加器是Bootstrap ClassLoader，因为Bootstrap ClassLoader不是一个普通的Java类，所以ExtClassLoader的parent=null，所以第三行的打印结果为null就是这个原因。</p>
+<ul>
+<li>将ClassLoaderTest.class打包成ClassLoaderTest.jar，放到Extension ClassLoader的加载目录下（JAVA_HOME/jre/lib/ext）可以测试Extension ClassLoader</li>
+<li>在jvm中添加-Xbootclasspath参数，指定Bootstrcp ClassLoader加载类的路径，并追加我们自已的jar（ClassTestLoader.jar）或 将class文件放到JAVA_HOME/jre/classes/目录下测试用Bootstrcp ClassLoader加载ClassLoaderTest.class.</li>
+</ul>
+<h4 id="2-4定义自己的ClassLoader"><a href="#2-4定义自己的ClassLoader" class="headerlink" title="2.4定义自己的ClassLoader:"></a>2.4定义自己的ClassLoader:</h4><p>因为Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，比如：我要加载网络上的一个class文件，通过动态加载到内存之后，要调用这个类中的方法实现我的业务逻辑。在这样的情况下，默认的ClassLoader就不能满足我们的需求了，所以需要定义自己的ClassLoader。</p>
+<p><strong>定义自已的类加载器分为两步：</strong></p>
+<ol>
+<li>继承java.lang.ClassLoader</li>
+<li>重写父类的findClass方法</li>
+</ol>
+<blockquote>
+<p>参考:<a href="https://www.ibm.com/developerworks/cn/java/j-lo-classloader/" target="_blank" rel="external">深入探讨 Java 类加载器</a></p>
+<h3 id="3-Android-ClassLoader"><a href="#3-Android-ClassLoader" class="headerlink" title="3.Android ClassLoader"></a>3.Android ClassLoader</h3><p>Android ClassLoader种类：</p>
+<ul>
+<li>DexClassLoader：可以加载文件系统上的jar、dex、apk</li>
+<li>PathClassLoader：可以加载/data/app目录下的apk，这也意味着，它只能加载已经安装的apk</li>
+<li>URLClassLoader：可以加载java中的jar，但是由于dalvik不能直接识别jar，所以此方法在android中无法使用</li>
+</ul>
+</blockquote>
+<p>关于jar、dex和apk，dex和apk是可以直接加载的，因为它们都是或者内部有dex文件，而原始的jar是不行的，必须转换成dalvik所能识别的字节码文件，转换工具可以使用android sdk中platform-tools目录下的dx
+转换命令 ：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dx --dex --output=dest.jar src.jar</div></pre></td></tr></table></figure></p>
+<p>Android开发和普通的java开发不同的地方是把class文件再重新打包成dex类型的文件，这种重新打包会对Class文件内部的各种函数表、变量表等进行优化。dex文件是一种经过android打包工具优化后的Class文件，因此加载这样特殊的Class文件就需要特殊的类装载器，所以android中提供了DexClassLoader类。加载流程如下：</p>
+<ol>
+<li>通过PacageMangager获得指定的apk的安装的目录，dex的解压缩目录，c/c++库的目录</li>
+<li>创建一个 DexClassLoader实例</li>
+<li>加载指定的类返回一个Class</li>
+<li>然后使用反射调用这个Class</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2227,793 +3191,11 @@ onCreateView()、onDestoryView()</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/30/tips-linux-rename/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/30/tips-linux-rename/" itemprop="url">
-                  linux批量操作文件
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-30T18:25:22+08:00">
-                2017-11-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux管理/" itemprop="url" rel="index">
-                    <span itemprop="name">linux管理</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一个批量将mp4文件转成gif文件的命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;*.mp4&quot; |sed &apos;s/.mp4$//g&apos;|xargs -i ffmpeg -i &#123;&#125;.mp4 &#123;&#125;.gif</div></pre></td></tr></table></figure>
-<p><code>sed &#39;s/.mp4$//g&#39;</code>使用sed命令将mp4文件名的<code>.mp4</code>全部替换成空.<code>/g</code>是全局替换.s是sed的替换命令,替换格式<code>&#39;s/原文/要替换成的/&#39;</code></p>
-<p>或者:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">for file in $(find . -name &quot;*.mp4&quot; -type f);do ffmpeg -i &quot;$file&quot; &quot;$&#123;file%.*&#125;.gif&quot;;done</div></pre></td></tr></table></figure></p>
-<p>找到所有<code>.mp4</code>文件进行循环,file是mp4文件全名,<code>${file%.*}</code>是剔除从右边最小匹配,即将<code>.mp4</code>去掉</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/17/env-mac-debug-c/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/17/env-mac-debug-c/" itemprop="url">
-                  mac下Core Dump文件的行程与分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T16:31:12+08:00">
-                2017-11-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/env/" itemprop="url" rel="index">
-                    <span itemprop="name">env</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="mac下生成core-dump"><a href="#mac下生成core-dump" class="headerlink" title="mac下生成core dump"></a>mac下生成core dump</h4><ol>
-<li>使用<code>ulimit -c</code>查看ulimit设置,显示<code>unlimited</code>表示开启,显示0表示关闭,通过<code>ulimit -c unlimited</code>打开设置;
-但是这个只在当前窗口有效果。如果需要变成系统全局设置。
-就需要去改/etc/profile文件，打开，然后加上<code>ulimit -c unlimited</code>就可以了，这样当产生Crash的时候就会自动产生dump文件。</li>
-<li><p>之后需要配置一下dump产生的规则和路径:<code>sudo sysctl kern.corefile=/cores/core.%N.%P</code>,其中%N表示进程名字，%P表示进程id。Linux还有%S,%T分别表示最后一个信号和时间，在MAC上没找到对应的。(mac默认生成的core dump在<code>/cores/</code>下).</p>
-</li>
-<li><p>最后如何用lldb来查看一个core dump文件<code>lldb -c core.xxx</code>. 在lldb命令下输入<code>bt</code>查看报错代码.</p>
-</li>
-</ol>
-<p>生成太多core文件会占用电脑磁盘,可以关闭全局的core dump生成配置:</p>
-<ol>
-<li>永久关闭，则在/etc/sysctl.conf中加入一行（如果存在，则将其值修改为0），重启后生效：<code>kern.coredump=0</code></li>
-<li>零时关闭，当前生效，重启后失效：<code>sudo sysctl -w kern.coredump=0</code></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/14/tips-android-compatibility/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/14/tips-android-compatibility/" itemprop="url">
-                  android兼容性
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-14T14:48:39+08:00">
-                2017-11-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="oppo-r9s无法浮层无法显示问题"><a href="#oppo-r9s无法浮层无法显示问题" class="headerlink" title="oppo r9s无法浮层无法显示问题"></a>oppo r9s无法浮层无法显示问题</h3><p>oppo r9s,系统版本6.0.1,<code>wmParams.type = WindowManager.LayoutParams.TYPE_TOAST;</code>时无法正常弹出,改成<code>wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;</code>可显示.</p>
-<p>在activity中弹出浮层后马上将activity movetoback导致oppo r9s 浮层无法显示,moveTaskToBack后延迟一秒显示浮层可解决问题.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//moveTaskToBack</div><div class="line">val intent = Intent(Intent.ACTION_MAIN)</div><div class="line">                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK// 注意</div><div class="line">                intent.addCategory(Intent.CATEGORY_HOME)</div><div class="line">                aty.startActivity(intent)</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/08/db-sql-query/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/08/db-sql-query/" itemprop="url">
-                  SQL查询案例
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T15:47:36+08:00">
-                2017-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如下数据库表:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Student(S#,Sname,Sage,Ssex)学生表</div><div class="line">S#：学号</div><div class="line">Sname：学生姓名</div><div class="line">Sage：学生年龄</div><div class="line">Ssex：学生性别</div><div class="line">Course(C#,Cname,T#)课程表</div><div class="line">C#：课程编号</div><div class="line">Cname：课程名称</div><div class="line">T#：教师编号</div><div class="line">SC(S#,C#,score)成绩表</div><div class="line">S#：学号</div><div class="line">C#：课程编号</div><div class="line">score：成绩</div><div class="line">Teacher(T#,Tname)教师表</div><div class="line">T#：教师编号：</div><div class="line">Tname：教师名字</div></pre></td></tr></table></figure></p>
-<ol>
-<li><p>查询“001”课程比“002”课程成绩高的所有学生的学号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select a.S# from (select S#,score from SC where C#=&apos;001&apos;)a, (select s#,score from SC where c#=&apos;002&apos;)b Where a.score&gt;b.score</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询平均成绩大于60分的同学的学号和平均成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查询平均成绩大于60分的同学的学号和平均成绩</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有同学的学号、姓名、选课数、总成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname, count(sc.C#), sum(score) from student left outer join SC on student.S# = SC.S# group by S</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询姓‘李’的老师的个数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(distinct(Tname))</div><div class="line">from teacher</div><div class="line">where tname like &apos;李%&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学过“叶平”老师可的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname</div><div class="line">from Student</div><div class="line">where S# not in (select distinct(SC.S#) from SC,Course,Teacher</div><div class="line">where sc.c#=course.c# AND teacher.T#=course.T# AND Teahcer.Tname =&apos;叶平&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“叶平”老师所教的所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select S#,Sname   from Student    </div><div class="line">where S# in (select S# from SC ,Course ,Teacher</div><div class="line">where SC.C#=Course.C# and Teacher.T#=Course.T#</div><div class="line">and Teacher.Tname=&apos;叶平&apos; group by S#</div><div class="line">having count(SC.C#)=(select count(C#) from Course,Teacher  </div><div class="line">where Teacher.T#=Course.T# and Tname=&apos;叶平&apos;));</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“011”并且也学过编号“002”课程的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select Student.S#,Student.Sname</div><div class="line">from Student,SC where Student.S#=SC.S#</div><div class="line">and SC.C#=&apos;001&apos;and</div><div class="line">exists( Select * from SC as SC_2 where SC_2.S#=SC.S# and SC_2.C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询课程编号“002”的成绩比课程编号“001”课程低的所有同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Select S#,Sname</div><div class="line">from (select Student.S#,Student.Sname,score ,</div><div class="line">(select score from SC SC_2 where SC_2.S#=Student.S# and SC_2.C#=&apos;002&apos;) score2    </div><div class="line">from Student,SC</div><div class="line">where Student.S#=SC.S# and C#=&apos;001&apos;) S_2</div><div class="line">where score2 &lt; score;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有课程成绩小于60的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select S#, sname</div><div class="line">from student</div><div class="line">where s# not in</div><div class="line">(select student.s# from student, sc where s.s# = sc.s# and score&gt;60);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学全所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select student.s#, student.sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">group by student.s#, student.sname</div><div class="line">having count(c#)&lt;(select count(c#) from course);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少有一门课与学号为“1001”同学所学相同的同学的学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s#, Sname</div><div class="line">from Student, SC</div><div class="line">where student.s# = sc.s#</div><div class="line">and c# in (select c# from SC where s#=&apos;1001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少学过学号为“001”同学所有一门课的其他同学学号和姓名；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select distinct sc.s# , sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">and c# in (select C# from sc where s#=&apos;001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>把“SC”表中“叶平”老师教的课的成绩都更改为此课程的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Update Sc Set Score=(Select Avg(s2_Score) From sc s2 Where s2.c#=sc.c#)  </div><div class="line">Where c# IN</div><div class="line">(Select c# From sc cs INNER JOIN Teacher tc ON cs.t#=tc.t# WHERE tname =&apos;叶平&apos;)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询和“1002”号的同学学习的课程完全相同的其他同学学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s# from sc where c#  in</div><div class="line">(select c# from sc where s#=&apos;1002&apos;)</div><div class="line">group by s# having count(*)=</div><div class="line">(select count(*) from sc where s#=&apos;1002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>删除学习“叶平”老师课的SC表记录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">delect sc</div><div class="line">from course, Teacher</div><div class="line">where course.c#=sc.c#</div><div class="line">and course.t#=teacher.t#</div><div class="line">and tname=&apos;叶平&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>向SC表中插入一些记录，这些记录要求符合以下条件：没有上过编号“003”课程的同学学号、002号课的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Insert SC select S#,&apos;002&apos;,</div><div class="line">(Select avg(score) from SC where C#=&apos;002&apos;)</div><div class="line">from Student where S# not in (Select S# from SC where C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按平均成绩从高到低显示所有学生的“数据库”、“企业管理”、“英语”三门的课程成绩，按如下形式显示：学生ID，数据库，企业管理，英语，有效课程数，有效平均分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">select s# as 学生ID,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;004&apos;) as 数据库,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;001&apos;) as 企业管理,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;006&apos;) as 英语,</div><div class="line">count(*) as 有效课程数, avg(t.score) as 平局成绩</div><div class="line">from sc as t</div><div class="line">group by s#</div><div class="line">order by avg(t.score)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩最高和最低的分： 以如下的形式显示：课程ID，最高分，最低分</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">select L.c# as 课程ID, L.score as 最高分,</div><div class="line">R.score as 最低分</div><div class="line">from sc L, sc R</div><div class="line">where L.c# = R.c#</div><div class="line">and L.score = (select max(IL.score)</div><div class="line">        from sc IL, student as IM</div><div class="line">        where L.c#=IL.c# and IM.s#=IL.s#</div><div class="line">        group by IL.c#)</div><div class="line">and R.score = (select min(IR.score)</div><div class="line">        from sc as IR</div><div class="line">        where R.c#=IR.c#</div><div class="line">        group by IR.c#);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按各科平均成绩从低到高和及格率的百分数从高到低顺序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT t.C# AS 课程号,</div><div class="line">max(course.Cname)AS 课程名,</div><div class="line">isnull(AVG(score),0) AS 平均成绩,</div><div class="line">100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) AS 及格百分数     </div><div class="line">FROM SC T,Course     </div><div class="line">where t.C#=course.C#     </div><div class="line">GROUP BY t.C#      </div><div class="line">ORDER BY 100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程平均成绩和及格率的百分数(用”1行”显示): 企业管理（001），马克思（002），OO&amp;UML （003），数据库（004）：</p>
-</li>
-<li><p>查询不同老师所教不同课程平均分从高到低显示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT max(Z.T#) AS 教师ID,</div><div class="line">MAX(Z.Tname) AS 教师姓名,</div><div class="line">C.C# AS 课程ID,</div><div class="line">AVG(Score) AS 平均成绩     </div><div class="line">FROM SC AS T,Course AS C ,Teacher AS Z    </div><div class="line">where T.C#=C.C# and C.T#=Z.T#   </div><div class="line">GROUP BY C.C#    </div><div class="line">ORDER BY AVG(Score) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程成绩第3名到第6名的学生成绩单：企业管理(001)，马克思(002)，UML(003)，数据库(004)：</p>
-</li>
-<li><p>统计下列各科成绩，各分数段人数：课程ID，课程名称，[100-85],[85-70],[70-60],[ 小于60] ：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT SC.C# as 课程ID, Cname as 课程名称,</div><div class="line">SUM(CASE WHEN score BETWEEN 85 AND 100 THEN 1 ELSE 0 END) AS [100 - 85]  ,</div><div class="line">SUM(CASE WHEN score BETWEEN 70 AND 85 THEN 1 ELSE 0 END) AS [85 - 70],</div><div class="line">SUM(CASE WHEN score BETWEEN 60 AND 70 THEN 1 ELSE 0 END) AS [70 - 60],</div><div class="line">SUM(CASE WHEN score &lt; 60 THEN 1 ELSE 0 END) AS [60 -]     </div><div class="line">FROM SC,Course     </div><div class="line">where SC.C#=Course.C#     </div><div class="line">GROUP BY SC.C#,Cname;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学生平均成绩及其名次：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT 1+(SELECT COUNT( distinct 平均成绩)                </div><div class="line">FROM (SELECT S#,AVG(score) AS 平均成绩                       </div><div class="line">FROM SC                   </div><div class="line">GROUP BY S#  ) AS T1  WHERE 平均成绩 &gt; T2.平均成绩) as 名次,       </div><div class="line">S# as 学生学号,平均成绩      </div><div class="line">FROM (SELECT S#,AVG(score) 平均成绩             </div><div class="line">FROM SC         </div><div class="line">GROUP BY S# ) AS T2      </div><div class="line">ORDER BY 平均成绩 desc;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩前三名的记录（不考虑成绩并列情况）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数       </div><div class="line">FROM SC t1        </div><div class="line">WHERE score IN</div><div class="line">(SELECT TOP 3 score               </div><div class="line">FROM SC               </div><div class="line">WHERE t1.C#= C#             </div><div class="line">ORDER BY score DESC)</div><div class="line">```        </div><div class="line">26. 查询每门课程被选修的学生数：</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>select c#, count(s#)
-from sc
-group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">27. 查询出只选修一门课程的全部学生的学号和姓名：</div></pre></td></tr></table></figure></p>
-<p>select sc.s#, student.sname, count(c#) as 选课数
-from sc,student
-where sc.s# =student.s#
-group by sc.s#,Student.sname
-having count(c#)=1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">28. 查询男生、女生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(Ssex) as 男生人数
-from student
-group by Ssex
-having Ssex=’男’；
-select count(Ssex) as 女生人数
-from student
-group by Ssex
-having Ssex=’女’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">29. 查询姓“张”的学生名单：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where sname like ‘张%’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">30. 查询同名同姓的学生名单，并统计同名人数：</div></pre></td></tr></table></figure></p>
-<p>select sanme,count(<em>)
-from student
-group by sname
-havang count(</em>)&gt;1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">31. 1981年出生的学生名单（注：student表中sage列的类型是datetime）:</div></pre></td></tr></table></figure></p>
-<p>select sname, convert(char(11),DATEPART(year,sage)) as age
-from student
-where convert(char(11),DATEPART(year,Sage))=’1981’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">32. 查询平均成绩大于85的所有学生的学号、姓名和平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select Sname,SC.S# ,avg(score)<br>from Student,SC<br>where Student.S#=SC.S#
-group by SC.S#,Sname
-having    avg(score)&gt;85;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">33. 查询每门课程的平均成绩，结果按平均成绩升序排序，平均成绩相同时，按课程号降序排列：</div></pre></td></tr></table></figure></p>
-<p>select C#, avg(score)
-from sc
-group by c#
-order by avg(score), c# desc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">34. 查询课程名称为“数据库”，且分数低于60的学生名字和分数：</div></pre></td></tr></table></figure></p>
-<p>select sname, isnull(score,0)
-from student, sc ,course
-where sc.s#=student.s#  and sc.c#=course.c# and course.cname=’数据库’ and score<60; <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">35. 查询所有学生的选课情况：</div></pre></td></tr></table></60;></p>
-<p>select sc.s#,sc.c#,sname,cname
-from sc,student course
-where sc.s#=student.s# and sc.c#=course.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">36. 查询任何一门课程成绩在70分以上的姓名、课程名称和分数：</div></pre></td></tr></table></figure></p>
-<p>select distinct student.s#,student.sname,sc.c#,sc.score
-from student,sc
-where sc.score&gt;=70 and sc.s#=student.s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">37. 查询不及格的课程，并按课程号从大到小的排列：</div></pre></td></tr></table></figure></p>
-<p>select c#
-from sc
-where score<60 order="" by="" c#;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">38. 查询课程编号为“003”且课程成绩在80分以上的学生的学号和姓名：</div></pre></td></tr></table></60></p>
-<p>select sc.s#,student.sname
-from sc,student
-where sc.s#=student.s# and score&gt;80 and c#=’003’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">39. 求选了课程的学生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">40. 查询选修“叶平”老师所授课程的学生中，成绩最高的学生姓名及其成绩：</div></pre></td></tr></table></figure></p>
-<p>select student.sname,score
-from student,sc,course c, teacher
-where student.s#=sc.S# and sc.c#=c.c#
-and c.T#=teacher.T#
-and teacher.tname=’叶平’
-and sc.score=(select max(score) from sc where c#=c.c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">41. 查询各个课程及相应的选修人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">42. 查询不同课程成绩相同的学生和学号、课程号、学生成绩：</div></pre></td></tr></table></figure></p>
-<p>select distinct a.s#,b.score
-from sc a ,sc b
-where a.score=b.score
-and a.c#&lt;&gt;b.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">43. 查询每门课程成绩最好的前两名：</div></pre></td></tr></table></figure></p>
-<p>select t1.s# as 学生ID,t1.c#  课程ID, Score as 分数
-from sc t1
-where score in (select top 2 score from sc
-        where t1.c#=c#
-        order by score desc)
-order by t1.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">44. 统计每门课程的学生选修人数(超过10人的课程才统计)。要求输出课程号和选修人数，查询结果按人数降序排序，若人数相同，按课程号升序排序：</div></pre></td></tr></table></figure></p>
-<p>select c# as 课程号,count(<em>) as 人数
-from sc
-group by c#
-order by count(</em>) desc c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">45. 检索至少选修两门课程的学生学号：</div></pre></td></tr></table></figure></p>
-<p>select s#
-from sc
-group by s#
-having count(*)&gt;=2;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">46. 查询全部学生选修的课程和课程号和课程名：</div></pre></td></tr></table></figure></p>
-<p>select c# ,cname
-from course
-where c# in (select c# from sc group by c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">47. 查询没学过”叶平”老师讲授的任一门课程的学生姓名：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where s# not in (select s# from course,teacher,sc where course.t#=teacher.t# and sc.c#=course.c#
-and tname=’叶平’);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">48. 查询两门以上不及格课程的同学的学号以及其平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select s#,avg(isnull(score,0))
-from sc
-where s# in (select s# from sc where score<60 group="" by="" s#="" having="" count(*)="">2)
-group by s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">49. 检索“004”课程分数小于60，按分数降序排列的同学学号：</div></pre></td></tr></table></figure></60></p>
-<p>select s#
-from sc
-where c#=’004’
-and score<60 order="" by="" score="" desc;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">50. 删除“002”同学的“001”课程的成绩：</div></pre></td></tr></table></60></p>
-<p>delect from sc
-where s#=’002’
-and c#=’001’;
-```</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -3058,7 +3240,7 @@ and c#=’001’;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -3069,7 +3251,7 @@ and c#=’001’;
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -3080,7 +3262,7 @@ and c#=’001’;
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-count">60</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/09/11/env-mac-tools/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="VS CodeJSON ToolsCtrl(Cmd)+Alt+M for JSON pretty. Alt+M for JSON minify. 打开文件覆盖之前tab问题这是因为你单击文件名的缘故，这个是“预览模式”，所以再单击其他文件时，会覆盖当前打开的文件。 预览模式是现在各类编辑器的默认功能，可以关掉, 给配置settings.json里加一条： 1&amp;quot;workbench.edit">
-<meta property="og:updated_time" content="2018-09-17T08:42:28.988Z">
+<meta property="og:updated_time" content="2018-11-13T07:35:58.857Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mac环境配置之小工具">
 <meta name="twitter:description" content="VS CodeJSON ToolsCtrl(Cmd)+Alt+M for JSON pretty. Alt+M for JSON minify. 打开文件覆盖之前tab问题这是因为你单击文件名的缘故，这个是“预览模式”，所以再单击其他文件时，会覆盖当前打开的文件。 预览模式是现在各类编辑器的默认功能，可以关掉, 给配置settings.json里加一条： 1&amp;quot;workbench.edit">
@@ -440,6 +440,21 @@
 <h4 id="打开文件覆盖之前tab问题"><a href="#打开文件覆盖之前tab问题" class="headerlink" title="打开文件覆盖之前tab问题"></a>打开文件覆盖之前tab问题</h4><p>这是因为你单击文件名的缘故，这个是“预览模式”，所以再单击其他文件时，会覆盖当前打开的文件。
 预览模式是现在各类编辑器的默认功能，可以关掉, 给配置settings.json里加一条：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div></pre></td></tr></table></figure></p>
+<h3 id="ssh-key"><a href="#ssh-key" class="headerlink" title="ssh-key"></a>ssh-key</h3><p>更新代码、SSH服务器总是提示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Enter passphrase for .../id_rsa:</div></pre></td></tr></table></figure></p>
+<p>ssh-add命令是把专用密钥添加到ssh-agent的高速缓存中。该命令位置在/usr/bin/ssh-add
+ssh-add
+可以使用的参数：
+-D：删除ssh-agent中的所有密钥.
+-d：从ssh-agent中的删除密钥
+-e pkcs11：删除PKCS#11共享库pkcs1提供的钥匙。
+-s pkcs11：添加PKCS#11共享库pkcs1提供的钥匙。
+-L：显示ssh-agent中的公钥
+-l：显示ssh-agent中的密钥
+-t life：对加载的密钥设置超时时间，超时ssh-agent将自动卸载密钥
+-X：对ssh-agent进行解锁 -x：对ssh-agent进行加锁来</p>
+<p>执行一下命令就好了，就不用再反复输入密码了
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add ~/.ssh/id_rsa</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -597,7 +612,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -608,7 +623,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -619,7 +634,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-count">60</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -713,7 +728,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#VS-Code"><span class="nav-number">1.</span> <span class="nav-text">VS Code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON-Tools"><span class="nav-number">1.1.</span> <span class="nav-text">JSON Tools</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打开文件覆盖之前tab问题"><span class="nav-number">1.2.</span> <span class="nav-text">打开文件覆盖之前tab问题</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#VS-Code"><span class="nav-number">1.</span> <span class="nav-text">VS Code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON-Tools"><span class="nav-number">1.1.</span> <span class="nav-text">JSON Tools</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打开文件覆盖之前tab问题"><span class="nav-number">1.2.</span> <span class="nav-text">打开文件覆盖之前tab问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh-key"><span class="nav-number">2.</span> <span class="nav-text">ssh-key</span></a></li></ol></div>
             
 
           </div>

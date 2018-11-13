@@ -323,6 +323,883 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/10/25/tips-thread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/10/25/tips-thread/" itemprop="url">
+                  多线程只是总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-25T15:08:43+08:00">
+                2018-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/language/" itemprop="url" rel="index">
+                    <span itemprop="name">language</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h3><h4 id="线程5种状态"><a href="#线程5种状态" class="headerlink" title="线程5种状态"></a>线程5种状态</h4><p><img src="http://images.wodekouwei.com/technology/thread-lifecycle.jpeg" alt="image"></p>
+<ol>
+<li>新建状态(New)：
+当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码</li>
+<li>就绪状态(Runnable)
+一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运行的系统资源，并调度线程运行run()方法。当start()方法返回后，线程就处于就绪状态。
+处于就绪状态的线程并不一定立即运行run()方法，线程还必须同其他线程竞争CPU时间，只有获得CPU时间才可以运行线程。因为在单CPU的计算机系统中，不可能同时运行多个线程，一个时刻仅有一个线程处于运行状态。因此此时可能有多个线程处于就绪状态。对多个处于就绪状态的线程是由Java运行时系统的线程调度程序(thread scheduler)来调度的。</li>
+<li>运行状态(Running)
+当线程获得CPU时间后，它才进入运行状态，真正开始执行run()方法.</li>
+<li>阻塞状态(Blocked)
+线程运行过程中，可能由于各种原因进入阻塞状态:
+1&gt;线程通过调用sleep方法进入睡眠状态；
+2&gt;线程调用一个在I/O上被阻塞的操作，即该操作在输入输出操作完成之前不会返回到它的调用者；
+3&gt;线程试图得到一个锁，而该锁正被其他线程持有；
+4&gt;线程在等待某个触发条件；<br>所谓阻塞状态是正在运行的线程没有运行结束，暂时让出CPU，这时其他处于就绪状态的线程就可以获得CPU时间，进入运行状态。</li>
+<li>死亡状态(Dead)
+有两个原因会导致线程死亡：
+1) run方法正常退出而自然死亡，
+2) 一个未捕获的异常终止了run方法而使线程猝死。
+为了确定线程在当前是否存活着（就是要么是可运行的，要么是被阻塞了），需要使用isAlive方法。如果是可运行或被阻塞，这个方法返回true； 如果线程仍旧是new状态且不是可运行的， 或者线程死亡了，则返回false.</li>
+</ol>
+<h4 id="线程同步的7种方式"><a href="#线程同步的7种方式" class="headerlink" title="线程同步的7种方式"></a>线程同步的7种方式</h4><p>java允许多线程并发控制，当多个线程同时操作一个可共享的资源变量时（如数据的增删改查）， 将会导致数据不准确，相互之间产生冲突，因此加入同步锁以避免在该线程没有完成操作之前，被其他线程的调用，从而保证了该变量的唯一性和准确性。</p>
+<h5 id="方式1-同步方法"><a href="#方式1-同步方法" class="headerlink" title="方式1:同步方法"></a>方式1:同步方法</h5><p>即有synchronized关键字修饰的方法。 由于java的每个对象都有一个内置锁，当用此关键字修饰方法时， 内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态。
+代码如： 
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public synchronized void save()&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>注： synchronized关键字也可以修饰静态方法，此时如果调用该静态方法，将会锁住整个类</p>
+<h5 id="方式2-同步代码块"><a href="#方式2-同步代码块" class="headerlink" title="方式2:同步代码块"></a>方式2:同步代码块</h5><p>即有synchronized关键字修饰的语句块。 被该关键字修饰的语句块会自动被加上内置锁，从而实现同步
+代码如：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">synchronized(object)&#123; </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注：同步是一种高开销的操作，因此应该尽量减少同步的内容。通常没有必要同步整个方法，使用synchronized代码块同步关键代码即可。 </p>
+<h5 id="方式3-使用特殊域变量-volatile-实现线程同步"><a href="#方式3-使用特殊域变量-volatile-实现线程同步" class="headerlink" title="方式3:使用特殊域变量(volatile)实现线程同步"></a>方式3:使用特殊域变量(volatile)实现线程同步</h5><ol>
+<li>volatile关键字为域变量的访问提供了一种免锁机制， </li>
+<li>使用volatile修饰域相当于告诉虚拟机该域可能会被其他线程更新， </li>
+<li>因此每次使用该域就要重新计算，而不是使用寄存器中的值 </li>
+<li>volatile不会提供任何原子操作，它也不能用来修饰final类型的变量<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">    //需要同步的变量加上volatile</div><div class="line">    private volatile int account = 100;</div><div class="line"></div><div class="line">    public int getAccount() &#123;</div><div class="line">        return account;</div><div class="line">    &#125;</div><div class="line">    //这里不再需要synchronized </div><div class="line">    public void save(int money) &#123;</div><div class="line">        account += money;</div><div class="line">    &#125;</div><div class="line">｝</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注：多线程中的非同步问题主要出现在对域的读写上，如果让域自身避免这个问题，则就不需要修改操作该域的方法。 用final域，有锁保护的域和volatile域可以避免非同步的问题。 </p>
+<h5 id="方式4-使用重入锁实现线程同步"><a href="#方式4-使用重入锁实现线程同步" class="headerlink" title="方式4:使用重入锁实现线程同步"></a>方式4:使用重入锁实现线程同步</h5><p>在JavaSE5.0中新增了一个java.util.concurrent包来支持同步。 
+ReentrantLock类是可重入、互斥、实现了Lock接口的锁，它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力
+ReenreantLock类的常用方法有：</p>
+<ol>
+<li>ReentrantLock() : 创建一个ReentrantLock实例 </li>
+<li>lock() : 获得锁 </li>
+<li>unlock() : 释放锁 </li>
+</ol>
+<p>注：ReentrantLock()还有一个可以创建公平锁的构造方法，但由于能大幅度降低程序运行效率，不推荐使用 
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">    </div><div class="line">    private int account = 100;</div><div class="line">    //需要声明这个锁</div><div class="line">    private Lock lock = new ReentrantLock();</div><div class="line">    public int getAccount() &#123;</div><div class="line">        return account;</div><div class="line">    &#125;</div><div class="line">    //这里不再需要synchronized </div><div class="line">    public void save(int money) &#123;</div><div class="line">        lock.lock();</div><div class="line">        try&#123;</div><div class="line">            account += money;</div><div class="line">        &#125;finally&#123;</div><div class="line">            lock.unlock();</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">｝</div></pre></td></tr></table></figure></p>
+<p>注：关于Lock对象和synchronized关键字的选择： </p>
+<ol>
+<li>最好两个都不用，使用一种java.util.concurrent包提供的机制，能够帮助用户处理所有与锁相关的代码。 </li>
+<li>如果synchronized关键字能满足用户的需求，就用synchronized，因为它能简化代码 </li>
+<li>如果需要更高级的功能，就用ReentrantLock类，此时要注意及时释放锁，否则会出现死锁，通常在finally代码释放锁 </li>
+</ol>
+<h5 id="方式5-使用局部变量实现线程同步"><a href="#方式5-使用局部变量实现线程同步" class="headerlink" title="方式5:使用局部变量实现线程同步"></a>方式5:使用局部变量实现线程同步</h5><p>如果使用ThreadLocal管理变量，则每一个使用该变量的线程都获得该变量的副本， 副本之间相互独立，这样每一个线程都可以随意修改自己的变量副本，而不会对其他线程产生影响。</p>
+<p> ThreadLocal 类的常用方法</p>
+<ul>
+<li>ThreadLocal() : 创建一个线程本地变量 </li>
+<li>get() : 返回此线程局部变量的当前线程副本中的值 </li>
+<li>initialValue() : 返回此线程局部变量的当前线程的”初始值” </li>
+<li>set(T value) : 将此线程局部变量的当前线程副本中的值设置为value</li>
+</ul>
+<p>首先定义一个ThreadLocal对象，这里选择Boolean类型的，如下所示：</p>
+<p>private ThreadLocal<boolean>mBooleanThreadLocal = new ThreadLocal<boolean>();</boolean></boolean></p>
+<p>然后分别在主线程、子线程1和子线程2中设置和访问它的值，代码如下所示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">mBooleanThreadLocal.set(true);</div><div class="line">Log.d(TAG, &quot;[Thread#main]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line"> </div><div class="line">new Thread(&quot;Thread#1&quot;) &#123;</div><div class="line">	@Override</div><div class="line">	public void run() &#123;</div><div class="line">		mBooleanThreadLocal.set(false);</div><div class="line">		Log.d(TAG, &quot;[Thread#1]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line">	&#125;;</div><div class="line">&#125;.start();</div><div class="line"> </div><div class="line">new Thread(&quot;Thread#2&quot;) &#123;</div><div class="line">	@Override</div><div class="line">	public void run() &#123;</div><div class="line">		Log.d(TAG, &quot;[Thread#2]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line">	&#125;;</div><div class="line">&#125;.start();</div></pre></td></tr></table></figure></p>
+<p>上面的代码中，在主线程中设置mBooleanThreadLocal的值为true，在子线程1中设置mBooleanThreadLocal的值为false，在子线程2中不设置mBooleanThreadLocal的值，然后分别在3个线程中通过get方法去mBooleanThreadLocal的值，根据前面对ThreadLocal的描述，这个时候，主线程中应该是true，子线程1中应该是false，而子线程2中由于没有设置值，所以应该是null，安装并运行程序，日志如下所示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">D/TestActivity(8676):[Thread#main]mBooleanThreadLocal=true</div><div class="line"></div><div class="line">D/TestActivity(8676):[Thread#1]mBooleanThreadLocal=false</div><div class="line"></div><div class="line">D/TestActivity(8676):[Thread#2]mBooleanThreadLocal=null</div></pre></td></tr></table></figure></p>
+<p>注：ThreadLocal与同步机制 </p>
+<ol>
+<li>ThreadLocal与同步机制都是为了解决多线程中相同变量的访问冲突问题。 </li>
+<li>前者采用以”空间换时间”的方法，后者采用以”时间换空间”的方式</li>
+</ol>
+<h5 id="方式6-使用阻塞队列实现线程同步"><a href="#方式6-使用阻塞队列实现线程同步" class="headerlink" title="方式6:使用阻塞队列实现线程同步"></a>方式6:使用阻塞队列实现线程同步</h5><p>前面5种同步方式都是在底层实现的线程同步，但是我们在实际开发当中，应当尽量远离底层结构。使用javaSE5.0版本中新增的java.util.concurrent包将有助于简化开发。 这里主要是使用LinkedBlockingQueue<e>来实现线程的同步.
+LinkedBlockingQueue<e>是一个基于已连接节点的，范围任意的blocking queue。 队列是先进先出的顺序（FIFO），关于队列以后会详细讲解~ 
+LinkedBlockingQueue 类常用方法 </e></e></p>
+<ul>
+<li>LinkedBlockingQueue() : 创建一个容量为Integer.MAX_VALUE的LinkedBlockingQueue </li>
+<li>put(E e) : 在队尾添加一个元素，如果队列满则阻塞 </li>
+<li>size() : 返回队列中的元素个数 </li>
+<li>take() : 移除并返回队头元素，如果队列空则阻塞 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">package com.xhj.thread;</div><div class="line"></div><div class="line">import java.util.Random;</div><div class="line">import java.util.concurrent.LinkedBlockingQueue;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 用阻塞队列实现线程同步 LinkedBlockingQueue的使用</div><div class="line"> * </div><div class="line"> * @author XIEHEJUN</div><div class="line"> * </div><div class="line"> */</div><div class="line">public class BlockingSynchronizedThread &#123;</div><div class="line">    /**</div><div class="line">     * 定义一个阻塞队列用来存储生产出来的商品</div><div class="line">     */</div><div class="line">    private LinkedBlockingQueue&lt;Integer&gt; queue = new LinkedBlockingQueue&lt;Integer&gt;();</div><div class="line">    /**</div><div class="line">     * 定义生产商品个数</div><div class="line">     */</div><div class="line">    private static final int size = 10;</div><div class="line">    /**</div><div class="line">     * 定义启动线程的标志，为0时，启动生产商品的线程；为1时，启动消费商品的线程</div><div class="line">     */</div><div class="line">    private int flag = 0;</div><div class="line"></div><div class="line">    private class LinkBlockThread implements Runnable &#123;</div><div class="line">        @Override</div><div class="line">        public void run() &#123;</div><div class="line">            int new_flag = flag++;</div><div class="line">            System.out.println(&quot;启动线程 &quot; + new_flag);</div><div class="line">            if (new_flag == 0) &#123;</div><div class="line">                for (int i = 0; i &lt; size; i++) &#123;</div><div class="line">                    int b = new Random().nextInt(255);</div><div class="line">                    System.out.println(&quot;生产商品：&quot; + b + &quot;号&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        queue.put(b);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;仓库中还有商品：&quot; + queue.size() + &quot;个&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(100);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125; else &#123;</div><div class="line">                for (int i = 0; i &lt; size / 2; i++) &#123;</div><div class="line">                    try &#123;</div><div class="line">                        int n = queue.take();</div><div class="line">                        System.out.println(&quot;消费者买去了&quot; + n + &quot;号商品&quot;);</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        // TODO Auto-generated catch block</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;仓库中还有商品：&quot; + queue.size() + &quot;个&quot;);</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(100);</div><div class="line">                    &#125; catch (Exception e) &#123;</div><div class="line">                        // TODO: handle exception</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        BlockingSynchronizedThread bst = new BlockingSynchronizedThread();</div><div class="line">        LinkBlockThread lbt = bst.new LinkBlockThread();</div><div class="line">        Thread thread1 = new Thread(lbt);</div><div class="line">        Thread thread2 = new Thread(lbt);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注：BlockingQueue<e>定义了阻塞队列的常用方法，尤其是三种添加元素的方法，我们要多加注意，当队列满时：</e></p>
+<ul>
+<li>add()方法会抛出异常</li>
+<li>offer()方法返回false</li>
+<li>put()方法会阻塞</li>
+</ul>
+<h5 id="方式7-使用原子变量实现线程同步"><a href="#方式7-使用原子变量实现线程同步" class="headerlink" title="方式7:使用原子变量实现线程同步"></a>方式7:使用原子变量实现线程同步</h5><p>需要使用线程同步的根本原因在于对普通变量的操作不是原子的。</p>
+<p>那么什么是原子操作呢？原子操作就是指将读取变量值、修改变量值、保存变量值看成一个整体来操作,即-这几种行为要么同时完成，要么都不完成。在java的util.concurrent.atomic包中提供了创建了原子类型变量的工具类，使用该类可以简化线程同步。</p>
+<p>其中AtomicInteger 表可以用原子方式更新int的值，可用在应用程序中(如以原子方式增加的计数器)，
+但不能用于替换Integer；可扩展Number，允许那些处理机遇数字类的工具和实用工具进行统一访问。</p>
+<p>AtomicInteger类常用方法：</p>
+<ul>
+<li>AtomicInteger(int initialValue) : 创建具有给定初始值的新的AtomicInteger</li>
+<li>addAddGet(int dalta) : 以原子方式将给定值与当前值相加</li>
+<li>get() : 获取当前值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">class Bank &#123;</div><div class="line">        private AtomicInteger account = new AtomicInteger(100);</div><div class="line"></div><div class="line">        public AtomicInteger getAccount() &#123;</div><div class="line">            return account;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public void save(int money) &#123;</div><div class="line">            account.addAndGet(money);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>补充–原子操作主要有：
+对于引用变量和大多数原始变量(long和double除外)的读写操作；
+对于所有使用volatile修饰的变量(包括long和double)的读写操作。</p>
+<h4 id="线程局部存储ThreadLocal"><a href="#线程局部存储ThreadLocal" class="headerlink" title="线程局部存储ThreadLocal"></a>线程局部存储ThreadLocal</h4><h4 id="分析Java线程中断机制stop和interrupted的用法"><a href="#分析Java线程中断机制stop和interrupted的用法" class="headerlink" title="分析Java线程中断机制stop和interrupted的用法"></a>分析Java线程中断机制stop和interrupted的用法</h4><p>当我们点击某个杀毒软件的取消按钮来停止查杀病毒时，当我们在控制台敲入quit命令以结束某个后台服务时……都需要通过一个线程去取消另一个线程正在执行的任务。Java没有提供一种安全直接的方法来停止某个线程，但是Java提供了中断机制。如果对Java中断没有一个全面的了解，可能会误以为被中断的线程将立马退出运行，但事实并非如此。中断机制是如何工作的？捕获或检测到中断后，是抛出InterruptedException还是重设中断状态以及在方法中吞掉中断状态会有什么后果？Thread.stop与中断相比又有哪些异同？什么情况下需要使用中断？中断的原理Java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理中断。这好比是家里的父母叮嘱在外的子女要注意身体，但子女是否注意身体，怎么注意身体则完全取决于自己。Java中断模型也是这么简单，每个线程对象里都有一个boolean类型的标识（不一定就要是Thread类的字段，实际上也的确不是，这几个方法最终都是通过native方法来完成的），代表着是否有中断请求（该请求可以来自所有线程，包括被中断的线程本身）。例如，当线程t1想中断线程t2，只需要在线程t1中将线程t2对象的中断标识置为true，然后线程2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像这个线程没有被中断一样。java.lang.Thread类提供了几个方法来操作这个中断状态，这些方法包括：</p>
+<ul>
+<li>public static boolean interrupted测试当前线程是否已经中断。线程的中断状态 由该方法清除。换句话说，如果连续两次调用该方法，则第二次调用将返回false（在第一次调用已清除了其中断状态之后，且第二次调用检验完中断状态前，当前线程再次中断的情况除外）。</li>
+<li>public boolean isInterrupted()测试线程是否已经中断。线程的中断状态不受该方法的影响。</li>
+<li>public void interrupt()中断线程。其中，interrupt方法是唯一能将中断状态设置为true的方法。静态方法interrupted会将当前线程的中断状态清除，但这个方法的命名极不直观，很容易造成误解，需要特别注意。</li>
+</ul>
+<p>上面的例子中，线程t1通过调用interrupt方法将线程t2的中断状态置为true，t2可以在合适的时候调用interrupted或isInterrupted来检测状态并做相应的处理。此外，类库中的有些类的方法也可能会调用中断，如FutureTask中的cancel方法，如果传入的参数为true，它将会在正在运行异步任务的线程上调用interrupt方法，如果正在执行的异步任务中的代码没有对中断做出响应，那么cancel方法中的参数将不会起到什么效果；又如ThreadPoolExecutor中的shutdownNow方法会遍历线程池中的工作线程并调用线程的interrupt方法来中断线程，所以如果工作线程中正在执行的任务没有对中断做出响应，任务将一直执行直到正常结束。</p>
+<p>既然Java中断机制只是设置被中断线程的中断状态，那么被中断线程该做些什么？显然，作为一种协作机制，不会强求被中断线程一定要在某个点进行处理。实际上，被中断线程只需在合适的时候处理即可，如果没有合适的时间点，甚至可以不处理，这时候在任务处理层面，就跟没有调用中断方法一样。“合适的时候”与线程正在处理的业务逻辑紧密相关，例如，每次迭代的时候，进入一个可能阻塞且无法中断的方法之前等，但多半不会出现在某个临界区更新另一个对象状态的时候，因为这可能会导致对象处于不一致状态。
+处理时机决定着程序的效率与中断响应的灵敏性。频繁的检查中断状态可能会使程序执行效率下降，相反，检查的较少可能使中断请求得不到及时响应。如果发出中断请求之后，被中断的线程继续执行一段时间不会给系统带来灾难，那么就可以将中断处理放到方便检查中断，同时又能从一定程度上保证响应灵敏度的地方。当程序的性能指标比较关键时，可能需要建立一个测试模型来分析最佳的中断检测点，以平衡性能和响应灵敏性。</p>
+<p>一般说来，当可能阻塞的方法声明中有抛出InterruptedException则暗示该方法是可中断的，如BlockingQueue#put、BlockingQueue#take、Object#wait、Thread#sleep等，如果程序捕获到这些可中断的阻塞方法抛出的InterruptedException或检测到中断后，这些中断信息该如何处理？一般有以下两个通用原则：</p>
+<ol>
+<li>如果遇到的是可中断的阻塞方法抛出InterruptedException，可以继续向方法调用栈的上层抛出该异常，如果是检测到中断，则可清除中断状态并抛出InterruptedException，使当前方法也成为一个可中断的方法。 若有时候不太方便在方法上抛出InterruptedException，比如要实现的某个接口中的方法签名上没有throws InterruptedException，这时就可以捕获可中断方法的InterruptedException并通过Thread.currentThread.interrupt()来重新设置中断状态。如果是检测并清除了中断状态，亦是如此。 一般的代码中，尤其是作为一个基础类库时，绝不应当吞掉中断，即捕获到InterruptedException后在catch里什么也不做，清除中断状态后又不重设中断状态也不抛出InterruptedException等。因为吞掉中断状态会导致方法调用栈的上层得不到这些信息。当然，凡事总有例外的时候，当你完全清楚自己的方法会被谁调用，而调用者也不会因为中断被吞掉了而遇到麻烦，就可以这么做。总得来说，就是要让方法调用栈的上层获知中断的发生。假设你写了一个类库，类库里有个方法amethod，在amethod中检测并清除了中断状态，而没有抛出InterruptedException，作为amethod的用户来说，他并不知道里面的细节，如果用户在调用amethod后也要使用中断来做些事情，那么在调用amethod之后他将永远也检测不到中断了，因为中断信息已经被amethod清除掉了。如果作为用户，遇到这样有问题的类库，又不能修改代码，那该怎么处理？只好在自己的类里设置一个自己的中断状态，在调用interrupt方法的时候，同时设置该状态，这实在是无路可走时才使用的方法。</li>
+<li>中断的响应 程序里发现中断后该怎么响应？这就得视实际情况而定了。有些程序可能一检测到中断就立马将线程终止，有些可能是退出当前执行的任务，继续执行下一个任务……作为一种协作机制，这要与中断方协商好，当调用interrupt会发生些什么都是事先知道的，如做一些事务回滚操作，一些清理工作，一些补偿操作等。若不确定调用某个线程的interrupt后该线程会做出什么样的响应，那就不应当中断该线程。</li>
+</ol>
+<p>Thread.interrupt VS Thread.stopThread.stop方法已经不推荐使用了。而在某些方面Thread.stop与中断机制有着相似之处。如当线程在等待内置锁或IO时，stop跟interrupt一样，不会中止这些操作；当catch住stop导致的异常时，程序也可以继续执行，虽然stop本意是要停止线程，这么做会让程序行为变得更加混乱。那么它们的区别在哪里？最重要的就是中断需要程序自己去检测然后做相应的处理，而Thread.stop会直接在代码执行过程中抛出ThreadDeath错误，这是一个java.lang.Error的子类。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.util.Arrays;  </div><div class="line">import java.util.Random;  </div><div class="line">import java.util.concurrent.TimeUnit;  </div><div class="line">public class TestStop &#123;  </div><div class="line">    private static final int[] array = new int[80000];  </div><div class="line">    private static final Thread t = new Thread() &#123;  </div><div class="line">        public void run() &#123;  </div><div class="line">            try &#123;  </div><div class="line">                System.out.println(sort(array));  </div><div class="line">            &#125; catch (Error err) &#123;  </div><div class="line">                err.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">            System.out.println(&quot;in thread t&quot;);  </div><div class="line">        &#125;  </div><div class="line">    &#125;;  </div><div class="line"></div><div class="line">    static &#123;  </div><div class="line">        Random random = new Random();  </div><div class="line">        for(int i = 0; i &lt; array.length; i++) &#123;  </div><div class="line">            array[i] = random.nextInt(i + 1);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    private static int sort(int[] array) &#123;  </div><div class="line">        for (int i = 0; i &lt; array.length-1; i++)&#123;  </div><div class="line">            for(int j = 0 ;j &lt; array.length - i - 1; j++)&#123;  </div><div class="line">                if(array[j] &lt; array[j + 1])&#123;  </div><div class="line">                    int temp = array[j];  </div><div class="line">                    array[j] = array[j + 1];  </div><div class="line">                    array[j + 1] = temp;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        return array[0];  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        t.start();  </div><div class="line">        TimeUnit.SECONDS.sleep(1);  </div><div class="line">        System.out.println(&quot;go to stop thread t&quot;);  </div><div class="line">        t.stop();  </div><div class="line">        System.out.println(&quot;finish main&quot;);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个例子很简单，线程t里面做了一个非常耗时的排序操作，排序方法中，只有简单的加、减、赋值、比较等操作，一个可能的执行结果如下：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">go to stop thread t  </div><div class="line">java.lang.ThreadDeath  </div><div class="line">    at java.lang.Thread.stop(Thread.java:758)  </div><div class="line">    at com.ticmy.interrupt.TestStop.main(TestStop.java:44)  </div><div class="line">finish main  </div><div class="line">in thread t</div></pre></td></tr></table></figure></p>
+<p>这里sort方法是个非常耗时的操作，也就是说主线程休眠一秒钟后调用stop的时候，线程t还在执行sort方法。就是这样一个简单的方法，也会抛出错误！换一句话说，调用stop后，大部分Java字节码都有可能抛出错误，哪怕是简单的加法！
+如果线程当前正持有锁，stop之后则会释放该锁。由于此错误可能出现在很多地方，那么这就让编程人员防不胜防，极易造成对象状态的不一致。例如，对象obj中存放着一个范围值：最小值low，最大值high，且low不得大于high，这种关系由锁lock保护，以避免并发时产生竞态条件而导致该关系失效。假设当前low值是5，high值是10，当线程t获取lock后，将low值更新为了15，此时被stop了，真是糟糕，如果没有捕获住stop导致的Error，low的值就为15，high还是10，这导致它们之间的小于关系得不到保证，也就是对象状态被破坏了！如果在给low赋值的时候catch住stop导致的Error则可能使后面high变量的赋值继续，但是谁也不知道Error会在哪条语句抛出，如果对象状态之间的关系更复杂呢？这种方式几乎是无法维护的，太复杂了！如果是中断操作，它决计不会在执行low赋值的时候抛出错误，这样程序对于对象状态一致性就是可控的。
+正是因为可能导致对象状态不一致，stop才被禁用。</p>
+<p>中断的使用通常，中断的使用场景有以下几个：</p>
+<ul>
+<li>点击某个桌面应用中的取消按钮时；</li>
+<li>某个操作超过了一定的执行时间限制需要中止时；</li>
+<li>多个线程做相同的事情，只要一个线程成功其它线程都可以取消时；</li>
+<li>一组线程中的一个或多个出现错误导致整组都无法继续时；</li>
+<li>当一个应用或服务需要停止时。</li>
+</ul>
+<p>下面来看一个具体的例子。这个例子里，本打算采用GUI形式，但考虑到GUI代码会使程序复杂化，就使用控制台来模拟下核心的逻辑。这里新建了一个磁盘文件扫描的任务，扫描某个目录下的所有文件并将文件路径打印到控制台，扫描的过程可能会很长。若需要中止该任务，只需在控制台键入quit并回车即可。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">package com.ticmy.interrupt;  </div><div class="line">import java.io.BufferedReader;  </div><div class="line">import java.io.File;  </div><div class="line">import java.io.InputStreamReader;  </div><div class="line"></div><div class="line">public class FileScanner &#123;  </div><div class="line">    private static void listFile(File f) throws InterruptedException &#123;  </div><div class="line">        if(f == null) &#123;  </div><div class="line">            throw new IllegalArgumentException();  </div><div class="line">        &#125;  </div><div class="line">        if(f.isFile()) &#123;  </div><div class="line">            System.out.println(f);  </div><div class="line">            return;  </div><div class="line">        &#125;  </div><div class="line">        File[] allFiles = f.listFiles();  </div><div class="line">        if(Thread.interrupted()) &#123;  </div><div class="line">            throw new InterruptedException(&quot;文件扫描任务被中断&quot;);  </div><div class="line">        &#125;  </div><div class="line">        for(File file : allFiles) &#123;  </div><div class="line">            //还可以将中断检测放到这里  </div><div class="line">            listFile(file);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static String readFromConsole() &#123;  </div><div class="line">        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  </div><div class="line">        try &#123;  </div><div class="line">            return reader.readLine();  </div><div class="line">        &#125; catch (Exception e) &#123;  </div><div class="line">            e.printStackTrace();  </div><div class="line">            return &quot;&quot;;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    public static void main(String[] args) throws Exception &#123;  </div><div class="line">        final Thread fileIteratorThread = new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                try &#123;  </div><div class="line">                    listFile(new File(&quot;c:\\&quot;));  </div><div class="line">                &#125; catch (InterruptedException e) &#123;  </div><div class="line">                    e.printStackTrace();  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;;  </div><div class="line">        new Thread() &#123;  </div><div class="line">            public void run() &#123;  </div><div class="line">                while(true) &#123;  </div><div class="line">                    if(&quot;quit&quot;.equalsIgnoreCase(readFromConsole())) &#123;  </div><div class="line">                        if(fileIteratorThread.isAlive()) &#123;  </div><div class="line">                            fileIteratorThread.interrupt();  </div><div class="line">                            return;  </div><div class="line">                        &#125;  </div><div class="line">                    &#125; else &#123;  </div><div class="line">                        System.out.println(&quot;输入quit退出文件扫描&quot;);  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;.start();  </div><div class="line">        fileIteratorThread.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在扫描文件的过程中，对于中断的检测这里采用的策略是，如果碰到的是文件就不检测中断，是目录才检测中断，因为文件可能是非常多的，每次遇到文件都检测一次会降低程序执行效率。此外，在fileIteratorThread线程中，仅是捕获了InterruptedException，没有重设中断状态也没有继续抛出异常，因为我非常清楚它的使用环境，run方法的调用栈上层已经没有可能需要检测中断状态的方法了。
+在这个程序中，输入quit完全可以执行System.exit(0)操作来退出程序，但正如前面提到的，这是个GUI程序核心逻辑的模拟，在GUI中，执行System.exit(0)会使得整个程序退出。</p>
+<p>线程stop方法源码:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">     * Forces the thread to stop executing.</div><div class="line">     * &lt;p&gt;</div><div class="line">     * If there is a security manager installed, its &lt;code&gt;checkAccess&lt;/code&gt;</div><div class="line">     * method is called with &lt;code&gt;this&lt;/code&gt;</div><div class="line">     * as its argument. This may result in a</div><div class="line">     * &lt;code&gt;SecurityException&lt;/code&gt; being raised (in the current thread).</div><div class="line">     * &lt;p&gt;</div><div class="line">     * If this thread is different from the current thread (that is, the current</div><div class="line">     * thread is trying to stop a thread other than itself), the</div><div class="line">     * security manager&apos;s &lt;code&gt;checkPermission&lt;/code&gt; method (with a</div><div class="line">     * &lt;code&gt;RuntimePermission(&quot;stopThread&quot;)&lt;/code&gt; argument) is called in</div><div class="line">     * addition.</div><div class="line">     * Again, this may result in throwing a</div><div class="line">     * &lt;code&gt;SecurityException&lt;/code&gt; (in the current thread).</div><div class="line">     * &lt;p&gt;</div><div class="line">     * The thread represented by this thread is forced to stop whatever</div><div class="line">     * it is doing abnormally and to throw a newly created</div><div class="line">     * &lt;code&gt;ThreadDeath&lt;/code&gt; object as an exception.</div><div class="line">     * &lt;p&gt;</div><div class="line">     * It is permitted to stop a thread that has not yet been started.</div><div class="line">     * If the thread is eventually started, it immediately terminates.</div><div class="line">     * &lt;p&gt;</div><div class="line">     * An application should not normally try to catch</div><div class="line">     * &lt;code&gt;ThreadDeath&lt;/code&gt; unless it must do some extraordinary</div><div class="line">     * cleanup operation (note that the throwing of</div><div class="line">     * &lt;code&gt;ThreadDeath&lt;/code&gt; causes &lt;code&gt;finally&lt;/code&gt; clauses of</div><div class="line">     * &lt;code&gt;try&lt;/code&gt; statements to be executed before the thread</div><div class="line">     * officially dies).  If a &lt;code&gt;catch&lt;/code&gt; clause catches a</div><div class="line">     * &lt;code&gt;ThreadDeath&lt;/code&gt; object, it is important to rethrow the</div><div class="line">     * object so that the thread actually dies.</div><div class="line">     * &lt;p&gt;</div><div class="line">     * The top-level error handler that reacts to otherwise uncaught</div><div class="line">     * exceptions does not print out a message or otherwise notify the</div><div class="line">     * application if the uncaught exception is an instance of</div><div class="line">     * &lt;code&gt;ThreadDeath&lt;/code&gt;.</div><div class="line">     *</div><div class="line">     * @exception  SecurityException  if the current thread cannot</div><div class="line">     *               modify this thread.</div><div class="line">     * @see        #interrupt()</div><div class="line">     * @see        #checkAccess()</div><div class="line">     * @see        #run()</div><div class="line">     * @see        #start()</div><div class="line">     * @see        ThreadDeath</div><div class="line">     * @see        ThreadGroup#uncaughtException(Thread,Throwable)</div><div class="line">     * @see        SecurityManager#checkAccess(Thread)</div><div class="line">     * @see        SecurityManager#checkPermission</div><div class="line">     * @deprecated This method is inherently unsafe.  Stopping a thread with</div><div class="line">     *       Thread.stop causes it to unlock all of the monitors that it</div><div class="line">     *       has locked (as a natural consequence of the unchecked</div><div class="line">     *       &lt;code&gt;ThreadDeath&lt;/code&gt; exception propagating up the stack).  If</div><div class="line">     *       any of the objects previously protected by these monitors were in</div><div class="line">     *       an inconsistent state, the damaged objects become visible to</div><div class="line">     *       other threads, potentially resulting in arbitrary behavior.  Many</div><div class="line">     *       uses of &lt;code&gt;stop&lt;/code&gt; should be replaced by code that simply</div><div class="line">     *       modifies some variable to indicate that the target thread should</div><div class="line">     *       stop running.  The target thread should check this variable</div><div class="line">     *       regularly, and return from its run method in an orderly fashion</div><div class="line">     *       if the variable indicates that it is to stop running.  If the</div><div class="line">     *       target thread waits for long periods (on a condition variable,</div><div class="line">     *       for example), the &lt;code&gt;interrupt&lt;/code&gt; method should be used to</div><div class="line">     *       interrupt the wait.</div><div class="line">     *       For more information, see</div><div class="line">     *       &lt;a href=&quot;&#123;@docRoot&#125;/../technotes/guides/concurrency/threadPrimitiveDeprecation.html&quot;&gt;Why</div><div class="line">     *       are Thread.stop, Thread.suspend and Thread.resume Deprecated?&lt;/a&gt;.</div><div class="line">     */</div><div class="line">    @Deprecated</div><div class="line">    public final void stop() &#123;</div><div class="line">        stop(new ThreadDeath());</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>上面注释，第9行到第16行表明，stop()方法可以停止“其他线程”。执行thread.stop()方法这条语句的线程称为当前线程，而“其他线程”则是 调用thread.stop()方法的对象thread所代表的线程。
+第21行至23行表明，可以停止一个尚未started(启动)的线程。它的效果是：当该线程启动后，就立马结束了。</p>
+<p>第48行以后的注释，则深刻表明了为什么stop()方法被弃用！为什么它是不安全的。比如说，threadA线程拥有了监视器，这些监视器负责保护某些临界资源，比如说银行的转账的金额。当正在转账过程中，main线程调用 threadA.stop()方法。结果导致监视器被释放，其保护的资源（转账金额）很可能出现不一致性。比如，A账户减少了100，而B账户却没有增加100</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/10/23/interview-repository-android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/10/23/interview-repository-android/" itemprop="url">
+                  面试题库Android
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-23T17:22:53+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tips/" itemprop="url" rel="index">
+                    <span itemprop="name">tips</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="1-View-的绘制原理"><a href="#1-View-的绘制原理" class="headerlink" title="1. View 的绘制原理"></a>1. View 的绘制原理</h4><pre><code>https://www.cnblogs.com/jycboy/p/6219915.html
+https://www.jianshu.com/p/5a71014e7b1b
+http://blog.csdn.net/fwt336/article/details/52979876
+</code></pre><h4 id="2-Android-进程间通信方式"><a href="#2-Android-进程间通信方式" class="headerlink" title="2. Android 进程间通信方式"></a>2. Android 进程间通信方式</h4><pre><code>http://blog.csdn.net/fiendvip/article/details/50954393
+</code></pre><h4 id="3-Android-Binder-机制"><a href="#3-Android-Binder-机制" class="headerlink" title="3. Android Binder 机制"></a>3. Android Binder 机制</h4><pre><code>http://blog.csdn.net/qq_23191031/article/details/60145022
+</code></pre><h4 id="4-Activity-加载过程"><a href="#4-Activity-加载过程" class="headerlink" title="4. Activity 加载过程"></a>4. Activity 加载过程</h4><pre><code>http://blog.csdn.net/yyh352091626/article/details/51086117
+</code></pre><h4 id="5-Activity-启动模式"><a href="#5-Activity-启动模式" class="headerlink" title="5. Activity 启动模式"></a>5. Activity 启动模式</h4><pre><code>https://mp.weixin.qq.com/s/GAFRItGiKnrAN76erxpnLw
+</code></pre><h4 id="6-MVP-和-MVC-和MVVM-有什么区别"><a href="#6-MVP-和-MVC-和MVVM-有什么区别" class="headerlink" title="6. MVP 和 MVC 和MVVM 有什么区别"></a>6. MVP 和 MVC 和MVVM 有什么区别</h4><pre><code>http://blog.csdn.net/greathfs/article/details/52017155
+</code></pre><h4 id="7-Android-性能优化"><a href="#7-Android-性能优化" class="headerlink" title="7. Android 性能优化"></a>7. Android 性能优化</h4><pre><code>https://mp.weixin.qq.com/s/ax6O76RF4VpZ66keEgPABw
+</code></pre><h4 id="8-Service-概况"><a href="#8-Service-概况" class="headerlink" title="8. Service 概况"></a>8. Service 概况</h4><pre><code>http://blog.csdn.net/lqb3732842/article/details/54892813
+</code></pre><h4 id="9-Android-最新官方框架"><a href="#9-Android-最新官方框架" class="headerlink" title="9. Android 最新官方框架"></a>9. Android 最新官方框架</h4><pre><code>https://mp.weixin.qq.com/s/qN3JvC_BBuPIHU4mNc9UqQ
+https://mp.weixin.qq.com/s/4wAcKoHFv4iQH84w2sccew
+</code></pre><h4 id="10-Android-类加载机制"><a href="#10-Android-类加载机制" class="headerlink" title="10. Android 类加载机制"></a>10. Android 类加载机制</h4><pre><code>https://www.jianshu.com/p/3afa47e9112e
+https://www.jianshu.com/p/a620e368389a
+</code></pre><h4 id="11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）"><a href="#11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）" class="headerlink" title="11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）"></a>11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）</h4><pre><code>https://www.jianshu.com/p/02962454adf7
+http://blog.csdn.net/qian520ao/article/details/78262289?locationNum=2&amp;fps=1#4-handler-是如何能够线程切换
+</code></pre><ol>
+<li>说下什么是Android消息处理机制？</li>
+<li>Android消息处理机制的工作原理</li>
+<li>Looper、Handler、MessageQueue,Message作用和存在的意义？</li>
+<li>Looper 死循环为什么不会导致应用卡死，会消耗大量资源吗？</li>
+<li>主线程的消息循环机制是什么（死循环如何处理其它事务）？</li>
+<li>ActivityThread 的动力是什么？（ActivityThread执行Looper的线程是什么）</li>
+<li>Handler 是如何能够线程切换，发送Message的？（线程间通讯）</li>
+<li>子线程有哪些更新UI的方法。</li>
+<li>子线程中Toast，showDialog，的方法。（和子线程不能更新UI有关吗）</li>
+<li>如何处理Handler 使用不当导致的内存泄露？</li>
+</ol>
+<h4 id="12-Android-事件分发机制"><a href="#12-Android-事件分发机制" class="headerlink" title="12. Android 事件分发机制"></a>12. Android 事件分发机制</h4><pre><code>https://www.jianshu.com/p/e99b5e8bd67b
+</code></pre><h4 id="13-Retrofit-分析"><a href="#13-Retrofit-分析" class="headerlink" title="13. Retrofit 分析"></a>13. Retrofit 分析</h4><pre><code>https://www.jianshu.com/p/45cb536be2f4
+</code></pre><h4 id="14-Android-动画"><a href="#14-Android-动画" class="headerlink" title="14. Android 动画"></a>14. Android 动画</h4><pre><code>https://www.jianshu.com/p/420629118c10
+</code></pre><h4 id="15-Rxjava-使用介绍"><a href="#15-Rxjava-使用介绍" class="headerlink" title="15. Rxjava 使用介绍"></a>15. Rxjava 使用介绍</h4><pre><code>https://mp.weixin.qq.com/s/2vDZ7h6SL-LR7n3FR6OMrw
+</code></pre><h4 id="16-View-和-SurfaceView-的区别"><a href="#16-View-和-SurfaceView-的区别" class="headerlink" title="16. View 和 SurfaceView 的区别"></a>16. View 和 SurfaceView 的区别</h4><pre><code>http://blog.csdn.net/shareus/article/details/51538507
+</code></pre><h4 id="17-LruCache-原理解析"><a href="#17-LruCache-原理解析" class="headerlink" title="17. LruCache 原理解析"></a>17. LruCache 原理解析</h4><pre><code>https://www.jianshu.com/p/b49a111147ee
+</code></pre><h4 id="18-多线程断点续传"><a href="#18-多线程断点续传" class="headerlink" title="18. 多线程断点续传"></a>18. 多线程断点续传</h4><pre><code>http://blog.csdn.net/tianzhaoai/article/details/56673071
+https://www.jianshu.com/p/1bb084d282be
+</code></pre><h4 id="19-Android-APP-冷启动时间统计及优化"><a href="#19-Android-APP-冷启动时间统计及优化" class="headerlink" title="19. Android APP 冷启动时间统计及优化"></a>19. Android APP 冷启动时间统计及优化</h4><pre><code>https://www.jianshu.com/p/c967653a9468
+http://blog.csdn.net/code_dream_wq/article/details/75012353
+http://blog.csdn.net/zhangyongfeiyong/article/details/61925399
+</code></pre><h4 id="20-热修复原理"><a href="#20-热修复原理" class="headerlink" title="20. 热修复原理"></a>20. 热修复原理</h4><pre><code>https://mp.weixin.qq.com/s/1SYmgZfVKczAGvXcydn0bA
+</code></pre><h4 id="21-插件化原理"><a href="#21-插件化原理" class="headerlink" title="21. 插件化原理"></a>21. 插件化原理</h4><pre><code>类的加载
+    1)替换App的ClassLoader
+    2)修改PathList(例如在PathList中加入我们需要加载的Dex的对应项)
+资源的加载：安卓资源由AssetManager加载,应用启动时,系统会为其创建一个AssetManager实例,并由addAssetPath方 法添加资源搜索路径
+    1. 插件独立使用一个资源管理器
+    2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
+组件的动态注册
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/10/23/interview-repository-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/10/23/interview-repository-java/" itemprop="url">
+                  面试题库java
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-23T17:22:47+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tips/" itemprop="url" rel="index">
+                    <span itemprop="name">tips</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>数组实现队列
+ <a href="http://blog.csdn.net/qq_25722767/article/details/52234509" target="_blank" rel="external">http://blog.csdn.net/qq_25722767/article/details/52234509</a></p>
+</li>
+<li><p>GC 的流程<br> <a href="https://www.cnblogs.com/little-YTMM/p/5613642.html" target="_blank" rel="external">https://www.cnblogs.com/little-YTMM/p/5613642.html</a>
+ <a href="https://www.cnblogs.com/zhguang/p/3257367.html" target="_blank" rel="external">https://www.cnblogs.com/zhguang/p/3257367.html</a></p>
+</li>
+<li><p>Java 软引用和弱引用的区别<br> 强引用（StrongReference）：只要某个对象有强引用与之关联，JVM必定不会回收这个对象，即使在内存不足的情况下，JVM宁愿抛出OutOfMemory错误也不会回收这种对象
+ 软引用（SoftReference）：只有在内存不足的时候JVM才会回收该对象
+ 弱引用（WeakReference）：当JVM进行垃圾回收时，无论内存是否充足，都会回收被弱引用关联的对象
+ 虚引用（PhantomReference）：垃圾回收时回收，虚引用并不会决定对象的生命周期，无法通过引用取到对象值</p>
+</li>
+<li><p>Java 中 this 编译时的原理
+ this调用本类中的属性，也就是类中的成员变量；
+ this调用本类中的其他方法；
+ this调用本类中的其他构造方法，调用时要放在构造方法的首行。    </p>
+</li>
+<li><p>final 变量用反射修改
+ public static void modify(Object object, String fieldName, Object newFieldValue) throws Exception {</p>
+<pre><code>Field field = object.getClass().getDeclaredField(fieldName);
+
+Field modifiersField = Field.class.getDeclaredField(&quot;modifiers&quot;);
+modifiersField.setAccessible(true); //Field 的 modifiers 是私有的
+modifiersField.setInt(field, field.getModifiers() &amp; ~Modifier.FINAL);
+
+if(!field.isAccessible()) {
+field.setAccessible(true);
+}
+
+field.set(object, newFieldValue);
+</code></pre><p> }</p>
+<p> class Person {</p>
+<pre><code>public final String firstName = &quot;Mike&quot;;
+public final String lastName = new String(&quot;Jordan&quot;); //可被有效修改
+public final float age = 50.5f;
+public final Float height = 1.99f; //可被有效修改
+public final Address address = new Address(&quot;aaa&quot;, &quot;bbb&quot;); //可被有效修改
+
+public final String city; //可被有效修改
+
+public Person(String city) {
+this.city = city;
+}
+</code></pre><p> }</p>
+</li>
+<li><p>HashMap的内部结构，给定一个key，如何找到对应的value<br> <a href="https://www.cnblogs.com/shipengzhi/articles/2087505.html" target="_blank" rel="external">https://www.cnblogs.com/shipengzhi/articles/2087505.html</a></p>
+</li>
+<li><p>volatile 
+ <a href="https://www.cnblogs.com/tangyanbo/p/6538488.html" target="_blank" rel="external">https://www.cnblogs.com/tangyanbo/p/6538488.html</a></p>
+</li>
+<li><p>Java线程池有什么作用
+ 在程序启动的时候就创建若干线程来响应处理，它们被称为线程池，里面的线程叫工作线程 
+ 第一：降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。 
+ 第二：提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。 
+ 第三：提高线程的可管理性。 
+ 常用线程池：ExecutorService 是主要的实现类，其中常用的有 :
+ Executors.newSingleThreadPool() 创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。
+ Executors.newFixedThreadPool() 创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+ Executors.newcachedTheadPool() 创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
+ Executors.newScheduledThreadPool() 创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
+ <a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a>
+ <a href="https://www.cnblogs.com/ruiati/p/6134131.html" target="_blank" rel="external">https://www.cnblogs.com/ruiati/p/6134131.html</a></p>
+</li>
+<li><p>Java 动态代理 
+ <a href="https://www.cnblogs.com/xiaoluo501395377/p/3383130.html" target="_blank" rel="external">https://www.cnblogs.com/xiaoluo501395377/p/3383130.html</a></p>
+</li>
+<li><p>求 n 的 m 次幂
+<a href="http://blog.csdn.net/derrantcm/article/details/47098373" target="_blank" rel="external">http://blog.csdn.net/derrantcm/article/details/47098373</a></p>
+</li>
+<li><p>java 集合<br><a href="https://www.cnblogs.com/lwlxqlccc/p/6121307.html" target="_blank" rel="external">https://www.cnblogs.com/lwlxqlccc/p/6121307.html</a></p>
+</li>
+<li><p>String 的 spit 实现
+<a href="http://fangguanhong.iteye.com/blog/2069993" target="_blank" rel="external">http://fangguanhong.iteye.com/blog/2069993</a></p>
+</li>
+<li><p>Http和Https的区别
+<a href="https://www.jianshu.com/p/37654eb66b58" target="_blank" rel="external">https://www.jianshu.com/p/37654eb66b58</a></p>
+</li>
+<li><p>java线程池—ThreadPoolExecutor 
+<a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="external">https://www.jianshu.com/p/ade771d2c9c0</a></p>
+</li>
+<li><p>冒泡排序
+<a href="http://blog.csdn.net/u010853261/article/details/54891710" target="_blank" rel="external">http://blog.csdn.net/u010853261/article/details/54891710</a></p>
+</li>
+<li><p>排序算法 
+<a href="http://blog.csdn.net/pzhtpf/article/details/7560294" target="_blank" rel="external">http://blog.csdn.net/pzhtpf/article/details/7560294</a></p>
+</li>
+<li><p>抽象类和接口的区别
+接口是对动作的抽象，而抽象类是对根源的抽象。
+接口和抽象类都是继承树的上层，他们的共同点如下：1)    都是上层的抽象层。2)    都不能被实例化3)    都能包含抽象的方法，这些抽象的方法用于描述类具备的功能，但是不比提供具体的实现。他们的区别如下：1)    在抽象类中可以写非抽象的方法，从而避免在子类中重复书写他们，这样可以提高代码的复用性，这是抽象类的优势；接口中只能有抽象的方法。2)    一个类只能继承一个直接父类，这个父类可以是具体的类也可是抽象类；但是一个类可以实现多个接口。Java语言中类的继承是单继承原因是：当子类重写父类方法的时候，或者隐藏父类的成员变量以及静态方法的时候，JVM使用不同的绑定规则。如果一个类有多个直接的父类，那么会使绑定规则变得更复杂。为了简化软件的体系结构和绑定机制，java语言禁止多继承。接口可以多继承，是因为接口中只有抽象方法，没有静态方法和非常量的属性，只有接口的实现类才会重写接口中方法。因此一个类有多个接口也不会增加JVM的绑定机制和复杂度。</p>
+</li>
+<li><p>java基本数据类型
+8位：Byte（字节型）<br>16位：short（短整型）、char（字符型）<br>32位：int（整型）、float（单精度型/浮点型）<br>64位：long（长整型）、double（双精度型）<br>最后一个：boolean(布尔类型）</p>
+</li>
+<li><p>Java堆的实现、排序
+<a href="http://blog.csdn.net/idealemail/article/details/51382837" target="_blank" rel="external">http://blog.csdn.net/idealemail/article/details/51382837</a></p>
+</li>
+<li><p>数组中重复数字
+<a href="http://blog.csdn.net/zjkc050818/article/details/72800175" target="_blank" rel="external">http://blog.csdn.net/zjkc050818/article/details/72800175</a></p>
+</li>
+<li><p>字符串中判断另一个字符串是否存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">static int indexOf(String source,</div><div class="line">                   String target,</div><div class="line">                   int fromIndex) &#123;</div><div class="line">    if (fromIndex &gt;= source.count) &#123;</div><div class="line">        return (target.count == 0 ? source.count : -1);</div><div class="line">    &#125;</div><div class="line">    if (fromIndex &lt; 0) &#123;</div><div class="line">        fromIndex = 0;</div><div class="line">    &#125;</div><div class="line">    if (target.count == 0) &#123;</div><div class="line">        return fromIndex;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    char first = target.charAt(0);</div><div class="line">    int max = (source.count - target.count);</div><div class="line"></div><div class="line">    for (int i = fromIndex; i &lt;= max; i++) &#123;</div><div class="line">        /* Look for first character. */</div><div class="line">        if (source.charAt(i)!= first) &#123;</div><div class="line">            while (++i &lt;= max &amp;&amp; source.charAt(i) != first);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /* Found first character, now look at the rest of v2 */</div><div class="line">        if (i &lt;= max) &#123;</div><div class="line">            int j = i + 1;</div><div class="line">            int end = j + target.count - 1;</div><div class="line">            for (int k = 1; j &lt; end &amp;&amp; source.charAt(j)</div><div class="line">                     == target.charAt(k); j++, k++);</div><div class="line"></div><div class="line">            if (j == end) &#123;</div><div class="line">                /* Found whole string. */</div><div class="line">                return i;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return -1;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>ThreadLocal 使用及原理<br><a href="https://www.cnblogs.com/coshaho/p/5127135.html" target="_blank" rel="external">https://www.cnblogs.com/coshaho/p/5127135.html</a></p>
+</li>
+<li><p>Java 泛型
+<a href="https://www.cnblogs.com/demingblog/p/5495610.html" target="_blank" rel="external">https://www.cnblogs.com/demingblog/p/5495610.html</a></p>
+</li>
+<li><p>Java 内部类
+<a href="http://blog.csdn.net/roamer314/article/details/48598633" target="_blank" rel="external">http://blog.csdn.net/roamer314/article/details/48598633</a></p>
+</li>
+<li><p>Java ConcurrentHashMap的原理<br><a href="https://www.cnblogs.com/chengxiao/p/6842045.html" target="_blank" rel="external">https://www.cnblogs.com/chengxiao/p/6842045.html</a></p>
+</li>
+<li><p>线程的几种状态<br><a href="http://blog.csdn.net/sinat_36042530/article/details/52565296" target="_blank" rel="external">http://blog.csdn.net/sinat_36042530/article/details/52565296</a>
+<a href="https://www.cnblogs.com/wxd0108/p/5479442.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/5479442.html</a></p>
+</li>
+<li><p>Java 双亲委派机制<br><a href="https://www.cnblogs.com/wxd0108/p/6681618.html" target="_blank" rel="external">https://www.cnblogs.com/wxd0108/p/6681618.html</a></p>
+</li>
+<li><p>Java 运算符
+<a href="https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html" target="_blank" rel="external">https://jingyan.baidu.com/article/1612d5008ff5b7e20f1eee4c.html</a></p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/09/11/interview-repository/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/09/11/interview-repository/" itemprop="url">
+                  面试题库
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-11T23:00:17+08:00">
+                2018-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tips/" itemprop="url" rel="index">
+                    <span itemprop="name">tips</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/09/11/env-mac-tools/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -427,6 +1304,21 @@
 <h4 id="打开文件覆盖之前tab问题"><a href="#打开文件覆盖之前tab问题" class="headerlink" title="打开文件覆盖之前tab问题"></a>打开文件覆盖之前tab问题</h4><p>这是因为你单击文件名的缘故，这个是“预览模式”，所以再单击其他文件时，会覆盖当前打开的文件。
 预览模式是现在各类编辑器的默认功能，可以关掉, 给配置settings.json里加一条：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div></pre></td></tr></table></figure></p>
+<h3 id="ssh-key"><a href="#ssh-key" class="headerlink" title="ssh-key"></a>ssh-key</h3><p>更新代码、SSH服务器总是提示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Enter passphrase for .../id_rsa:</div></pre></td></tr></table></figure></p>
+<p>ssh-add命令是把专用密钥添加到ssh-agent的高速缓存中。该命令位置在/usr/bin/ssh-add
+ssh-add
+可以使用的参数：
+-D：删除ssh-agent中的所有密钥.
+-d：从ssh-agent中的删除密钥
+-e pkcs11：删除PKCS#11共享库pkcs1提供的钥匙。
+-s pkcs11：添加PKCS#11共享库pkcs1提供的钥匙。
+-L：显示ssh-agent中的公钥
+-l：显示ssh-agent中的密钥
+-t life：对加载的密钥设置超时时间，超时ssh-agent将自动卸载密钥
+-X：对ssh-agent进行解锁 -x：对ssh-agent进行加锁来</p>
+<p>执行一下命令就好了，就不用再反复输入密码了
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add ~/.ssh/id_rsa</div></pre></td></tr></table></figure></p>
 
           
         
@@ -1251,716 +2143,11 @@ BaseEvent所触发的各个函数:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/08/05/tips-android-process/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/08/05/tips-android-process/" itemprop="url">
-                  Android应用内多进程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-05T05:14:39+08:00">
-                2018-08-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>正常情况下，一个apk启动后只会运行在一个进程中，其进程名为AndroidManifest.xml文件中指定的应用包名，所有的基本组件都会在这个进程中运行。但是如果需要将某些组件（如Service、Activity等）运行在单独的进程中，就需要用到android:process属性了。我们可以为android的基础组件指定process属性来指定它们运行在指定进程中。</p>
-<h4 id="多进程好处"><a href="#多进程好处" class="headerlink" title="多进程好处"></a>多进程好处</h4><p> 一般来说，Android应用多进程有三个好处。</p>
-<ol>
-<li>我们知道Android系统对每个应用进程的内存占用是有限制的，而且占用内存越大的进程，通常被系统杀死的可能性越大。让一个组件运行在单独的进程中，可以减少主进程所占用的内存，降低被系统杀死的概率.</li>
-<li>如果子进程因为某种原因崩溃了，不会直接导致主程序的崩溃，可以降低我们程序的崩溃率。</li>
-<li>即使主进程退出了，我们的子进程仍然可以继续工作，假设子进程是推送服务，在主进程退出的情况下，仍然能够保证用户可以收到推送消息。</li>
-</ol>
-<h4 id="陷阱"><a href="#陷阱" class="headerlink" title="陷阱"></a>陷阱</h4><p> 我们已经开启了应用内多进程，那么，开启多进程是不是只是我们看到的这么简单呢？其实这里面会有一些陷阱，稍微不注意就会陷入其中。我们首先要明确的一点是进程间的内存空间时不可见的。从而，开启多进程后，我们需要面临这样几个问题：</p>
-<ol>
-<li>Application的多次重建。</li>
-<li>静态成员的失效。</li>
-<li>文件共享问题。</li>
-<li>断点调试问题。</li>
-</ol>
-<p>多进程情况下会出现两个进程在同一时刻访问同一个数据库文件的情况。这就可能造成资源的竞争访问，导致诸如数据库损坏、数据丢失等。在多线程的情况下我们有锁机制控制资源的共享，但是在多进程中比较难，虽然有文件锁、排队等机制，但是在Android里很难实现。解决办法就是多进程的时候不并发访问同一个文件，比如子进程涉及到操作数据库，就可以考虑调用主进程进行数据库的操作。</p>
-<p>调试就是跟踪程序运行过程中的堆栈信息，由于每个进程都有自己独立的内存空间和各自的堆栈，无法实现在不同的进程间调试。不过可以通过下面的方式实现：调试时去掉AndroidManifest.xml中android:process标签，这样保证调试状态下是在同一进程中，堆栈信息是连贯的。待调试完成后，再将标签复原。</p>
-<h4 id="process属性的设置有两种形式"><a href="#process属性的设置有两种形式" class="headerlink" title="process属性的设置有两种形式"></a>process属性的设置有两种形式</h4><p>第一种形式如 android:process=”:remote”，以冒号开头，冒号后面的字符串原则上是可以随意指定的。如果我们的包名为“com.example.processtest”，则实际的进程名为“com.example.processtest:remote”。这种设置形式表示该进程为当前应用的私有进程，其他应用的组件不可以和它跑在同一个进程中。</p>
-<p>第二种情况如 android:process=”com.example.processtest.remote”，以小写字母开头，表示运行在一个以这个名字命名的全局进程中，其他应用通过设置相同的ShareUID可以和它跑在同一个进程。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/31/tips-android-pluggable-8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/07/31/tips-android-pluggable-8/" itemprop="url">
-                  tips-android-pluggable-8
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T20:20:35+08:00">
-                2018-07-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/25/tips-android-serialization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/07/25/tips-android-serialization/" itemprop="url">
-                  android数据序列化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-25T10:41:25+08:00">
-                2018-07-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="什么是序列化"><a href="#什么是序列化" class="headerlink" title="什么是序列化"></a>什么是序列化</h3><p>序列化 (Serialization)将对象的状态信息转换为可以存储或传输的形式的过程。在序列化期间，对象将其当前状态写入到临时或持久性存储区。以后，可以通过从存储区中读取或反序列化对象的状态，重新创建该对象。
-二进制序列化保持类型保真度，这对于在应用程序的不同调用之间保留对象的状态很有用。例如，通过将对象序列化到剪贴板，可在不同的应用程序之间共享对象。您可以将对象序列化到流、磁盘、内存和网络等等。远程处理使用序列化“通过值”在计算机或应用程序域之间传递对象。</p>
-<p>简单地说，“序列化”就是将运行时的对象状态转换成二进制，然后保存到流、内存或者通过网络传输给其他端。
-在安卓开发中，我们在组件中传递数据时常常使用 Intent 传输数据时需要传递 Serializable 或者 Parcelable 的数据，比如 Intent.putExtra 方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public Intent putExtra(String name, Parcelable value) &#123;...&#125;</div><div class="line">public Intent putExtra(String name, Serializable value) &#123;...&#125;</div></pre></td></tr></table></figure></p>
-<p>也会使用 Binder 传递数据。</p>
-<h3 id="Serializable-接口"><a href="#Serializable-接口" class="headerlink" title="Serializable 接口"></a>Serializable 接口</h3><p>Serializable 是 Java 提供的序列化接口，它是一个空接口:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public interface Serializable &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Serializable 用来标识当前类可以被 ObjectOutputStream 序列化，以及被 ObjectInputStream 反序列化。
-Serializable 有以下几个特点：</p>
-<ul>
-<li>可序列化类中，未实现 Serializable 的属性状态无法被序列化/反序列化</li>
-<li>也就是说，反序列化一个类的过程中，它的非可序列化的属性将会调用无参构造函数重新创建</li>
-<li>因此这个属性的无参构造函数必须可以访问，否者运行时会报错</li>
-<li>一个实现序列化的类，它的子类也是可序列化的</li>
-</ul>
-<p>下面是一个实现了 Serializable 的实体类：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public class GroupBean implements Serializable &#123;</div><div class="line"></div><div class="line">    private static final long serialVersionUID = 8829975621220483374L;</div><div class="line">    private String mName;</div><div class="line">    private List&lt;String&gt; mMemberNameList;</div><div class="line"></div><div class="line">    public GroupBean() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String getName() &#123;</div><div class="line">        return mName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setName(String name) &#123;</div><div class="line">        mName = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public List&lt;String&gt; getMemberNameList() &#123;</div><div class="line">        return mMemberNameList;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setMemberNameList(List&lt;String&gt; memberNameList) &#123;</div><div class="line">        mMemberNameList = memberNameList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到实现 Serializable 的实现非常简单，除了实体内容外只要创建一个 serialVersionUID 属性就好。</p>
-<h4 id="serialVersionUID"><a href="#serialVersionUID" class="headerlink" title="serialVersionUID"></a>serialVersionUID</h4><p>从名字就可以看出来，这个 serialVersionUID ，有些类似我们平时的接口版本号，在运行时这个版本号唯一标识了一个可序列化的类。</p>
-<p>也就是说，一个类序列化时，运行时会保存它的版本号，然后在反序列化时检查你要反序列化成的对象版本号是否一致，不一致的话就会报错：·InvalidClassException。</p>
-<p>如果我们不自己创建这个版本号，序列化过程中运行时会根据类的许多特点计算出一个默认版本号。然而只要你对这个类修改了一点点，这个版本号就会改变。这种情况如果发生在序列化之后，反序列化时就会导致上面说的错误。</p>
-<p>因此 JVM 规范强烈 建议我们手动声明一个版本号，这个数字可以是随机的，只要固定不变就可以。同时最好是 private 和 final 的，尽量保证不变。</p>
-<p>此外，序列化过程中不会保存 static 和 transient 修饰的属性，前者很好理解，因为静态属性是与类管理的，不属于对象状态；而后者则是 Java 的关键字，专门用来标识不序列化的属性。</p>
-<p>默认实现 Serializable 不会自动创建 serialVersionUID 属性，为了提示我们及时创建 serialVersionUID ，可以在设置中搜索 serializable 然后选择下图所示的几个选项，为那些没有声明 serialVersionUID 属性的类以及内部类添加一个警告:
-setting-&gt;Editor-&gt;Inspections-&gt;搜索serializable-&gt;勾选:</p>
-<ul>
-<li>Serializable class without’readObject()’ and ‘writeObject()’</li>
-<li>Serializable class without’seriaVersionUID’</li>
-<li>Serializable not-‘static’ inner class with not-Serializable outer class</li>
-<li>Serializable object implicitly stores non-Serializable Object</li>
-</ul>
-<p>这样当我们创建一个类不声明 UID 属性时，类名上就会有黄黄的警告,鼠标放上去就会显示警告内容：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GroupBean’ does not define a ‘serialVersionUID’ field less… (Ctrl+F1) </div><div class="line">Reports any Serializable classes which do not provide a serialVersionUID field. Without a serialVersionUID field, any change to a class will make previously serialized versions unreadable.</div></pre></td></tr></table></figure></p>
-<p>这时我们按代码提示快捷键就可以生成 serialVersionUID 了。</p>
-<h4 id="序列化与反序列化-Serializable"><a href="#序列化与反序列化-Serializable" class="headerlink" title="序列化与反序列化 Serializable"></a>序列化与反序列化 Serializable</h4><p>Serializable 的序列化与反序列化分别通过 ObjectOutputStream 和 ObjectInputStream 进行，实例代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">**</div><div class="line"> * 序列化对象</div><div class="line"> *</div><div class="line"> * @param obj</div><div class="line"> * @param path</div><div class="line"> * @return</div><div class="line"> */</div><div class="line">synchronized public static boolean saveObject(Object obj, String path) &#123;</div><div class="line">    if (obj == null) &#123;</div><div class="line">        return false;</div><div class="line">    &#125;</div><div class="line">    ObjectOutputStream oos = null;</div><div class="line">    try &#123;</div><div class="line">        oos = new ObjectOutputStream(new FileOutputStream(path));</div><div class="line">        oos.writeObject(obj);</div><div class="line">        oos.close();</div><div class="line">        return true;</div><div class="line">    &#125; catch (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; finally &#123;</div><div class="line">        if (oos != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                oos.close();</div><div class="line">            &#125; catch (IOException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 反序列化对象</div><div class="line"> *</div><div class="line"> * @param path</div><div class="line"> * @param &lt;T&gt;</div><div class="line"> * @return</div><div class="line"> */</div><div class="line">@SuppressWarnings(&quot;unchecked &quot;)</div><div class="line">synchronized public static &lt;T&gt; T readObject(String path) &#123;</div><div class="line">    ObjectInputStream ojs = null;</div><div class="line">    try &#123;</div><div class="line">        ojs = new ObjectInputStream(new FileInputStream(path));</div><div class="line">        return (T) ojs.readObject();</div><div class="line">    &#125; catch (IOException | ClassNotFoundException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125; finally &#123;</div><div class="line">        close(ojs);</div><div class="line">    &#125;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="Parcelable-接口"><a href="#Parcelable-接口" class="headerlink" title="Parcelable 接口"></a>Parcelable 接口</h3><p>Parcelable 是 Android 特有的序列化接口：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">public interface Parcelable &#123;</div><div class="line">    //writeToParcel() 方法中的参数，用于标识当前对象作为返回值返回</div><div class="line">    //有些实现类可能会在这时释放其中的资源</div><div class="line">    public static final int PARCELABLE_WRITE_RETURN_VALUE = 0x0001;</div><div class="line"></div><div class="line">    //writeToParcel() 方法中的第二个参数，它标识父对象会管理内部状态中重复的数据</div><div class="line">    public static final int PARCELABLE_ELIDE_DUPLICATES = 0x0002;</div><div class="line"></div><div class="line">    //用于 describeContents() 方法的位掩码，每一位都代表着一种对象类型</div><div class="line">    public static final int CONTENTS_FILE_DESCRIPTOR = 0x0001;</div><div class="line"></div><div class="line">    //描述当前 Parcelable 实例的对象类型</div><div class="line">    //比如说，如果对象中有文件描述符，这个方法就会返回上面的 CONTENTS_FILE_DESCRIPTOR</div><div class="line">    //其他情况会返回一个位掩码</div><div class="line">    public int describeContents();</div><div class="line"></div><div class="line">    //将对象转换成一个 Parcel 对象</div><div class="line">    //参数中 dest 表示要写入的 Parcel 对象</div><div class="line">    //flags 表示这个对象将如何写入</div><div class="line">    public void writeToParcel(Parcel dest, int flags);</div><div class="line"></div><div class="line">    //实现类必须有一个 Creator 属性，用于反序列化，将 Parcel 对象转换为 Parcelable </div><div class="line">    public interface Creator&lt;T&gt; &#123;</div><div class="line"></div><div class="line">        public T createFromParcel(Parcel source);</div><div class="line"></div><div class="line">        public T[] newArray(int size);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //对象创建时提供的一个创建器</div><div class="line">    public interface ClassLoaderCreator&lt;T&gt; extends Creator&lt;T&gt; &#123;</div><div class="line">        //使用类加载器和之前序列化成的 Parcel 对象反序列化一个对象</div><div class="line">        public T createFromParcel(Parcel source, ClassLoader loader);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>实现了 Parcelable 接口的类在序列化和反序列化时会被转换为 Parcel 类型的数据 。
-Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 IBinder 在进程间传递。
-实现 Parcelable 接口的类必须有一个 CREATOR 类型的静态变量，下面是一个实例：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">public class ParcelableGroupBean implements Parcelable &#123;</div><div class="line"></div><div class="line">    private String mName;</div><div class="line">    private List&lt;String&gt; mMemberNameList;</div><div class="line">    private User mUser;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 需要我们手动创建的构造函数</div><div class="line">     * @param name</div><div class="line">     * @param memberNameList</div><div class="line">     * @param user</div><div class="line">     */</div><div class="line">    public ParcelableGroupBean(String name, List&lt;String&gt; memberNameList, User user) &#123;</div><div class="line">        mName = name;</div><div class="line">        mMemberNameList = memberNameList;</div><div class="line">        mUser = user;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 1.内容描述</div><div class="line">     * @return</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public int describeContents() &#123;</div><div class="line">        //几乎都返回 0，除非当前对象中存在文件描述符时为 1</div><div class="line">        return 0;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 2.序列化</div><div class="line">     * @param dest</div><div class="line">     * @param flags 0 或者 1</div><div class="line">     */</div><div class="line">    @Override</div><div class="line">    public void writeToParcel(Parcel dest, int flags) &#123;</div><div class="line">        dest.writeString(mName);</div><div class="line">        dest.writeStringList(mMemberNameList);</div><div class="line">        dest.writeParcelable(mUser, flags);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 3.反序列化</div><div class="line">     */</div><div class="line">    public static final Creator&lt;ParcelableGroupBean&gt; CREATOR = new Creator&lt;ParcelableGroupBean&gt;() &#123;</div><div class="line">        /**</div><div class="line">         * 反序列创建对象</div><div class="line">         * @param in</div><div class="line">         * @return</div><div class="line">         */</div><div class="line">        @Override</div><div class="line">        public ParcelableGroupBean createFromParcel(Parcel in) &#123;</div><div class="line">            return new ParcelableGroupBean(in);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 反序列创建对象数组</div><div class="line">         * @param size</div><div class="line">         * @return</div><div class="line">         */</div><div class="line">        @Override</div><div class="line">        public ParcelableGroupBean[] newArray(int size) &#123;</div><div class="line">            return new ParcelableGroupBean[size];</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 4.自动创建的的构造器，使用反序列化得到的 Parcel 构造对象</div><div class="line">     * @param in</div><div class="line">     */</div><div class="line">    protected ParcelableGroupBean(Parcel in) &#123;</div><div class="line">        mName = in.readString();</div><div class="line">        mMemberNameList = in.createStringArrayList();</div><div class="line">        //反序列化时，如果熟悉也是 Parcelable 的类，需要使用它的类加载器作为参数，否则报错无法找到类</div><div class="line">        mUser = in.readParcelable(User.class.getClassLoader());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="Parcelable原理"><a href="#Parcelable原理" class="headerlink" title="Parcelable原理"></a>Parcelable原理</h4><p>Parcelable具体的写入（dest.writeInt(mAge);）与读取（gril.mAge = in.readInt();）都是针对Parcel对象进行的操作，下面贴出的是Parcle 读写int类型数据的定义。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public final class Parcel &#123;</div><div class="line"> </div><div class="line">    ......</div><div class="line">    </div><div class="line">    /**</div><div class="line">     * Write an integer value into the parcel at the current dataPosition(),</div><div class="line">     * growing dataCapacity() if needed.</div><div class="line">     */</div><div class="line">    public final native void writeInt(int val);</div><div class="line"> </div><div class="line">    /**</div><div class="line">     * Read an integer value from the parcel at the current dataPosition().</div><div class="line">     */</div><div class="line">    public final native int readInt();</div><div class="line">    </div><div class="line">     ......</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>从上面代码可以看出都是native方法说明都是使用JNI，其具体位置在<code>frameworks/base/core/jni/android_util_Binder.cpp</code> ，以下也仅以int类型读写为例
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">static void android_os_Parcel_writeInt(JNIEnv* env, jobject clazz, jint val)</div><div class="line">&#123;</div><div class="line">    Parcel* parcel = parcelForJavaObject(env, clazz);</div><div class="line">    if (parcel != NULL) &#123;</div><div class="line">        const status_t err = parcel-&gt;writeInt32(val);</div><div class="line">        if (err != NO_ERROR) &#123;</div><div class="line">            jniThrowException(env, &quot;java/lang/OutOfMemoryError&quot;, NULL);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">static jint android_os_Parcel_readInt(JNIEnv* env, jobject clazz)</div><div class="line">&#123;</div><div class="line">    Parcel* parcel = parcelForJavaObject(env, clazz);</div><div class="line">    if (parcel != NULL) &#123;</div><div class="line">        return parcel-&gt;readInt32();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>从上面可以看出都会调用Parcel实现且分别调用writeInt32与readInt32函数，接着来看看具体实现。位置：<code>/system/frameworks/base/libs/binder/Parcel.cpp</code>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">status_t Parcel::writeInt32(int32_t val)</div><div class="line">&#123;</div><div class="line">    return writeAligned(val);</div><div class="line">&#125;</div><div class="line"> </div><div class="line">template&lt;class T&gt;</div><div class="line">status_t Parcel::writeAligned(T val) &#123;</div><div class="line">    COMPILE_TIME_ASSERT_FUNCTION_SCOPE(PAD_SIZE(sizeof(T)) == sizeof(T));</div><div class="line"> </div><div class="line">    if ((mDataPos+sizeof(val)) &lt;= mDataCapacity) &#123;</div><div class="line">restart_write:</div><div class="line">        *reinterpret_cast&lt;T*&gt;(mData+mDataPos) = val;</div><div class="line">        return finishWrite(sizeof(val));</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    status_t err = growData(sizeof(val));</div><div class="line">    if (err == NO_ERROR) goto restart_write;</div><div class="line">    return err;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line">status_t Parcel::readInt32(int32_t *pArg) const</div><div class="line">&#123;</div><div class="line">    return readAligned(pArg);</div><div class="line">&#125;</div><div class="line"> </div><div class="line">template&lt;class T&gt;</div><div class="line">status_t Parcel::readAligned(T *pArg) const &#123;</div><div class="line">    COMPILE_TIME_ASSERT_FUNCTION_SCOPE(PAD_SIZE(sizeof(T)) == sizeof(T));</div><div class="line"> </div><div class="line">    if ((mDataPos+sizeof(T)) &lt;= mDataSize) &#123;</div><div class="line">        const void* data = mData+mDataPos;</div><div class="line">        mDataPos += sizeof(T);</div><div class="line">        *pArg =  *reinterpret_cast&lt;const T*&gt;(data);</div><div class="line">        return NO_ERROR;</div><div class="line">    &#125; else &#123;</div><div class="line">        return NOT_ENOUGH_DATA;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>基本的思路总结一下：</p>
-<ol>
-<li>整个读写全是在内存中进行，主要是通过malloc()、realloc()、memcpy()等内存操作进行，所以效率比JAVA序列化中使用外部存储器会高很多；</li>
-<li>读写时是4字节对齐的，可以看到#define PAD_SIZE(s) (((s)+3)&amp;~3)这句宏定义就是在做这件事情；</li>
-<li>如果预分配的空间不够时newSize = ((mDataSize+len)*3)/2;会一次多分配50%；</li>
-<li>对于普通数据，使用的是mData内存地址，对于IBinder类型的数据以及FileDescriptor使用的是mObjects内存地址。后者是通过flatten_binder()和unflatten_binder()实现的，目的是反序列化时读出的对象就是原对象而不用重新new一个新对象。</li>
-</ol>
-<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><ol>
-<li>任何实体类都需要复写Parcelable接口吗？</li>
-<li>如果子类新增属性，需要复写父类writeToParcel与CREATOR吗？</li>
-<li>writeToParcel 与 createFromParcel 对变量的读写前后顺序可以不一致吗，会出现什么结果？</li>
-<li>读写Parcelable对象（写操作dest.writeParcelable(obj, flags);  读操作in.readParcelable(ObjectA.class.getClassLoader()); ）</li>
-<li>读写Parcelable对象数组<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3>可以看到，Serializable 的使用比较简单，创建一个版本号即可；而 Parcelable 则相对复杂一些，会有四个方法需要实现。</li>
-</ol>
-<p>一般在保存数据到 SD 卡或者网络传输时建议使用 Serializable 即可，虽然效率差一些，好在使用方便。</p>
-<p>而在运行时数据传递时建议使用 Parcelable，比如 Intent，Bundle 等，Android 底层做了优化处理，效率很高。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="https://blog.csdn.net/caowenbin/article/details/6532217" target="_blank" rel="external">《探索Android中的Parcel机制（上）》</a></li>
-<li><a href="https://blog.csdn.net/caowenbin/article/details/6532238" target="_blank" rel="external">《探索Android中的Parcel机制（下）》</a></li>
-<li><a href="https://blog.codingnow.com/2010/03/c_serialization.html" target="_blank" rel="external">《C 语言的数据序列化 （C语言实现序列化机制的思路）</a></li>
-<li><a href="https://blog.csdn.net/niu_gao/article/details/6451699" target="_blank" rel="external"> 《Android中的Parcel是什么》</a></li>
-<li><a href="https://blog.csdn.net/niu_gao/article/details/6453391" target="_blank" rel="external"> 《Android开发：什么是Parcel(2)》</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/07/20/tips-audiomanager/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/07/20/tips-audiomanager/" itemprop="url">
-                  Android听筒与喇叭切换遇到的坑
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T08:18:29+08:00">
-                2018-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h4><p>在聊天场景中,收到对方语音时,用户可以选择外放播放,也可以选择插入耳机收听.更人性化一点当用户把手机靠近耳朵时屏幕关闭自动切换到听筒中播放,播放完毕后拿开手机屏幕自动点亮.比如微信就是如此.</p>
-<h4 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h4><p>从上面场景中我们可以得出我们需要的要点:</p>
-<p>播放模式切换:外放&lt;—&gt;耳机
-播放模式切换:外放&lt;—&gt;听筒
-屏幕操作:亮屏&lt;—&gt;息屏&lt;—&gt;亮屏</p>
-<h4 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h4><p>从需求分析我们可以得出需要代码进行控制的有:</p>
-<p>音乐播放控制
-外放,耳机,听筒之间的切换
-屏幕的息屏与亮屏</p>
-<h5 id="外放-耳机-听筒之间的切换"><a href="#外放-耳机-听筒之间的切换" class="headerlink" title="外放,耳机,听筒之间的切换"></a>外放,耳机,听筒之间的切换</h5><p>在Android系统中是用AudioManager来管理播放模式的,通过AudioManager.setMode()方法来实现.</p>
-<p>在setMode()方法中有以下几种对应不同的播放模式:</p>
-<ul>
-<li>MODE_NORMAL: 普通模式,既不是铃声模式也不是通话模式</li>
-<li>MODE_RINGTONE:铃声模式</li>
-<li>MODE_IN_CALL:通话模式</li>
-<li>MODE_IN_COMMUNICATION:通信模式,包括音/视频,VoIP通话.(3.0加入的,与通话模式类似)</li>
-</ul>
-<p>其中:播放音乐的对应的就是MODE_NORMAL, 如果使用外放播则调用audioManager.setSpeakerphoneOn(true)即可.若使用耳机和听筒,则需要先设置模式为MODE_IN_CALL(3.0以前)或MODE_IN_COMMUNICATION(3.0以后).</p>
-<p><strong>注意:</strong>
-需要权限android.permission.MODIFY_AUDIO_SETTINGS
-3.0以后设置模式为MODE_IN_CALL,在华为的某些机型中,根本不起作用.</p>
-<p>切换代码如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);</div><div class="line">/**</div><div class="line"> * 切换到外放</div><div class="line"> */</div><div class="line">public void changeToSpeaker()&#123;</div><div class="line">    audioManager.setMode(AudioManager.MODE_NORMAL);</div><div class="line">    audioManager.setSpeakerphoneOn(true);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 切换到耳机模式</div><div class="line"> */</div><div class="line">public void changeToHeadset()&#123;</div><div class="line">    audioManager.setSpeakerphoneOn(false);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line"> * 切换到听筒</div><div class="line"> */</div><div class="line">public void changeToReceiver()&#123;</div><div class="line">    audioManager.setSpeakerphoneOn(false);</div><div class="line">    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB)&#123;</div><div class="line">        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);</div><div class="line">    &#125; else &#123;</div><div class="line">        audioManager.setMode(AudioManager.MODE_IN_CALL);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><strong>听筒切换到外放模式,使用上面的changeToSpeaker()即可,但是外放切换到听筒时会丢失大概3秒的语音,解决办法是设置mediaplayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL),该方法需要在player的prepare前调用,所以外放切听筒会导致重新播放</strong></p>
-<h5 id="是否插入耳机判断"><a href="#是否插入耳机判断" class="headerlink" title="是否插入耳机判断"></a>是否插入耳机判断</h5><p>在插入或者拔出耳机时系统会发出Action为Intent.ACTION_HEADSET_PLUG的广播,并且该广播不能使用静态接收器处理,故写一个广播接收器处理耳机事件即可.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class HeadsetReceiver extends BroadcastReceiver&#123;</div><div class="line">    @Override</div><div class="line">    public void onReceive(Context context, Intent intent) &#123;</div><div class="line">        String action = intent.getAction();</div><div class="line">        switch (action)&#123;</div><div class="line">            //插入和拔出耳机会触发此广播</div><div class="line">            case Intent.ACTION_HEADSET_PLUG:</div><div class="line">                int state = intent.getIntExtra(&quot;state&quot;, 0);</div><div class="line">                if (state == 1)&#123;//切换到耳机</div><div class="line">                    changeToHeadset();</div><div class="line">                &#125; else if (state == 0)&#123;</div><div class="line">                    changeToSpeaker();</div><div class="line">                &#125;</div><div class="line">                break;</div><div class="line">            default:</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>耳机切换到外放会出现丢失语音
-由于耳机切换到外放需要一段时间导致,故解决此问题的方法是先暂停再续播.那么什么时候暂停什么时候续播呢?
-耳机拔出时系统还会发出Action为<code>AudioManager.ACTION_AUDIO_BECOMING_NOISY</code>的广播,且此广播比<code>Intent.ACTION_HEADSET_PLUG</code>要早.</p>
-<h5 id="屏幕的息屏与亮屏"><a href="#屏幕的息屏与亮屏" class="headerlink" title="屏幕的息屏与亮屏"></a>屏幕的息屏与亮屏</h5><p>现在几乎每个手机都有距离感应器,通过举例感应器可获得距离.距离感应器由SensorManager管理:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);</div><div class="line">sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);</div><div class="line">sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);</div></pre></td></tr></table></figure></p>
-<p>注册监听的方法的最后一个参数是敏感度,敏感度越高越费电,此处选择一般敏感度即可.此外Activity还需实现SensorEventListener接口,覆写其方法:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onSensorChanged(SensorEvent event) &#123;</div><div class="line">    float value = event.values[0];</div><div class="line">    if (playerManager.isPlaying())&#123;</div><div class="line">        if (value == sensor.getMaximumRange()) &#123;</div><div class="line">            changeToSpeaker();</div><div class="line">            setScreenOn();</div><div class="line">        &#125; else &#123;</div><div class="line">            changeToReceiver();</div><div class="line">            setScreenOff();</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        if(value == sensor.getMaximumRange())&#123;</div><div class="line">            changeToSpeaker();</div><div class="line">            setScreenOn();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在Android系统中硬件的工作状态的控制由PowerManager与WakeLock掌管.PowerManager通过不同的WakeLock来控制CPU,屏幕,键盘等硬件的工作状态.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">powerManager = (PowerManager) getSystemService(POWER_SERVICE);</div><div class="line">wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);</div></pre></td></tr></table></figure></p>
-<p>注意:需要权限<code>android.Manifest.permission.DEVICE_POWER</code>和<code>android.permission.WAKE_LOCK</code>
-其中第一个参数代表控制级别,可选值有:</p>
-<ul>
-<li>PARTIAL_WAKE_LOCK : CPU运行,屏幕和键盘可能关闭</li>
-<li>SCREEN_DIM_WAKE_LOCK :　屏幕亮,键盘灯可能关闭</li>
-<li>SCREEN_BRIGHT_WAKE_LOCK : 屏幕全亮,键盘灯可能关闭</li>
-<li>FULL_WAKE_LOCK : 屏幕和键盘灯全亮</li>
-<li>PROXIMITY_SCREEN_OFF_WAKE_LOCK : 屏幕关闭,键盘灯关闭,CPU运行</li>
-<li>DOZE_WAKE_LOCK : 屏幕灰显,CPU延缓工作</li>
-</ul>
-<p>此处我们选取<code>PROXIMITY_SCREEN_OFF_WAKE_LOCK.WakeLock</code>通过<code>acquire()</code>和<code>release()</code>方法上锁和解锁.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">private void setScreenOff()&#123;</div><div class="line">    if (wakeLock == null)&#123;</div><div class="line">        wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);</div><div class="line">    &#125;</div><div class="line">    wakeLock.acquire();</div><div class="line">&#125;</div><div class="line">private void setScreenOn()&#123;</div><div class="line">    if (wakeLock != null)&#123;</div><div class="line">        wakeLock.setReferenceCounted(false);</div><div class="line">        wakeLock.release();</div><div class="line">        wakeLock = null;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="三星Galaxy-note5在熄灭屏幕是会调用Activity的onPause-onStop-方法"><a href="#三星Galaxy-note5在熄灭屏幕是会调用Activity的onPause-onStop-方法" class="headerlink" title="三星Galaxy note5在熄灭屏幕是会调用Activity的onPause(),onStop()方法"></a>三星Galaxy note5在熄灭屏幕是会调用Activity的onPause(),onStop()方法</h5>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2005,7 +2192,7 @@ Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2016,7 +2203,7 @@ Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2027,7 +2214,7 @@ Parcel 是一个载体，它可以包含数据或者对象引用，然后通过 
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-count">60</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

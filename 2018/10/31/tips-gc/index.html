@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="要想深入了解Java的GC(Garbage Collection)，我们应该先探寻如下三个问题： What? – 哪些内存需要回收？ When? – 什么时候回收？ How? – 如何回收？ GC DefinitionDefinition: Program itself finds and collects memory which is useless. It is a form of auto">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/gc1.png">
-<meta property="og:updated_time" content="2018-11-06T14:47:55.403Z">
+<meta property="og:updated_time" content="2018-11-10T12:59:28.513Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java GC">
 <meta name="twitter:description" content="要想深入了解Java的GC(Garbage Collection)，我们应该先探寻如下三个问题： What? – 哪些内存需要回收？ When? – 什么时候回收？ How? – 如何回收？ GC DefinitionDefinition: Program itself finds and collects memory which is useless. It is a form of auto">
@@ -473,7 +473,7 @@ Java中为什么会有GC机制呢？</p>
 <li>强引用(Strong Reference):Object obj = new Object();只要强引用还存在，GC永远不会回收掉被引用的对象。</li>
 <li>软引用(Soft Reference)：描述一些还有用但非必需的对象。在系统将会发生内存溢出之前，会把这些对象列入回收范围进行二次回收（即系统将会发生内存溢出了，才会对他们进行回收。）</li>
 <li>弱引用(Weak Reference):程度比软引用还要弱一些。这些对象只能生存到下次GC之前。当GC工作时，无论内存是否足够都会将其回收（即只要进行GC，就会对他们进行回收。）</li>
-<li>虚引用(Phantom Reference):一个对象是否存在虚引用，完全不会对其生存时间构成影响。</li>
+<li>虚引用(Phantom Reference):一个对象是否存在虚引用，完全不会对其生存时间构成影响。也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的 唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</li>
 </ul>
 <h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><p>What部分我们已经提到，GC主要回收的是堆和方法区中的内存，而上面的How主要是针对对象的回收，他们一般位于堆内。那么，方法区中的东西该怎么回收呢？</p>
 <p>关于方法区中需要回收的是一些废弃的常量和无用的类。</p>
@@ -684,7 +684,7 @@ Java中为什么会有GC机制呢？</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -695,7 +695,7 @@ Java中为什么会有GC机制呢？</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -706,7 +706,7 @@ Java中为什么会有GC机制呢？</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-count">60</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

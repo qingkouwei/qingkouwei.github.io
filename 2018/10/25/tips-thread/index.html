@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="tips,Java,Linux," />
+  <meta name="keywords" content="Java,tips,Linux," />
 
 
 
@@ -90,14 +90,14 @@
 
 
 <meta name="description" content="什么是线程线程5种状态  新建状态(New)： 当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码 就绪状态(Runnable) 一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运">
-<meta name="keywords" content="tips,Java,Linux">
+<meta name="keywords" content="Java,tips,Linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多线程只是总结">
 <meta property="og:url" content="http://wodekouwei.com/2018/10/25/tips-thread/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="什么是线程线程5种状态  新建状态(New)： 当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码 就绪状态(Runnable) 一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/thread-lifecycle.jpeg">
-<meta property="og:updated_time" content="2018-11-06T14:58:31.097Z">
+<meta property="og:updated_time" content="2018-11-07T11:46:33.802Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多线程只是总结">
 <meta name="twitter:description" content="什么是线程线程5种状态  新建状态(New)： 当用new操作符创建一个线程时， 例如new Thread(r)，线程还没有开始运行，此时线程处在新建状态。 当一个线程处于新生状态时，程序还没有开始运行线程中的代码 就绪状态(Runnable) 一个新创建的线程并不自动开始运行，要执行线程，必须调用线程的start()方法。当线程对象调用start()方法即启动了线程，start()方法创建线程运">
@@ -499,7 +499,12 @@ ReenreantLock类的常用方法有：</p>
 <li>initialValue() : 返回此线程局部变量的当前线程的”初始值” </li>
 <li>set(T value) : 将此线程局部变量的当前线程副本中的值设置为value</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class Bank&#123;</div><div class="line">    //使用ThreadLocal类管理共享变量account</div><div class="line">    private static ThreadLocal&lt;Integer&gt; account = new ThreadLocal&lt;Integer&gt;()&#123;</div><div class="line">        @Override</div><div class="line">        protected Integer initialValue()&#123;</div><div class="line">            return 100;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    public void save(int money)&#123;</div><div class="line">        account.set(account.get()+money);</div><div class="line">    &#125;</div><div class="line">    public int getAccount()&#123;</div><div class="line">        return account.get();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先定义一个ThreadLocal对象，这里选择Boolean类型的，如下所示：</p>
+<p>private ThreadLocal<boolean>mBooleanThreadLocal = new ThreadLocal<boolean>();</boolean></boolean></p>
+<p>然后分别在主线程、子线程1和子线程2中设置和访问它的值，代码如下所示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">mBooleanThreadLocal.set(true);</div><div class="line">Log.d(TAG, &quot;[Thread#main]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line"> </div><div class="line">new Thread(&quot;Thread#1&quot;) &#123;</div><div class="line">	@Override</div><div class="line">	public void run() &#123;</div><div class="line">		mBooleanThreadLocal.set(false);</div><div class="line">		Log.d(TAG, &quot;[Thread#1]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line">	&#125;;</div><div class="line">&#125;.start();</div><div class="line"> </div><div class="line">new Thread(&quot;Thread#2&quot;) &#123;</div><div class="line">	@Override</div><div class="line">	public void run() &#123;</div><div class="line">		Log.d(TAG, &quot;[Thread#2]mBooleanThreadLocal=&quot; + mBooleanThreadLocal.get());</div><div class="line">	&#125;;</div><div class="line">&#125;.start();</div></pre></td></tr></table></figure></p>
+<p>上面的代码中，在主线程中设置mBooleanThreadLocal的值为true，在子线程1中设置mBooleanThreadLocal的值为false，在子线程2中不设置mBooleanThreadLocal的值，然后分别在3个线程中通过get方法去mBooleanThreadLocal的值，根据前面对ThreadLocal的描述，这个时候，主线程中应该是true，子线程1中应该是false，而子线程2中由于没有设置值，所以应该是null，安装并运行程序，日志如下所示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">D/TestActivity(8676):[Thread#main]mBooleanThreadLocal=true</div><div class="line"></div><div class="line">D/TestActivity(8676):[Thread#1]mBooleanThreadLocal=false</div><div class="line"></div><div class="line">D/TestActivity(8676):[Thread#2]mBooleanThreadLocal=null</div></pre></td></tr></table></figure></p>
 <p>注：ThreadLocal与同步机制 </p>
 <ol>
 <li>ThreadLocal与同步机制都是为了解决多线程中相同变量的访问冲突问题。 </li>
@@ -623,9 +628,9 @@ LinkedBlockingQueue 类常用方法 </e></e></p>
       
         <div class="post-tags">
           
-            <a href="/tags/tips/" rel="tag"># tips</a>
-          
             <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
           
             <a href="/tags/Linux/" rel="tag"># Linux</a>
           
@@ -732,7 +737,7 @@ LinkedBlockingQueue 类常用方法 </e></e></p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -743,7 +748,7 @@ LinkedBlockingQueue 类常用方法 </e></e></p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -754,7 +759,7 @@ LinkedBlockingQueue 类常用方法 </e></e></p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-count">60</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
