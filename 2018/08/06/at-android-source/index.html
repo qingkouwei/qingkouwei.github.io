@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/08/06/at-android-source/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="monkey源码位于:~/development/cmds/monkey/src/com/android/commands/monkey monkeyrunner源码位于:~/sdk/monkeyrunner/src/com/android/monkeyrunner instrumentation源码位于:~/framenworks/base/test-runner/src uiautomator">
-<meta property="og:updated_time" content="2018-08-27T02:56:16.041Z">
+<meta property="og:updated_time" content="2019-03-01T07:22:56.191Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android自动化测试(二):源码分析">
 <meta name="twitter:description" content="monkey源码位于:~/development/cmds/monkey/src/com/android/commands/monkey monkeyrunner源码位于:~/sdk/monkeyrunner/src/com/android/monkeyrunner instrumentation源码位于:~/framenworks/base/test-runner/src uiautomator">
@@ -439,9 +439,13 @@
 <h3 id="monkeyrunner"><a href="#monkeyrunner" class="headerlink" title="monkeyrunner"></a>monkeyrunner</h3><p>源码位于:<code>~/sdk/monkeyrunner/src/com/android/monkeyrunner</code></p>
 <h3 id="instrumentation"><a href="#instrumentation" class="headerlink" title="instrumentation"></a>instrumentation</h3><p>源码位于:<code>~/framenworks/base/test-runner/src</code></p>
 <h3 id="uiautomator"><a href="#uiautomator" class="headerlink" title="uiautomator"></a>uiautomator</h3><p>源码位于:<code>~/frameworks/testing/uiautomator/library/src/com/android/ui/automator</code></p>
+<h5 id="TestReport类-的源码"><a href="#TestReport类-的源码" class="headerlink" title="TestReport类 的源码"></a>TestReport类 的源码</h5><p><code>https://android.googlesource.com/platform/tools/build/+/tools_r22/gradle/src/fromGradle/groovy/com/android/build/gradle/internal/test/report/TestReport.java</code></p>
 <h3 id="cts"><a href="#cts" class="headerlink" title="cts"></a>cts</h3><p>源码位于:<code>cts/tools/tradefed-host/src/com/android/cts/tradefed</code></p>
 <p><a href="https://github.com/square/assertj-android" target="_blank" rel="external">https://github.com/square/assertj-android</a></p>
 <p><a href="https://github.com/square/spoon" target="_blank" rel="external">https://github.com/square/spoon</a></p>
+<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p><a href="http://appium.io/docs/en/writing-running-appium/caps/" target="_blank" rel="external">Appium Desired Capabilities</a>
+<a href="https://testerhome.com/topics/2601" target="_blank" rel="external">解决部分机型 appium 安装应用时需要手动确认的问题</a></p>
+<p><a href="https://python012.github.io/archives/" target="_blank" rel="external">https://python012.github.io/archives/</a></p>
 
       
     </div>
@@ -601,7 +605,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">124</span>
+                <span class="site-state-item-count">145</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -623,7 +627,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-count">61</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -717,7 +721,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#monkey"><span class="nav-number">1.</span> <span class="nav-text">monkey</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#monkeyrunner"><span class="nav-number">2.</span> <span class="nav-text">monkeyrunner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#instrumentation"><span class="nav-number">3.</span> <span class="nav-text">instrumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uiautomator"><span class="nav-number">4.</span> <span class="nav-text">uiautomator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cts"><span class="nav-number">5.</span> <span class="nav-text">cts</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#monkey"><span class="nav-number">1.</span> <span class="nav-text">monkey</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#monkeyrunner"><span class="nav-number">2.</span> <span class="nav-text">monkeyrunner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#instrumentation"><span class="nav-number">3.</span> <span class="nav-text">instrumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uiautomator"><span class="nav-number">4.</span> <span class="nav-text">uiautomator</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TestReport类-的源码"><span class="nav-number">4.0.1.</span> <span class="nav-text">TestReport类 的源码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cts"><span class="nav-number">5.</span> <span class="nav-text">cts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源"><span class="nav-number">6.</span> <span class="nav-text">资源</span></a></li></ol></div>
             
 
           </div>
@@ -740,7 +744,7 @@
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -1,0 +1,1125 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,autotest,tools," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="它是一个Android自动化测试框架，是谷歌在Android4.1版本发布时推出的一款用Java编写的UI测试框架。它只能用于UI也就是黑盒方面的测试。所以UiAutomator只能运行在4.1以后的版本中。其最大的特点就是可以跨进程操作，我们可以使用uiautomator框架提供的一些方便的API来对安卓应用进行一系列的自动化测试操作，如点击、滑动、键盘输入、长按以及常用的断言方法等。可以替代以">
+<meta name="keywords" content="android,autotest,tools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android自动化测试(N):UiAutomator用法">
+<meta property="og:url" content="http://wodekouwei.com/2019/02/28/at-android-uiautomator-usage/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="它是一个Android自动化测试框架，是谷歌在Android4.1版本发布时推出的一款用Java编写的UI测试框架。它只能用于UI也就是黑盒方面的测试。所以UiAutomator只能运行在4.1以后的版本中。其最大的特点就是可以跨进程操作，我们可以使用uiautomator框架提供的一些方便的API来对安卓应用进行一系列的自动化测试操作，如点击、滑动、键盘输入、长按以及常用的断言方法等。可以替代以">
+<meta property="og:updated_time" content="2019-02-28T04:14:42.449Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android自动化测试(N):UiAutomator用法">
+<meta name="twitter:description" content="它是一个Android自动化测试框架，是谷歌在Android4.1版本发布时推出的一款用Java编写的UI测试框架。它只能用于UI也就是黑盒方面的测试。所以UiAutomator只能运行在4.1以后的版本中。其最大的特点就是可以跨进程操作，我们可以使用uiautomator框架提供的一些方便的API来对安卓应用进行一系列的自动化测试操作，如点击、滑动、键盘输入、长按以及常用的断言方法等。可以替代以">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/02/28/at-android-uiautomator-usage/"/>
+
+
+
+
+
+  <title> android自动化测试(N):UiAutomator用法 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/28/at-android-uiautomator-usage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                android自动化测试(N):UiAutomator用法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T11:09:22+08:00">
+                2019-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/autotest/" itemprop="url" rel="index">
+                    <span itemprop="name">autotest</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/02/28/at-android-uiautomator-usage/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>它是一个Android自动化测试框架，是谷歌在Android4.1版本发布时推出的一款用Java编写的UI测试框架。它只能用于UI也就是黑盒方面的测试。所以UiAutomator只能运行在4.1以后的版本中。其最大的特点就是可以跨进程操作，我们可以使用uiautomator框架提供的一些方便的API来对安卓应用进行一系列的自动化测试操作，如点击、滑动、键盘输入、长按以及常用的断言方法等。可以替代以前繁琐的手工测试。</p>
+<p>下面总结一下该框架的几个优点：</p>
+<ol>
+<li>Google自家推出的，其稳定性和后续的维护更新可以得到保障，运行时也有更多的权限。</li>
+<li>可以跨进程操作，这点比起其它基于instrumentation框架的自动化工具如Robotium是无法直接做到的。</li>
+<li>运行速度快。
+缺点：</li>
+<li>不支持Android4.1以下的版本。</li>
+<li>不支持Webview，所以一般无法对浏览器应用进行测试。</li>
+</ol>
+<h6 id="UiAutomator-框架原理分析："><a href="#UiAutomator-框架原理分析：" class="headerlink" title="UiAutomator 框架原理分析："></a>UiAutomator 框架原理分析：</h6><p>首先，UiAutomator是Google参考微软的UiAutomation提供的一套用在Android上的自动化测试框架。基于Android AccessilibilityService提供。那么至于什么是AccessilibilityService，在这里简单介绍下：Android AccessilibilityService，是一个可访问服务，它是一个为增强用户界面并帮助残疾用户的应用程序，或者用户可能无法完全与设备的交互。举个简单的例子，假如一个用户在开车。那么用户就有可能需要添加额外的或者替代的用户反馈方式。其应用方式一般有两种：</p>
+<p>第一种方法是：UiAutomatorView + monkey。它与hierachyview + monkey差不多。其区别是：UiAutomatorView通过ADB向设备侧发送一个dump命令，而不是建立一个socket，下载一个包含当前界面控件布局信息的xml文件。相比较hierachyview下载的内容而言，该文件小很多。因此，从效率上讲，这种方法比第一种应用模式快很多。</p>
+<p>第二种方法是： 直接调用UiAutomator框架对外提供的API，主要有UiDevice、UiSelector、UiObject和 UiScrollable等。其原理与第一种方式即HierachyView + Monkey差不多。其过程大致是：首先，UiAutomator测试框架通过Accessibilityservice，获取当前窗口的控件层次关系及属性信息，并查找到目标控件。若是点击事件，则计算出该控件的中心点坐标。其次，UiAutomator通过 InputManager.getInstance().injectInputEvent隐藏接口来注入用户事件（点击、输入类操作），从而实现跨进程自动化的目的。</p>
+<p>UiAutomatorTestCase ：这个类是继承自Junit TestCase （Junit），对外提供setup、teardown等，以便初始化用例、清除环境等。所以我们在编写的UiAutomator 的脚本时一般都要继承这个类，这样就可以直接使用它的一些方法和Junit单元测试框架中的Assert断言机制。</p>
+<h6 id="UIAutomator2-0"><a href="#UIAutomator2-0" class="headerlink" title="UIAutomator2.0"></a>UIAutomator2.0</h6><p>We’re pleased to announce the release of UIAutomator 2.0! This version is a significant update from the previous release. Most importantly, UI Automator is now based on Android Instrumentation and you can build and run tests with the ‘./gradlew connectedCheck’ command.</p>
+<p>UiAutomator2.0的jar包并不是在以前SDK/platforms/android-19/下。现在我们要这么做</p>
+<ol>
+<li>通过Android SDK Manager中的 Android Support Repository 项进行安装</li>
+<li>下载下来的jar包的路径为/extras/android/m2repository</li>
+<li>新建一个android项目，编写一个简单的应用</li>
+<li><p>在build.gradle中配置依赖项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">  androidTestCompile &apos;com.android.support.test:runner:0.3&apos;</div><div class="line">  // Set this dependency to use JUnit 4 rules</div><div class="line">  androidTestCompile &apos;com.android.support.test:rules:0.3&apos;</div><div class="line">  // Set this dependency to build and run Espresso tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.espresso:espresso-core:2.2&apos;</div><div class="line">  // Set this dependency to build and run UI Automator tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.uiautomator:uiautomator-v18:2.1.1&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>设置AndroidJunitRunner为默认的testInstrumentationRunner</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    defaultConfig &#123;</div><div class="line">        testInstrumentationRunner &quot;android.support.test.runner.AndroidJUnitRunner&quot;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>编写测试代码，在androidTest目录下面新建测试类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public class LoginTest extends InstrumentationTestCase &#123;</div><div class="line"></div><div class="line">    protected UiDevice device = null;</div><div class="line">    protected String appName = &quot;magicCard&quot;;</div><div class="line"></div><div class="line">    public void runApp(String appName) throws UiObjectNotFoundException, RemoteException &#123;</div><div class="line">        device = UiDevice.getInstance(getInstrumentation());</div><div class="line">        device.pressHome();</div><div class="line">        device.waitForWindowUpdate(&quot;&quot;, 2000);</div><div class="line"></div><div class="line">        UiObject2 allAppsButton = device.findObject(By.desc(&quot;Apps&quot;));</div><div class="line">        allAppsButton.click();</div><div class="line">        device.waitForWindowUpdate(&quot;&quot;, 2000);</div><div class="line"></div><div class="line">        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));</div><div class="line">        appViews.setAsHorizontalList();</div><div class="line"></div><div class="line">        UiObject settingsApp = appViews.getChildByText(new UiSelector().className(TextView.class.getName()), appName);</div><div class="line">        settingsApp.clickAndWaitForNewWindow();</div><div class="line"></div><div class="line">        assertTrue(&quot;Unable to detect app&quot;, settingsApp != null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setUp() throws RemoteException, UiObjectNotFoundException &#123;</div><div class="line">        this.runApp(appName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void tearDown() throws RemoteException, UiObjectNotFoundException &#123;</div><div class="line">        //Empty for the moment</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void testUS1() &#123;</div><div class="line">        UiObject2 usernameLabel = device.findObject(By.clazz(TextView.class.getName()).text(&quot;Username&quot;));</div><div class="line">        assertTrue(&quot;Username label not found&quot;, usernameLabel != null);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>基于Instrument的方便一点就是不需要remote debug的方式进行调试。并且做参数化之类的也方便了很多。
+2.0不用再继承UiAutomatorTestCase，但却需要继承InstrumentationTestCase。</p>
+<p>获取设备的方式也变化了，UiDevice.getInstance(getInstrumentation()) 这才是正确的使用方法。之前常用的两种方式都不再可行。</p>
+<p>可以通过如下的adb命令调用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell am instrument -w -r   -e debug false -e class com.cxq.uiautomatordemo.UiTest com.cxq.uiautomatordemo.test/android.test.InstrumentationTestRunner</div></pre></td></tr></table></figure></p>
+<p>在dependencies中用到了compile、testCompile、androidTestCompile三种依赖方式，让我们来看看他们有什么区别：</p>
+<p>compile：参与编译，并且会打包到debug/release apk中。
+testCompile：只参与单元测试编译，不会打包到debug/release apk包中，不需要设备支持。
+androidTestCompile：只参与UI测试编译，不会打包到debug/release apk包中，需要设备支持。</p>
+<p>除此之外还有Provided、APK、Debug compile和Release compile：</p>
+<p>Provided：只参与编译，不会打包到debug/release apk中。
+APK：不参与编译，只会打包到debug/release apk中。
+Debug compile：只参与debug编译，只会打包到debug apk中。
+Release compile：只参与release编译，只会打包到release apk中。</p>
+<h6 id="UIAutomator1-0"><a href="#UIAutomator1-0" class="headerlink" title="UIAutomator1.0"></a>UIAutomator1.0</h6><ol>
+<li>新建Java工程</li>
+<li>导入lib包 android.jar 和 uiautomator.jar ，选中点击右键Add to buildPath</li>
+<li><p>新建测试类demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public class Demo extends UiAutomatorTestCase&#123;&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>写测试方法A，B，C（testcase）</p>
+</li>
+<li>编译运行：
+5.1. <code>&lt;android-sdk&gt;/tools/android create uitest-project -n &lt;name&gt; -t 1 -p &lt;path&gt;</code>
+说明一下各个参数的作用，如果已经将android sdk的路径配置到了系统的path中，输入命令“android create uitest-project”就可以查看到相应的帮助</li>
+</ol>
+<ul>
+<li><code>-n --name : Project name.</code>  就是在eclipse中创建的项目的名字。</li>
+<li><code>-t --target  : Target ID of the new project. [required]</code>  这个id是本机上android targets的id，可以通过命令 “android list”来查询，得到结果，选择android-17以上版本前面所对应的id,运行完成后，工作空间下生成文件build.xml</li>
+</ul>
+<p>5.2. 修改build.xml 将help改为build
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;            </div><div class="line">&lt;project name=&quot;demo1&quot; default=&quot;build&quot;&gt;</div></pre></td></tr></table></figure></p>
+<p>5.3.在build.xml上点击右键，选择“Run As” -&gt; “Ant Build”,编译成功，在工作空间bin下生成一个jar包demo.jar</p>
+<p>5.4. <code>adb  push  demo.jar   /data/local/tmp/</code></p>
+<p>5.5. <code>adb shell uiautomator runtest  demo.jar  -c A -c B -c C</code>（可指定多个testcase,不指定则运行所有)</p>
+<p>uiautomator的help帮助：
+支持三个子命令:rutest/dump/events</p>
+<ul>
+<li>runtest命令－c指定要测试的class文件，用逗号分开，没有指定的话默认执行测试脚本jar包的所有测试类.注意用户可以以格式$class/$method来指定只是测试该class的某一个指定的方法</li>
+<li>runtest命令－e参数可以指定是否开启debug模式</li>
+<li>runtest命令－e参数可以指定test runner，不指定就使用系统默认。我自己从来没有指定过</li>
+<li>runtest命令－e参数还可以通过键值对来指定传递给测试类的参数</li>
+</ul>
+<p>UiAutomator2改进</p>
+<ol>
+<li>基于 Instrumentation，可以获取应用Context，使用 Android服务及接口</li>
+<li>基于 Junit4，测试用例无需继承于任何父类，方法名不限，使用注解 Annotation进行</li>
+<li>UI执行效率比 1.0 快，测试执行可使用AndroidJunit 方式及gradle 方式</li>
+<li><p>API 更新，新增UiObject2、Until、By、BySelector等：APIFor UI Automator</p>
+</li>
+<li><p>Log 输出变更，以往使用System.out.print输出流回显至执行端，2.0 输出至Logcat</p>
+</li>
+</ol>
+<p><a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner.html" target="_blank" rel="external">AndroidJUnitRunner</a>
+<a href="https://developer.android.com/training/testing/junit-runner.html#using-android-test-orchestrator" target="_blank" rel="external">AndroidJUnitRunner</a>
+<a href="https://developer.android.com/reference/android/test/InstrumentationTestRunner.html" target="_blank" rel="external">InstrumentationTestRunner</a>
+<a href="https://developer.android.com/training/testing/fundamentals" target="_blank" rel="external">Fundamentals of Testing</a>
+<a href="https://developer.android.com/training/testing/ui-automator.html#java" target="_blank" rel="external">UI Automator</a>
+<a href="https://developer.android.com/reference/androidx/test/package-summary.html" target="_blank" rel="external">androidx.test</a>
+<a href="https://developer.android.com/training/testing/ui-testing/uiautomator-testing.html" target="_blank" rel="external">Test UI for multiple apps</a>
+<a href="https://developer.android.com/reference/android/app/Instrumentation.html" target="_blank" rel="external">Instrumentation</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/autotest/" rel="tag"># autotest</a>
+          
+            <a href="/tags/tools/" rel="tag"># tools</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/26/tips-android-weburl-regular/" rel="next" title="Android TextView对URL识别">
+                <i class="fa fa-chevron-left"></i> Android TextView对URL识别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/28/at-android-appium-introduce/" rel="prev" title="at-android-appium-introduce">
+                at-android-appium-introduce <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">145</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#UiAutomator-框架原理分析："><span class="nav-number">1.</span> <span class="nav-text">UiAutomator 框架原理分析：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#UIAutomator2-0"><span class="nav-number">2.</span> <span class="nav-text">UIAutomator2.0</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#UIAutomator1-0"><span class="nav-number">3.</span> <span class="nav-text">UIAutomator1.0</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

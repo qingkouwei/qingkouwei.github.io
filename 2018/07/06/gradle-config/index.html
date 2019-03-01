@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/07/06/gradle-config/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="AndroidStudio中build.gradle配置信息 12345678910111213141516171819202122232425262728293031323334// Top-level build file where you can add configuration options common to all sub-projects/modules.// Gradle中可">
-<meta property="og:updated_time" content="2018-07-06T08:53:58.343Z">
+<meta property="og:updated_time" content="2019-02-27T11:20:35.649Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gradle系列之配置">
 <meta name="twitter:description" content="AndroidStudio中build.gradle配置信息 12345678910111213141516171819202122232425262728293031323334// Top-level build file where you can add configuration options common to all sub-projects/modules.// Gradle中可">
@@ -505,7 +505,14 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
 <h5 id="gradle命令"><a href="#gradle命令" class="headerlink" title="gradle命令"></a>gradle命令</h5><ul>
 <li>gradlew projects:查看所有项目</li>
 <li>gradlew tasks:查看任务信息</li>
+<li>-b参数指定其他的构建文件</li>
+<li>-p:参数指定要使用的构建文件的文件夹，例如我们将subdir中的构建文件重命名为build.gradle，然后运行gradle -q -p subdir hello</li>
+<li>gradle -q projects 列出所有项目的信息(-q静默参数，功能是只显示任务输出，不显示其他构建过程的输出)</li>
+<li>gradle -q tasks 列出所有任务</li>
+<li>gradle help –task someTask:显示任务帮助</li>
+<li>使用-m参数可以以Dry Run的方式运行Gradle，在这种方式下不会执行任何任务，只会列出这些任务的执行顺序 </li>
 </ul>
+<p>在运行Gradle的时候我们不用完整输入任务名称，如果任务的前几个字母就可以区分任务，我们就可以只输入这几个字母。比如gradle d相当于gradle dist。另外Gradle还支持驼峰命名法的缩写。比如说我们可以运行gradle cT，相当于gradle compileTest。</p>
 <h5 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h5><ul>
 <li><a href="https://blog.csdn.net/qinxiandiqi/article/details/44458707" target="_blank" rel="external">建立企业内部maven服务器并使用Android Studio发布公共项目</a></li>
 </ul>
@@ -666,7 +673,7 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">124</span>
+                <span class="site-state-item-count">145</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -688,7 +695,7 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-count">61</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -805,7 +812,7 @@ def packageName = new XmlParser().parse(manifestFile).attribute(‘package’)</
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

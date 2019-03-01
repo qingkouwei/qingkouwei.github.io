@@ -323,7 +323,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/30/tips-linux-rename/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/media-vr-player/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -345,8 +345,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/11/30/tips-linux-rename/" itemprop="url">
-                  linux批量操作文件
+                <a class="post-title-link" href="/2018/02/11/media-vr-player/" itemprop="url">
+                  vr播放器
                 </a>
               
             
@@ -362,8 +362,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-30T18:25:22+08:00">
-                2017-11-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T18:17:42+08:00">
+                2018-02-11
               </time>
             
 
@@ -385,8 +385,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux管理/" itemprop="url" rel="index">
-                    <span itemprop="name">linux管理</span>
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
                   </a>
                 </span>
 
@@ -422,12 +422,16 @@
       
         
           
-            <p>一个批量将mp4文件转成gif文件的命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find . -name &quot;*.mp4&quot; |sed &apos;s/.mp4$//g&apos;|xargs -i ffmpeg -i &#123;&#125;.mp4 &#123;&#125;.gif</div></pre></td></tr></table></figure>
-<p><code>sed &#39;s/.mp4$//g&#39;</code>使用sed命令将mp4文件名的<code>.mp4</code>全部替换成空.<code>/g</code>是全局替换.s是sed的替换命令,替换格式<code>&#39;s/原文/要替换成的/&#39;</code></p>
-<p>或者:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">for file in $(find . -name &quot;*.mp4&quot; -type f);do ffmpeg -i &quot;$file&quot; &quot;$&#123;file%.*&#125;.gif&quot;;done</div></pre></td></tr></table></figure></p>
-<p>找到所有<code>.mp4</code>文件进行循环,file是mp4文件全名,<code>${file%.*}</code>是剔除从右边最小匹配,即将<code>.mp4</code>去掉</p>
+            <h3 id="VR播放器的简单原理"><a href="#VR播放器的简单原理" class="headerlink" title="VR播放器的简单原理"></a>VR播放器的简单原理</h3><p>一个VR视频如果不使用特殊的播放器，那么播放出来的效果看上去是一个拉伸的长条形图片拼成的视频。</p>
+<p>之所以Vr视频能让人有身处其中的感觉，是因为观看时人的视角处于VR视频空间中，而不是看到一个二维平面，因此就需要将本身的全景二维图，投影到一个立体的空间——立方体or球形。</p>
+<p>简单球面纹理映射讲解</p>
+<p>实现球面纹理映射有两种方法，一种是使用顶点的法向量来生成纹理坐标，另一个是使用顶点的位置向量来生成纹理坐标。</p>
+<p>想象一个球体，球面上每一个点的法向量，可以是从球心起到该点的线段距离。球上每一点都可以视作一个无限小的平面。</p>
+<p>Ps:法向量——垂直于平面的向量，叫做该平面的法向量</p>
+<p>问题的本质是根据球面上每个点的法向量坐标生成对应的纹理坐标，请看下图，下图中外部的方框表示二维纹理坐标，其范围是<code>(u,v)min = (0,0)</code>, <code>(u,v)max = (1,1)</code>，中间的圆形表示球面法向量坐标，其x,y分量的范围是<code>(x,y)min = (-1,-1), (x,y)max = (1,1)</code>。</p>
+<p>所以问题的本质变成了两组坐标的映射，也即将区间<code>(x,y)min - (x,y)max</code>映射到区间<code>(u,v)min - (u,v)max</code>。这里我们使用反正弦函数<code>y = acrsin(x)</code>来实现。先看一下它的函数图象。</p>
+<p>由这个图象知，它的定义域<code>x = (-1，1)</code>，值域是<code>y = (-pi / 2, pi / 2)</code>。我们稍作变型，得到下面两个公式。正好完成了由(-1, 1)到(0, 1)的映射。这里tu表示纹理的x坐标，tv表示纹理的y坐标，Nx表示顶点法向量的x轴分量，Ny表示顶点法向量的y轴分量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tu = arcsin(Nx) / PI + 0.5</div><div class="line">tv = arcsin(Ny) / PI + 0.5</div></pre></td></tr></table></figure></p>
 
           
         
@@ -471,7 +475,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/17/env-mac-debug-c/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/11/m-f-ts/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -493,8 +497,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/11/17/env-mac-debug-c/" itemprop="url">
-                  mac下Core Dump文件的行程与分析
+                <a class="post-title-link" href="/2018/02/11/m-f-ts/" itemprop="url">
+                  ts格式解析
                 </a>
               
             
@@ -510,8 +514,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T16:31:12+08:00">
-                2017-11-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-11T15:21:55+08:00">
+                2018-02-11
               </time>
             
 
@@ -533,8 +537,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/env/" itemprop="url" rel="index">
-                    <span itemprop="name">env</span>
+                  <a href="/categories/音视频封装/" itemprop="url" rel="index">
+                    <span itemprop="name">音视频封装</span>
                   </a>
                 </span>
 
@@ -570,1212 +574,134 @@
       
         
           
-            <h4 id="mac下生成core-dump"><a href="#mac下生成core-dump" class="headerlink" title="mac下生成core dump"></a>mac下生成core dump</h4><ol>
-<li>使用<code>ulimit -c</code>查看ulimit设置,显示<code>unlimited</code>表示开启,显示0表示关闭,通过<code>ulimit -c unlimited</code>打开设置;
-但是这个只在当前窗口有效果。如果需要变成系统全局设置。
-就需要去改/etc/profile文件，打开，然后加上<code>ulimit -c unlimited</code>就可以了，这样当产生Crash的时候就会自动产生dump文件。</li>
-<li><p>之后需要配置一下dump产生的规则和路径:<code>sudo sysctl kern.corefile=/cores/core.%N.%P</code>,其中%N表示进程名字，%P表示进程id。Linux还有%S,%T分别表示最后一个信号和时间，在MAC上没找到对应的。(mac默认生成的core dump在<code>/cores/</code>下).</p>
-</li>
-<li><p>最后如何用lldb来查看一个core dump文件<code>lldb -c core.xxx</code>. 在lldb命令下输入<code>bt</code>查看报错代码.</p>
-</li>
-</ol>
-<p>生成太多core文件会占用电脑磁盘,可以关闭全局的core dump生成配置:</p>
-<ol>
-<li>永久关闭，则在/etc/sysctl.conf中加入一行（如果存在，则将其值修改为0），重启后生效：<code>kern.coredump=0</code></li>
-<li>零时关闭，当前生效，重启后失效：<code>sudo sysctl -w kern.coredump=0</code></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/14/tips-android-compatibility/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/14/tips-android-compatibility/" itemprop="url">
-                  android兼容性
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-14T14:48:39+08:00">
-                2017-11-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="oppo-r9s无法浮层无法显示问题"><a href="#oppo-r9s无法浮层无法显示问题" class="headerlink" title="oppo r9s无法浮层无法显示问题"></a>oppo r9s无法浮层无法显示问题</h3><p>oppo r9s,系统版本6.0.1,<code>wmParams.type = WindowManager.LayoutParams.TYPE_TOAST;</code>时无法正常弹出,改成<code>wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;</code>可显示.</p>
-<p>在activity中弹出浮层后马上将activity movetoback导致oppo r9s 浮层无法显示,moveTaskToBack后延迟一秒显示浮层可解决问题.
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//moveTaskToBack</div><div class="line">val intent = Intent(Intent.ACTION_MAIN)</div><div class="line">                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK// 注意</div><div class="line">                intent.addCategory(Intent.CATEGORY_HOME)</div><div class="line">                aty.startActivity(intent)</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/08/db-sql-query/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/08/db-sql-query/" itemprop="url">
-                  SQL查询案例
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T15:47:36+08:00">
-                2017-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如下数据库表:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Student(S#,Sname,Sage,Ssex)学生表</div><div class="line">S#：学号</div><div class="line">Sname：学生姓名</div><div class="line">Sage：学生年龄</div><div class="line">Ssex：学生性别</div><div class="line">Course(C#,Cname,T#)课程表</div><div class="line">C#：课程编号</div><div class="line">Cname：课程名称</div><div class="line">T#：教师编号</div><div class="line">SC(S#,C#,score)成绩表</div><div class="line">S#：学号</div><div class="line">C#：课程编号</div><div class="line">score：成绩</div><div class="line">Teacher(T#,Tname)教师表</div><div class="line">T#：教师编号：</div><div class="line">Tname：教师名字</div></pre></td></tr></table></figure></p>
-<ol>
-<li><p>查询“001”课程比“002”课程成绩高的所有学生的学号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select a.S# from (select S#,score from SC where C#=&apos;001&apos;)a, (select s#,score from SC where c#=&apos;002&apos;)b Where a.score&gt;b.score</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询平均成绩大于60分的同学的学号和平均成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查询平均成绩大于60分的同学的学号和平均成绩</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有同学的学号、姓名、选课数、总成绩</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname, count(sc.C#), sum(score) from student left outer join SC on student.S# = SC.S# group by S</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询姓‘李’的老师的个数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(distinct(Tname))</div><div class="line">from teacher</div><div class="line">where tname like &apos;李%&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学过“叶平”老师可的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select student.S#, student.Sname</div><div class="line">from Student</div><div class="line">where S# not in (select distinct(SC.S#) from SC,Course,Teacher</div><div class="line">where sc.c#=course.c# AND teacher.T#=course.T# AND Teahcer.Tname =&apos;叶平&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“叶平”老师所教的所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select S#,Sname   from Student    </div><div class="line">where S# in (select S# from SC ,Course ,Teacher</div><div class="line">where SC.C#=Course.C# and Teacher.T#=Course.T#</div><div class="line">and Teacher.Tname=&apos;叶平&apos; group by S#</div><div class="line">having count(SC.C#)=(select count(C#) from Course,Teacher  </div><div class="line">where Teacher.T#=Course.T# and Tname=&apos;叶平&apos;));</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学过“011”并且也学过编号“002”课程的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select Student.S#,Student.Sname</div><div class="line">from Student,SC where Student.S#=SC.S#</div><div class="line">and SC.C#=&apos;001&apos;and</div><div class="line">exists( Select * from SC as SC_2 where SC_2.S#=SC.S# and SC_2.C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询课程编号“002”的成绩比课程编号“001”课程低的所有同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Select S#,Sname</div><div class="line">from (select Student.S#,Student.Sname,score ,</div><div class="line">(select score from SC SC_2 where SC_2.S#=Student.S# and SC_2.C#=&apos;002&apos;) score2    </div><div class="line">from Student,SC</div><div class="line">where Student.S#=SC.S# and C#=&apos;001&apos;) S_2</div><div class="line">where score2 &lt; score;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询所有课程成绩小于60的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select S#, sname</div><div class="line">from student</div><div class="line">where s# not in</div><div class="line">(select student.s# from student, sc where s.s# = sc.s# and score&gt;60);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询没有学全所有课的同学的学号、姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select student.s#, student.sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">group by student.s#, student.sname</div><div class="line">having count(c#)&lt;(select count(c#) from course);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少有一门课与学号为“1001”同学所学相同的同学的学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s#, Sname</div><div class="line">from Student, SC</div><div class="line">where student.s# = sc.s#</div><div class="line">and c# in (select c# from SC where s#=&apos;1001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询至少学过学号为“001”同学所有一门课的其他同学学号和姓名；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select distinct sc.s# , sname</div><div class="line">from student, sc</div><div class="line">where student.s#=sc.s#</div><div class="line">and c# in (select C# from sc where s#=&apos;001&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>把“SC”表中“叶平”老师教的课的成绩都更改为此课程的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Update Sc Set Score=(Select Avg(s2_Score) From sc s2 Where s2.c#=sc.c#)  </div><div class="line">Where c# IN</div><div class="line">(Select c# From sc cs INNER JOIN Teacher tc ON cs.t#=tc.t# WHERE tname =&apos;叶平&apos;)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询和“1002”号的同学学习的课程完全相同的其他同学学号和姓名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select s# from sc where c#  in</div><div class="line">(select c# from sc where s#=&apos;1002&apos;)</div><div class="line">group by s# having count(*)=</div><div class="line">(select count(*) from sc where s#=&apos;1002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>删除学习“叶平”老师课的SC表记录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">delect sc</div><div class="line">from course, Teacher</div><div class="line">where course.c#=sc.c#</div><div class="line">and course.t#=teacher.t#</div><div class="line">and tname=&apos;叶平&apos;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>向SC表中插入一些记录，这些记录要求符合以下条件：没有上过编号“003”课程的同学学号、002号课的平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Insert SC select S#,&apos;002&apos;,</div><div class="line">(Select avg(score) from SC where C#=&apos;002&apos;)</div><div class="line">from Student where S# not in (Select S# from SC where C#=&apos;002&apos;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按平均成绩从高到低显示所有学生的“数据库”、“企业管理”、“英语”三门的课程成绩，按如下形式显示：学生ID，数据库，企业管理，英语，有效课程数，有效平均分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">select s# as 学生ID,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;004&apos;) as 数据库,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;001&apos;) as 企业管理,</div><div class="line">(select score from sc where sc.s#=t.s# and c#=&apos;006&apos;) as 英语,</div><div class="line">count(*) as 有效课程数, avg(t.score) as 平局成绩</div><div class="line">from sc as t</div><div class="line">group by s#</div><div class="line">order by avg(t.score)</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩最高和最低的分： 以如下的形式显示：课程ID，最高分，最低分</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">select L.c# as 课程ID, L.score as 最高分,</div><div class="line">R.score as 最低分</div><div class="line">from sc L, sc R</div><div class="line">where L.c# = R.c#</div><div class="line">and L.score = (select max(IL.score)</div><div class="line">        from sc IL, student as IM</div><div class="line">        where L.c#=IL.c# and IM.s#=IL.s#</div><div class="line">        group by IL.c#)</div><div class="line">and R.score = (select min(IR.score)</div><div class="line">        from sc as IR</div><div class="line">        where R.c#=IR.c#</div><div class="line">        group by IR.c#);</div></pre></td></tr></table></figure>
-</li>
-<li><p>按各科平均成绩从低到高和及格率的百分数从高到低顺序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT t.C# AS 课程号,</div><div class="line">max(course.Cname)AS 课程名,</div><div class="line">isnull(AVG(score),0) AS 平均成绩,</div><div class="line">100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) AS 及格百分数     </div><div class="line">FROM SC T,Course     </div><div class="line">where t.C#=course.C#     </div><div class="line">GROUP BY t.C#      </div><div class="line">ORDER BY 100 * SUM(CASE WHEN  isnull(score,0)&gt;=60 THEN 1 ELSE 0 END)/COUNT(*) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程平均成绩和及格率的百分数(用”1行”显示): 企业管理（001），马克思（002），OO&amp;UML （003），数据库（004）：</p>
-</li>
-<li><p>查询不同老师所教不同课程平均分从高到低显示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT max(Z.T#) AS 教师ID,</div><div class="line">MAX(Z.Tname) AS 教师姓名,</div><div class="line">C.C# AS 课程ID,</div><div class="line">AVG(Score) AS 平均成绩     </div><div class="line">FROM SC AS T,Course AS C ,Teacher AS Z    </div><div class="line">where T.C#=C.C# and C.T#=Z.T#   </div><div class="line">GROUP BY C.C#    </div><div class="line">ORDER BY AVG(Score) DESC</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询如下课程成绩第3名到第6名的学生成绩单：企业管理(001)，马克思(002)，UML(003)，数据库(004)：</p>
-</li>
-<li><p>统计下列各科成绩，各分数段人数：课程ID，课程名称，[100-85],[85-70],[70-60],[ 小于60] ：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SELECT SC.C# as 课程ID, Cname as 课程名称,</div><div class="line">SUM(CASE WHEN score BETWEEN 85 AND 100 THEN 1 ELSE 0 END) AS [100 - 85]  ,</div><div class="line">SUM(CASE WHEN score BETWEEN 70 AND 85 THEN 1 ELSE 0 END) AS [85 - 70],</div><div class="line">SUM(CASE WHEN score BETWEEN 60 AND 70 THEN 1 ELSE 0 END) AS [70 - 60],</div><div class="line">SUM(CASE WHEN score &lt; 60 THEN 1 ELSE 0 END) AS [60 -]     </div><div class="line">FROM SC,Course     </div><div class="line">where SC.C#=Course.C#     </div><div class="line">GROUP BY SC.C#,Cname;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询学生平均成绩及其名次：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT 1+(SELECT COUNT( distinct 平均成绩)                </div><div class="line">FROM (SELECT S#,AVG(score) AS 平均成绩                       </div><div class="line">FROM SC                   </div><div class="line">GROUP BY S#  ) AS T1  WHERE 平均成绩 &gt; T2.平均成绩) as 名次,       </div><div class="line">S# as 学生学号,平均成绩      </div><div class="line">FROM (SELECT S#,AVG(score) 平均成绩             </div><div class="line">FROM SC         </div><div class="line">GROUP BY S# ) AS T2      </div><div class="line">ORDER BY 平均成绩 desc;</div></pre></td></tr></table></figure>
-</li>
-<li><p>查询各科成绩前三名的记录（不考虑成绩并列情况）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数       </div><div class="line">FROM SC t1        </div><div class="line">WHERE score IN</div><div class="line">(SELECT TOP 3 score               </div><div class="line">FROM SC               </div><div class="line">WHERE t1.C#= C#             </div><div class="line">ORDER BY score DESC)</div><div class="line">```        </div><div class="line">26. 查询每门课程被选修的学生数：</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>select c#, count(s#)
-from sc
-group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">27. 查询出只选修一门课程的全部学生的学号和姓名：</div></pre></td></tr></table></figure></p>
-<p>select sc.s#, student.sname, count(c#) as 选课数
-from sc,student
-where sc.s# =student.s#
-group by sc.s#,Student.sname
-having count(c#)=1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">28. 查询男生、女生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(Ssex) as 男生人数
-from student
-group by Ssex
-having Ssex=’男’；
-select count(Ssex) as 女生人数
-from student
-group by Ssex
-having Ssex=’女’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">29. 查询姓“张”的学生名单：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where sname like ‘张%’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">30. 查询同名同姓的学生名单，并统计同名人数：</div></pre></td></tr></table></figure></p>
-<p>select sanme,count(<em>)
-from student
-group by sname
-havang count(</em>)&gt;1;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">31. 1981年出生的学生名单（注：student表中sage列的类型是datetime）:</div></pre></td></tr></table></figure></p>
-<p>select sname, convert(char(11),DATEPART(year,sage)) as age
-from student
-where convert(char(11),DATEPART(year,Sage))=’1981’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">32. 查询平均成绩大于85的所有学生的学号、姓名和平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select Sname,SC.S# ,avg(score)<br>from Student,SC<br>where Student.S#=SC.S#
-group by SC.S#,Sname
-having    avg(score)&gt;85;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">33. 查询每门课程的平均成绩，结果按平均成绩升序排序，平均成绩相同时，按课程号降序排列：</div></pre></td></tr></table></figure></p>
-<p>select C#, avg(score)
-from sc
-group by c#
-order by avg(score), c# desc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">34. 查询课程名称为“数据库”，且分数低于60的学生名字和分数：</div></pre></td></tr></table></figure></p>
-<p>select sname, isnull(score,0)
-from student, sc ,course
-where sc.s#=student.s#  and sc.c#=course.c# and course.cname=’数据库’ and score<60; <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">35. 查询所有学生的选课情况：</div></pre></td></tr></table></60;></p>
-<p>select sc.s#,sc.c#,sname,cname
-from sc,student course
-where sc.s#=student.s# and sc.c#=course.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">36. 查询任何一门课程成绩在70分以上的姓名、课程名称和分数：</div></pre></td></tr></table></figure></p>
-<p>select distinct student.s#,student.sname,sc.c#,sc.score
-from student,sc
-where sc.score&gt;=70 and sc.s#=student.s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">37. 查询不及格的课程，并按课程号从大到小的排列：</div></pre></td></tr></table></figure></p>
-<p>select c#
-from sc
-where score<60 order="" by="" c#;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">38. 查询课程编号为“003”且课程成绩在80分以上的学生的学号和姓名：</div></pre></td></tr></table></60></p>
-<p>select sc.s#,student.sname
-from sc,student
-where sc.s#=student.s# and score&gt;80 and c#=’003’;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">39. 求选了课程的学生人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">40. 查询选修“叶平”老师所授课程的学生中，成绩最高的学生姓名及其成绩：</div></pre></td></tr></table></figure></p>
-<p>select student.sname,score
-from student,sc,course c, teacher
-where student.s#=sc.S# and sc.c#=c.c#
-and c.T#=teacher.T#
-and teacher.tname=’叶平’
-and sc.score=(select max(score) from sc where c#=c.c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">41. 查询各个课程及相应的选修人数：</div></pre></td></tr></table></figure></p>
-<p>select count(*) from sc group by c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">42. 查询不同课程成绩相同的学生和学号、课程号、学生成绩：</div></pre></td></tr></table></figure></p>
-<p>select distinct a.s#,b.score
-from sc a ,sc b
-where a.score=b.score
-and a.c#&lt;&gt;b.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">43. 查询每门课程成绩最好的前两名：</div></pre></td></tr></table></figure></p>
-<p>select t1.s# as 学生ID,t1.c#  课程ID, Score as 分数
-from sc t1
-where score in (select top 2 score from sc
-        where t1.c#=c#
-        order by score desc)
-order by t1.c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">44. 统计每门课程的学生选修人数(超过10人的课程才统计)。要求输出课程号和选修人数，查询结果按人数降序排序，若人数相同，按课程号升序排序：</div></pre></td></tr></table></figure></p>
-<p>select c# as 课程号,count(<em>) as 人数
-from sc
-group by c#
-order by count(</em>) desc c#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">45. 检索至少选修两门课程的学生学号：</div></pre></td></tr></table></figure></p>
-<p>select s#
-from sc
-group by s#
-having count(*)&gt;=2;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">46. 查询全部学生选修的课程和课程号和课程名：</div></pre></td></tr></table></figure></p>
-<p>select c# ,cname
-from course
-where c# in (select c# from sc group by c#);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">47. 查询没学过”叶平”老师讲授的任一门课程的学生姓名：</div></pre></td></tr></table></figure></p>
-<p>select sname
-from student
-where s# not in (select s# from course,teacher,sc where course.t#=teacher.t# and sc.c#=course.c#
-and tname=’叶平’);
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">48. 查询两门以上不及格课程的同学的学号以及其平均成绩：</div></pre></td></tr></table></figure></p>
-<p>select s#,avg(isnull(score,0))
-from sc
-where s# in (select s# from sc where score<60 group="" by="" s#="" having="" count(*)="">2)
-group by s#;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">49. 检索“004”课程分数小于60，按分数降序排列的同学学号：</div></pre></td></tr></table></figure></60></p>
-<p>select s#
-from sc
-where c#=’004’
-and score<60 order="" by="" score="" desc;="" <figure="" class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">50. 删除“002”同学的“001”课程的成绩：</div></pre></td></tr></table></60></p>
-<p>delect from sc
-where s#=’002’
-and c#=’001’;
-```</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/02/android-phone-compatibility/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/02/android-phone-compatibility/" itemprop="url">
-                  android-phone-compatibility
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-02T17:26:11+08:00">
-                2017-11-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="系统摄像视频文件格式"><a href="#系统摄像视频文件格式" class="headerlink" title="系统摄像视频文件格式"></a>系统摄像视频文件格式</h4><p>一般手机使用摄像头录制视频格式为yuv420p,而小米5录制出的为yuvj420p.格式转换是yuvj420p当成yuv420p处理即可.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/11/01/issue-ndk-compile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/01/issue-ndk-compile/" itemprop="url">
-                  ndk编译常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-01T10:27:28+08:00">
-                2017-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="depends-on-undefined-modules"><a href="#depends-on-undefined-modules" class="headerlink" title="depends on undefined modules"></a>depends on undefined modules</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:687: Android NDK: Module magicsdk_fmod depends on undefined modules: cutils</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/build/core/build-binary.mk:700: *** Android NDK: Aborting (set APP_ALLOW_MISSING_DEPS=true to allow missing dependencies)    .  Stop.</div></pre></td></tr></table></figure></p>
-<p>解决方案:
-Android.mk中增加<code>APP_ALLOW_MISSING_DEPS=true</code></p>
-<h4 id="shared-library-text-segment-is-not-shareable"><a href="#shared-library-text-segment-is-not-shareable" class="headerlink" title="shared library text segment is not shareable"></a>shared library text segment is not shareable</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: warning: shared library text segment is not shareable</div><div class="line">/Users/shenjunwei/program/android-ndk-r14b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin/ld: error: treating warnings as errors</div><div class="line">clang++: error: linker command failed with exit code 1 (use -v to see invocation)</div><div class="line">make: *** [/Users/shenjunwei/Documents/repository/wonxing/normandy_android_app/modules-int/magicsdk_core/src/main/obj/local/armeabi-v7a/libmagicsdk_ex.so] Error 1</div></pre></td></tr></table></figure></p>
-<p>解决:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from Android NDK r11 you can use</div><div class="line"></div><div class="line">LOCAL_LDLIBS += -Wl,--no-warn-shared-textrel</div><div class="line">You can also use</div><div class="line"></div><div class="line">LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><a href="https://stackoverflow.com/questions/19986523/shared-library-text-segment-is-not-shareable" target="_blank" rel="external">shared library text segment is not shareable</a></p>
-</blockquote>
-<h4 id="has-text-relocations"><a href="#has-text-relocations" class="headerlink" title="has text relocations"></a>has text relocations</h4><p>问题:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">E/FileUtil: access inferno failed! /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so</div><div class="line">                                                             java.lang.UnsatisfiedLinkError: dlopen failed: /data/app/com.wonxing.touchfa-2/lib/arm/libmagicsdk_ex.so: has text relocations</div><div class="line">                                                                 at java.lang.Runtime.load0(Runtime.java:897)</div><div class="line">                                                                 at java.lang.System.load(System.java:1505)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.util.FileUtil$EXLibUtil.load(FileUtil.java:465)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.loadEXLibrary(MagicRecorder.java:280)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:471)</div><div class="line">                                                                 at com.wonxing.magicsdk.core.MagicRecorder.prepare(MagicRecorder.java:352)</div><div class="line">                                                                 at com.wonxing.touchfa.ui.activity.VideoImportActivity.preparePlaySDK(VideoImportActivity.java:144)</div></pre></td></tr></table></figure></p>
-<p>解决:</p>
-<ol>
-<li>方案一
-This issue could be solved by checking the targetSDKVersion in the manifest file.</li>
-</ol>
-<p>Using “22” and not “23” as targetSDKVersion solved it. (See below)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;uses-sdk</div><div class="line">        android:minSdkVersion=&quot;15&quot;</div><div class="line">        android:targetSdkVersion=&quot;22&quot; /&gt;</div></pre></td></tr></table></figure></p>
-<p>I also checked the build.gradle files for compile version and targetSDKversion:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion 22</div><div class="line">    buildToolsVersion &apos;22.0.1&apos;</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        minSdkVersion 15</div><div class="line">        targetSdkVersion 22</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<ol>
-<li>方案二
-It was caused by the ffmpeg, and it could also be solved by patching the latest ffmpeg code<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">libavcodec\arm\fft_fixed_neon.S</div><div class="line">libavcodec\arm\fft_neon.S</div><div class="line">libavcodec\arm\fft_vfp.S</div><div class="line">libavcodec\arm\mlpdsp_armv5te.S</div><div class="line">libutil\arm\asm.S</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>I took the latest from <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="external">https://github.com/FFmpeg/FFmpeg</a></p>
-<p>You will also need HAVE_SECTION_DATA_REL_RO declared somewhere in your build for the macro in asm.S to use the dynamic relocations option.</p>
-<ol>
-<li>方案三(Further informations:)
-Previous versions of Android would warn if asked to load a shared library with text relocations:</li>
-</ol>
-<p>“libfoo.so has text relocations. This is wasting memory and prevents security hardening. Please fix.”.</p>
-<p>Despite this, the OS will load the library anyway. Marshmallow rejects library if your app’s target SDK version is &gt;= 23. System no longer logs this because it assumes that your app will log the dlopen(3) failure itself, and include the text from dlerror(3) which does explain the problem. Unfortunately, lots of apps seem to catch and hide the UnsatisfiedLinkError throw by System.loadLibrary in this case, often leaving no clue that the library failed to load until you try to invoke one of your native methods and the VM complains that it’s not present.</p>
-<p>You can use the command-line scanelf tool to check for text relocations. You can find advice on the subject on the internet; for example <a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide" target="_blank" rel="external">https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide</a> is a useful guide.</p>
-<p>And you can check if your shared lbirary has text relocations by doing this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">readelf -a path/to/yourlib.so | grep TEXTREL</div></pre></td></tr></table></figure></p>
-<p>If it has text relocations, it will show you something like this:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">0x00000016 (TEXTREL)                    0x0</div></pre></td></tr></table></figure></p>
-<p>If this is the case, you may recompile your shared library with the latest NDK version available:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ndk-build -B -j 8</div></pre></td></tr></table></figure>
-<p>And if you check it again, the grep command will return nothing.</p>
-<blockquote>
-<p><a href="https://android-developers.googleblog.com/2016/06/android-changes-for-ndk-developers.html" target="_blank" rel="external">Android Developers Blog</a>
-<a href="https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide#Introduction" target="_blank" rel="external">Hardened/Textrels Guide</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tips-android-application-recent/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/31/tips-android-application-recent/" itemprop="url">
-                  最近应用杀掉进程application不销毁问题探讨
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T20:15:34+08:00">
-                2017-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>建雨在芝士圈应用的application中使用了全局静态变量标志是否正在录制中,开启直播后将该变量设置为录制中,录制中一些操作将被屏蔽.但是对某些手机(如htc d816)当从”最近应用”杀掉进程后有时候application不被回收,该状态变量无法通过application的onCreate中重新初始化,同时通知栏也未消失.在<a href="http://www.jianshu.com/p/169bd25ce96e" target="_blank" rel="external">Android 应用被杀后Notification不取消问题及应用深杀和浅杀时Service生命周期情况</a>探讨中找到service的<strong>onTaskRemoved</strong>方法可以监听到应用被从最近应用中移除.</p>
-<p>关于&lt;<android 应用被杀后notification不取消问题及应用深杀和浅杀时service生命周期情况="">&gt;摘要:
-目中有如下需求：后台service进行导入操作，要更新Notification。当运行系统清理使应用被杀时，Notification无法取消，仍然在通知栏显示。为解决这个问题进行了如下探索：</android></p>
-<p>首先想到利用service的startForeground()来更新通知栏，这样当应用被杀掉时候Notification可以一起被去掉。但针对项目的需求：service可以同时导入多个文件，并且会对应显示多个通知。这种情况下用service.startForeground()更新通知栏时候，当应用被杀时候之后cancel掉最后一次调用startForeground对应id的Notification，而其他通知仍然不能被取消。</p>
-<p>继续探索用其他方式取消通知栏：在进程被杀掉的时候，会调用service的哪些生命周期函数呢？service的onDestroy()方法只有在调用Context的stopService()或Service的stopSelf()后才会被调用，在应用被杀时候Service的onDestroy()不会被执行。</p>
-<p>我们发现service的 onTaskRemoved()方法，该方法何时被调用呢？方法的注释说明是这么写的：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">* This is called if the service is currently running and the user has</div><div class="line">* removed a task that comes from the service&apos;s application.  If you have</div><div class="line">* set &#123;@linkandroid.content.pm.ServiceInfo#FLAG_STOP_WITH_TASK ServiceInfo.FLAG_STOP_WITH_TASK&#125;</div><div class="line">* then you will not receive this callback; instead, the service will simply</div><div class="line">* be stopped.</div><div class="line">*</div><div class="line">*@paramrootIntentThe original root Intent that was used to launch</div><div class="line">* the task that is being removed.</div><div class="line">*/</div><div class="line"></div><div class="line">public void onTaskRemoved(Intent rootIntent) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注释表明onTaskRemoved()方法在当用户移除应用的一个Task栈时被调用。也就是当用户在最近任务界面把该应用的一个task划掉时，或者在最近任务界面进行清理时。这两种情况下onTaskRemoved()都会被调用，但在大多Android机型上，这两种情况有所不同：第一种情况即应用被浅杀(用户只划掉这一个Task)，该Task栈会被清理，但如果有后台service在运行，该应用的进程不会被杀掉，后台service仍然在运行。第二种即应用被深杀(用户在最近任务界面直接按清理按钮)，该应用的进程会被直接杀掉，后台的service当然也停止了。对于不同的手机品牌和机型在最近任务进行各种清理时过程可能不太一样，但应用浅杀和深杀对于所有Android手机都是有普遍意义的。</p>
-<p>下面我们分析在应用被浅杀和被深杀以及先浅杀再深杀后的生命周期：</p>
-<p>浅杀：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">04-21 17:55:13.733 8264-8264/com.qintong.test D/qintong: vCardService onTaskRemoved.</div></pre></td></tr></table></figure></p>
-<p>深杀：
-会出现两种情况：
-(a).
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">04-26 16:20:00.349 32674-32674/? D/qintong: Service onTaskRemoved.</div><div class="line">04-26 16:21:01.621 2936-2936/? D/qintong: Service is being created.</div><div class="line">04-26 16:21:01.628 2936-2936/? D/qintong: Service onStartCommand.</div></pre></td></tr></table></figure></p>
-<p>(b).
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">04-21 17:59:58.397 8264-8264/com.qintong.test D/qintong: Service onCreate.</div><div class="line">04-21 17:59:58.404 8264-8264/com.qintong.test D/qintong: Service onTaskRemoved.</div></pre></td></tr></table></figure></p>
-<p>浅杀＋深杀 （service 的 onStartCommand 返回 STICKY）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">04-21 18:05:12.717 8264-8264/com.qintong.test D/qintong: Service onTaskRemoved.</div><div class="line">04-21 18:05:29.214 9207-9207/com.qintong.test D/qintong: Service onCreate.</div><div class="line">04-21 18:05:29.223 9207-9207/com.qintong.test D/qintong: Service onStartCommand.</div></pre></td></tr></table></figure></p>
-<p>我们来分析这几种情况：
-(1).浅杀时:应用进程没被杀掉，service仍然在执行，service的onTaskRemoved()立即被调用。</p>
-<p>(2).深杀时：有两种情况：第一种情况是深杀后直接调用onTaskRemoved()且service停止，过段时间后service重启调用其onCreate()和onStartCommand()。第二种是应用的进程被杀掉，过一会后service的onCreate()方法被调用，紧接着onTaskRemoved()被调用。由于被深杀后应用的进程立刻停止了，所以service的onTaskRemoved()无法被立即调用。而过若干秒后，service重启，onCreate()被调用，紧接着onTaskRemoved()被调用。而这里service的其他方法并没有被调用，即使onStartCommand()返回STICKY，service重启后onStartCommand()方法也没有被调用。</p>
-<p>(3).浅杀+深杀时(service 的 onStartCommand 返回 STICKY)：onTaskRemoved()立刻被调用(浅杀后)，深杀后过段时间onCreate()和onStartCommand()相继被调用。执行浅杀Task被清理，应用的进程还在，onTaskRemoved()被调用，过程与(1)一样。再执行深杀：由于该应用的Task栈已经没有了，所有再深杀onTaskRemoved()不会再被调用，深杀后service停止。而由于实验时候onStartCommand()返回STICKY，所有service过段时间会被再次启动，执行了onCreate()方法和onStartCommand()方法。</p>
-<p>所以综上所述，service的onTaskRemoved()在应用浅杀后会被立即调用而在service被深杀后，会直接调用onTaskRemoved或service会被重启并调用onTaskRemoved()。</p>
-<p>回到我们的问题：应用被杀后，如何取消Notification：
-我们先看最后的解决方案，在来分析为何能work。
-service的代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onCreate() &#123;</div><div class="line">  super.onCreate();</div><div class="line">  mBinder=newMyBinder();</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService is being created.&quot;);</div><div class="line">  mNotificationManager= ((NotificationManager)getSystemService(NOTIFICATION_SERVICE));</div><div class="line">  initExporterParams();</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">public int onStartCommand(Intent intent, intflags, intid) &#123;</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService onStartCommand.&quot;);</div><div class="line">  mNotificationManager.cancelAll();</div><div class="line">  return START_STICKY;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">public void onTaskRemoved(Intent rootIntent) &#123;</div><div class="line">  if(DEBUG) Log.d(LOG_TAG,&quot;vCardService onTaskRemoved.&quot;);</div><div class="line">  mNotificationManager.cancelAll();</div><div class="line">  super.onTaskRemoved(rootIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如上代码，在浅杀时候：只执行onTaskRemoved()，通知被取消，但service仍然在运行，所以还会继续发通知，正常运行。
-深杀时：第一种情况直接调用onTaskRemoved()且service停止，通知被取消。第二种情况，进程被杀掉，几秒后service重启，onCreate() -&gt; onTaskRemoved()，运行结果就是深杀后过几秒后Notification被取消。
-浅杀+深杀时：浅杀后onTaskRemoved()被调用，service仍在运行，通知仍然在更新。深杀时，onCreate() -&gt; onStartCommand()，在onStartCommand()时候取消通知。
-另外，mNotificationManager.cancelAll()会清除应用的所有通知，如果应用想保留和该service无关其他通知，可以调用mNotificationManager.cancel(String tag, int id)或cancel(int id)清除指定通知。
-当然，还可以有另一种方式：浅杀时后就把service后台执行的任务停止，并清理notification，我们可以根据需求来选择。</p>
-<p>补充：
-疑问：1.为啥有时候深杀不立即调用onTaskRemoved()，而是在重启之后调用的呢？
-stackoverflow上的答复:<a href="https://stackoverflow.com/questions/32224233/ontaskremoved-called-after-oncreate-in-started-service-on-swipe-out-from-recent/41506752" target="_blank" rel="external">https://stackoverflow.com/questions/32224233/ontaskremoved-called-after-oncreate-in-started-service-on-swipe-out-from-recent/41506752</a>
-大意是service执行较重UI操作时候service不会立即停止，而新的service会启动。不太确定这个解释的正确性……</p>
-<blockquote>
-<p>Calling onTaskRemoved of the running service(when app gets swiped out from recent apps) will be generally delayed if we are performing any heavy UI related stuff or broadcasting messages to receivers in service.
-E.g , Assume you are downloading the file of size 50MB from web server, so from web server everytime you are reading 1024bytes of stream data as buffer and that data you are writing to a file in device.
-Meanwhile you are updating the progress to the UI thread which means every KB you are updating to the UI thread, this will cause the application to freeze.
-So in between if you swipe-out from recent app list , then the system will try to stop the service but since the service is in-contact with the UI thread, the system will be unable to stop that service, but it will create new service eventhough the old service is not yet stopped.
-Once old service finishes the communication with the UI thread then onTaskRemoved() gets called and the old service will be stopped. The new service will be running in the background.
-2.为何servive.startForeground()添加的Notification可以在service被杀死后去掉呢？我们分析源码：ActiveServices中killServicesLocked()-&gt;scheduleServiceRestartLocked()中调用了r.cancelNotification()，清除了notification:</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public void cancelNotification() &#123;</div><div class="line">        if (foregroundId != 0) &#123;</div><div class="line">            // Do asynchronous communication with notification manager to</div><div class="line">            // avoid deadlocks.</div><div class="line">            final String localPackageName = packageName;</div><div class="line">            final int localForegroundId = foregroundId;</div><div class="line">            ams.mHandler.post(new Runnable() &#123;</div><div class="line">                public void run() &#123;</div><div class="line">                    INotificationManager inm = NotificationManager.getService();</div><div class="line">                    if (inm == null) &#123;</div><div class="line">                        return;</div><div class="line">                    &#125;</div><div class="line">                    try &#123;</div><div class="line">                        inm.cancelNotificationWithTag(localPackageName, null,</div><div class="line">                                localForegroundId, userId);</div><div class="line">                    &#125; catch (RuntimeException e) &#123;</div><div class="line">                        Slog.w(TAG, &quot;Error canceling notification for service&quot;, e);</div><div class="line">                    &#125; catch (RemoteException e) &#123;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/l-kotlin/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/31/l-kotlin/" itemprop="url">
-                  Kotlin语法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T20:13:42+08:00">
-                2017-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="字符串比较"><a href="#字符串比较" class="headerlink" title="字符串比较"></a>字符串比较</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var str1 = &quot;chaychan&quot;</div><div class="line">var str2 = &quot;chaychan&quot;</div><div class="line">println(str1 == str2)</div></pre></td></tr></table></figure>
-<p>比较两个字符串，如果两个字符串的内容一致，在Java中使用 str1 == str2 时，是比较两个字符串的地址值，很清楚两个字符串的地址不一样，返回false，但是在kotlin中，则不是如此，比较的只是字符串的内容，而===相当于Java中的==，用来比较引用对象, 上述代码返回的是true。</p>
-<p><strong>equal函数</strong></p>
-<ol>
-<li><code>equals(str:String)</code></li>
-</ol>
-<p>方法中的参数是与之对比的字符串，默认不忽略大小写，即大小写敏感，比如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var str1 = &quot;chaychan&quot;</div><div class="line">var str2 = &quot;ChayChan&quot;</div><div class="line">println(str1.equals(str2))</div></pre></td></tr></table></figure></p>
-<p>打印结果为false，因为不忽略大小写的话，两个字符串内容对比是不一致的，所以返回false。</p>
-<ol>
-<li><code>equals(str:String,ignoreCase:Boolean)</code>
-方法中有两个参数，第一个参数是与之对比的字符串，第二个参数是布尔类型的值，是否忽略大小写，如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var str1 = &quot;chaychan&quot;</div><div class="line">var str2 = &quot;ChayChan&quot;</div><div class="line">println(str1.equals(str2,true))</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>返回结果为true。</p>
-<h3 id="源码优化分析"><a href="#源码优化分析" class="headerlink" title="源码优化分析"></a>源码优化分析</h3><p><a href="https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-kotlin/" target="_blank" rel="external">源码</a></p>
-<h4 id="1-Lateinit"><a href="#1-Lateinit" class="headerlink" title="1.Lateinit"></a>1.Lateinit</h4><p>在View声明阶段，都会需要使用lateinit来延迟声明变量。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class TaskActivity : AppCompatActivity()&#123;</div><div class="line">  private val CURRENT_FILTERING_KEY = &quot;CURRENT_FILTERING_KEY&quot;;</div><div class="line">  private lateinit var drawerLayout : DrawerLayout</div><div class="line">  private lateinit var tasksPresenter:TasksPresenter</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>kotlin中延迟声明还包括lazy的方式
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">val name:String by lazy &#123;&quot;cangwang&quot;&#125;</div><div class="line">lateinit var drawLayout:drawLayout</div></pre></td></tr></table></figure></p>
-<p>区别在于:</p>
-<ol>
-<li>.lazy{}只能用再val类型,lateinit只能用在var类型</li>
-<li>.lateinit不能用在可空的属性上和java的基本类型上<code>lateinit var name:String</code>会报错</li>
-<li>.lateinit可以在任何位置初始化并且可以初始化多次,因为其衔接var变量.而lazy在第一次被调用时就被初始化,其衔接的是val常量,想要被改变只能重新定义</li>
-</ol>
-<h4 id="2-findViewById"><a href="#2-findViewById" class="headerlink" title="2.findViewById"></a>2.findViewById</h4><p>Api26前:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public View findViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Api26之后
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@SuppressWarnings(&quot;TypeParameterUnusedInFormals&quot;)</div><div class="line">@Override</div><div class="line">public &lt;T extends View&gt; T indViewById(@IdRes int id)&#123;</div><div class="line">  return getDelegate().findViewById(id);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="五个kotlin-Standard-kt里面的函数-apply-with-let-run-also"><a href="#五个kotlin-Standard-kt里面的函数-apply-with-let-run-also" class="headerlink" title="五个kotlin Standard.kt里面的函数:apply,with,let,run,also"></a>五个kotlin Standard.kt里面的函数:apply,with,let,run,also</h4><ol>
-<li>apply作用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">setSupportActionBar(findViewById&lt;Toolbar&gt;(R.id.toolbar))</div><div class="line">supportActionBar?.apply&#123;</div><div class="line">  setDisplayHomeAsUpEnabled(true)</div><div class="line">  setDisplayShowHomeEnabled(true)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>在函数内可以通过this指代该对象,返回值为该对象自己</p>
-<ol>
-<li>with函数
-将某对象作为函数的参数,在函数内可以通过this指代该对象.返回值为函数块的最后一行或指定return表达式<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">override fun getView(i:Int,view:View?,viewGroup:ViewGroup):View&#123;</div><div class="line">  val rowView=Vview?:LayoutInflater.from(viewGroup.context).inflate(R.layout.task_item,viewGroup,false)</div><div class="line">  val task = getItem(i)</div><div class="line">  with(rowView.findViewById&lt;TextView&gt;(R.id.title))&#123;</div><div class="line">    text = task.titleForList</div><div class="line">  &#125;</div><div class="line">  with(rowView.findViewById&lt;CheckBox&gt;(R.id.complete))&#123;</div><div class="line">    isChecked=task.isCompleted</div><div class="line">    rowView.setBackgroundDrawable(...)</div><div class="line">    setOnClickListener&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h4 id="3-lat函数"><a href="#3-lat函数" class="headerlink" title="3.lat函数"></a>3.lat函数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">private fun showMessage(message:String)&#123;</div><div class="line">  view?.let&#123;</div><div class="line">    Snackbar.make(it,message,Snackbar.LENGTH_LONG).show()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>将对象作为函数参数,在函数块内可以通过it指代该对象.返回值为函数块的最后一行或指定return表达式</p>
-<h4 id="4-run函数"><a href="#4-run函数" class="headerlink" title="4. run函数"></a>4. run函数</h4><p>其有两种表达式:</p>
+            <p>ts是日本高清摄像机拍摄下进行的封装格式，全称为MPEG2-TS。ts即”Transport Stream”的缩写。MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。MPEG2-TS主要应用于实时传送的节目，比如实时广播的电视节目。</p>
+<h3 id="发展简要"><a href="#发展简要" class="headerlink" title="发展简要"></a>发展简要</h3><p>随着从HDTV录制的高清节目在网上的流传，发烧友们现在对TS这个名词大概已经不陌生了，但随之而来就是如何播放、如何添加字幕等等的一系列问题，本文将重点介绍一下这方面的应用操作。
+先来简要介绍一下什么是MPEG2-TS吧。MPEG2格式大家都通过对DVD的接触而多多少少了解了一些，DVD节目中的MPEG2格式，确切地说是MPEG2-PS，全称是Program Stream，而TS的全称则是Transport Stream。MPEG2-PS主要应用于存储的具有固定时长的节目，如DVD电影，而MPEG-TS则主要应用于实时传送的节目，比如实时广播的电视节目。这两种格式的主要区别是什么呢？简单地打个比喻说，你将DVD上的VOB文件的前面一截cut掉（或者干脆就是数据损坏），那么就会导致整个文件无法解码了，而电视节目是你任何时候打开电视机都能解码（收看）的，所以，MPEG2-TS格式的特点就是要求从视频流的任一片段开始都是可以独立解码的。</p>
+<h3 id="学习多媒体容器格式的目的"><a href="#学习多媒体容器格式的目的" class="headerlink" title="学习多媒体容器格式的目的"></a>学习多媒体容器格式的目的</h3><p>主要是为了回答以下问题：</p>
 <ul>
-<li>第一种无参数输入</li>
-<li>第二种会将对象本身this给函数调用
-返回值为函数块最后一行,或者指定return表达式</li>
+<li>该容器中数据是如何组织的？</li>
+<li>该容器包含哪些编码格式的数据？这些数据是如何存储的？</li>
+<li>该容器包含哪些元数据信息？包含哪些节目信息？</li>
+<li>对于支持多节目的容器格式，如何找到对应的音频流、视频流、字幕流？</li>
+<li>如何确定该容器的节目播放时长？</li>
+<li>如何从该容器中提取音频、视频、字幕数据，并交给解码器解码，有时间戳否？</li>
+<li>该容器是否支持seek？有哪些辅助信息？</li>
+<li>是否支持直接流化？</li>
+<li>哪里可以找到该容器格式最标准的文档资料？</li>
+<li>有哪些可用的工具，方便分析容器格式异常或者错误？</li>
 </ul>
-<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>单例对象是使用Object申明
-Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功能.</p>
-<h3 id="data"><a href="#data" class="headerlink" title="data"></a>data</h3><p>相当于java中定义的数据bean类,其可以直接在属性之后编写get和set方法</p>
-<h3 id="JvmOverloads"><a href="#JvmOverloads" class="headerlink" title="@JvmOverloads"></a><code>@JvmOverloads</code></h3>
+<h3 id="TS流生成和解析的过程"><a href="#TS流生成和解析的过程" class="headerlink" title="TS流生成和解析的过程"></a>TS流生成和解析的过程</h3><p>TS流的形成过程：</p>
+<ol>
+<li>将原始音视频数据压缩之后，压缩结果组成一个基本码流（ES）。</li>
+<li>对ES（基本码流）进行打包形成PES。</li>
+<li>在PES包中加入时间戳信息(PTS/DTS)。</li>
+<li>将PES包内容分配到一系列固定长度的传输包（TS Packet）中。</li>
+<li>在传输包中加入定时信息(PCR)。</li>
+<li>在传输包中加入节目专用信息(PSI) 。</li>
+<li>连续输出传输包形成具有恒定比特率的MPEG-TS流。</li>
+</ol>
+<p>TS流的解析过程，可以说是生成的逆过程：</p>
+<ol>
+<li>从复用的MPEG-TS流中解析出TS包；</li>
+<li>从TS包中获取PAT及对应的PMT（PSI中的表格）；</li>
+<li>从而获取特定节目的音视频PID；</li>
+<li>通过PID筛选出特定音视频相关的TS包，并解析出PES；</li>
+<li>从PES中读取到PTS/DTS，并从PES中解析出基本码流ES；</li>
+<li>将ES交给解码器，获得压缩前的原始音视频数据。</li>
+</ol>
+<h3 id="TS码流整体结构"><a href="#TS码流整体结构" class="headerlink" title="TS码流整体结构"></a>TS码流整体结构</h3><p>MPEG-2中规定TS传输包的长度为188 字节，包头为4个字节，负载为184个字节。但通信媒介会为包添加错误校验字节，从而有了不同于188字节的包长。例如：</p>
+<p>DVB 规定中，使用204字节作为包长:</p>
+<ol>
+<li>通过调制器时，在每个传输包后增加了16 字节的里德所罗门前向纠错码，因而形成了204字节的数据包。调制后总存在204 字节的数据包。</li>
+<li>调制之前存复用器插入RS码或虚构的RS码。</li>
+</ol>
+<p>ATSC规定中，使用208字节作为包长：添加20 字节的 RS（Reed-Solomon）前向纠错码。与DVB不同,ATSC规定RS码只能出现在调制的TS流中。</p>
+<p>所有的TS包都分为包头和净荷部分。TS包中可以填入很多东西（填入的东西都是填入到净荷部分），有：视频、音频、数据（包括PSI、SI以及其它任何形式的数据）。
+<img src="http://images.wodekouwei.com/M/F/ts-head2.jpg" alt="image"></p>
+<h4 id="1、TS包包头"><a href="#1、TS包包头" class="headerlink" title="1、TS包包头"></a>1、TS包包头</h4><p>TS包的包头提供关于传输方面的信息：同步、有无差错、有无加扰、PCR（节目参考时钟）等标志。TS包的包头长度不固定，前32比特（4个字节）固定，后面可能跟有自适应字段（适配域）。32个比特（4个字节）是最小包头。</p>
+<ul>
+<li>sync_byte （同步字节）：固定为0100 0111 (0x47)；该字节由解码器识别，使包头和有效负载可相互分离。</li>
+<li>transport_error_indicator（传输错误指示）：‘1’表示在相关的传输包中至少有一个不可纠正的错误位。当被置1后，在错误被纠正之前不能重置为0。</li>
+<li>payload_unit_start_indicator（开始指示）：为1时，在前4个字节之后会有一个调整字节，其的数值为后面调整字段的长度length。因此有效载荷开始的位置应再偏移1+[length]个字节。</li>
+<li>transport_priority（传输优先级）：‘1’表明优先级比其他具有相同PID 但此位没有被置‘1’的分组高。</li>
+<li>PID：指示存储与分组有效负载中数据的类型。PID 值 0x0000—0x000F 保留。其中0x0000为PAT保留；0x0001为CAT保留；0x1fff为分组保留，即空包。</li>
+<li>transport_scrambling_control（加扰控制）：表示TS流分组有效负载的加密模式。空包为‘00’，如果传输包包头中包括调整字段，不应被加密。</li>
+<li>adaptation_field_control（适配域控制）：表示包头是否有调整字段或有效负载。‘00’为ISO/IEC未来使用保留；‘01’仅含有效载荷，无调整字段；‘10’ 无有效载荷，仅含调整字段；‘11’ 调整字段后为有效载荷，调整字段中的前一个字节表示调整字段的长度length，有效载荷开始的位置应再偏移[length]个字节。空包应为‘10’。</li>
+<li>continuity_counter（连续性计数器）：随着每一个具有相同PID的TS流分组而增加，当它达到最大值后又回复到0。范围为0~15。</li>
+<li>adaptation_field （自适应字段 ）：根据自适应控制字段填充负载。</li>
+</ul>
+<p><img src="http://images.wodekouwei.com/M/F/ts_head.png" alt="image"></p>
+<h4 id="2、节目专用信息PSI。"><a href="#2、节目专用信息PSI。" class="headerlink" title="2、节目专用信息PSI。"></a>2、节目专用信息PSI。</h4><p>然，TS包也可以是空包。空包用来填充TS流，可能在重新进行多路复用时被插入或删除。</p>
+<p>在系统复用时，视频、音频的ES流需进行打包形成视频、音频的 PES流，辅助数据（如图文电视信息）不需要打成PES包。PES包非定长，音频的PES包小于等于64K，视频的一般为一帧一个PES包。一帧图象的PES包通常要由许多个TS包来传输。MPEG-2中规定，一个PES包必须由整数个TS包来传输。如果承载一个PES包的最后一个TS包没能装满，则用填充字节来填满；当下一个新的PES包形成时，需用新的TS包来开始传输。</p>
+<p>节目专用信息PSI(Program Specific Information）</p>
+<p>管理各种类型的TS数据包，需要有些特殊的TS包来确立各个TS数据包之间的关系。这些特殊的TS包里所包含的信息就是节目专用信息。在不同的标准中它有不同的名字：</p>
+<ul>
+<li>MPEG-2中称为PSI；</li>
+<li>DVB标准根据实际需要，对PSI扩展，称为SI信息；</li>
+<li>ATSC标准中为PSIP信息</li>
+</ul>
+<p>MPEG-2中，规定的对PSI信息的描述方法有以下几种：</p>
+<h5 id="1、表Table：-节目信息的结构性的描述；"><a href="#1、表Table：-节目信息的结构性的描述；" class="headerlink" title="1、表Table： 节目信息的结构性的描述；"></a>1、表Table： 节目信息的结构性的描述；</h5><ul>
+<li>节目关联表Program Association Table (PAT) 0x0000</li>
+<li>节目映射表Program Map Tables (PMT) PAT指定</li>
+<li>条件接收表Conditional Access Table (CAT) 0x0001</li>
+<li>网络信息表Network Information Table(NIT) 0x0010</li>
+<li>传送流描述表Transport Stream Description Table (TSDT)<h5 id="2、节Section：-将表格的内容映射到TS流中；"><a href="#2、节Section：-将表格的内容映射到TS流中；" class="headerlink" title="2、节Section： 将表格的内容映射到TS流中；"></a>2、节Section： 将表格的内容映射到TS流中；</h5>专用段 Private_ section</li>
+</ul>
+<h5 id="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"><a href="#3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；" class="headerlink" title="3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；"></a>3、描述符Descriptor：提供有关节目构成（视频流、音频流、语言、层次、系统时钟和码率等多方面）的信息；</h5><p>ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表可被分成一段或多段置于传输流分组中。一段就是一个语法结构，用来将 ITU-T Rec.H.222.0|ISO /IEC 13818-1 中定义的 PSI表映射到传输流分组中。</p>
+<h6 id="PAT表"><a href="#PAT表" class="headerlink" title="PAT表"></a>PAT表</h6><p>TS流中包含一个或者多个PAT表。PAT表由PID为0x0000的TS包传送，其作用是为复用的每一路传送流提供出所包含的节目和节目编号，以及对应节目的PMT的位置即PMT的TS包的PID值，同时还提供NIT的位置，即NIT的TS包的PID的值。</p>
+<ul>
+<li>table_id：固定为0x00，标志该表是PAT表。</li>
+<li>section_syntax_indicator：段语法标志位，固定为1。</li>
+<li>section_length：表示这个字节后面有用的字节数，包括CRC32。节目套数：（section length-9）/4</li>
+<li>transport_stream_id：16位字段，表示该TS流的ID，区别于同一个网络中其它多路复用流。</li>
+<li>version_number：表示PAT的版本号。</li>
+<li>current_next_indicator：表示发送的PAT表是当前有效还是下一个PAT有效。</li>
+<li>section_number：表示分段的号码。PAT可能分为多段传输，第一段为0，以后每个分段加1，最多可能有256个分段。</li>
+<li>last_section_number：表示PAT最后一个分段的号码。</li>
+<li>Program number：节目号</li>
+<li>network_PID：网络信息表（NIT）的PID,节目号为0时对应ID为network_PID。</li>
+<li>Program map PID：节目映射表（PMT）的PID号，节目号为大于等于1时，对应的ID为program_map_PID。一个PAT中可以有多个program_map_PID。</li>
+<li>CRC_32：32位字段，CRC32校验码Cyclic RedundancyCheck。<h6 id="PMT表"><a href="#PMT表" class="headerlink" title="PMT表"></a>PMT表</h6></li>
+</ul>
+<p>PMT在传送流中用于指示组成某一套节目的视频、音频和数据在传送流中的位置，即对应的TS包的PID值，以及每路节目的节目时钟参考（PCR）字段的位置。</p>
+<ul>
+<li>Table id ：固定为0x02，标志该表是PMT 表。</li>
+<li>Section syntax indicator：对于PMT表，设置为1 。</li>
+<li>Section length：表示这个字节后面有用的字节数，包括CRC32 。</li>
+<li>Program number：它指出该节目对应于可应用的Program map PID 。</li>
+<li>Version number：指出PMT 的版本号。</li>
+<li>Current next indicator：当该位置’1’时，当前传送的Program map section可用；当该位置’0’时，指示当前传送的Program map section不可用，下一个TS流的Programmap section 有效。</li>
+<li>Section number：总是置为0x00（因为PMT表里表示一个service的信息，一个section 的长度足够）。</li>
+<li>Last section number：该域的值总是0x00 。</li>
+<li>PCR PID：节目中包含有效PCR字段的传送流中PID 。</li>
+<li>Program info length：12bit域，前两位为00。该域指出跟随其后对节目信息的描述的byte 数。</li>
+<li>Stream type：8bit域，指示特定PID的节目元素包的类型。该处PID由elementary PID 指定。</li>
+</ul>
+<h3 id="HLS"><a href="#HLS" class="headerlink" title="HLS"></a>HLS</h3><p>HTTP Live Streaming（缩写是HLS）是一个由苹果公司提出的基于HTTP的流媒体网络传输协议。是苹果公司QuickTime X和iPhone软件系统的一部分。它的工作原理是把整个流分成一个个小的基于HTTP的文件来下载，每次只下载一些。当媒体流正在播放时，客户端可以选择从许多不同的备用源中以不同的速率下载同样的资源，允许流媒体会话适应不同的数据速率。在开始一个流媒体会话时，客户端会下载一个包含元数据的extended M3U (m3u8)playlist文件，用于寻找可用的媒体流。
+HLS只请求基本的HTTP报文，与实时传输协议（RTP)不同，HLS可以穿过任何允许HTTP数据通过的防火墙或者代理服务器。它也很容易使用内容分发网络来传输媒体流。
+苹果公司把HLS协议作为一个互联网草案（逐步提交），在第一阶段中已作为一个非正式的标准提交到IETF。但是，即使苹果偶尔地提交一些小的更新，IETF却没有关于制定此标准的有关进一步的动作。</p>
+<p>HLS协议规定：</p>
+<ul>
+<li>视频的封装格式是TS。</li>
+<li>视频的编码格式为H264,音频编码格式为MP3、AAC或者AC-3。</li>
+<li>除了TS视频文件本身，还定义了用来控制播放的m3u8文件（文本文件）。</li>
+</ul>
+<p>为什么苹果要提出HLS这个协议，其实他的主要是为了解决RTMP协议存在的一些问题。比如RTMP协议不使用标准的HTTP接口传输数据，所以在一些特殊的网络环境下可能被防火墙屏蔽掉。但是HLS由于使用的HTTP协议传输数据，不会遇到被防火墙屏蔽的情况（该不会有防火墙连80接口都不放过吧）。</p>
+<p>另外于负载，RTMP是一种有状态协议，很难对视频服务器进行平滑扩展，因为需要为每一个播放视频流的客户端维护状态。而HLS基于无状态协议（HTTP），客户端只是按照顺序使用下载存储在服务器的普通TS文件，做负责均衡如同普通的HTTP文件服务器的负载均衡一样简单。</p>
+<p>另外HLS协议本身实现了码率自适应，不同带宽的设备可以自动切换到最适合自己码率的视频播放。其实HLS最大的优势就是他的亲爹是苹果。苹果在自家的iOS设备上只提供对HLS的原生支持，并且放弃了flash。Android也迫于平果的“淫威”原生支持了HLS。这样一来flv，rtmp这些Adobe的视频方案要想在移动设备上播放需要额外下点功夫。当然flash对移动设备造成很大的性能压力确实也是自身的问题。</p>
+<p>但HLS也有一些无法跨越的坑，比如采用HLS协议直播的视频延迟时间无法下到10秒以下，而RTMP协议的延迟最低可以到3、4秒左右。所以说对直播延迟比较敏感的服务请慎用HLS。</p>
+<p><strong>播放模式</strong></p>
+<ul>
+<li>点播VOD的特点就是当前时间点可以获取到所有index文件和ts文件，二级index文件中记录了所有ts文件的地址。这种模式允许客户端访问全部内容。上面的例子中就是一个点播模式下的m3u8的结构。</li>
+<li>Live 模式就是实时生成M3u8和ts文件。它的索引文件一直处于动态变化的，播放的时候需要不断下载二级index文件，以获得最新生成的ts文件播放视频。如果一个二级index文件的末尾没有#EXT-X-ENDLIST标志，说明它是一个Live视频流。<blockquote>
+<p><a href="http://blog.csdn.net/c602273091/article/details/50372160" target="_blank" rel="external">TS码流分析</a>
+<a href="https://www.cnblogs.com/tocy/p/media_container_6-mpegts.html" target="_blank" rel="external">多媒体文件格式之TS</a>
+<a href="https://www.iso.org/standard/67331.html" target="_blank" rel="external">ISO/IEC 13818-1:2015</a></p>
+</blockquote>
+</li>
+</ul>
+
           
         
       
@@ -1818,7 +744,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/l-c-dllist/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/02/08/media-mpeg/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -1840,8 +766,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
             
               
                 
-                <a class="post-title-link" href="/2017/10/31/l-c-dllist/" itemprop="url">
-                  (转)转使用C语言实现"泛型"链表
+                <a class="post-title-link" href="/2018/02/08/media-mpeg/" itemprop="url">
+                  MPEG
                 </a>
               
             
@@ -1857,8 +783,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T20:13:42+08:00">
-                2017-10-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T18:48:14+08:00">
+                2018-02-08
               </time>
             
 
@@ -1880,8 +806,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/language/" itemprop="url" rel="index">
-                    <span itemprop="name">language</span>
+                  <a href="/categories/media/" itemprop="url" rel="index">
+                    <span itemprop="name">media</span>
                   </a>
                 </span>
 
@@ -1917,48 +843,108 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
       
         
           
-            <p>看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。</p>
-<h3 id="一、所用的链表类型的选择"><a href="#一、所用的链表类型的选择" class="headerlink" title="一、所用的链表类型的选择"></a>一、所用的链表类型的选择</h3><p>我们知道，链表也有非常多的类型，包括单链表、单循环链表、双链表、双向循环链表等。在我的设计中，我的链表使用的类型是双向循环链表，并带一个不保存真实数据的头结点。其原因如下：
-1）单链表由于不能从后继定位到前驱，在操作时较为不方便
-2）双链表虽然能方便找到前驱，但是如果总是在其尾部插入或删除结点，为了定位的方便和操作的统一（所有的删除和插入操作，都跟在中间插入删除结点的操作一样），还要为其增加一个尾结点，并且程序还要保存一个指向这个尾结点的指针，并管理这个指针，从而增加程序的复杂性。而使用带头结点的循环双向链表，就能方便的定位（其上一个元素为链表的最后一个元素，其下一个元素为链表的第0个元素），并使所有的插入和删除的操作统一，因为头结点也是尾结点。注：结点的下标从0开始，头结点不算入下标值。
-3）接口的使用与C++中stl中list和泛型算法的使用大致相同。</p>
-<h3 id="二、list类型的定义"><a href="#二、list类型的定义" class="headerlink" title="二、list类型的定义"></a>二、list类型的定义</h3><p>为了让大家一睹为快，下面就给出这个用C语言实现的“泛型”的定义，再来说明，我这样设计的原因及要点，其定义如下：
-其定义在文件list_v2.c中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    void* data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;  </div><div class="line"></div><div class="line">struct list  </div><div class="line">&#123;  </div><div class="line">    struct node *head;//头指针，指向头结点  </div><div class="line">    int data_size;//链表对应的数据所占内存的大小  </div><div class="line">    int length;//链表list的长度  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>其声明在文件list_v2.h中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </div><div class="line"></div><div class="line"></div><div class="line">//定义结点指针Node*为List类型的迭代器  </div><div class="line">typedef struct node* Iterator;  </div><div class="line"></div><div class="line"></div><div class="line">//List类型的定义  </div><div class="line">typedef struct list* List;  </div><div class="line"></div><div class="line"></div><div class="line">//初始化链表,数据域所占内存的大小由data_size给出  </div><div class="line">int InitList(List *list, int data_size);  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表list的末尾  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Append(List list, void *data,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表的迭代器it_before的前面  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Insert(List list, void *data, Iterator it_before,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </div><div class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </div><div class="line">                      List B, Iterator it_b_before);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list中迭代器it指向的结点  </div><div class="line">int Remove(List list, Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的第0个结点，下标从0开始  </div><div class="line">int RemoveFirst(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的最后一个结点  </div><div class="line">int RemoveLast(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//返回list中第index个数据的指针  </div><div class="line">void* At(List list, int index);  </div><div class="line"></div><div class="line"></div><div class="line">//在begin和end之间查找符合condition的第一个元素，  </div><div class="line">//比较函数由condition指向,比较的值由data指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </div><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </div><div class="line">                       int (*condition)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找list中第一个与data相等的元素的下标，  </div><div class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </div><div class="line">int IndexOf(List list, void *data,  </div><div class="line">            int (*equal)(const void*,const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最小值，比较函数由less指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMin(Iterator begin, Iterator end,  </div><div class="line">                int (*less)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最大值，比较函数由large指向  </div><div class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMax(Iterator begin, Iterator end,  </div><div class="line">                int (*large)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//获取list的长度  </div><div class="line">int GetLength(List list);  </div><div class="line">//若list为空链表，则返回1，否则返回0  </div><div class="line">int IsEmpty(List list);  </div><div class="line">//销毁list  </div><div class="line">void DestroyList(List *list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的首迭代器  </div><div class="line">Iterator Begin(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </div><div class="line">Iterator End(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </div><div class="line">Iterator Next(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </div><div class="line">Iterator Last(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//通过迭代器it获得数据，相当于*p  </div><div class="line">void* GetData(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetNext(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetLast(Iterator it);</div></pre></td></tr></table></figure></p>
-<h3 id="三、如何实现隐藏链表的成员变量（即封装）"><a href="#三、如何实现隐藏链表的成员变量（即封装）" class="headerlink" title="三、如何实现隐藏链表的成员变量（即封装）"></a>三、如何实现隐藏链表的成员变量（即封装）</h3><p>首先，我们为什么需要封装呢？我觉得封装主要有三大好处。</p>
-<ol>
-<li>隔离变化，在程序中需要封装的通常是程序中最容易发生变化的地方，例如成员变量等，我们可以把它们封装起来，从而让它们的变化不会影响到系统的其他部分，也就是说，封装的是变化。</li>
-<li>降低复杂度，因为我们把一个对象是如何实现的等细节封装起来，只留给用户一个最小依赖的接口，从而让系统变量简单明了，在一定程度降低了系统的复杂性，方便了用户的使用。</li>
-<li>让用户只能按照我们设计好的接口来操作一个对象或类型，而不能自己直接对一个对象进行操作，从而减少了用户的误操作，提高了系统的稳定性。</li>
-</ol>
-<p>在面向对象的设计中，如果我们想要隐藏一个类的成员变量，我们可以把这些成员变量声明为私有的，而在C语言中，我们可以怎么实现呢？其实其实现是很简单的，我们在C语言中，当我们要使用一个自己定义的类型或函数时，我们会把声明它的头文件包含（include）过来，只要我们在文件中只声明其类型是一个结构体，而把它的实现写在.c文件中即可。</p>
-<p>在本例子中，我把<code>struct list</code>和<code>struct node</code>定义在.c文件中，而在头文件中，只声明其指针类型，即<code>typedef struct node* Iterator</code>和<code>typedef struct list* List;</code>当我们要使用该类型时，只需要在所在的文件中，include该头文件即可。因为在编译时，编译器只要知道List和Iterator是一个指针类型就能知道其所占的内存大小，也就能为其分配内存，所以能够编译成功。而又因为该头文件中并没有该类型（struct list和struct node）的定义，所以我们在使用该类型时，只能通过我们提供的接口来操作对象。例如，我们并不能使用<code>List list; list-&gt;data</code>等等的操作，而只能通过已定义的接口GetData来获得。</p>
-<p>###四、如何实现泛型
-泛型，第一时间想起的可能是模板，但是在C语言中却没有这个东西。但是C语言中却有一个可以指向任何类型，在使用时，再根据具体的指针类型进行类型转换的指针类型，它就是<code>void*</code>。</p>
-<p>为什么void<em>可以指向任何类型的数据？这还得从C语言对于数据类型的处理方式来说明。在C语言中，我们使用<code>malloc</code>等函数来申请内存，而从内存的角度来看，数据是没有类型的，它们都是一串的0或1，而程序则根据不同的类型来解释这个内存单元中的数据的意义，例如对于内存中的数据，<code>FFFFFFFF</code>，如果它是一个有符号整型数据，它代表的是<code>-1</code>，而如果它是一个无符号整型数据，它代表的则是<code>2^32-1</code>。进一步说，如果你用一个<code>int</code>的指针变量p指向该内存，则</em>p就是-1，如果你用<code>unsigned int</code>的指针<code>p</code>指向该内存，则<code>*p = 2^32-1</code>。</p>
-<p>而我们使用<code>malloc</code>等函数时，也只需要说明申请的内存的大小即可，也不用说明申请的内存空间所存放的数据的类型，例如，我们申请一块内存空间来存放一个整型数据，则只需要<code>malloc(sizeof(int))</code>，即可，当然你完全可以把它当作一个具有4个单位的char数组来使用。所以我们可以使用void指针来指向我们申请的内存，申请内存的大小由链表中的成员data_size定义，它也是真正的data所占的内存大小。</p>
-<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Iterator Insert(List list, void *data, Iterator it_before,</div><div class="line">                void (*assign)(void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>从上面的解说中，我们可以看到链表中的成员data_size指示了链表中的数据所占的内存大小，那我们们就可以使用函数memcpy把data指向的数据复制到新建的结点的data所指向的内存即可。为什么还需要一个函数指针assign，来指向一个定义数据之间如何赋值的函数呢？其实这和面向对象语言中常说到的深复制和浅复制有关。</p>
-<p>注：memcpy函数的原型为：<code>void * memcpy ( void * destination, const void * source, size_t num );</code></p>
-<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct student  </div><div class="line">&#123;  </div><div class="line">    char *name;  </div><div class="line">    char *no;  </div><div class="line">    int age;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>学生的姓名和学号都是能过动态分配内存而来的，并由student结构体中的name和no指针指向，那么当我们使用memcpy时，只能复制其指针，而不能复制其指向的数据，这样在很多情况下都会带来一定的问题。这个跟在C++中什么时候需要自己定义复制构造函数的情况类似。因为这种情况下，默认的复制构造函数并不能满足我们的需要，只能自己定义复制构造函数。</p>
-<p>所以在插入一个结点时，需要assign函数指针的原理与C++中自己定义复制构造函数的原理一样。它用于定义如何根据一个已有的对象生成一个该对象的拷贝对象。当然，可能在大多数的情况下，我们需要用到的数据类型都没有包含指针，所以在Insert函数的实现中，其实我也是有用到memcpy函数的，就是当assign为NULL时，就使用memcpy函数进行数据对象间的赋值，它其实就相当于C++中的默认复制构造函数或默认赋值操作函数。assign为NULL表示使用默认的逐位复制方式，即浅复制。</p>
-<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    DataType data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;</div></pre></td></tr></table></figure></p>
-<p>然后，当需要使用整型的链表时，就把DataType用typedef为int。其实这样做的一个最大的缺陷就是一个程序中只能存在着一个数据类型的链表，例如，如果我需要一个int型的链表和一个float型的链表，那么该把DataType定义为int呢还是float呢？所以这种看似可行的方式，其实只是虚有其表，在现象中是行不能的，虽然不少的数据结构的书都是这样实现的，但是它却没有什么实用价值。</p>
-<p>而其本质的原因是把结点的数据域的数据类型与某一种特定的数据类型DataType绑定在一起，从而让链表不能独立地变化。</p>
-<h3 id="七、为什么只把结点的指针定义为Iterator"><a href="#七、为什么只把结点的指针定义为Iterator" class="headerlink" title="七、为什么只把结点的指针定义为Iterator"></a>七、为什么只把结点的指针定义为Iterator</h3><p>在C++中iterator是一个类，为什么在这里，我只把结点的指针声明为一个Iterator呢？其实受STL的影响，我在一开始时，也是把Iterator实现为一个结构体，它只有一个数据成员，就是一个指向Node的指针。但在后来的实践中，发现其实并没有必要。在C++中为什么把iterator定义为一个类，是为了重载*，-&gt;等运行符，让iterator使用起来跟普通的指针一样。但是在C语言中，并没有重载运行符的做法，所以直接把Ierator声明为一个Node的指针最为方便、直接和好用，所有的比较运算都可以直接进行，而无需要借助函数。而把它声明为一个结构体反而麻烦、累赘。</p>
-<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>而是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>们可以试想一下，这个链表的为char链表，链表的元素为ABCBCBC，我们要在链表中找出所有的B，如果查找算法是使用第一种定义的话，它只能找出第一个B，而后面的两个B就无能为力了，而第二种定义，则可以通过循环改变其始末迭代器来在不同的序列段间查找目标字符B的位置。</p>
-<blockquote>
-<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="external">使用C语言实现“泛型”链表</a></p>
+            <h3 id="MPEG"><a href="#MPEG" class="headerlink" title="MPEG"></a>MPEG</h3><p>MPEG（Moving Picture Experts Group，动态图像专家组）是ISO（International Standardization Organization，国际标准化组织）与IEC（International Electrotechnical Commission，国际电工委员会）于1988年成立的专门针对运动图像和语音压缩制定国际标准的组织。</p>
+<p>MPEG标准主要有以下五个，MPEG-1、MPEG-2、MPEG-4、MPEG-7及MPEG-21等。该专家组建于1988年，专门负责为CD建立视频和音频标准，而成员都是为视频、音频及系统领域的技术专家。及后，他们成功将声音和影像的记录脱离了传统的模拟方式，建立了ISO/IEC11172压缩编码标准，并制定出MPEG-格式，令视听传播方面进入了数码化时代。因此，大家现时泛指的MPEG-X版本，就是由ISO(International Organization for Standardization）所制定而发布的视频、音频、数据的压缩标准。</p>
+<p>MPEG标准的视频压缩编码技术主要利用了具有运动补偿的帧间压缩编码技术以减小时间冗余度，利用DCT技术以减小图像的空间冗余度，利用熵编码则在信息表示方面减小了统计冗余度。这几种技术的综合运用，大大增强了压缩性能。</p>
+<p>MPEG的缔造者们原先打算开发四个版本：MPEG1-MPEG4，以适用于不同带宽和数字影像质量的要求。后由于MPEG3被放弃，所以现存只有三个版本的MPEG：MPEG-1，MPEG-2，MPEG-4。总体来说，MPEG在三方面优于其他压缩/解压缩方案。首先，由于在一开始它就是做为一个国际化的标准来研究制定，所以，MPEG具有很好的兼容性。其次，MPEG能够比其他算法提供更好的压缩比，最高可达200:1。更重要的是，MPEG在提供高压缩比的同时，对数据的损失很小。</p>
+<h4 id="MPEG-1"><a href="#MPEG-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h4><p>MPEG-1制定于1992年，为工业级标准而设计，可适用于不同带宽的设备，如CD-ROM、Video-CD、CD-i。它可针对SIF标准分辨率（对于NTSC制为352X240；对于PAL制为352X288）的图象进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD（指激光唱盘）音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4-5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
+M
+PEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL），视频点播（VOD），以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
+<h4 id="MPEG-2"><a href="#MPEG-2" class="headerlink" title="MPEG-2"></a>MPEG-2</h4><p>MPEG-2制定于1994年，设计目标是高级工业标准的图象质量以及更高的传输率。MPEG-2所能提供的传输率在3-10Mbits/sec间，其在NTSC制式下的分辨率可达720X486，MPEG-2也可提供并能够提供广播级的视像和CD级的音质。MPEG-2的音频编码可提供左右中及两个环绕声道，以及一个加重低音声道，和多达7个伴音声道（DVD可有8种语言配音的原因）。由于MPEG-2在设计时的巧妙处理，使得大多数MPEG-2解码器也可播放MPEG-1格式的数据，如VCD。</p>
+<p>同时，由于MPEG-2的出色性能表现，已能适用于HDTV，使得原打算为HDTV设计的MPEG-3，还没出世就被抛弃了。（MPEG-3要求传输速率在20Mbits/sec-40Mbits/sec间，但这将使画面有轻度扭曲）。除了做为DVD的指定标准外，MPEG-2还可用于为广播，有线电视网，电缆网络以及卫星直播(DirectBroadcastSatellite）提供广播级的数字视频。</p>
+<p>MPEG-2的另一特点是，其可提供一个较广的范围改变压缩比，以适应不同画面质量，存储容量，以及带宽的要求。</p>
+<p>对于最终用户来说，由于现存电视机分辨率限制，MPEG-2所带来的高清晰度画面质量（如DVD画面）在电视上效果并不明显，到是其音频特性（如加重低音，多伴音声道等）更引人注目。</p>
+<h4 id="MPEG-4"><a href="#MPEG-4" class="headerlink" title="MPEG-4"></a>MPEG-4</h4><p>MPEG专家组的专家们正在为MPEG-4的制定努力工作。MPEG-4标准主要应用于视像电话（videophone），视像电子邮件（VideoEmail）和电子新闻（Electronicnews）等，其传输速率要求较低，在4800-64000bits/sec之间，分辨率176X144。MPEG-4利用很窄的带宽，通过帧重建技术，压缩和传输数据，以求以最少的数据获得最佳的图象质量。</p>
+<p>与MPEG-1和MPEG-2相比，MPEG-4的特点是其更适于交互AV服务以及远程监控。MPEG-4是第一个使你由被动变为主动（不再只是观看，允许你加入其中，即有交互性）的动态图象标准；它的另一个特点是其综合性；从根源上说，MPEG-4试图将自然物体与人造物体相溶合（视觉效果意义上的）。MPEG-4的设计目标还有更广的适应性和可扩展性。</p>
+<h3 id="MPEG-1-1"><a href="#MPEG-1-1" class="headerlink" title="MPEG-1"></a>MPEG-1</h3><p>MPEG-1是MPEG组织制定的第一个视频和音频有损压缩标准。视频压缩算法于1990年定义完成。1992年底，MPEG-1正式被批准成为国际标准。MPEG-1是为CD光碟介质定制的的视频和音频压缩格式。一张70分钟的CD光碟传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。MPEG-1的输出质量大约和传统录像机VCR，信号质量相当，这也许是Video CD在发达国家未获成功的原因。</p>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>MPEG-1是为CD光盘介质定制的视频和音频压缩格式。一张70分钟的CD光盘传输速率大约在1.4Mbps。而MPEG-1采用了块方式的运动补偿、离散余弦变换（DCT）、量化等技术，并为1.2Mbps传输速率进行了优化。MPEG-1随后被Video CD采用作为核心技术。VCD的分辨率只有约352×240，并使用固定的比特率（1.15Mbps），因此在播放快速动作的视频时，由于数据量不足，令压缩时宏区块无法全面调整，结果使视频画面出现模糊的方块。因此MPEG-1的输出质量大约和传统录像机VCR相当，这也许是Video CD在发达国家未获成功的原因。MPEG-1音频分三代，其中最著名的第三代协议被称为MPEG-1 Layer 3，简称MP3，已经成为广泛流传的音频压缩技术。MPEG-1音频技术在每一代之间，在保留相同的输出质量之外，压缩率都比上一代高。第一代协议MP1被应用在LD作为记录数字音频以及飞利浦公司的DGC上；而第二代协议MP2后来被应用于欧洲版的DVD音频层之一。</p>
+<p>MPEG-1具有以下特点：</p>
+<ul>
+<li>随机访问</li>
+<li>灵活的帧率</li>
+<li>可变的图像尺寸</li>
+<li>定义了I-帧、P-帧和B-帧</li>
+<li>运动补偿可跨越多个帧</li>
+<li>半像素精度的运动向量</li>
+<li>量化矩阵</li>
+<li>GOF结构</li>
+<li>slice结构</li>
+</ul>
+<h4 id="音频分层"><a href="#音频分层" class="headerlink" title="音频分层"></a>音频分层</h4><p>MPEG-1音频分三层，分别为MPEG-1 Layer1，MPEG-Layer2以及MPEG-Layer3，并且高层兼容低层。其中第三层协议被称为MPEG-1 Layer 3，简称MP3。MP3已经成为广泛流传的的音频压缩技术。</p>
+<ul>
+<li>MPEG-1 Layer1采用每声道192kbit/s，每帧384个样本，32个等宽子带，固定分割数据块。子带编码用DCT(离散余弦变换)和(快速傅立叶变换)计算子带信号量化bit数。采用基于频域掩蔽效应的心理声学模型，使量化噪声低于掩蔽值。量化采用带死区的线性量化器，主要用于数字盒式磁带(DCC)。</li>
+<li>MPEG-1 Layer2采用每声道128kbit/s，每帧1152个样本，32个子带，属不同分帧方式。采用共同频域和时域掩蔽效应的心理声学模型，并对高、中，低频段的比特分配进行限制，并对比特分配、比例因子，取样进行附加编码。Layer2 广泛用于数字电视，CD-ROM，CD-I和VCD等。</li>
+<li>MPEG-1 Layer3采用每声道64kbit/s，用混合滤波器组提高频率分辨率，按信号分辨率分成6X32或18X32个子带，克服平均32个子带的Layer1，Layer2在中低频段分辨率偏低的缺点。采用心理声学模型2，增设不均匀量化器，量化值进行熵编码。主要用于ISDN(综合业务数字网)音频编码。</li>
+</ul>
+<p>MPEG-1制定于1992年，为工业级标准而设计，它可针对SIF标准分辨率(对于NTSC制为352X240；对于PAL制为352X288)的图像进行压缩，传输速率为1.5Mbits/sec，每秒播放30帧，具有CD(指激光唱盘)音质，质量级别基本与VHS相当。MPEG的编码速率最高可达4- 5Mbits/sec，但随着速率的提高，其解码后的图象质量有所降低。
+MPEG-1也被用于数字电话网络上的视频传输，如非对称数字用户线路(ADSL)，视频点播(VOD)，以及教育网络等。同时，MPEG-1也可被用做记录媒体或是在INTERNET上传输音频。</p>
+<h3 id="MPEG-2-1"><a href="#MPEG-2-1" class="headerlink" title="MPEG-2"></a>MPEG-2</h3><p>MPEG-2是MPEG（Moving Picture Experts Group，运动图像专家组）组织制定的视频和音频有损压缩标准之一，它的正式名称为“基于数字存储媒体运动图像和语音的压缩标准”。与MPEG-1标准相比，MPEG-2标准具有更高的图像质量、更多的图像格式和传输码率的图像压缩标准。MPEG-2标准不是MPEG-1的简单升级，而是在传输和系统方面做了更加详细的规定和进一步的完善。它是针对标准数字电视和高清晰电视在各种应用下的压缩方案，编码率从3 Mbit/s~100 Mbit/s。</p>
+<p>MPEG-2音频是在1994年11月为数字电视而提出来的，其发展分为三个阶段：
+第一阶段是对MPEG-1增加了低采样频率，有16KHZ，22.05KHZ，以及24KHZ。
+第二阶段是对MPEG-1实施了向后兼容的多声道扩展，将其称为MPEG-2 BC。支持单声道，双声道，多声道等编码。并附加“低频加重”扩展声道，从而达到五声道编码。
+第三阶段是向后不兼容，将其称为MPEG-2 AAC先进音频编码。采样频率可以低至8KHZ；而高至96KHZ范围内的1-48个通道可选的高音质音频编码。</p>
+<h4 id="分部"><a href="#分部" class="headerlink" title="分部"></a>分部</h4><p>MPEG-2标准目前分为9个部分，统称为ISO/IEC13818国际标准。各部分的内容描述如下：</p>
+<ul>
+<li>一部分－ISO/IEC13818-1，System：系统，描述多个视频，音频和数据基本码流合成传输码流和节目码流的方式。</li>
+<li>二部分－ISO/IEC13818-2，Video：视频，描述视频编码方法。</li>
+<li>三部分－ISO/IEC13818-3，Audio：音频，描述与MPEG-1音频标准反向兼容的音频编码方法。</li>
+<li>四部分－ISO/IEC13818-4，Compliance：符合测试，描述测试一个编码码流是否符合MPEG-2码流的方法。</li>
+<li>五部分－ISO/IEC13818-5，Software：软件，描述了MPEG-2标准的第一、二、三部分的软件实现方法。</li>
+<li>六部分－ISO/IEC13818-6，DSM-CC：数字存储媒体-命令与控制，描述交互式多媒体网络中服务器与用户间的会话信令集。</li>
+</ul>
+<p>上六个部分均已获得通过，成为正式的国际标准，并在数字电视等领域中得到了广泛的实际应用。此外，MPEG-2标准还有三个部分：</p>
+<ul>
+<li>第七部分规定不与MPEG-1音频反向兼容的多通道音频编码；</li>
+<li>第八部分现已停止；</li>
+<li>第九部分规定了传送码流的实时接口。</li>
+</ul>
+<p>1990年成立的ATM视频编码专家组与MPEG在ISO/IEC13818标准的第一和第二两个部分进行了合作，因此上述两个部分也成为ITU-T的
+标准，分别为：ITU-T H.222.0和ITU-T H.262视频。</p>
+<h3 id="MPEG-4-1"><a href="#MPEG-4-1" class="headerlink" title="MPEG-4"></a>MPEG-4</h3><p>MPEG-4，于MP4是一套用于音频、视频信息的压缩编码标准，由国际标准化组织（ISO）和国际电工委员会（IEC）下属的“动态图像专家组（Moving Picture Experts即MPEG制定，第一版在1998年10月通过，第二版在1999年12月通过。MPEG-4格式的主要用途在于网上流、光盘、语音发送（视频电话），以及电视广播。MPEG-4包含了MPEG-1及MPEG-2的绝大部份功能及其他格式的长处，并加入及扩充对虚拟现实模型语言（VRML，VirtualReality Modeling Language）的支持，面向对象的合成档案（包括音效，视讯及VRML对象），以及数字版权管理（DRM）及其他互动功能。而MPEG-4比MPEG-2更先进的其中一个特点，就是不再使用宏区块做影像分析，而是以影像上个体为变化记录，因此尽管影像变化速度很快、码率不足时，也不会出现方块画面。</p>
+<h4 id="分部-1"><a href="#分部-1" class="headerlink" title="分部"></a>分部</h4><p>MPEG-4由一系列的子标准组成，被称为部(part)（有时也译为卷），包括以下的部分：</p>
+<ul>
+<li>第一部分（ISO/IEC14496-1）：系统：描述视讯和音频数据流的控制、同步以及混合方式（即混流Multiplexing，简写为MUX）。</li>
+<li>第二部分（ISO/IEC14496-2）：视讯：定义了一个对各种视觉讯息（包括自然视讯、静止纹理、计算机合成图形等等）的编译码器。（例如XviD编码就属于MPEG-4Part2）</li>
+<li>第三部分（ISO/IEC14496-3）：音讯：定义了一个对各种音频讯号进行编码的编译码器的集合。包括高阶音频编码（AdvancedAudioCoding，缩写为AAC）的若干变形和其他一些音频/语音编码工具。</li>
+<li>第四部分（ISO/IEC14496-4）：一致性：定义了对本标准其他的部分进行一致性测试的程序。</li>
+<li>第五部分（ISO/IEC4496-5）：参考软件：提供了用于演示功能和说明本标准其他部分功能的软件。</li>
+<li>第六部分（ISO/IEC14496-6）：多媒体传输整合框架（DMIF for Delivery Multimedia IntegrationFramework）</li>
+<li>第七部分（ISO/IEC14496-7）：优化的参考软件：提供了对实作进行优化的例子（这里的实作指的是第五部分）。</li>
+<li>第八部分（ISO/IEC14496-8）：在IP网络上传输：定义了在IP网络上传输MPEG-4内容的方式。</li>
+<li>第九部分（ISO/IEC14496-9）：参考硬件：提供了用于演示怎样在硬件上实作本标准其他部分功能的硬件设计方案。</li>
+<li>第十部分（ISO/IEC14496-10）：进阶视讯编码或称高阶视讯编码（Advanced Video Coding，缩写为AVC）：定义了一个视讯编译码器（codec）。AVC和XviD都属于MPEG-4编码，但由于AVC属于MPEG-4Part10，在技术特性上比属于MPEG-4Part2的XviD要先进。另外，它和ITU-TH.264标准是一致的，故又称为H.264。</li>
+<li>第十二部分（ISO/IEC14496-12）：基于ISO的媒体文件格式：定义了一个储存媒体内容的文件格式。</li>
+<li>第十三部分（ISO/IEC14496-13）：知识产权管理和保护（IPMP for Intellectual Property Management andProtection）拓展。</li>
+<li>第十四部分（ISO/IEC14496-14）：MPEG-4文件格式：定义了基于第十二部分的用于储存MPEG-4内容的视讯文件格式。</li>
+<li>第十五部分（ISO/IEC14496-15）：AVC文件格式：定义了基于第十二部分的用于储存第十部分的视讯内容的文件格式。</li>
+<li>第十六部分（ISO/IEC14496-16）：动画框架扩充功能（AFX:Animation Framework eXtension）。</li>
+<li>第十七部分（ISO/IEC14496-17）：同步文字字幕格式。</li>
+<li>第十八部分（ISO/IEC14496-18）：字型压缩和串流传输（针对开放字型格式 Open Font Format）。</li>
+<li>第十九部分（ISO/IEC14496-19）：合成材质流（Synthesized Texture Stream）。</li>
+<li>第二十部分（ISO/IEC14496-20）：简单场景表示（LASeR for Lightweight Scene Representation。</li>
+<li>第二十一部分（ISO/IEC14496-21）：用于描绘（Rendering）的MPEG-J拓展。</li>
+<li>第二十二部分（ISO/IEC14496-22）：开放字型格式（Open Font Format）。</li>
+<li>第二十三部分（ISO/IEC14496-23）：符号化音乐表示（Symbolic Music Representation）。</li>
+<li>第二十四部分（ISO/IEC14496-24）：音频与系统互动作用（Audio and systems interaction）。</li>
+<li>第二十五部分（ISO/IEC14496-25）：3D图形压缩模型（3D GraphicsCompression Model）。</li>
+<li>第二十六部分（ISO/IEC14496-26）：音讯一致性检查：定义了测试音频数据与ISO/IEC 14496-3是否一致的方法（Audioconformance）。</li>
+<li>第二十七部分（ISO/IEC14496-27）：3D图形一致性检查：定义了测试3D图形数据与ISO/IEC14496-11:2005,ISO/IEC 14496-16:2006,ISO/IEC14496-21:2006,和ISO/IEC14496-25:2009是否一致的方法（3D Graphicsconformance）。</li>
+</ul>
+<p>Profiles是在每个部分内定义的，所以对某个部分的一个实作通常不是对该部分的完整实作。</p>
+<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
+<li>对于不同的对象可采用不同的编码算法，从而进一步提高压缩效率；</li>
+<li>对象各自相对独立，提高了多媒体数据的可重用性；</li>
+<li>允许用户对单个的对象操作，提供前所未有的交互性；</li>
+<li>允许在不同的对象之间灵活分配码率，对重要的对象可分配较多的字节，对次要的对象可分配较少的字节，从而能在低码率下获得较好的效果；</li>
+<li>可以方便的集成自然音视频对象和合成音视频对象。</li>
+</ul>
+<h3 id="MPEG-7"><a href="#MPEG-7" class="headerlink" title="MPEG-7"></a>MPEG-7</h3><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Moving_Picture_Experts_Group" target="_blank" rel="external">Moving Picture Experts Group</a>
+<a href="https://en.wikipedia.org/wiki/ISO/IEC_JTC_1/SC_29" target="_blank" rel="external">ISO/IEC JTC 1/SC 29</a>
+<a href="https://en.wikipedia.org/wiki/MPEG-1" target="_blank" rel="external">MPEG-1</a>
+<a href="https://en.wikipedia.org/wiki/MPEG-2" target="_blank" rel="external">MPEG-2</a>
+<a href="https://en.wikipedia.org/wiki/MPEG-4" target="_blank" rel="external">MPEG-4</a>
+<a href="https://zh.wikipedia.org/wiki/MP3" target="_blank" rel="external">MP3</a></p>
 </blockquote>
 
           
@@ -2003,7 +989,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/10/31/tool-as3/">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/25/tips-ml-about-backgroundremoval/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
@@ -2025,8 +1011,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
             
               
                 
-                <a class="post-title-link" href="/2017/10/31/tool-as3/" itemprop="url">
-                  tool-as3
+                <a class="post-title-link" href="/2018/01/25/tips-ml-about-backgroundremoval/" itemprop="url">
+                  基于深度学习的自动抠图
                 </a>
               
             
@@ -2042,8 +1028,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T19:47:42+08:00">
-                2017-10-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-25T15:27:43+08:00">
+                2018-01-25
               </time>
             
 
@@ -2065,8 +1051,8 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
                   </a>
                 </span>
 
@@ -2102,39 +1088,1150 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
       
         
           
-            <h3 id="AndroidStudio3-0新特性"><a href="#AndroidStudio3-0新特性" class="headerlink" title="AndroidStudio3.0新特性"></a>AndroidStudio3.0新特性</h3><h4 id="支持Java8语言"><a href="#支持Java8语言" class="headerlink" title="支持Java8语言"></a>支持Java8语言</h4><p>由于AS3.0默认支持Java8语言，所以我们就可以移除build.gradle里面的jackOptions了
-<del>jackOptions { true }</del></p>
-<p>然后可以在build.gradle配置为Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">  ...</div><div class="line">  compileOptions &#123;</div><div class="line">    sourceCompatibility JavaVersion.VERSION_1_8</div><div class="line">    targetCompatibility JavaVersion.VERSION_1_8</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>如果对Java8的一些特性存在问题,我们也可以在gradle.properties里面禁用Java8
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android.enableDesugar=false</div></pre></td></tr></table></figure></p>
-<h4 id="配置产品渠道"><a href="#配置产品渠道" class="headerlink" title="配置产品渠道"></a>配置产品渠道</h4><p>AS3.0以前我们常用productFlavors配置不同的渠道包，比如
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        dev&#123;</div><div class="line">            applicationIdSuffix &quot;.dev&quot;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>AS3.0得新增flavorDimensions的配置，主要有以下 12 个构建变体：
-构建变体：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minApi24, minApi23, minApi21][Demo, Full][Debug, Release]</div></pre></td></tr></table></figure></p>
-<p>对应 APK：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app-[minApi24, minApi23, minApi21]-[demo, full]-[debug, release].apk</div></pre></td></tr></table></figure></p>
-<p>比如这里创建一个构建方式
-首先得在defaultConfig通过flavorDimensions配置构建变体，如下
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">       ...</div><div class="line">        flavorDimensions &quot;debug&quot;,&quot;release&quot;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>然后productFlavors的配置就可以如下:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">        demo &#123;</div><div class="line">            dimension &quot;debug&quot;</div><div class="line">            applicationIdSuffix &quot;.demo&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">        prod  &#123;</div><div class="line">            dimension &quot;release&quot;</div><div class="line">           ...</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h4 id="改进的Android插件"><a href="#改进的Android插件" class="headerlink" title="改进的Android插件"></a>改进的Android插件</h4><ul>
-<li>优化了多 module 的项目并行编译运行更详细Task的展示
-构建变体的从属管理，比如上文的Flavors Dimensions配置新 api ，implementation依赖（替代compile ），compileOnly（替代provided）和runtimeOnly（替代 apk）</li>
-<li>通过增量编译 优化多dex的app构建速度</li>
-<li>优化了AAPT2增量资源化处理。如果要启用AAPT2,在gradle.properties文件添加代码：<code>android.enableAapt2=true</code></li>
-<li>支持java8语言</li>
-<li>增加测试工具，可通过dependencies依赖使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies&#123;</div><div class="line">        androidTestUtil“com.linkedin.testbutler：测试管家应用：1.3.0@apk”</div><div class="line">        ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
+            <h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><ul>
+<li>原文:<a href="https://towardsdatascience.com/background-removal-with-deep-learning-c4f2104b3157" target="_blank" rel="external">Background removal with deep learning</a></li>
+<li>译文:<a href="https://www.leiphone.com/news/201709/UlV8rwd3s6ZeEccW.html" target="_blank" rel="external">自拍抠图抠到手软？详解如何用深度学习消除背景</a></li>
+<li><a href="https://gitlab.com/fast-science" target="_blank" rel="external">server代码地址</a></li>
+<li><a href="https://github.com/Kjeanclaude/acGAN-Paper-Implementation" target="_blank" rel="external">acGAN-Paper-Implementation</a>:acGAN paper implementation and adaptation by KJeanclaude &amp; Gidi Shperber</li>
+<li><a href="http://www.fast.ai/" target="_blank" rel="external">fast.ai course</a></li>
+<li>作者:<a href="https://medium.com/@burgalon" target="_blank" rel="external">Alon Burg</a> ,<a href="https://towardsdatascience.com/@gidishperber" target="_blank" rel="external">Gidi Shperber</a></li>
 </ul>
-<h3 id="常见出错总结"><a href="#常见出错总结" class="headerlink" title="常见出错总结"></a>常见出错总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Cause: getMainOutputFile is no longer supported.  Use getOutputFileName if you need to determine the file name of the output.</div></pre></td></tr></table></figure>
-<p>或
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:Not valid.</div></pre></td></tr></table></figure></p>
-<p>主要是AndResGuard1.2.3版本还没有兼容AS3.0
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error:All flavors must now belong to a named flavor dimension. The flavor &apos;prod&apos; is not assigned to a flavor dimension. Learn more at https://d.android.com/r/tools/flavorDimensions-missing-error-message.html</div></pre></td></tr></table></figure></p>
-<p>AS3.0需要通过flavorDimensions来配置产品渠道，详细看上文。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/21/tips-ml-dpst/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/21/tips-ml-dpst/" itemprop="url">
+                  deep-photo-styletransfer介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-21T22:41:30+08:00">
+                2018-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ml/" itemprop="url" rel="index">
+                    <span itemprop="name">ml</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p><a href="https://github.com/luanfujun/deep-photo-styletransfer" target="_blank" rel="external">deep-photo-styletransfer</a>:</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><p>环境为mac10.13.2</p>
+<h4 id="2-1安装依赖"><a href="#2-1安装依赖" class="headerlink" title="2.1安装依赖"></a>2.1安装依赖</h4><h5 id="2-1-1-Torch"><a href="#2-1-1-Torch" class="headerlink" title="2.1.1 Torch"></a>2.1.1 <a href="https://github.com/torch/torch7" target="_blank" rel="external">Torch</a></h5><p>Torch是基于Lua语言的深度学习框架.
+安装:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash</div><div class="line">git clone https://github.com/torch/distro.git ~/torch --recursive</div><div class="line">cd ~/torch; ./install.sh</div></pre></td></tr></table></figure></p>
+<p>第一条命令安装了LuaJIT 和 Torch的依赖库。第二条命令安装LuaJIT, LuaRocks，然后用 LuaRocks （lua 包管理工具）安装核心包：torch, nn and paths, 和其它包。上面命令把 torch 加入到了你的PATH环境变量中了，用 source 更新一下让环境变量生效：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 在 Linux 上</div><div class="line">source ~/.bashrc</div><div class="line"># 在 OSX 上</div><div class="line">source ~/.profile</div><div class="line">或</div><div class="line">source ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>如果你想要卸载 torch，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf ~/torch</div></pre></td></tr></table></figure></p>
+<p>现在在你可以用 Luarocks 安装新的包
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">luarocks install image</div><div class="line">luarocks list</div></pre></td></tr></table></figure></p>
+<p>安装完之后，你可以在终端用 th 命令运行 torch，现在进入了 torch 的交互模式，类似Python的交互模式。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ th</div><div class="line"></div><div class="line">  ______             __   |  Torch7</div><div class="line"> /_  __/__  ________/ /   |  Scientific computing for Lua.</div><div class="line">  / / / _ / __/ __/ _   |</div><div class="line"> /_/  ___/_/  __/_//_/  |  https://github.com/torch</div><div class="line">                          |  http://torch.ch</div><div class="line"></div><div class="line">th&gt; torch.Tensor&#123;1,2,3&#125;</div><div class="line"> 1</div><div class="line"> 2</div><div class="line"> 3</div><div class="line">[torch.DoubleTensor of dimension 3]</div><div class="line"></div><div class="line">th&gt;</div></pre></td></tr></table></figure></p>
+<p>要退出交互模式，两次Ctrl+C，或输入 os.exit()。
+要执行 file.lua, 写 th&gt; dofile “file.lua”。
+在非交互模式下执行文件：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">th file.lua</div></pre></td></tr></table></figure></p>
+<p>th 命令有很多选项，类似 perl 和 ruby。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ th -h</div><div class="line">Usage: th [options] [script.lua [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -l name            load library name</div><div class="line">  -e statement       execute statement</div><div class="line">  -h,--help          print this help</div><div class="line">  -a,--async         preload async (libuv) and start async repl (BETA)</div><div class="line">  -g,--globals       monitor global variables (print a warning on creation/access)</div><div class="line">  -gg,--gglobals     monitor global variables (throw an error on creation/access)</div><div class="line">  -x,--gfx           start gfx server and load gfx env</div><div class="line">  -i,--interactive   enter the REPL after executing a script</div><div class="line">Share the post &quot;Mac OS X／Ubuntu 安装 Torch&quot;</div></pre></td></tr></table></figure></p>
+<p><strong>安装deep-photo-styletransfer所需依赖:</strong></p>
+<ul>
+<li><a href="https://github.com/soumith/matio-ffi.torch" target="_blank" rel="external">matio-ffi</a>:<code>luarocks install matio-ffi</code></li>
+<li><a href="https://github.com/szagoruyko/loadcaffe" target="_blank" rel="external">loadcaffe</a>:<code>luarocks install loadcaffe</code></li>
+</ul>
+<h5 id="2-1-2Matlab-or-Octave"><a href="#2-1-2Matlab-or-Octave" class="headerlink" title="2.1.2Matlab or Octave"></a>2.1.2<a href="https://www.mathworks.com/" target="_blank" rel="external">Matlab</a> or <a href="https://www.gnu.org/software/octave/" target="_blank" rel="external">Octave</a></h5><p>Matlab较大,而且是商用软件,所以选择了octave
+Octave是一款用于数值计算和绘图的开源软件, 精于矩阵运算:求解联立方程组、计算矩阵特征值和特征向量等等,并能够通过多种形式将数据可视化。Octave最简单的使用方式就是像使用一个计算器一样在命令提示符下输入相应的计算式。Octave能识别通常的计算表达式。例如,在终端输入
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">octave:##&gt;2+2</div></pre></td></tr></table></figure></p>
+<p>mac下首先确保自己的Mac安装了Xcode和Command Line Tool，通过以下命令安装Command Line Tool，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcode-select --install</div></pre></td></tr></table></figure></p>
+<p>之后安装Mac下的包管理神器Homebrew，命令如下，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -LsSf http://github.com/mxcl/homebrew/tarball/master | sudo tar xvz -C/usr/local --strip 1</div></pre></td></tr></table></figure></p>
+<p>通过以下命令升级Homebrew:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo brew update &amp;&amp; sudo brew upgrade</div></pre></td></tr></table></figure></p>
+<p>之后通过以下命令安装gcc、XQuartz，最后就可以通过Homebrew安装Octave了，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo brew install gcc</div><div class="line">sudo brew install Caskroom/cask/xquartz</div><div class="line">sudo brew install octave</div></pre></td></tr></table></figure></p>
+<p>mac下使用brew安装的octave是4.2版本,使用<code>imread</code>等函数时会提示:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">error: Magick++ exception: octave-cli-4.2: Unable to access configuration file (delegates.mgk) reported by magick/blob.c:2101 (GetConfigureBlob)</div><div class="line">error: called from</div><div class="line">    __imread__ at line 80 column 10</div><div class="line">    imageIO at line 117 column 26</div><div class="line">    imread at line 106 column 30</div></pre></td></tr></table></figure></p>
+<p>未找到原因,最后在<a href="https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac" target="_blank" rel="external">https://wiki.octave.org/Octave_for_macOS#Simple_Installation_Instructions_2中下载[Mac</a> OS X Bundle](<a href="https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2" target="_blank" rel="external">https://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg/download)中下载[4.0.3-gui](https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-07-11-binary-octave-4.0.3/octave_gui_403_appleblas.dmg)及[4.0.2</a> command line](<a href="https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现" target="_blank" rel="external">https://jaist.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2016-06-06-binary-octave-4.0.2/octave_cli_402.dmg)执行imread会出现</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: your version of GraphicsMagick limits images to &lt;16&gt; bits per pixel</div></pre></td></tr></table></figure></p>
+<p>根据<a href="http://wiki.octave.org/GraphicsMagick" target="_blank" rel="external">GraphicsMagick</a>中介绍是GraphicsMagick编译是参数不对,后下载(<a href="https://sourceforge.net/projects/graphicsmagick/files/?source=navbar" target="_blank" rel="external">地址</a>)使用
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure --with-quantum-depth=16 --enable-shared --disable-static --with-magick-plus-plus=yes</div><div class="line">make</div><div class="line">make check</div><div class="line">sudo make install</div></pre></td></tr></table></figure></p>
+<p>仍然不对,好像bound包依赖的库不是默认安装路径的.
+使用最新的GraphicsMagick为1.3.27,命令行下可以使用gm命令:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ gm</div><div class="line">GraphicsMagick 1.3.27  Q32 http://www.GraphicsMagick.org/</div><div class="line">Copyright (C) 2002-2017 GraphicsMagick Group.</div><div class="line">Additional copyrights and licenses apply to this software.</div><div class="line">See http://www.GraphicsMagick.org/www/Copyright.html for details.</div><div class="line">Usage: gm command [options ...]</div><div class="line"></div><div class="line">Where commands include:</div><div class="line">      batch - issue multiple commands in interactive or batch mode</div><div class="line">  benchmark - benchmark one of the other commands</div><div class="line">    compare - compare two images</div><div class="line">  composite - composite images together</div><div class="line">    conjure - execute a Magick Scripting Language (MSL) XML script</div><div class="line">    convert - convert an image or sequence of images</div><div class="line">       help - obtain usage message for named command</div><div class="line">   identify - describe an image or image sequence</div><div class="line">    mogrify - transform an image or sequence of images</div><div class="line">    montage - create a composite image (in a grid) from separate images</div><div class="line">       time - time one of the other commands</div><div class="line">    version - obtain release version</div></pre></td></tr></table></figure></p>
+<p>可以使用pkg install -forge package安装<a href="https://octave.sourceforge.io/packages.php" target="_blank" rel="external">Octave-Forge </a>中的包,如默认使用的image包:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pkg install -forge image</div></pre></td></tr></table></figure></p>
+<p>也可以下载其他版本的image包到本地执行<code>pkg install image-2.4.1.tar.gz</code>
+<code>pkg list</code>可列出已安装的包,安装好后不能直接使用，使用前要load
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">warning: the &apos;col2im&apos; function belongs to the image package from Octave Forge which you have installed but not loaded.  To load the package, run &apos;pkg load image&apos; from the Octave prompt.</div></pre></td></tr></table></figure></p>
+<p>有人使用docker容器解决了这个问题:<a href="https://github.com/martinbenson/deep-photo-styletransfer" target="_blank" rel="external">https://github.com/martinbenson/deep-photo-styletransfer</a>, 但是未尝试</p>
+<blockquote>
+<p><a href="http://www.graphicsmagick.org/INSTALL-unix.html#build-install" target="_blank" rel="external"> GraphicsMagick UNIX/Cygwin/MinGW Compilation</a>
+<a href="https://trac.macports.org/ticket/38730" target="_blank" rel="external">octave-devel 3.6.3 GraphicsMagick limits images to 8 bits per pixel</a>
+<a href="http://blog.csdn.net/pipisorry/article/details/43565653" target="_blank" rel="external"> Octave教程 Octave Tutorial</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/20" target="_blank" rel="external">Octave requirements </a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/4" target="_blank" rel="external">Is removing the Matlab dependency possible?</a>
+<a href="https://github.com/luanfujun/deep-photo-styletransfer/pull/12" target="_blank" rel="external">Added Matlab dependency alternative</a>
+<a href="https://sourceforge.net/p/graphicsmagick/mailman/message/922420/" target="_blank" rel="external">Re: [GM-apis] PythonMagick</a></p>
+</blockquote>
+<h5 id="2-1-3CUDA-cudnn"><a href="#2-1-3CUDA-cudnn" class="headerlink" title="2.1.3CUDA cudnn"></a>2.1.3<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="external">CUDA</a> <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">cudnn</a></h5><p>从<a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external">NVIDIA cuDNN官网</a>下载,<a href="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/docs/sidebar/CUDA_Installation_Guide_Mac.pdf" target="_blank" rel="external">文档地址</a></p>
+<ul>
+<li><a href="http://124.205.69.171/files/1101000006472522/developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.27_mac.dmg" target="_blank" rel="external">7.5下载地址</a></li>
+<li><a href="http://124.205.69.163/files/82230000064800D3/developer2.download.nvidia.com/compute/cuda/9.1/secure/Prod/local_installers/cuda_9.1.85_mac.dmg" target="_blank" rel="external">9.1下载地址</a>
+使用不同版本有兼容性问题</li>
+</ul>
+<h5 id="2-1-4下载VGG-19"><a href="#2-1-4下载VGG-19" class="headerlink" title="2.1.4下载VGG-19"></a>2.1.4下载VGG-19</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh models/download_models.sh</div></pre></td></tr></table></figure>
+<h5 id="2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine"><a href="#2-1-5Compile-cuda-utils-cu-Adjust-PREFIX-and-NVCC-PREFIX-in-makefile-for-your-machine" class="headerlink" title="2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)"></a>2.1.5Compile cuda_utils.cu (Adjust PREFIX and NVCC_PREFIX in makefile for your machine)</h5><p>遇到问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">THC.h includes THCGeneral.h, does not exist</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/luanfujun/deep-photo-styletransfer/issues/19" target="_blank" rel="external">解决</a>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">I&apos;ve fixed this issue by executing the following commands in terminal:</div><div class="line"></div><div class="line">cd to you torch directory, and execute the update.sh script</div><div class="line">second, execute &quot;luarocks install cutorch&quot;</div></pre></td></tr></table></figure></p>
+<p>可能有xcode Command Line Tool版本不兼容问题:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvcc fatal : The version (&apos;80100&apos;) of the host compiler (&apos;Apple clang&apos;) is not supported</div></pre></td></tr></table></figure></p>
+<p>替换版本即可:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">登录 https://developer.apple.com/downloads/</div><div class="line">下载Xcode CLT (Command Line Tools) 8.2</div><div class="line">安装 CLT</div><div class="line">执行 sudo xcode-select --switch /Library/Developer/CommandLineTools</div><div class="line">输入命令行查看clang版本 clang --version</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/torch/cutorch/issues/737" target="_blank" rel="external">THC.h includes THCGeneral.h, does not exist</a></p>
+</blockquote>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li><a href="http://blog.csdn.net/zhangjunhit/article/details/70845704" target="_blank" rel="external">深度摄影风格转换–Deep Photo Style Transfer</a></li>
+<li><a href="http://blog.csdn.net/guoyunfei20/article/details/78191599" target="_blank" rel="external">cuDNN</a></li>
+<li><a href="http://blog.csdn.net/augusdi/article/details/12833235" target="_blank" rel="external">CUDA从入门到精通</a></li>
+<li><a href="https://www.jianshu.com/p/9c6d90e4f20e" target="_blank" rel="external">VGG论文笔记</a></li>
+<li><a href="https://github.com/LouieYang/deep-photo-styletransfer-tf" target="_blank" rel="external">deep-photo-styletransfer-tf</a>:Tensorflow (Python API) implementation of Deep Photo Style Transfer</li>
+<li><a href="https://github.com/floydhub/deep-photo-styletransfer" target="_blank" rel="external">floydhub/deep-photo-styletransfer</a>:Jupyter Notebook to train photorealistic style transfer</li>
+<li><a href="https://askubuntu.com/questions/652004/how-do-i-rebuild-octave-and-link-in-graphicsmagick" target="_blank" rel="external">How do I rebuild Octave and link in GraphicsMagick?</a></li>
+<li><a href="ftp://ftp.gnu.org/gnu/octave/" target="_blank" rel="external">/gnu/octave/ 的索引</a></li>
+</ul>
+<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><ol>
+<li><code>configure :error: No usable version of sed found:</code>
+I did ./configure to make a makefile</li>
+</ol>
+<p>but it ran into an error: configure :error: No usable version of sed found:</p>
+<p>I then typed which see</p>
+<p>it shows /usr/bin/sed.</p>
+<p>so, what’s wrong? why can’t ./configure find sed?</p>
+<p>I happened to have this problem on my mac. This is because OS X uses an old version of sed. Installing gnu-sed by <code>brew install gnu-sed</code> and <code>alias gsed=sed</code> solved this problem. You may install gnu-sed with other method.</p>
+<p><a href="https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found" target="_blank" rel="external">https://stackoverflow.com/questions/26351285/configure-error-no-usable-version-of-sed-found</a></p>
+<ol>
+<li><code>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</code></li>
+</ol>
+<p>I am attempting to install GraphicsMagick in a hosting account…</p>
+<p>I used this info to get it to work in most cases:</p>
+<p><a href="https://superuser.com/questions/192573/how-do-you-specify-the-location-of-libraries-to-a-binary-linux" target="_blank" rel="external">How do you specify the location of libraries to a binary? (linux)</a></p>
+<p>However, it still cannot find the delegates.mgk (which is in ./lib/GraphicsMagick-1.3.14/delegates.mgk) as witnessed in this error:</p>
+<p>gm-bin convert: Unable to access configuration file (delegates.mgk) [No such file or directory].</p>
+<p>Either, a) how do find out where the binary thinks this file should be, or b) how do I extend the wrapper script to help it out?</p>
+<p>Figured it out after looking through the binary for /PATH/</p>
+<p>The binaries require these additional path variables:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$MAGICK_CONFIG_PATH</div><div class="line">$MAGICK_CODER_MODULE_PATH</div><div class="line">$MAGICK_FILTER_MODULE_PATH</div></pre></td></tr></table></figure></p>
+<p>…here is the resulting script modification form my setup:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ -n &quot;$LD_LIBRARY_PATH&quot; ]; then</div><div class="line">  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/USER/lib</div><div class="line">else</div><div class="line">  LD_LIBRARY_PATH=/home/USER/lib</div><div class="line">fi</div><div class="line">[ -z &quot;$&#123;MAGICK_CONFIGURE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CONFIGURE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/config</div><div class="line">[ -z &quot;$&#123;MAGICK_CODER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_CODER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/coders</div><div class="line">[ -z &quot;$&#123;MAGICK_FILTER_MODULE_PATH&#125;&quot; ] &amp;&amp; export MAGICK_FILTER_MODULE_PATH=/home/USER/lib/GraphicsMagick-1.3.14/modules-Q8/filters</div><div class="line">export LD_LIBRARY_PATH</div><div class="line">exec /home/USER/bin/gm-bin &quot;$@&quot;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/issue-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/issue-python/" itemprop="url">
+                  python常见问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:09:41+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt"><a href="#OSError-Errno-1-Operation-not-permitted-39-tmp-pip-g3bg0s-uninstall-System-Library-Frameworks-Pyt" class="headerlink" title="OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt"></a><code>OSError: [Errno 1] Operation not permitted: &#39;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Pyt</code></h5><p>在用下列名字安装时
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install Scrapy</div><div class="line">sudo pip install virtualenvwrapper</div></pre></td></tr></table></figure></p>
+<p>出现下列错误
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">Found existing installation: six 1.4.1</div><div class="line"></div><div class="line">    DEPRECATION: Uninstalling a distutils installed project (six) has been deprecated and will be removed in a future version. This is due to the fact that uninstalling a distutils project will only partially uninstall the project.</div><div class="line"></div><div class="line">    Uninstalling six-1.4.1:</div><div class="line"></div><div class="line">Exception:</div><div class="line"></div><div class="line">Traceback (most recent call last):</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/basecommand.py&quot;, line 215, in main</div><div class="line"></div><div class="line">    status = self.run(options, args)</div><div class="line"></div><div class="line">  File &quot;/Library/python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/commands/install.py&quot;, line 342, in run</div><div class="line"></div><div class="line">    prefix=options.prefix_path,</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_set.py&quot;, line 778, in install</div><div class="line"></div><div class="line">    requirement.uninstall(auto_confirm=True)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_install.py&quot;, line 754, in uninstall</div><div class="line"></div><div class="line">    paths_to_remove.remove(auto_confirm)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/req/req_uninstall.py&quot;, line 115, in remove</div><div class="line"></div><div class="line">    renames(path, new_path)</div><div class="line"></div><div class="line">  File &quot;/Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg/pip/utils/__init__.py&quot;, line 267, in renames</div><div class="line"></div><div class="line">    shutil.move(old, new)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 302, in move</div><div class="line"></div><div class="line">    copy2(src, real_dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 131, in copy2</div><div class="line"></div><div class="line">    copystat(src, dst)</div><div class="line"></div><div class="line">  File &quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/shutil.py&quot;, line 103, in copystat</div><div class="line"></div><div class="line">    os.chflags(dst, st.st_flags)</div><div class="line"></div><div class="line">OSError: [Errno 1] Operation not permitted: &apos;/tmp/pip-g3bg0s-uninstall/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info&apos;</div></pre></td></tr></table></figure></p>
+<p>Scrapy，virtualenvwrapper需要依赖six，在安装six的时候发现系统已经有一个six-1.4.1，但是virtualenvwrapper需要six-1.9.0，于是想先卸载老版本的six，此时问题来了，发现没有权限卸载，此时我就纳闷，加上sudo，还是没权限。于是Google之，最终还是在万能的GitHub找到答案。six-1.4.1是系统内置的packages，因 系统集成保护 你是没有权限去修改/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/six-1.4.1-py2.7.egg-info目录的。因此在安装virtualenvwrapper的时候需要选择忽略six的安装：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo pip install virtualenvwrapper --upgrade --ignore-installed six</div><div class="line">sudo pip install Scrapy --upgrade --ignore-installed six</div></pre></td></tr></table></figure></p>
+<p>如果使用requirements安装,也使用:<code>sudo -H pip install -r requirements.txt --upgrade --ignore-installed six</code></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/16/tips-android-inject1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/tips-android-inject1/" itemprop="url">
+                  android逆向(1)之root方式注入apk
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T18:06:20+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="第一步-注入动态库到目标进程"><a href="#第一步-注入动态库到目标进程" class="headerlink" title="第一步,注入动态库到目标进程"></a>第一步,注入动态库到目标进程</h3><ol>
+<li>启动注入程序,入口main函数中输入将被注入的进程名称以及欲注入动态库路径;</li>
+<li>根据进程名获取进程id:打开<code>/proc</code>目录,读取<code>/proc/%d/cmdline</code>;</li>
+<li>attach到目标进程:<code>ptrace(PTRACE_ATTACH, pid, NULL, 0)</code>并暂停目前进程;</li>
+<li>读取寄存器值:<code>ptrace(PTRACE_GETREGS, pid, NULL, regs)</code>,并保持读取到的寄存器;</li>
+<li>获取被加载的动态库中mmap函数地址,获取被加载动态库中函数地址的方法是,获取本地libc.so模块和被加载动态库中libc.so模块中各自起始地址,local_addr-local_handle的值为指定函数(如mmap)在该模块中的偏移量，然后再加上remote_handle，结果就为指定函数在目的进程的虚拟地址,获取模块起始地址的方法是读取进程对应的<code>/proc/self/maps</code>或<code>/proc/%d/maps</code>文件;</li>
+<li>调用被加载库的mmap方法申请空间:<code>ptrace_call(target_pid, (uint32_t)func_addr, parameters, param_num, regs)</code>;</li>
+<li>获取申请空间时的R0寄存器,arm中R0~R3作为传递参数的寄存器,R0可以获取到申请空间的起始地址;</li>
+<li>获取被加载库中dlopen,dlsym,dlclose,dlerror函数地址;</li>
+<li>将被加载动态库的路径写入到mmap分配的栈空间:<code>ptrace(PTRACE_PEEKTEXT, pid, dest, 0);</code>;</li>
+<li>调用远程函数的dlopen函数打开要被注入的动态库;</li>
+<li>调用<code>dlsym</code>获取加载动态库目标函数符号对应地址,并调用目标函数,完成注入;</li>
+<li>调用dlclose关闭被注入库;</li>
+<li>完成注入;</li>
+</ol>
+<h3 id="动态库中加载目标apk-aar"><a href="#动态库中加载目标apk-aar" class="headerlink" title="动态库中加载目标apk(aar)"></a>动态库中加载目标apk(aar)</h3><ol>
+<li>入口函数中启动新线程,并调用<code>pthread_detach(tid)</code>将新线程设置为detach状态,可自动回收资源;</li>
+<li>新线程中调用<code>AndroidRuntime::getJavaVM();</code>获取JavaVM对象并Attach当前线程到JavaVM:<code>jvm-&gt;AttachCurrentThread(&amp;jni_env, NULL);</code>获取到jni env;</li>
+<li>找到<code>dalvik/system/DexClassLoader</code>类,并获取其构造方法<code>public DexClassLoader(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</code>的methodid及<code>public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException</code>的methodid;</li>
+<li>找到类<code>java/lang/ClassLoader</code>,获取其静态方法<code>Gpublic static ClassLoader getSystemClassLoader()</code>的MethodID,调用静态方法getSystemClassLoader获取系统ClassLoader;</li>
+<li>基于系统ClassLoader,以及DexClassClassLoader构造方法MethodID创建DexClassLoader对象:<code>jni_env-&gt;NewObject(dexloader_claxx, dexloader_init_method, apk_path, dex_out_path, lib_path, class_loader);</code>,要传入DexClassloader jclass,DexClassLoader构造方法id,要被加载的apk路径,dex输出路径,动态库路径,以及父(即系统)ClassLoader;</li>
+<li>调用DexClassLoader的loadClass方法id加载apk中被调起的类:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>调用动态加载到的apk中类的方法:<code>jclass entry_class = static_cast&lt;jclass&gt;(jni_env-&gt;CallObjectMethod(dex_loader_obj, loadClass_method, class_name));</code>;</li>
+<li>线程与JavaVM脱离:<code>jvm-&gt;DetachCurrentThread();</code>;</li>
+</ol>
+<h3 id="java中获取context"><a href="#java中获取context" class="headerlink" title="java中获取context"></a>java中获取context</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/15/docker-env-create/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/15/docker-env-create/" itemprop="url">
+                  docker简介及环境搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:00:03+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="docker是什么"><a href="#docker是什么" class="headerlink" title="docker是什么"></a>docker是什么</h3><p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
+Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 Docker 技术比虚拟机技术更为轻便、快捷。</p>
+<p>传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
+<h3 id="Docker-三个基本概念"><a href="#Docker-三个基本概念" class="headerlink" title="Docker 三个基本概念"></a>Docker 三个基本概念</h3><ul>
+<li>镜像（Image）:Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</li>
+<li>容器（Container）:镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。</li>
+<li>仓库（Repository）:镜像构建完成后，可以很容易的在当前宿主上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt;的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest作为默认标签。用 Docker 的时候，需要经常从官方获取镜像，但是由于显而易见的网络原因，拉取镜像的过程非常耗时，严重影响使用 Docker 的体验。因此 DaoCloud等加速器服务商 推出了加速器工具解决这个难题，通过智能路由和缓存机制，极大提升了国内网络访问 Docker Hub 的速度，目前已经拥有了广泛的用户群体，并得到了 Docker 官方的大力推荐。如果您是在国内的网络环境使用 Docker，那么 Docker 加速器一定能帮助到您。docker常用仓库:<a href="https://hub.docker.com/explore/" target="_blank" rel="external">https://hub.docker.com/explore/</a></li>
+</ul>
+<blockquote>
+<p><a href="https://www.daocloud.io/mirror#accelerator-doc" target="_blank" rel="external">docker daocloud加速器</a>:</p>
+<ul>
+<li>linux:<code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://311e425f.m.daocloud.io</code>,该脚本可以将 –registry-mirror 加入到你的 Docker 配置文件 /etc/docker/daemon.json 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同</li>
+<li>Mac:右键点击桌面顶栏的 docker 图标，选择 Preferences ，在 Daemon 标签（Docker 17.03 之前版本为 Advanced 标签）下的 Registry mirrors 列表中加入下面的镜像地址:<code>http://311e425f.m.daocloud.io</code>,点击 Apply &amp; Restart 按钮使设置生效。</li>
+<li>Windows: 在桌面右下角状态栏中右键 docker 图标，修改在 Docker Daemon 标签页中的 json ，把下面的地址:<code>http://311e425f.m.daocloud.io</code>,加到”registry-mirrors”的数组里。点击 Apply 。</li>
+</ul>
+</blockquote>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="mac下安装docker"><a href="#mac下安装docker" class="headerlink" title="mac下安装docker"></a>mac下安装docker</h4><p><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="external">官方mac的安装步骤</a>
+下载<a href="https://link.jianshu.com/?t=https://download.docker.com/mac/stable/Docker.dmg" target="_blank" rel="external">docker.dmg</a>文件，然后点击，一步步操作</p>
+<p>检测Docker Engine, Docker Compose, 和Docker Machine的版本:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">docker version</div><div class="line">Client:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Tue Mar 28 00:40:02 2017</div><div class="line"> OS/Arch:      darwin/amd64</div><div class="line"></div><div class="line">Server:</div><div class="line"> Version:      17.03.1-ce</div><div class="line"> API version:  1.27 (minimum version 1.12)</div><div class="line"> Go version:   go1.7.5</div><div class="line"> Git commit:   c6d412e</div><div class="line"> Built:        Fri Mar 24 00:00:50 2017</div><div class="line"> OS/Arch:      linux/amd64</div><div class="line"> Experimental: true</div><div class="line"></div><div class="line">docker-compose --version</div><div class="line">docker-compose version 1.11.2, build dfed245</div><div class="line"></div><div class="line">docker-machine --version</div><div class="line">docker-machine version 0.10.0, build 76ed2a6</div></pre></td></tr></table></figure></p>
+<h3 id="运行官网提供的二个简单列子"><a href="#运行官网提供的二个简单列子" class="headerlink" title="运行官网提供的二个简单列子"></a>运行官网提供的二个简单列子</h3><p>拉取hello-world镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull hello-world</div></pre></td></tr></table></figure></p>
+<p>查看hello-world镜像信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker images hello-world</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">hello-world         latest              1815c82652c0        5 days ago          1.84 kB</div></pre></td></tr></table></figure></p>
+<p>根据镜像生成对应容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run hello-world</div></pre></td></tr></table></figure></p>
+<p>ps不加参数只会把当前运行的Community打印出来，查看当前所有的Community，加上-a参数。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure></p>
+<p>当然也可以根据镜像生成一个具体名称的镜像，先删除当前容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 60</div></pre></td></tr></table></figure></p>
+<p>当然如果当前容器正在运行，要删除这个容器，则使用命令
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm -f 60</div></pre></td></tr></table></figure></p>
+<p>使用镜像生成具体名称的容器：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name miaozhihao hello-world</div></pre></td></tr></table></figure></p>
+<p>于更多的docker run的命令可以使用来查看
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --help</div></pre></td></tr></table></figure></p>
+<p><strong>第二个examples，启动docker的web服务</strong>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div><div class="line">docker run -d -p 80:80 --name webserver nginx</div></pre></td></tr></table></figure></p>
+<p>-p参数是使用宿主机的80映射容器的80端口
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">curl localhost:80</div><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</div><div class="line">&lt;style&gt;</div><div class="line">    body &#123;</div><div class="line">        width: 35em;</div><div class="line">        margin: 0 auto;</div><div class="line">        font-family: Tahoma, Verdana, Arial, sans-serif;</div><div class="line">    &#125;</div><div class="line">&lt;/style&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</div><div class="line">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</div><div class="line">working. Further configuration is required.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;For online documentation and support please refer to</div><div class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</div><div class="line">Commercial support is available at</div><div class="line">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>交互式终端方式进入 webserver容器，
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec -it webserver bash</div></pre></td></tr></table></figure></p>
+<p>修改nginx的显示页面：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@41b6804c716e:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</div><div class="line">root@41b6804c716e:/# exit</div><div class="line">exit</div></pre></td></tr></table></figure></p>
+<p>修改了容器的文件，也就是改动了容器的存储层。我们可以通过 docker diff
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">docker diff webserver</div><div class="line">C /root</div><div class="line">A /root/.bash_history</div><div class="line">C /run</div><div class="line">A /run/nginx.pid</div><div class="line">C /usr/share/nginx/html/index.html</div><div class="line">C /var/cache/nginx</div><div class="line">A /var/cache/nginx/client_temp</div><div class="line">A /var/cache/nginx/fastcgi_temp</div><div class="line">A /var/cache/nginx/proxy_temp</div><div class="line">A /var/cache/nginx/scgi_temp</div><div class="line">A /var/cache/nginx/uwsgi_temp</div></pre></td></tr></table></figure></p>
+<p>使用docker commit生成镜像
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker commit --author &quot;zhihao.miao &lt;1026145686@qq.com&gt;&quot; --message &quot;修改了默认网页&quot; webserver nginx:v2</div><div class="line">sha256:0a34c054b8a826d85dddf4d1dbdd3028ab890feff4c8a0844e9b98dd146c2e07</div></pre></td></tr></table></figure></p>
+<p>–autho 指定作者 –message表示容器的一些信息
+查看当前nginx镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker images nginx</div><div class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">nginx               v2                  0a34c054b8a8        11 seconds ago      109 MB</div><div class="line">nginx               latest              958a7ae9e569        4 weeks ago         109 MB</div></pre></td></tr></table></figure></p>
+<p>查看当前所有的容器，包括运行的和停止的
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div><div class="line">\CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS                    PORTS                NAMES</div><div class="line">41b6804c716e        nginx                                 &quot;nginx -g &apos;daemon ...&quot;   3 minutes ago       Up 3 minutes              0.0.0.0:80-&gt;80/tcp   webserver</div><div class="line">85612b405cda        miaozhihao001dockerhub/commit_test1   &quot;nginx -g &apos;daemon ...&quot;   20 hours ago        Exited (0) 3 hours ago                         nginx_web</div><div class="line">9ef1fb35d7aa        ubuntu:14.04                          &quot;/bin/bash&quot;              20 hours ago        Exited (0) 20 hours ago                        commit_test</div><div class="line">bf8320b9e445        ubuntu:14.04                          &quot;/bin/bash&quot;              24 hours ago        Exited (0) 24 hours ago                        sharp_curie</div><div class="line">9f9767eb8aaf        hello-world                           &quot;/hello&quot;                 10 days ago         Exited (0) 10 days ago                         miaozhihao</div></pre></td></tr></table></figure></p>
+<p>启动新的容器
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">docker run --name newwebserver -d -p 80:80 nginx:v2</div><div class="line">3619b34ed347cf1ae2ee3ab32c419140871f3084b9a1325ab5d8c6155d43bf06</div><div class="line">➜ curl localhost:80</div><div class="line">&lt;h1&gt;Hello, Docker!&lt;/h1&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="创建自己的docker镜像"><a href="#创建自己的docker镜像" class="headerlink" title="创建自己的docker镜像"></a>创建自己的docker镜像</h3><p>编辑Dockerfile文件，填入以下内容：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM docker/whalesay:latest</div><div class="line">RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</div><div class="line">CMD /usr/games/fortune -a | cowsay</div></pre></td></tr></table></figure></p>
+<p>运行以下命令创建名为docker-whale的镜像：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-whale .</div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>-t</code>： 给tag命令</li>
+<li><code>.</code>： Dockerfile文件所在路径</li>
+</ul>
+<h4 id="docker-tag-push-pull"><a href="#docker-tag-push-pull" class="headerlink" title="docker tag push pull"></a>docker tag push pull</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 8e15421920b1 xulingfeng/docker-whale:latest</div></pre></td></tr></table></figure>
+<p>上传操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push xulingfeng/docker-whale</div></pre></td></tr></table></figure></p>
+<p>下载操作
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull centos</div></pre></td></tr></table></figure></p>
+<h4 id="交互式的操作"><a href="#交互式的操作" class="headerlink" title="交互式的操作"></a>交互式的操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -t -i ubuntu /bin/bash</div></pre></td></tr></table></figure>
+<ul>
+<li>t 分配了一个终端在新的容器中</li>
+<li><code>-i</code> 允许你和容器进行交互操作</li>
+<li><code>/bin/bash</code> 启动容器中的Bash shell</li>
+</ul>
+<h4 id="docker的守护状态，也就是后台运行"><a href="#docker的守护状态，也就是后台运行" class="headerlink" title="docker的守护状态，也就是后台运行"></a>docker的守护状态，也就是后台运行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d ubuntu /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li>docker run 运行容器</li>
+<li>-d 让容器在后台运行</li>
+<li>ubuntu 你希望运行容器的镜像</li>
+</ul>
+<h4 id="查看docker容器运行日志"><a href="#查看docker容器运行日志" class="headerlink" title="查看docker容器运行日志"></a>查看docker容器运行日志</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 容器名</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-f</code> 类似与 <code>tail -f</code></li>
+</ul>
+<h4 id="使用docker运行web应用"><a href="#使用docker运行web应用" class="headerlink" title="使用docker运行web应用"></a>使用docker运行web应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-d</code>：代表后台运行该容器</li>
+<li><code>-P</code>：映射容器中的web应用端口号到你的主机上32768-61000中的某一个端口。这样你可以访问该容器中的web应用</li>
+<li><code>training/webapp</code>： 一个已经构建好的镜像，包含一个简单的python flask框架web应用</li>
+<li><code>python app.py</code>：这个命令用来启动容器中的web</li>
+</ul>
+<p>成功运行以上命令后，运行：
+<code>docker ps</code>
+查看到容器的5000端口号映射到了本地的32768，浏览器访问<a href="http://127.0.0.1:32768" target="_blank" rel="external">http://127.0.0.1:32768</a> 看到helloworld 成功提示</p>
+<h4 id="自定义主机端口号"><a href="#自定义主机端口号" class="headerlink" title="自定义主机端口号"></a>自定义主机端口号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p 80:5000 training/webapp python app.py</div></pre></td></tr></table></figure>
+<ul>
+<li>-p 80:5000 将本机的80端口绑定容器内的5000端口，本地直接访问 <code>http://127.0.0.1</code> 即可</li>
+</ul>
+<h4 id="查看容器的进程"><a href="#查看容器的进程" class="headerlink" title="查看容器的进程"></a>查看容器的进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker top 容器名</div></pre></td></tr></table></figure>
+<h4 id="检查容器的状态信息"><a href="#检查容器的状态信息" class="headerlink" title="检查容器的状态信息"></a>检查容器的状态信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 容器名</div></pre></td></tr></table></figure>
+<h4 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search 内容</div></pre></td></tr></table></figure>
+<h4 id="创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson"><a href="#创建一个给pycharm开发用的镜像，包含python3，Django，-Flask，-requests，-PyMySQL，-ldap3，-jira，celery，-simplejson" class="headerlink" title="创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson"></a>创建一个给pycharm开发用的镜像，包含python3，Django， Flask， requests， PyMySQL， ldap3， jira，celery， simplejson</h4><p><strong>centos镜像，分解步骤如下</strong></p>
+<ul>
+<li>首先添加额外源:<code>yum install -y epel-release</code></li>
+<li>安装编译环境:<code>yum install -y gcc automake autoconf libtool make gcc-c++</code></li>
+<li>安装wget命令:<code>yum install -y wget</code></li>
+<li>安装openssl-devel python的pip命令依赖:<code>yum install -y openssl-devel</code></li>
+<li>下载python3.5.2最新包:<code>wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</code></li>
+<li>解压python3.5.2压缩包并编译安装:<code>tar -zxvf /software/Python-3.5.2.tgz -C /software/</code>与<code>./configure &amp;&amp; make -j2&amp;&amp; make install -j2</code></li>
+<li>更新pip:<code>pip install --upgrade pip</code>与<code>pip install --upgrade setuptools</code></li>
+<li>安装所需的第三方包:<code>pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</code></li>
+</ul>
+<h4 id="通过Dockerfile构建镜像"><a href="#通过Dockerfile构建镜像" class="headerlink" title="通过Dockerfile构建镜像"></a>通过Dockerfile构建镜像</h4><p>Dockerfile:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">FROM centos:latest</div><div class="line">RUN yum install -y epel-release</div><div class="line">RUN yum install -y gcc automake autoconf libtool make gcc-c++</div><div class="line">RUN yum install -y wget</div><div class="line">RUN yum install -y openssl-devel</div><div class="line">RUN wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz -P /software/</div><div class="line">RUN tar -zxvf /software/Python-3.5.2.tgz -C /software/</div><div class="line">RUN cd /software/Python-3.5.2/ &amp;&amp; ./configure python3 &amp;&amp; make -j2&amp;&amp; make install -j2</div><div class="line">RUN pip install --upgrade pip</div><div class="line">RUN pip install --upgrade setuptools</div><div class="line">RUN pip install Django Flask requests PyMySQL ldap3 jira celery simplejson</div></pre></td></tr></table></figure></p>
+<p>在Dockerfile目录中执行：<code>docker build -t 名字:版本 .</code></p>
+<h4 id="兼容docker-for-mac-和-pycharm"><a href="#兼容docker-for-mac-和-pycharm" class="headerlink" title="兼容docker for mac 和 pycharm"></a>兼容docker for mac 和 pycharm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install socat</div><div class="line">socat TCP-LISTEN:2376,reuseaddr,fork,bind=127.0.0.1 UNIX-CLIENT:/var/run/docker.sock</div></pre></td></tr></table></figure>
+<h3 id="一些docker命令总结"><a href="#一些docker命令总结" class="headerlink" title="一些docker命令总结"></a>一些docker命令总结</h3><ul>
+<li>docker images :查看当前宿主机的所有镜像。</li>
+<li>docker images ubuntu：根据仓库名列出镜像</li>
+<li>docker images ubuntu:14.04:指定仓库名和标签</li>
+<li>docker build -t webservice .:表示使用当前目录下的DockerFile来生成镜像，-t参数的值表示镜像的tagname，如果DockerFile在当前路径下则使用.，如果不在当前路径下则使用相对路径。</li>
+<li>docker ps -a: 没有-a参数表示显示当前宿主机的正在运行的容器，加上-a表示显示当前宿主机所有的容器，包括已经退出的容器。</li>
+<li>docker run -d -p 2222:22 –name base centos:7.1
+表示根据指定的镜像后台运行容器，容器的名字是base（–name就是指定容器的名字)，centos:7.1表示镜像的名字，-p参数表示当前宿主机的2222端口对应容器的22端口。-d参数表示（Run container in background and print container ID）</li>
+<li>docker exec -it base /bin/bash
+以交互式命令进入base容器并且执行/bin/bash命令</li>
+<li>docker rmi webservice:删除webservice镜像</li>
+<li>docker rm base: 删除base容器，如果base正在运行，则可以使用docker rm -f base进行强行删除</li>
+<li>docker start 启动容器</li>
+<li>docker stop 停止容器</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/14/tips-android-pluggable-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/14/tips-android-pluggable-7/" itemprop="url">
+                  Android插件化(六)基础之Binder
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-14T13:47:58+08:00">
+                2018-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/tips-android-pluggable-6/" itemprop="url">
+                  Android插件化(五)基础之用到Android源码类探讨
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T20:23:00+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="PackageManager"><a href="#PackageManager" class="headerlink" title="PackageManager"></a>PackageManager</h6><p>获取:通过Context的getPackageManager()
+常用方法:</p>
+<ol>
+<li><code>getInstalledPackages(int flags)</code>:可以得到所有安装在机器上的程序的包信息类对象List<packageinfo>，PackageInfo类中有一值applicationInfo可以得到Application的对象。</packageinfo></li>
+<li><code>getPackageArchiveInfo(dexPath,
+PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES)</code>:取自身应用以外其他apk的信息方法</li>
+<li><code>getInstalledApplications(int flags)</code>:得到所有安装在机器上的程序的application对象List<applicationinfo>；</applicationinfo></li>
+<li><code>getApplicationIcon(String packageName)</code>,<code>getApplicationIcon(ApplicationInfo info)</code>:获得应用程序的图片</li>
+<li><code>getApplicationLabel(ApplicationInfo info)</code>:方法可以获得应用程序的名字</li>
+</ol>
 
           
         
@@ -2173,7 +2270,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2218,7 +2315,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">124</span>
+                <span class="site-state-item-count">145</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2240,7 +2337,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-count">61</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2341,7 +2438,7 @@ Kotlin没有静态属性和方法,需要使用单例对象来实现类似的功�
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
