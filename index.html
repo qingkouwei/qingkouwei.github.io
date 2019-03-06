@@ -323,6 +323,1051 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/05/tips-android-targetsdkversion/" itemprop="url">
+                  应用targetSdkVersion升级指导
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T16:00:20+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。</p>
+<ul>
+<li>对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应用将无法更新。</li>
+<li>对用户来说，未适配Android M或更高版本的应用安装在Android M或更高版本时，会默认授予申请的所有权限，且应用运行时无弹框授权提示。其中包括通讯录、电话、短信、通讯记录、位置、麦克风、相机等危险权限，导致用户在不知情的情况下泄露隐私信息，对用户个人信息安全造成危害。</li>
+</ul>
+<p><strong>应用targetSdkVersion升级流程</strong>
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935161819.jpg" alt="tips-android-targetsdkversion-201935161819"></p>
+<h2 id="targetSdkVersion-相关变更介绍"><a href="#targetSdkVersion-相关变更介绍" class="headerlink" title="targetSdkVersion 相关变更介绍"></a>targetSdkVersion 相关变更介绍</h2><h3 id="Android5-x（22-19）及以下版本变更"><a href="#Android5-x（22-19）及以下版本变更" class="headerlink" title="Android5.x（22-19）及以下版本变更"></a>Android5.x（22-19）及以下版本变更</h3><p><img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935184537.jpg" alt="tips-android-targetsdkversion-201935184537"></p>
+<h3 id="Android6-0变更"><a href="#Android6-0变更" class="headerlink" title="Android6.0变更"></a>Android6.0变更</h3><h4 id="（一）相关变更"><a href="#（一）相关变更" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><p><strong>运行时权限</strong></p>
+<p>此版本引入了一种新的权限模式，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，为安装的应用分别授予或撤销权限，同时为开发者精简了安装和自动更新过程。</p>
+<p>对于以 Android 6.0（API 级别 23）或更高版本为目标平台的应用，请务必在运行时检查和请求权限。确定应用是否已被授予权限，可调用新增的 checkSelfPermission() 方法。请求权限，可调用新增的 requestPermissions() 方法。具体参考：</p>
+<p><a href="https://developer.android.google.cn/training/permissions/requesting" target="_blank" rel="external">https://developer.android.google.cn/training/permissions/requesting</a></p>
+<p>####（二）适配指导</p>
+<p>• 解释需要权限的原因：系统在开发者调用 requestPermissions() 时显示的权限对话框将说明应用需要的权限，但不会解释为何需要这些权限。某些情况下，用户可能会感到困惑，因此，建议在调用 requestPermissions() 之前向用户解释应用需要相应权限的原因。</p>
+<ul>
+<li>仅申请应用真正需要的权限</li>
+<li>如果应用在启动之后一次要求用户提供多项权限，用户可能会感到无所适从并因此退出应用 。建议开发者应根据需要请求权限，对于某一些权限应用可以在真正需要使用的时候再尝试申请用户动态授权。</li>
+</ul>
+<h3 id="Android7-0"><a href="#Android7-0" class="headerlink" title="Android7.0"></a>Android7.0</h3><h4 id="（一）相关变更-1"><a href="#（一）相关变更-1" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><h5 id="1-系统禁止链接到非-NDK-库"><a href="#1-系统禁止链接到非-NDK-库" class="headerlink" title="1.系统禁止链接到非 NDK 库"></a>1.系统禁止链接到非 NDK 库</h5><p>从 Android 7.0 开始，系统将阻止应用动态链接非公开 NDK 库，原因为NDK 库可能会导致应用崩溃，此行为变更主要目的在为跨平台更新和不同设备提供统一的应用体验。即使应用中的代码不会链接私有库，但第三方静态库可能会进行链接，因此建议所有开发者都需进行相应检查，确保应用不会在运行 Android 7.0 的设备上崩溃。如果应用使用的是原生代码，则只能使用公开 NDK API。（<a href="https://developer.android.com/ndk/guides/stable_apis）" target="_blank" rel="external">https://developer.android.com/ndk/guides/stable_apis）</a></p>
+<h5 id="2-低电耗模式DOZE（系统状态）"><a href="#2-低电耗模式DOZE（系统状态）" class="headerlink" title="2.低电耗模式DOZE（系统状态）"></a>2.低电耗模式DOZE（系统状态）</h5><p>进入条件：灭屏、未充电、静止持续1小时
+退出条件：亮屏或移动或充电</p>
+<p>限制资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停应用的Sync任务</li>
+<li>暂停应用的JobScheduler任务</li>
+<li>忽略应用的wakelocks</li>
+<li>标准Alarm推迟到维护窗口</li>
+<li>不执行wifi扫描</li>
+</ul>
+<h5 id="3-低电耗模式Lite-Idle（系统状态）"><a href="#3-低电耗模式Lite-Idle（系统状态）" class="headerlink" title="3.低电耗模式Lite Idle（系统状态）"></a>3.低电耗模式Lite Idle（系统状态）</h5><p>进入条件：灭屏、未充电持续5分钟(Android P调整为3分钟）
+退出条件：亮屏或充电
+限制资源</p>
+<ul>
+<li>限制应用访问网络。</li>
+<li>暂停应用运行Sync任务 。</li>
+<li>暂停应用运行JobScheduler任务。</li>
+</ul>
+<h5 id="4-AppStandby模式（应用状态）"><a href="#4-AppStandby模式（应用状态）" class="headerlink" title="4.AppStandby模式（应用状态）"></a>4.AppStandby模式（应用状态）</h5><p>进入AppIdle条件：应用后台空闲总时间&gt;48小时且亮屏后台空闲时间 &gt; 12小时
+排除&amp;退出条件：前台应用、有前台服务的应用、通知栏或锁屏通知消息的应用或进行充电
+不限制的应用：系统应用UID&lt;10000的，Persist常驻应用，电池优化白名单，系统关联的其他应用
+限制的资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停执行应用的Sync任务</li>
+<li>暂停执行应用的JobScheduler任务</li>
+</ul>
+<h5 id="5-App-Standby-Bucket-应用待机分组模式-Android-P特性）"><a href="#5-App-Standby-Bucket-应用待机分组模式-Android-P特性）" class="headerlink" title="5.App Standby Bucket 应用待机分组模式( Android P特性）"></a>5.App Standby Bucket 应用待机分组模式( Android P特性）</h5><p>应用待机分组模式是在Doze模式未生效时（亮屏或刚刚灭屏时），对运行在后台的用户不可感知应用的耗电管控扩展。</p>
+<h4 id="（二）适配指导"><a href="#（二）适配指导" class="headerlink" title="（二）适配指导"></a>（二）适配指导</h4><p>低电耗模式和应用待机模式适配指导如下：</p>
+<p>• 前台服务</p>
+<p>应用需要在后台访问网络或者使用CPU时可以通过此方式。</p>
+<p>• Doze白名单</p>
+<p>查询应用是不是再doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);</div><div class="line">boolean hasIgnored = powerManager.isIgnoringBatteryOptimizations(activity.getPackageName());</div></pre></td></tr></table></figure></p>
+<p>向用户申请授权添加doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);</div><div class="line">intent.setData(Uri.parse(&quot;package:&quot;+activity.getPackageName()));</div><div class="line">startActivity(intent);</div></pre></td></tr></table></figure></p>
+<h3 id="Android8-0-变更"><a href="#Android8-0-变更" class="headerlink" title="Android8.0 变更"></a>Android8.0 变更</h3><h4 id="1-后台服务限制"><a href="#1-后台服务限制" class="headerlink" title="1.后台服务限制"></a>1.后台服务限制</h4><h5 id="①哪些应用会受到后台服务限制？"><a href="#①哪些应用会受到后台服务限制？" class="headerlink" title="①哪些应用会受到后台服务限制？"></a>①哪些应用会受到后台服务限制？</h5><ul>
+<li>TargetSDK&gt;=26的应用</li>
+<li>TargetSDK&lt;26且被用户主动设置为限制后台活动的应用（华为EMUI8.x未提供配置）</li>
+</ul>
+<p>注意：Doze 白名单中的应用不受限制（用户可以设置，手机管家配置有默认值白名单）</p>
+<h5 id="②前台如何定义？"><a href="#②前台如何定义？" class="headerlink" title="②前台如何定义？"></a>②前台如何定义？</h5><ul>
+<li>前台有可见 Activity</li>
+<li>前台服务可以后台播放</li>
+<li>绑定服务的情况<h5 id="③后台服务限制，限制了哪些行为？"><a href="#③后台服务限制，限制了哪些行为？" class="headerlink" title="③后台服务限制，限制了哪些行为？"></a>③后台服务限制，限制了哪些行为？</h5></li>
+<li>应用进入 uidldle 后，会被调用 Service.stopself()</li>
+<li>应用进入 uidldle 后，不允许通过 startService启动服务</li>
+<li>应用进程仍然存在，JobScheduler、Alarm、广播等均能触发</li>
+<li>广播接收线程处理短暂业务，无法拉起后台服务</li>
+<li>非安卓组件线程 CPU 超标时，谷歌原生机制会强制kill进程<h5 id="④临时白名单机制"><a href="#④临时白名单机制" class="headerlink" title="④临时白名单机制"></a>④临时白名单机制</h5>系统调用应用时，少量场景会将应用添加到临时白名单（有效时间30秒~300秒）：</li>
+<li>处理高优先级 FCM 消息</li>
+<li>接收短信彩信</li>
+<li>用户点击通知栏，执行 PendingIntent<h5 id="⑤用户设置限制后台活动之后的影响（Android-P优化）"><a href="#⑤用户设置限制后台活动之后的影响（Android-P优化）" class="headerlink" title="⑤用户设置限制后台活动之后的影响（Android P优化）"></a>⑤用户设置限制后台活动之后的影响（Android P优化）</h5></li>
+<li>应用退后台，1分钟就会被停止 Service（包括正在执行的前台任务）</li>
+<li>限制访问网络</li>
+<li>限制 Alarm 触发</li>
+<li>限制 JobScheduler 执行</li>
+</ul>
+<h4 id="2-广播限制"><a href="#2-广播限制" class="headerlink" title="2.广播限制"></a>2.广播限制</h4><p>Android 8.0 的应用无法继续在其清单中为隐式广播注册广播接收器,但也存在例外情况：</p>
+<ul>
+<li>应用可以继续在清单中注册显式广播</li>
+<li>应用可以在运行时使用 Context.registerReceiver() 为任意广播（不管是隐式还是显式）注 册接收器</li>
+<li>需要签名权限的广播不受此限制所限，因为这些广播只会发送到使用相同证书签名的应用 ，而不会发送至设备上的所有应用</li>
+<li>白名单豁免隐式广播的列表：<a href="https://developer.android.com/guide/components/broadcast-exceptions" target="_blank" rel="external">https://developer.android.com/guide/components/broadcast-exceptions</a></li>
+</ul>
+<p>后台执行限制的适配建议</p>
+<ul>
+<li>使用 JobScheduler 代替</li>
+<li>增加前台服务</li>
+<li>加 Doze 白名单（不推荐）</li>
+</ul>
+<h4 id="3-最大屏幕纵横比"><a href="#3-最大屏幕纵横比" class="headerlink" title="3.最大屏幕纵横比"></a>3.最大屏幕纵横比</h4><p>以 Android 7.1（API 级别 25）或更低版本为目标平台中应用默认的最大屏幕纵横比为1.86。针对 Android 8.0 或更高版本的应用没有默认的最大纵横比，如需设置请在应用 androidmanifest 文件定义 maxAspectRatio 属性（注意：如果应用没有显示申明不支持 resizeableActivity，系统将会忽略应用设置的 maxAspectRatio属性）</p>
+<h4 id="4-其他变更"><a href="#4-其他变更" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提醒窗口</td>
+<td>使用SYSTEM_ALERT_WINDOW权限的应用无法再使用以下窗口类型来在其他应用和系统窗口上方显示提醒窗口:TYPE_PHONE,TYPE_PRIORITY_PHONE,TYPE_SYSTEM_ALERT,TYPE_SYSTEM_OVERLAY,TYPE_SYSTEM_ERROR,应用必须使用名为TYPE_APPLICATION_OVERLAY的新窗口类型</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>在Android8.0之前,如果应用在运行时请求权限并且被授予该权限,系统会错误地将属于同一权限组并且在清单中注册的其他权限也一起授予应用.对于针对8.0的应用,此行为已被纠正.系统只会授予应用明确请求的权限.然而,一旦用户为应用授予某个权限,则所有后续对该权限组中权限的请求都被自动批准.建议应用在使用所有的敏感权限之前,都先判断一下权限是否已经被授予,如果没有授予需要申请动态权限.</td>
+</tr>
+<tr>
+<td>Linker</td>
+<td>O版本在linker中新增加检查就是在load之前检测一下需要加载的section的权限,被加载的段不允许同事具有E(可执行)和W(可写)权限.如果有这样的段,则linker报错</td>
+</tr>
+<tr>
+<td>Build.SERIAL弃用</td>
+<td>需要知道硬件序列号的应用应改为使用新的Build.getSerial()函数,该函数要求具有READ_PHONE_STATE权限</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Android9-0-变更"><a href="#Android9-0-变更" class="headerlink" title="Android9.0 变更"></a>Android9.0 变更</h3><h4 id="1-非SDK管控"><a href="#1-非SDK管控" class="headerlink" title="1.非SDK管控"></a>1.非SDK管控</h4><table>
+<thead>
+<tr>
+<th>名单类型</th>
+<th>影响</th>
+<th>名单说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浅灰名单</td>
+<td>targetSDK&gt;=P时,警告</td>
+<td>已有应用在使用非SDK接口,仍然可以继续使用</td>
+</tr>
+<tr>
+<td>深灰名单</td>
+<td>targetSDK<p时,警告;>=时,不允许调用</p时,警告;></td>
+<td>应用可能还在使用</td>
+</tr>
+<tr>
+<td>黑名单</td>
+<td>所有三方应用不允许调用</td>
+<td>灰名单(深灰+浅灰)之外的其他所有非SDK接口都会被添加到黑名单,应用发现有使用黑名单的接口需要马上整改,或者反馈给谷歌申请加灰名单</td>
+</tr>
+</tbody>
+</table>
+<p>使用谷歌提供的非 SDK 扫描工具查看应用使用的深灰名单和黑名单非 SDK 接口： <a href="https://android.googlesource.com/platform/prebuilts/runtime/+/" target="_blank" rel="external">https://android.googlesource.com/platform/prebuilts/runtime/+/</a> master/appcompat/</p>
+<h4 id="2-Apache-HTTP-客户端弃用"><a href="#2-Apache-HTTP-客户端弃用" class="headerlink" title="2. Apache HTTP 客户端弃用"></a>2. Apache HTTP 客户端弃用</h4><p>默认情况下该内容库已从 bootclasspath 中移除且不可用于应用，应用不能使用系统的 classloader 加载 org.apache.http.* 库，否则会抛 NoClassDefFoundError。</p>
+<p>适配建议</p>
+<ul>
+<li>方法一：如果要继续使用 Apache HTTP 客户端，以 Android 9.0及更高版本为目标的应用可以向其 AndroidManifest.xml 添加以下内容：<code>&lt;uses-library android:name=&quot;org.apache.http.legacy&quot; android:required=&quot;false&quot;/&gt;</code></li>
+<li>方法二：如果必须要继续使用 Apache HTTP 客户端，开发者可以将 org.apache.http.legacy库打包进自己的apk。</li>
+<li>推荐方法：使用 HttpURLConnection 类替代 apache-http</li>
+</ul>
+<h4 id="3-内联方法不允许跨dex"><a href="#3-内联方法不允许跨dex" class="headerlink" title="3.内联方法不允许跨dex"></a>3.内联方法不允许跨dex</h4><p>Google 在 Android P 新增检测：如果调用某个 inline 方法的类与 inline 方法所在的类由不同的 classloader 加载，就会主动发起 abort（inline不允许跨dex文件）导致应用 crash。
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935181033.jpg" alt="tips-android-targetsdkversion-201935181033"></p>
+<h5 id="兼容性影响"><a href="#兼容性影响" class="headerlink" title="兼容性影响"></a>兼容性影响</h5><p>对使用插件和热修复的应用有很大影响，需要重点测试。</p>
+<h5 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h5><ul>
+<li>启动应用，构造热修复场景，在 app 侧触发热修复</li>
+<li><code>adb shell cmd package compile -m speed -f my-package 应用包名 (inline编译)</code></li>
+<li>重启应用，检查是否会出现闪退问题</li>
+</ul>
+<h5 id="适配建议"><a href="#适配建议" class="headerlink" title="适配建议"></a>适配建议</h5><ul>
+<li>尽量避免使用不同的 classloader 加载相关的类。</li>
+<li>如果一定要这样做的话，需要避免内联，比如在函数里面加 try catch， 这样 compiler就不会将这个函数 inline。</li>
+</ul>
+<h4 id="4-其他变更-1"><a href="#4-其他变更-1" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前台服务</td>
+<td>使用前台服务的应用必须请求FOREGROUND_SERVICE权限.这是普通权限,因此,系统会自动为请求权限的应用授予此权限.如果针对Android9或更高版本的应用尝试创建一个前台服务且未请求FOREGROUND_SERVICE,则系统会引发SecurityException.</td>
+</tr>
+<tr>
+<td>DNS隐私</td>
+<td>应用应采用私有DNS API.具体而言,当系统解析程序正在执行DNS-over-TLS时,应用应确保任何内置DNS客户端均使用加密的DNS查找和系统相同的主机名,或停用它而改用系统解析程序</td>
+</tr>
+<tr>
+<td>默认情况下启用网络传输层安全协议(TLS)</td>
+<td>默认情况下isCleartextTrafficPermitted()函数返回false.如果您的应用需要为特定域名启动明文,您必须在应用的网络安全性配置中针对这些域名将cleartextTrafficPermitted显式设置为true</td>
+</tr>
+<tr>
+<td>webview数据目录不允许共享</td>
+<td>应用无法再让多个进程公用同一个WebView数据目录.如果应用中的多个进程需要访问同一网络数据,您需要自行在这些进程之间复制数据.例如,您可以调用getCookie()和setCooki(),在不同进程之间手动传输Cookie数据</td>
+</tr>
+<tr>
+<td>以应用为单位的SELinux域名</td>
+<td>应用的私有数据只能由该应用访问.要与其他应用共享文件,请使用contentprovider</td>
+</tr>
+</tbody>
+</table>
+<p>其他的变更和非 TargetSdkVersion 相关的变更以及新特性，可以在谷歌开发者网站查阅：<a href="https://developer.android.google.cn/about/versions/oreo/" target="_blank" rel="external">https://developer.android.google.cn/about/versions/oreo/</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-android-system-load/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/05/tips-android-system-load/" itemprop="url">
+                  Android启动过程深入解析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T14:11:16+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>A当按下Android设备电源键时究竟发生了什么？</li>
+<li>Android的启动过程是怎么样的？</li>
+<li>A什么是Linux内核？</li>
+<li>A桌面系统linux内核与Android系统linux内核有什么区别？</li>
+<li>A什么是引导装载程序？</li>
+<li>A什么是Zygote？</li>
+<li>A什么是X86以及ARM linux？</li>
+<li>A什么是init.rc?</li>
+<li>A什么是系统服务？
+当我们想到Android启动过程时，脑海中总是冒出很多疑问。本文将介绍Android的启动过程，希望能帮助你找到上面这些问题的答案。</li>
+</ul>
+<p>Android是一个基于Linux的开源操作系统。x86（x86是一系列的基于intel 8086 CPU的计算机微处理器指令集架构）是linux内核部署最常见的系统。然而，所有的Android设备都是运行在ARM处理器（ARM 源自进阶精简指令集机器，源自ARM架构）上，除了英特尔的Xolo设备(<a href="http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz" target="_blank" rel="external">http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz</a> x86处理器。Android设备或者嵌入设备或者基于linux的ARM设备的启动过程与桌面版本相比稍微有些差别。这篇文章中，我将解释Android设备的启动过程。<a href="http://www.ibm.com/developerworks/linux/library/l-linuxboot/" target="_blank" rel="external">深入linux启动</a>过程是一篇讲桌面linux启动过程的好文。</p>
+<p>当你按下电源开关后Android设备执行了以下步骤。</p>
+<p><img src="http://images.wodekouwei.com/tips-android-system-load-201935141326.png" alt="tips-android-system-load-201935141326"></p>
+<h3 id="第一步：启动电源以及系统启动"><a href="#第一步：启动电源以及系统启动" class="headerlink" title="第一步：启动电源以及系统启动"></a>第一步：启动电源以及系统启动</h3><p>当电源按下，引导芯片代码开始从预定义的地方（固化在ROM）开始执行。加载引导程序到RAM，然后执行。</p>
+<h3 id="第二步：引导程序"><a href="#第二步：引导程序" class="headerlink" title="第二步：引导程序"></a>第二步：引导程序</h3><p>引导程序是在Android操作系统开始运行前的一个小程序。引导程序是运行的第一个程序，因此它是针对特定的主板与芯片的。设备制造商要么使用很受欢迎的引导程序比如<a href="http://ecos.sourceware.org/redboot/" target="_blank" rel="external">redboot</a>、<a href="http://www.denx.de/wiki/U-Boot" target="_blank" rel="external">uboot</a>、<a href="http://wiki.openmoko.org/wiki/Qi" target="_blank" rel="external">qi bootloader</a>或者开发自己的引导程序，它不是Android操作系统的一部分。引导程序是OEM厂商或者运营商加锁和限制的地方。</p>
+<p>引导程序分两个阶段执行。第一个阶段，检测外部的RAM以及加载对第二阶段有用的程序；第二阶段，引导程序设置网络、内存等等。这些对于运行内核是必要的，为了达到特殊的目标，引导程序可以根据配置参数或者输入数据设置内核。</p>
+<p>Android引导程序可以在<code>\bootable\bootloader\legacy\usbloader</code>找到。
+传统的加载器包含的个文件，需要在这里说明：</p>
+<ul>
+<li>init.s初始化堆栈，清零BBS段，调用main.c的_main()函数；</li>
+<li>main.c初始化硬件（闹钟、主板、键盘、控制台），创建linux标签。
+更多关于Android引导程序的可以在<a href="https://motorola-global-portal.custhelp.com/app/answers/detail/a_id/86208/~/bootloader-frequently-asked-questions" target="_blank" rel="external">这里</a>了解。</li>
+</ul>
+<h3 id="第三步：内核"><a href="#第三步：内核" class="headerlink" title="第三步：内核"></a>第三步：内核</h3><p>Android内核与桌面linux内核启动的方式差不多。内核启动时，设置缓存、被保护存储器、计划列表，加载驱动。当内核完成系统设置，它首先在系统文件中寻找”init”文件，然后启动root进程或者系统的第一个进程。</p>
+<h3 id="第四步：init进程"><a href="#第四步：init进程" class="headerlink" title="第四步：init进程"></a>第四步：init进程</h3><p>init是第一个进程，我们可以说它是root进程或者说有进程的父进程。init进程有两个责任，一是挂载目录，比如/sys、/dev、/proc，二是运行init.rc脚本。</p>
+<p>init进程可以在/system/core/init找到。
+init.rc文件可以在/system/core/rootdir/init.rc找到。
+readme.txt可以在/system/core/init/readme.txt找到。
+对于init.rc文件，Android中有特定的格式以及规则。在Android中，我们叫做Android初始化语言。
+Android初始化语言由四大类型的声明组成，即Actions（动作）、Commands（命令）、Services（服务）、以及Options（选项）。</p>
+<h4 id="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"><a href="#Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。" class="headerlink" title="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"></a>Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。</h4><p>语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">    on &amp;lt;trigger&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div></pre></td></tr></table></figure></p>
+<h4 id="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"><a href="#Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。" class="headerlink" title="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"></a>Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。</h4><p>语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">service &amp;lt;name&amp;gt; &amp;lt;pathname&amp;gt; [&amp;lt;argument&amp;gt;]*</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    ...</div></pre></td></tr></table></figure></p>
+<h4 id="Options（选项）"><a href="#Options（选项）" class="headerlink" title="Options（选项）"></a>Options（选项）</h4><p>选项是对服务的描述。它们影响init进程如何以及何时启动服务。
+咱们来看看默认的init.rc文件。这里我只列出了主要的事件以及服务。
+Table
+|—|—|
+|Action/Service|    描述|
+|on early-init    |设置init进程以及它创建的子进程的优先级，设置init进程的安全环境|
+|on init    |设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点|
+|on fs    |挂载mtd分区|
+|on post-fs    |改变系统目录的访问权限|
+|on post-fs-data    |改变/data目录以及它的子目录的访问权限|
+|on boot    |基本网络的初始化，内存管理等等|
+|service servicemanager    |启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…|
+|service zygote    |启动zygote作为应用进程|
+在这个阶段你可以在设备的屏幕上看到“Android”logo了。</p>
+<h3 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h3><p>在Java中，我们知道不同的虚拟机实例会为不同的应用分配不同的内存。假如Android应用应该尽可能快地启动，但如果Android系统为每一个应用启动不同的Dalvik虚拟机实例，就会消耗大量的内存以及时间。因此，为了克服这个问题，Android系统创造了”Zygote”。Zygote让Dalvik虚拟机共享代码、低内存占用以及最小的启动时间成为可能。Zygote是一个虚拟器进程，正如我们在前一个步骤所说的在系统引导的时候启动。Zygote预加载以及初始化核心库类。通常，这些核心类一般是只读的，也是Android SDK或者核心框架的一部分。在Java虚拟机中，每一个实例都有它自己的核心库类文件和堆对象的拷贝。</p>
+<p>Zygote加载进程</p>
+<ol>
+<li>加载ZygoteInit类，源代码：<code>/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</code></li>
+<li>registerZygoteSocket()为zygote命令连接注册一个服务器套接字。</li>
+<li>preloadClassed “preloaded-classes”是一个简单的包含一系列需要预加载类的文本文件，你可以在<android source="">/frameworks/base找到“preloaded-classes”文件。</android></li>
+<li>preloadResources() preloadResources也意味着本地主题、布局以及android.R文件中包含的所有东西都会用这个方法加载。
+在这个阶段，你可以看到启动动画。</li>
+</ol>
+<h3 id="第六步：系统服务或服务"><a href="#第六步：系统服务或服务" class="headerlink" title="第六步：系统服务或服务"></a>第六步：系统服务或服务</h3><p>完成了上面几步之后，运行环境请求Zygote运行系统服务。系统服务同时使用native以及java编写，系统服务可以认为是一个进程。同一个系统服务在Android SDK可以以System Services形式获得。系统服务包含了所有的System Services。</p>
+<p>Zygote创建新的进程去启动系统服务。你可以在ZygoteInit类的”startSystemServer”方法中找到源代码。</p>
+<p>核心服务：</p>
+<ol>
+<li>启动电源管理器；</li>
+<li>创建Activity管理器；</li>
+<li>启动电话注册；</li>
+<li>启动包管理器；</li>
+<li>设置Activity管理服务为系统进程；</li>
+<li>启动上下文管理器；</li>
+<li>启动系统Context Providers；</li>
+<li>启动电池服务；</li>
+<li>启动定时管理器；</li>
+<li>启动传感服务；</li>
+<li>启动窗口管理器；</li>
+<li>启动蓝牙服务；</li>
+<li>启动挂载服务</li>
+</ol>
+<p>其他服务：</p>
+<ol>
+<li>启动状态栏服务；</li>
+<li>启动硬件服务；</li>
+<li>启动网络状态服务；</li>
+<li>启动网络连接服务；</li>
+<li>启动通知管理器；</li>
+<li>启动设备存储监视服务；</li>
+<li>启动定位管理器；</li>
+<li>启动搜索服务；</li>
+<li>启动剪切板服务；</li>
+<li>启动登记服务；</li>
+<li>启动壁纸服务；</li>
+<li>启动音频服务；</li>
+<li>启动耳机监听；</li>
+<li>启动AdbSettingsObserver（处理adb命令）。</li>
+</ol>
+<h3 id="第七步：引导完成"><a href="#第七步：引导完成" class="headerlink" title="第七步：引导完成"></a>第七步：引导完成</h3><p>一旦系统服务在内存中跑起来了，Android就完成了引导过程。在这个时候“ACTION_BOOT_COMPLETED”开机启动广播就会发出去。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-solution-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/05/tips-solution-2/" itemprop="url">
+                  解决方案之美团APP对Crash的治理之路
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T10:06:36+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。</p>
+<p>本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。</p>
+<h3 id="美团Crash治理背景"><a href="#美团Crash治理背景" class="headerlink" title="美团Crash治理背景"></a>美团Crash治理背景</h3><p>美团作为一个平台化的APP，背后有20+团队设计和30+业务。</p>
+<p>在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带来的直接影响是沟通成本上升和防范难度加大。因此在实际治理过程，主要围绕基础能力、治理效率两个层面进行探索和优化建设。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg" alt="tips-solution-2-201935223013"></p>
+<h4 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h4><p>Crash治理的基础能力主要体现在三个层面：能发现、能定位和能修复。</p>
+<p>在发现能力层面，美团有一套异常监控退出系统，可发现除Java&amp;JNI Crash&amp;ANR以外其他类型的异常退出。在定位能力层面，有可提供内存泄漏路径及OOM时的内存快照的内存监控体系，有可提供线程现场及任务现场的线程管控体系。除此以外，还有动态日志系统提供额外的方法调用链及参数信息。</p>
+<h4 id="内存监控体系"><a href="#内存监控体系" class="headerlink" title="内存监控体系"></a>内存监控体系</h4><p>内存问题最典型的呈现形式是OOM，其中80%通过Leak监控系统发现预防，另外20%的内存问题，对于大体量APP需要从全局对内存资源问题进行监控和调查分析。</p>
+<p>美团的内存监控体系分为线下和线上两个场景。线下通过Leak监控系统能预防发现80%的OOM问题，线上建立随时获取OOM内存现场的监控能力
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223125.jpg" alt="tips-solution-2-201935223125"></p>
+<h4 id="动态日志"><a href="#动态日志" class="headerlink" title="动态日志"></a>动态日志</h4><p>美团APP经常会遇到用户个性化的使用场景无法复现和定位的问题。对此，美团提出了一套动态日志系统——</p>
+<p>在编译期对应用代码通过插桩实现代理，运行期同步记录，出现异常时可主动触发上报，也可以由服务端主动回捞。基于插桩实现的代理逻辑，可实施获取原方法执行时的方法名、入参和返回值信息，再将这些信息序列化后存储到数据库，由此可在必要的时候获取到较完善的方法调用栈历史，进而定位问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223215.jpg" alt="tips-solution-2-201935223215">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223229.jpg" alt="tips-solution-2-201935223229"></p>
+<h4 id="修复能力"><a href="#修复能力" class="headerlink" title="修复能力"></a>修复能力</h4><p>在修复能力层面，美团APP一度深受机型多、系统杂带来的framework层的问题困扰。此外，美团APP也经常会遇到常规日志体系无法覆盖的接口问题。</p>
+<p>针对这两类问题，参考热修复的方法替换原理，开发并完善了一套小工具——“Graft”。它的基本原理是在native层通过方法替换实现对Java层方法的hook和代理，进而在Java层实现方法代理和方法替换。</p>
+<p>这套工具可以动态代理或替换几乎所有Java层的方法（包括framework层），使得美团APP的修复能力从自有代码和第三方代码有效覆盖到framework层。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223340.jpg" alt="tips-solution-2-201935223340">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223353.jpg" alt="tips-solution-2-201935223353"></p>
+<h4 id="效率提升"><a href="#效率提升" class="headerlink" title="效率提升"></a>效率提升</h4><p>为了提高治理效率，实际治理过程逐渐形成PR检查流程、自动检查平台和Crash平台三大流程和平台。</p>
+<p>PR检查流程主要针对PR阶段进行代码规范性检查、代码准入检查和稳定性案例检查；自动检查平台针对以往案例进行定制化防范检查。Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223433.jpg" alt="tips-solution-2-201935223433"></p>
+<h3 id="Crash平台"><a href="#Crash平台" class="headerlink" title="Crash平台"></a>Crash平台</h3><p>Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。</p>
+<p>在PR阶段，PR检查流程可自动识别出增量代码是否被现有体系覆盖，并通过Crash平台的接入管控系统督促增量代码的责任人完善基本信息、频道信息、聚合配合及自动工单配置等等。</p>
+<p>在开发或全量过程中一旦发现异常，Crash平台会自动完成堆栈聚合、频道识别、报警评估及工单跟踪等工作。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223539.jpg" alt="tips-solution-2-201935223539">
+<img src="http://images.wodekouwei.com/tips-solution-2-20193522365.jpg" alt="tips-solution-2-20193522365"></p>
+<p>Crash率是APP最重要的指标之一，谌天洲建议开发者建立解决Crash的长效机制，找到最合理的解决方案。随着版本的不断迭代，Crash治理之路才能离目标越来越近。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/04/tips-solution-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/04/tips-solution-1/" itemprop="url">
+                  性能度量指标及数据平台
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T23:25:17+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="性能和稳定性系统化提升方案"><a href="#性能和稳定性系统化提升方案" class="headerlink" title="性能和稳定性系统化提升方案"></a>性能和稳定性系统化提升方案</h2><h3 id="高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台"><a href="#高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台" class="headerlink" title="高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台"></a>高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台</h3><h4 id="高可用的定义及度量指标"><a href="#高可用的定义及度量指标" class="headerlink" title="高可用的定义及度量指标"></a>高可用的定义及度量指标</h4><h5 id="移动端高可用定义"><a href="#移动端高可用定义" class="headerlink" title="移动端高可用定义"></a>移动端高可用定义</h5><p>移动端高可用旨在通过设计关键的度量指标,以期望能够客观反映和量化用户再使用过程中的真是感受,同时通过指标，建⽴一系列的工具和平台，从线下到线上快速发现、分析、定位和解决包括稳定性、性能、功能等各类问题，以进一步提升用户体验的系统化解决方案。</p>
+<h5 id="可高勇度量指标"><a href="#可高勇度量指标" class="headerlink" title="可高勇度量指标"></a>可高勇度量指标</h5><p>高可用度量指标由 <strong>性能</strong> 和 <strong>稳定性</strong> 两大度量指标组成。性能度量指标有七个维度，分别是卡顿率、启动时长、页面秒开率、帧率、ANR率、流量、耗电；稳定性度量指标主要是Crash率，分为Java Crash率和Native Crash率。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-1-201935105618.jpg" alt="tips-solution-1-201935105618"></p>
+<h4 id="自动化测试框架及性能稳定性数据平台"><a href="#自动化测试框架及性能稳定性数据平台" class="headerlink" title="自动化测试框架及性能稳定性数据平台"></a>自动化测试框架及性能稳定性数据平台</h4><h5 id="自动化测试框架"><a href="#自动化测试框架" class="headerlink" title="自动化测试框架"></a>自动化测试框架</h5><h5 id="性能稳定性数据平台"><a href="#性能稳定性数据平台" class="headerlink" title="性能稳定性数据平台"></a>性能稳定性数据平台</h5><p>性能稳定性数据平台，由四个模块组成，用来展示各个维度的监控数据。
+<img src="http://images.wodekouwei.com/tips-solution-1-201935111941.jpg" alt="tips-solution-1-201935111941"></p>
+<h6 id="1-崩溃分析"><a href="#1-崩溃分析" class="headerlink" title="1.崩溃分析"></a>1.崩溃分析</h6><p>主要是Java Crash和Native Crash分析，Java Crash包含了Crash当时调用栈，当前页面、用户历史访问页面、当前内存水位以及logcat信息，帮助开发同学快速分析Java崩溃的原因，从而快速解决问题。Native崩溃主要包含了崩溃的信号量、崩溃使用的调用栈、其他线程的调度栈、logcat信息以及已加载的so信息，通过这些信息，可以让开发同学快速地发现Native崩溃原因。</p>
+<h6 id="2-异常分析"><a href="#2-异常分析" class="headerlink" title="2.异常分析"></a>2.异常分析</h6><p>各个性能维度的指标会在这里展示，主线程卡顿主要是哪条消息超过了阈值，它的调用栈是什么样子的。ANR展示的主要是/data/anr下的文件信息，发生ANR的现场是什么样子的。主线程IO这块展示的是主线程操作IO的一些调用栈以及它的耗时。内存泄露这块分两部分，Java泄露组件的名称，Native泄露的so名称，通过这两部分可以快速地定位内存泄露的原因。资源泄露这块主要展示开发同学调用资源open时的调用栈信息。</p>
+<h6 id="3-性能APM"><a href="#3-性能APM" class="headerlink" title="3.性能APM"></a>3.性能APM</h6><p>启动性能监控了用户点击图标到真正进入页面可视可交互的时间。页面性能是从点击页面图表到下一个页面真正可视可交互的时间。系统监控启动所有阶段子任务的耗时，通过数据变化决策版本的发布是否符合质量标准。如果符合质量标准，可以发布；如果不符合，再进一步分析子任务耗时，具体是哪些任务导致不能正常发布。快速地定位分析，最终解决问题。手淘把数据能力开放给各个业务，通过他们个性化的需求自定义配置性能报表。</p>
+<h6 id="4-远程工具"><a href="#4-远程工具" class="headerlink" title="4.远程工具"></a>4.远程工具</h6><p>远程工具主要是针对特殊用户的特殊案例。当线上用户向舆情平台反馈设备存在某一个性能问题时，通过这个工具，快速地从用户那里获取远程日志、Dump内存和每个方法的耗时，快速分析原因，从而给出解决方案。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/01/gl-introduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/01/gl-introduce/" itemprop="url">
+                  Android系统图形栈(一):OpenGL 介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T18:06:18+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="OpenGL基本概念"><a href="#OpenGL基本概念" class="headerlink" title="OpenGL基本概念"></a>OpenGL基本概念</h3><p>OpenGL的结构可以从逻辑上划分为下面3个部分:</p>
+<ul>
+<li>图元(Primitives)</li>
+<li>缓冲区(Buffers)</li>
+<li>光栅化(Rasterize)</li>
+</ul>
+<h4 id="图元-Primitives"><a href="#图元-Primitives" class="headerlink" title="图元(Primitives)"></a>图元(Primitives)</h4><p>在 OpenGL 的世界里，我们只能画点、线、三角形这三种基本图形，而其它复杂的图形都可以通过三角形来组成。所以这里的图元指的就是这三种基础图形：</p>
+<ul>
+<li>点：点存在于三维空间，坐标用（x,y,z）表示。</li>
+<li>线：由两个三维空间中的点组成。</li>
+<li>三角形：由三个三维空间的点组成。</li>
+</ul>
+<h4 id="缓冲区（Buffers）"><a href="#缓冲区（Buffers）" class="headerlink" title="缓冲区（Buffers）"></a>缓冲区（Buffers）</h4><p>OpenGL 中主要有 3 种 Buffer：</p>
+<ul>
+<li>帧缓冲区（Frame Buffers） 帧缓冲区：这个是存储OpenGL 最终渲染输出结果的地方，它是一个包含多个图像的集合，例如颜色图像、深度图像、模板图像等。</li>
+<li>渲染缓冲区（Render Buffers） 渲染缓冲区：渲染缓冲区就是一个图像，它是 Frame Buffer 的一个子集。</li>
+<li>缓冲区对象（Buffer Objects） 缓冲区对象就是程序员输入到 OpenGL 的数据，分为结构类和索引类的。前者被称为“数组缓冲区对象”或“顶点缓冲区对象”（“Array Buffer Object”或“Vertex Buff er Object”），即用来描述模型的数组，如顶点数组、纹理数组等； 后者被称为“索引缓冲区对象”（“Index Buffer Object”），是对上述数组的索引。</li>
+</ul>
+<h4 id="光栅化（Rasterize）"><a href="#光栅化（Rasterize）" class="headerlink" title="光栅化（Rasterize）"></a>光栅化（Rasterize）</h4><p>在介绍光栅化之前，首先来补充 OpenGL 中的两个非常重要的概念：</p>
+<ul>
+<li>Vertex Vertex 就是图形中顶点，一系列的顶点就围成了一个图形。</li>
+<li>Fragment Fragment 是三维空间的点、线、三角形这些基本图元映射到二维平面上的映射区域，通常一个 Fragment 对应于屏幕上的一个像素，但高分辨率的屏幕可能会用多个像素点映射到一个 Fragment，以减少 GPU 的工作。</li>
+</ul>
+<p>而光栅化是把点、线、三角形映射到屏幕上的像素点的过程。</p>
+<h4 id="着色器程序（Shader）"><a href="#着色器程序（Shader）" class="headerlink" title="着色器程序（Shader）"></a>着色器程序（Shader）</h4><p>Shader 用来描述如何绘制（渲染），GLSL 是 OpenGL 的编程语言，全称 OpenGL Shader Language，它的语法类似于 C 语言。OpenGL 渲染需要两种 Shader：Vertex Shader 和 Fragment Shader。</p>
+<ul>
+<li>Vertex Shader Vertex Shader 对于3D模型网格的每个顶点执行一次，主要是确定该顶点的最终位置。</li>
+<li>Fragment Shader Fragment Shader对光栅化之后2D图像中的每个像素处理一次。3D物体的表面最终显示成什么样将由它决定，例如为模型的可见表面添加纹理，处理光照、阴影的影响等等。</li>
+</ul>
+<h4 id="OpenGL-流水线"><a href="#OpenGL-流水线" class="headerlink" title="OpenGL 流水线"></a>OpenGL 流水线</h4><p>OpenGL 中有两种流水线，一种是固定流水线，另外一种则是可编程流水线。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/01/tips-engineering/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1155,793 +2200,6 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/26/tips-universal-cmd/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/26/tips-universal-cmd/" itemprop="url">
-                  常用命令备忘
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T10:55:28+08:00">
-                2019-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tips/" itemprop="url" rel="index">
-                    <span itemprop="name">tips</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h5><ul>
-<li><code>git stash save &quot;test-cmd-stash&quot;</code>:给stash增加message</li>
-<li><code>git stash pop</code>:将缓存堆栈中的第一个stash删除，并将对应修改应用到当前的工作目录下。</li>
-<li><code>git stash apply</code>:将缓存堆栈中的stash多次应用到工作目录中，但并不删除stash拷贝</li>
-<li><code>git stash list</code>:查看现有stash</li>
-<li><code>git stash drop stash@{0}</code>:移除stash</li>
-<li><code>git stash clear</code>:删除所有缓存的stash</li>
-<li><code>git stash show</code>:查看指定stash的diff,后面可以跟着stash名字,还可以添加-p或–patch,查看特定stash的全部diff</li>
-<li><code>git stash branch</code>:创建一个新的分支,检出储藏工作时的所处的提交,重新应用工作</li>
-<li><code>git stash -u/--include-untracked</code>储藏untracked文件,<code>git stash -a/--all</code>:stash当前目录下所有修改</li>
-</ul>
-<h5 id="ffmpeg"><a href="#ffmpeg" class="headerlink" title="ffmpeg"></a>ffmpeg</h5>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/15/env-centos-nginx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/15/env-centos-nginx/" itemprop="url">
-                  Nginx安装配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T17:24:07+08:00">
-                2019-02-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/env/" itemprop="url" rel="index">
-                    <span itemprop="name">env</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="CentOS安装Nginx"><a href="#CentOS安装Nginx" class="headerlink" title="CentOS安装Nginx"></a>CentOS安装Nginx</h2><p>Nginx(“engine x”)是一款是由俄罗斯的程序设计师Igor Sysoev所开发高性能的 Web和 反向代理 服务器，也是一个 IMAP/POP3/SMTP 代理服务器。</p>
-<p>在高连接并发的情况下，Nginx是Apache服务器不错的替代品。</p>
-<p>系统平台: 阿里云CentOS7.6 64位</p>
-<h3 id="1-安装编译工具及库文件"><a href="#1-安装编译工具及库文件" class="headerlink" title="1.安装编译工具及库文件"></a>1.安装编译工具及库文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel</div></pre></td></tr></table></figure>
-<h3 id="2-首先要安装PCRE"><a href="#2-首先要安装PCRE" class="headerlink" title="2.首先要安装PCRE"></a>2.首先要安装PCRE</h3><p>PCRE 作用是让 Nginx 支持 Rewrite 功能</p>
-<h4 id="2-1-下载PCRE安装包"><a href="#2-1-下载PCRE安装包" class="headerlink" title="2.1 下载PCRE安装包:"></a>2.1 下载PCRE安装包:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/src/</div><div class="line">wget http://downloads.sourceforge.net/project/pcre/pcre/8.35/pcre-8.35.tar.gz</div></pre></td></tr></table></figure>
-<h4 id="2-2-解压安装包"><a href="#2-2-解压安装包" class="headerlink" title="2.2 解压安装包"></a>2.2 解压安装包</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar zxvf pcre-8.35.tar.gz</div></pre></td></tr></table></figure>
-<h4 id="2-3-进入安装包目录"><a href="#2-3-进入安装包目录" class="headerlink" title="2.3 进入安装包目录"></a>2.3 进入安装包目录</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd pcre-8.35</div></pre></td></tr></table></figure>
-<h4 id="2-4-编译安装"><a href="#2-4-编译安装" class="headerlink" title="2.4 编译安装"></a>2.4 编译安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./configure</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
-<h5 id="2-5-查看pcre版本"><a href="#2-5-查看pcre版本" class="headerlink" title="2.5 查看pcre版本"></a>2.5 查看pcre版本</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pcre-config --version</div></pre></td></tr></table></figure>
-<h3 id="3-安装Nginx"><a href="#3-安装Nginx" class="headerlink" title="3.安装Nginx"></a>3.安装Nginx</h3><h4 id="3-1-下载-Nginx，下载地址：http-nginx-org-download-nginx-1-6-2-tar-gz"><a href="#3-1-下载-Nginx，下载地址：http-nginx-org-download-nginx-1-6-2-tar-gz" class="headerlink" title="3.1 下载 Nginx，下载地址：http://nginx.org/download/nginx-1.6.2.tar.gz"></a>3.1 下载 Nginx，下载地址：<a href="http://nginx.org/download/nginx-1.6.2.tar.gz" target="_blank" rel="external">http://nginx.org/download/nginx-1.6.2.tar.gz</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/src/</div><div class="line">wget http://nginx.org/download/nginx-1.6.2.tar.gz</div></pre></td></tr></table></figure>
-<h4 id="3-2-解压安装包"><a href="#3-2-解压安装包" class="headerlink" title="3.2 解压安装包"></a>3.2 解压安装包</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar zxvf nginx-1.6.2.tar.gz</div></pre></td></tr></table></figure>
-<h4 id="3-3-进入安装包目录"><a href="#3-3-进入安装包目录" class="headerlink" title="3.3 进入安装包目录"></a>3.3 进入安装包目录</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd nginx-1.6.2</div></pre></td></tr></table></figure>
-<h4 id="3-4-编译安装"><a href="#3-4-编译安装" class="headerlink" title="3.4 编译安装"></a>3.4 编译安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=/usr/local/webserver/nginx --with-http_stub_status_module --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.35</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure>
-<h4 id="3-5-查看nginx版本"><a href="#3-5-查看nginx版本" class="headerlink" title="3.5 查看nginx版本"></a>3.5 查看nginx版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/local/webserver/nginx/sbin/nginx -v</div></pre></td></tr></table></figure>
-<h3 id="4-Nginx-配置"><a href="#4-Nginx-配置" class="headerlink" title="4. Nginx 配置"></a>4. Nginx 配置</h3><p>创建 Nginx 运行使用的用户 www：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/usr/sbin/groupadd www </div><div class="line">/usr/sbin/useradd -g www www</div></pre></td></tr></table></figure></p>
-<p>配置nginx.conf ，将<code>/usr/local/webserver/nginx/conf/nginx.conf</code>替换为以下内容
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">cat /usr/local/webserver/nginx/conf/nginx.conf</div><div class="line"></div><div class="line">user www www;</div><div class="line">worker_processes 2; #设置值和CPU核心数一致</div><div class="line">error_log /usr/local/webserver/nginx/logs/nginx_error.log crit; #日志位置和日志级别</div><div class="line">pid /usr/local/webserver/nginx/nginx.pid;</div><div class="line">#Specifies the value for maximum file descriptors that can be opened by this process.</div><div class="line">worker_rlimit_nofile 65535;</div><div class="line">events</div><div class="line">&#123;</div><div class="line">  use epoll;</div><div class="line">  worker_connections 65535;</div><div class="line">&#125;</div><div class="line">http</div><div class="line">&#123;</div><div class="line">  include mime.types;</div><div class="line">  default_type application/octet-stream;</div><div class="line">  log_format main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</div><div class="line">               &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">               &apos;&quot;$http_user_agent&quot; $http_x_forwarded_for&apos;;</div><div class="line">  </div><div class="line">#charset gb2312;</div><div class="line">     </div><div class="line">  server_names_hash_bucket_size 128;</div><div class="line">  client_header_buffer_size 32k;</div><div class="line">  large_client_header_buffers 4 32k;</div><div class="line">  client_max_body_size 8m;</div><div class="line">     </div><div class="line">  sendfile on;</div><div class="line">  tcp_nopush on;</div><div class="line">  keepalive_timeout 60;</div><div class="line">  tcp_nodelay on;</div><div class="line">  fastcgi_connect_timeout 300;</div><div class="line">  fastcgi_send_timeout 300;</div><div class="line">  fastcgi_read_timeout 300;</div><div class="line">  fastcgi_buffer_size 64k;</div><div class="line">  fastcgi_buffers 4 64k;</div><div class="line">  fastcgi_busy_buffers_size 128k;</div><div class="line">  fastcgi_temp_file_write_size 128k;</div><div class="line">  gzip on; </div><div class="line">  gzip_min_length 1k;</div><div class="line">  gzip_buffers 4 16k;</div><div class="line">  gzip_http_version 1.0;</div><div class="line">  gzip_comp_level 2;</div><div class="line">  gzip_types text/plain application/x-javascript text/css application/xml;</div><div class="line">  gzip_vary on;</div><div class="line"> </div><div class="line">  #limit_zone crawler $binary_remote_addr 10m;</div><div class="line"> #下面是server虚拟主机的配置</div><div class="line"> server</div><div class="line">  &#123;</div><div class="line">    listen 80;#监听端口</div><div class="line">    server_name localhost;#域名</div><div class="line">    index index.html index.htm index.php;</div><div class="line">    root /usr/local/webserver/nginx/html;#站点目录</div><div class="line">      location ~ .*\.(php|php5)?$</div><div class="line">    &#123;</div><div class="line">      #fastcgi_pass unix:/tmp/php-cgi.sock;</div><div class="line">      fastcgi_pass 127.0.0.1:9000;</div><div class="line">      fastcgi_index index.php;</div><div class="line">      include fastcgi.conf;</div><div class="line">    &#125;</div><div class="line">    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|ico)$</div><div class="line">    &#123;</div><div class="line">      expires 30d;</div><div class="line">  # access_log off;</div><div class="line">    &#125;</div><div class="line">    location ~ .*\.(js|css)?$</div><div class="line">    &#123;</div><div class="line">      expires 15d;</div><div class="line">   # access_log off;</div><div class="line">    &#125;</div><div class="line">    access_log off;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>检查配置文件nginx.conf的正确性命令：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/local/webserver/nginx/sbin/nginx -t</div></pre></td></tr></table></figure></p>
-<h3 id="4-Nginx命令"><a href="#4-Nginx命令" class="headerlink" title="4. Nginx命令"></a>4. Nginx命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/usr/local/webserver/nginx/sbin/nginx                      # 启动</div><div class="line">/usr/local/webserver/nginx/sbin/nginx -s reload            # 重新载入配置文件</div><div class="line">/usr/local/webserver/nginx/sbin/nginx -s reopen            # 重启 Nginx</div><div class="line">/usr/local/webserver/nginx/sbin/nginx -s stop              # 停止 Nginx</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/11/ffmpeg-command/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/11/ffmpeg-command/" itemprop="url">
-                  FFMPEG常用命令
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T11:01:13+08:00">
-                2019-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FFMPEG/" itemprop="url" rel="index">
-                    <span itemprop="name">FFMPEG</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="将多个视频片段合成一个视频"><a href="#将多个视频片段合成一个视频" class="headerlink" title="将多个视频片段合成一个视频"></a>将多个视频片段合成一个视频</h6><p>新建文本文件,输入要合成的视频列表(如果文件名有奇怪的字符,需要转意)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">file &apos;output_train_video_0.mp4&apos;</div><div class="line">file &apos;output_train_video_1.mp4&apos;</div><div class="line">file &apos;output_train_video_2.mp4&apos;</div><div class="line">file &apos;output_train_video_3.mp4&apos;</div><div class="line">file &apos;output_train_video_4.mp4&apos;</div></pre></td></tr></table></figure></p>
-<p>执行
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ffmpeg -f concat -i filelist.txt -c copy output_set.mp4</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/01/30/gl-egl/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/01/30/gl-egl/" itemprop="url">
-                  OpenGL之EGL
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T18:48:27+08:00">
-                2019-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenGL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>OpenGL ES的javax.microedition.khronos.openges包定义了平台无关的GL绘制指令,EGL(javax.microedition.khronos.egl)则定义了控制dispays,contexts以及surfaces的统一的平台接口.</p>
-<p><img src="http://images.wodekouwei.com/gl/egl.png" alt="image"></p>
-<ul>
-<li>Display(EGLDisplay)是对实际显示设备的抽象</li>
-<li>Surface(EGLSurface)是对用来存储图像的内存区域FrameBuffer的抽象,包括Color Buffer, Stencil Buffer, Depth Buffer.</li>
-<li>Context(EGLContext)存储OpenGLES绘图的一些状态信息</li>
-</ul>
-<p>使用EGL绘制的一般步骤:</p>
-<ol>
-<li>获取EGLDisplay对象</li>
-<li>初始化与EGLDisplay之间的连接</li>
-<li>获取EGLConfig实例</li>
-<li>创建EGLContext实例</li>
-<li>创建EGLSurface实例</li>
-<li>连接EGLContext和EGLSurface</li>
-<li>使用GL指令绘制图形</li>
-<li>断开并释放与EGLSurface关联的EGLContext对象</li>
-<li>删除EGLSurface对象</li>
-<li>删除EGLContext对象</li>
-<li>终止与EGLDisplay之间的连接</li>
-</ol>
-<p>源码:
-本地代码:</p>
-<ul>
-<li><code>frameworks/native/opengl/libs/EGL</code>:Android EGL框架，负责加载OpenGL函数库和EGL本地实现。</li>
-<li><code>frameworks/native/opengl/libagl</code>:Android提供的OpenGL软件库</li>
-</ul>
-<p>JNI代码:</p>
-<ul>
-<li><code>frameworks/base/core/jni/com_google_android_gles_jni_EGLImpl.cpp</code>:EGL本地代码的JNI调用接口</li>
-<li><code>frameworks/base/core/jni/com_google_android_gles_jni_GLImpl.cpp</code></li>
-<li><code>frameworks/base/core/jni/android_opengl_GLESXXX.cpp</code>:OpenGL功能函数的JNI调用接口</li>
-</ul>
-<p>JAVA代码:</p>
-<ul>
-<li><code>frameworks/base/opengl/java/javax/microedition/khronos/egl</code></li>
-<li><code>frameworks/base/opengl/java/javax/microedition/khronos/opengles</code></li>
-<li><code>frameworks/base/opengl/java/com/google/android/gles_jni/</code></li>
-<li><code>frameworks/base/opengl/java/android/opengl</code> :EGL和OpenGL的Java层接口，提供给应用开发者，通过JNI方式调用底层函数。</li>
-</ul>
-<h4 id="eglSwapBuffers接口实现说明"><a href="#eglSwapBuffers接口实现说明" class="headerlink" title="eglSwapBuffers接口实现说明"></a>eglSwapBuffers接口实现说明</h4><p>一般性嵌入式平台
-<img src="http://images.wodekouwei.com/gl/egl_swapbuffer.png" alt="iamge"></p>
-<p>利用双缓冲进行Swap的时候，Display和Surface进行实际意义上的地址交换，来实现eglSwapBuffers的标准， 如上图的右侧所示。上图的左侧表示，单缓冲Framebuffer的形式，Surface永远都在后端， 显示的永远是Display，在GPU出现后已不使用。</p>
-<p>Android平台:
-为了实现eglSwapBuffers， eglSurface其实代表了一个从NativeWindow 申请到的一个Buffer（Dequeue操作）。当调用eglSwapBuffers时，对于一般应用窗口而言，NativeWindow将该Surface的Buffer 提交回去给SurfaceFlinger（Queue操作)，然后又重新从NativeWindow中重新Dequeue出来一个新的Buffer给eglSurface。而eglDisplay并不代表实际的意义。我们只是从接口上感觉是，surface和display进行了交换。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/01/30/daily/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/01/30/daily/" itemprop="url">
-                  日常的
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T18:36:22+08:00">
-                2019-01-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Parameters were incorrect. We wanted {“required”:[“desiredCapabilities”],
-pip uninstall selenium
-pip install selenium==3.0.1</p>
-<p>fbo与pbuffer区别</p>
-<p>像zoom这样把多个流放到一个upd里究竟有什么好处?
-节省端口
-这个理由似乎不是很充分，付出的代价有点大，而且单机其实支持不了多少路，端口足够用了</p>
-<p>付出什么代价了
-单机支持一两千路足够视频会议用了\</p>
-<p>猜测而已: 1. 避免NAT穿越时候多个Port的维护  2. 在UDP层面复用的话，保证UDP的流量足够，同时也避免了维护多个Socket，减小资源开销
-当集群来应对大量客户的时候，这样做的话，机器之间会有很多的互相拉流的操作，</p>
-<p>ICE打洞过程会快了，但是也得要支持动态更新啊，因为肯定会存在半路上有人进，有人出，SDP不是要变化吗？</p>
-<p>没记错的话，RTP、RTCP曾经打算复用一个Port，避免一次使用两个 ：）</p>
-<p>和TS的统计复用很类似
-所以我猜测Zoom并不是全部随意把流放到一个Port里面去，上层逻辑是做了控制的
-TS的统计复用是为了适应CBR</p>
-<p>我抓包看到ZOOM是哪个SFU入，就从那个SFU出流，但流被复接连</p>
-<p>是不是好做集群，好做负载均衡，好做就近接入，还是好和SD-WAN结合，我想ZOOM体验那么好，一定是多方面优化的结果，究竟在哪些地方不一样达成的这种效果</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1991,7 +2249,7 @@ TS的统计复用是为了适应CBR</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">145</span>
+                <span class="site-state-item-count">150</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

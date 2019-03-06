@@ -1,0 +1,1039 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。 本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。 美团Crash治理背景美团作为一个平台化的APP，背后有20+团队设计和30+业务。 在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决方案之美团APP对Crash的治理之路">
+<meta property="og:url" content="http://wodekouwei.com/2019/03/05/tips-solution-2/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。 本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。 美团Crash治理背景美团作为一个平台化的APP，背后有20+团队设计和30+业务。 在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223125.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223215.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223229.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223340.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223353.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223433.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-201935223539.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-solution-2-20193522365.jpg">
+<meta property="og:updated_time" content="2019-03-05T14:36:16.604Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决方案之美团APP对Crash的治理之路">
+<meta name="twitter:description" content="Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。 本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。 美团Crash治理背景美团作为一个平台化的APP，背后有20+团队设计和30+业务。 在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带">
+<meta name="twitter:image" content="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/03/05/tips-solution-2/"/>
+
+
+
+
+
+  <title> 解决方案之美团APP对Crash的治理之路 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-solution-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                解决方案之美团APP对Crash的治理之路
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T10:06:36+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/03/05/tips-solution-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。</p>
+<p>本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。</p>
+<h3 id="美团Crash治理背景"><a href="#美团Crash治理背景" class="headerlink" title="美团Crash治理背景"></a>美团Crash治理背景</h3><p>美团作为一个平台化的APP，背后有20+团队设计和30+业务。</p>
+<p>在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带来的直接影响是沟通成本上升和防范难度加大。因此在实际治理过程，主要围绕基础能力、治理效率两个层面进行探索和优化建设。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg" alt="tips-solution-2-201935223013"></p>
+<h4 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h4><p>Crash治理的基础能力主要体现在三个层面：能发现、能定位和能修复。</p>
+<p>在发现能力层面，美团有一套异常监控退出系统，可发现除Java&amp;JNI Crash&amp;ANR以外其他类型的异常退出。在定位能力层面，有可提供内存泄漏路径及OOM时的内存快照的内存监控体系，有可提供线程现场及任务现场的线程管控体系。除此以外，还有动态日志系统提供额外的方法调用链及参数信息。</p>
+<h4 id="内存监控体系"><a href="#内存监控体系" class="headerlink" title="内存监控体系"></a>内存监控体系</h4><p>内存问题最典型的呈现形式是OOM，其中80%通过Leak监控系统发现预防，另外20%的内存问题，对于大体量APP需要从全局对内存资源问题进行监控和调查分析。</p>
+<p>美团的内存监控体系分为线下和线上两个场景。线下通过Leak监控系统能预防发现80%的OOM问题，线上建立随时获取OOM内存现场的监控能力
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223125.jpg" alt="tips-solution-2-201935223125"></p>
+<h4 id="动态日志"><a href="#动态日志" class="headerlink" title="动态日志"></a>动态日志</h4><p>美团APP经常会遇到用户个性化的使用场景无法复现和定位的问题。对此，美团提出了一套动态日志系统——</p>
+<p>在编译期对应用代码通过插桩实现代理，运行期同步记录，出现异常时可主动触发上报，也可以由服务端主动回捞。基于插桩实现的代理逻辑，可实施获取原方法执行时的方法名、入参和返回值信息，再将这些信息序列化后存储到数据库，由此可在必要的时候获取到较完善的方法调用栈历史，进而定位问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223215.jpg" alt="tips-solution-2-201935223215">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223229.jpg" alt="tips-solution-2-201935223229"></p>
+<h4 id="修复能力"><a href="#修复能力" class="headerlink" title="修复能力"></a>修复能力</h4><p>在修复能力层面，美团APP一度深受机型多、系统杂带来的framework层的问题困扰。此外，美团APP也经常会遇到常规日志体系无法覆盖的接口问题。</p>
+<p>针对这两类问题，参考热修复的方法替换原理，开发并完善了一套小工具——“Graft”。它的基本原理是在native层通过方法替换实现对Java层方法的hook和代理，进而在Java层实现方法代理和方法替换。</p>
+<p>这套工具可以动态代理或替换几乎所有Java层的方法（包括framework层），使得美团APP的修复能力从自有代码和第三方代码有效覆盖到framework层。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223340.jpg" alt="tips-solution-2-201935223340">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223353.jpg" alt="tips-solution-2-201935223353"></p>
+<h4 id="效率提升"><a href="#效率提升" class="headerlink" title="效率提升"></a>效率提升</h4><p>为了提高治理效率，实际治理过程逐渐形成PR检查流程、自动检查平台和Crash平台三大流程和平台。</p>
+<p>PR检查流程主要针对PR阶段进行代码规范性检查、代码准入检查和稳定性案例检查；自动检查平台针对以往案例进行定制化防范检查。Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223433.jpg" alt="tips-solution-2-201935223433"></p>
+<h3 id="Crash平台"><a href="#Crash平台" class="headerlink" title="Crash平台"></a>Crash平台</h3><p>Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。</p>
+<p>在PR阶段，PR检查流程可自动识别出增量代码是否被现有体系覆盖，并通过Crash平台的接入管控系统督促增量代码的责任人完善基本信息、频道信息、聚合配合及自动工单配置等等。</p>
+<p>在开发或全量过程中一旦发现异常，Crash平台会自动完成堆栈聚合、频道识别、报警评估及工单跟踪等工作。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223539.jpg" alt="tips-solution-2-201935223539">
+<img src="http://images.wodekouwei.com/tips-solution-2-20193522365.jpg" alt="tips-solution-2-20193522365"></p>
+<p>Crash率是APP最重要的指标之一，谌天洲建议开发者建立解决Crash的长效机制，找到最合理的解决方案。随着版本的不断迭代，Crash治理之路才能离目标越来越近。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/04/tips-solution-1/" rel="next" title="性能度量指标及数据平台">
+                <i class="fa fa-chevron-left"></i> 性能度量指标及数据平台
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/05/tips-android-system-load/" rel="prev" title="Android启动过程深入解析">
+                Android启动过程深入解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">150</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#美团Crash治理背景"><span class="nav-number">1.</span> <span class="nav-text">美团Crash治理背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础能力"><span class="nav-number">1.1.</span> <span class="nav-text">基础能力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存监控体系"><span class="nav-number">1.2.</span> <span class="nav-text">内存监控体系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态日志"><span class="nav-number">1.3.</span> <span class="nav-text">动态日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修复能力"><span class="nav-number">1.4.</span> <span class="nav-text">修复能力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#效率提升"><span class="nav-number">1.5.</span> <span class="nav-text">效率提升</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crash平台"><span class="nav-number">2.</span> <span class="nav-text">Crash平台</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

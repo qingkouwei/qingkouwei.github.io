@@ -323,6 +323,994 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/27/webrtc-signalling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/27/webrtc-signalling/" itemprop="url">
+                  webrtc之信令交互流程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-27T14:47:28+08:00">
+                2017-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webrtc/" itemprop="url" rel="index">
+                    <span itemprop="name">webrtc</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>无论是使用前端JS的WebRTC API接口，还是在WebRTC源码上构建自己的对聊框架，都需要遵循以下执行流程：
+<img src="http://images.wodekouwei.com/protocol/webrtc_signalling.png" alt="image"></p>
+<p>上述序列中，WebRTC并不提供Stun服务器和Signal服务器，服务器端需要自己实现。Stun服务器可以用google提供的实现stun协议的测试服务器（stun:stun.l.google.com:19302），Signal服务器则完全需要自己实现了，它需要在ClientA和ClientB之间传送彼此的SDP信息和candidate信息，ClientA和ClientB通过这些信息建立P2P连接来传送音视频数据。 stun/turn、relay服务器的实现在WebRTC源码中都有示例。</p>
+<p>上述序列中，标注的场景是ClientA向ClientB发起对聊请求，调用描述如下：</p>
+<ol>
+<li>ClientA首先创建PeerConnection对象，然后打开本地音视频设备，将音视频数据封装成MediaStream添加到PeerConnection中。</li>
+<li>ClientA调用PeerConnection的CreateOffer方法创建一个用于offer的SDP对象，SDP对象中保存当前音视频的相关参数。ClientA通过PeerConnection的SetLocalDescription方法将该SDP对象保存起来，并通过Signal服务器发送给ClientB。</li>
+<li>ClientB接收到ClientA发送过的offer SDP对象，通过PeerConnection的SetRemoteDescription方法将其保存起来，并调用PeerConnection的CreateAnswer方法创建一个应答的SDP对象，通过PeerConnection的SetLocalDescription的方法保存该应答SDP对象并将它通过Signal服务器发送给ClientA。</li>
+<li>ClientA接收到ClientB发送过来的应答SDP对象，将其通过PeerConnection的SetRemoteDescription方法保存起来。</li>
+<li>在SDP信息的offer/answer流程中，ClientA和ClientB已经根据SDP信息创建好相应的音频Channel和视频Channel并开启Candidate数据的收集，Candidate数据可以简单地理解成Client端的IP地址信息（本地IP地址、公网IP地址、Relay服务端分配的地址）。</li>
+<li>当ClientA收集到Candidate信息后，PeerConnection会通过OnIceCandidate接口给ClientA发送通知，ClientA将收到的Candidate信息通过Signal服务器发送给ClientB，ClientB通过PeerConnection的AddIceCandidate方法保存起来。同样的操作ClientB对ClientA再来一次。</li>
+<li>这样ClientA和ClientB就已经建立了音视频传输的P2P通道，ClientB接收到ClientA传送过来的音视频流，会通过PeerConnection的OnAddStream回调接口返回一个标识ClientA端音视频流的MediaStream对象，在ClientB端渲染出来即可。同样操作也适应ClientB到ClientA的音视频流的传输。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/25/server-git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/25/server-git/" itemprop="url">
+                  git服务搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T16:36:53+08:00">
+                2017-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="纯git-server"><a href="#纯git-server" class="headerlink" title="纯git server"></a>纯git server</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><p>环境:ubuntu16.0.4</p>
+<ol>
+<li>安装Git-Core:<code>sudo apt-get install python-setuptools</code></li>
+<li>安装openssh-server和openssh-client:<code>sudo apt-get install openssh-server openssh-client</code></li>
+<li>安装python tool:<code>sudo apt-get install python-setuptools</code></li>
+<li>安装gitosis:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/res0nat0r/gitosis.git</div><div class="line"></div><div class="line">cd gitosis/</div><div class="line"></div><div class="line">sudo python setup.py install</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="添加管理账号"><a href="#添加管理账号" class="headerlink" title="添加管理账号"></a>添加管理账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo adduser \</div><div class="line">    --system \</div><div class="line">    --shell /bin/sh \</div><div class="line">    --gecos &apos;git version control&apos; \</div><div class="line">    --group \</div><div class="line">    --disabled-password \</div><div class="line">    --home /home/git \</div><div class="line">    git</div></pre></td></tr></table></figure>
+<p>如果已有git账户,可以替换成gitmanager</p>
+<h4 id="创建链接映射"><a href="#创建链接映射" class="headerlink" title="创建链接映射"></a>创建链接映射</h4><p>由于gitosis默认状态下会将仓库放在用户的repositories目录下，例如gitmanager用户的仓库地址默认在
+/home/gitmanager/repositories/目录下，这里我们需要创建一个链接映射。让他指向我们前面创建的专门用于存放项目的仓库目录/home/gitrepository。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /home/gitrepository /home/gitmanager/repositories</div></pre></td></tr></table></figure></p>
+<h4 id="初始化管理用户"><a href="#初始化管理用户" class="headerlink" title="初始化管理用户"></a>初始化管理用户</h4><ol>
+<li><p>拷贝管理用户公钥到<code>/tmp/</code>下,如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp ~/.ssh/id_rsa.pub gitmanager@192.168.0.68:/tmp/</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用拷贝来的公钥初始化gitosis:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -H -u gitmanager gitosis-init &lt; /tmp/id_ras.pub</div><div class="line">sudo chmod 755 /home/gitmanager/repositories/gitosis-admin.git/hooks/post-update</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="配置账号"><a href="#配置账号" class="headerlink" title="配置账号"></a>配置账号</h4><ol>
+<li>验证ssh<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ssh gitmanager@192.168.0.68</div><div class="line">TY allocation request failed on channel 0</div><div class="line">ERROR:gitosis.serve.main:Need SSH_ORIGINAL_COMMAND in environment.</div><div class="line">  Connection to gitserver closed.</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>说明 Gitosis 认出了该用户的身份，但由于没有运行任何 Git 命令，所以它切断了连接。</p>
+<ol>
+<li>克隆gitosis管理仓库:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone gitmanager@192.168.0.68:gitosis-admin.git</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这会得到一个名为 gitosis-admin 的工作目录，主要由两部分组成：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./gitosis.conf</div><div class="line">./keydir</div></pre></td></tr></table></figure></p>
+<p>gitosis.conf 文件是用来设置用户、仓库和权限的控制文件。keydir 目录则是保存所有具有访问权限用户公钥的地方— 每人一个。在 keydir 里的文件名（比如上面的 qingkouwei.pub） 会自动从使用 gitosis-init 脚本导入的公钥尾部的描述中获取该名字。</p>
+<p>看一下 gitosis.conf 文件的内容，它应该只包含与刚刚克隆的 gitosis-admin 相关的信息：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[gitosis]</div><div class="line"></div><div class="line">[group gitosis-admin]</div><div class="line">members = qingkouwei</div><div class="line">writable = gitosis-admin</div></pre></td></tr></table></figure></p>
+<p>要创建项目demo,在里面加入:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
+<p>要为demo项目添加用户user1:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div></pre></td></tr></table></figure></p>
+<p>并将用户user1的公钥计入到keydir,并且公钥名.pub和members里面的名字对应.
+要添加对demo项目只读的用户:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[group demo]</div><div class="line">members = qingkouwei user1</div><div class="line">writable = demo</div><div class="line"></div><div class="line">[group demo]</div><div class="line">members = user2</div><div class="line">readonly = demo</div></pre></td></tr></table></figure></p>
+<p>修改完配置文件和keydir,使用git push到gitosis-admin服务器.即可直接<code>git add remote add suervename gitmanager@192.168.0.68:demo.git</code>,然后直接将本地目录推送到demo仓库,不需要再服务器手动创建demo仓库,gitosis会帮忙自动创建.</p>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
+<li><code>ERROR:gitosis.serve.main:Repository read access denied</code>
+原因:
+gitosis.conf中的members与keydir中的用户名不一致，如gitosis中的members = foo@bar，但keydir中的公密名却叫foo.pub</li>
+</ol>
+<p>解决方法:
+使keydir的名称与gitosis中members所指的名称一致。 改为members = foo 或 公密名称改为foo@bar.pub</p>
+<ol>
+<li>clone时报does not appear to be a git repository</li>
+</ol>
+<p>原因:
+clone时不能用绝对路径，直接写gitosis-admin.git即可.</p>
+<blockquote>
+<p>参考:<a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitosis</a></p>
+</blockquote>
+<h3 id="gitlab服务搭建"><a href="#gitlab服务搭建" class="headerlink" title="gitlab服务搭建"></a>gitlab服务搭建</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/vmware-network-mode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/22/vmware-network-mode/" itemprop="url">
+                  VMware中Bridged,NAT,host-only三种网络连接模式的原理和区别
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T18:08:51+08:00">
+                2017-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux管理/" itemprop="url" rel="index">
+                    <span itemprop="name">linux管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>不同虚拟交换机应用在不同的联网模式Bridged、NAT、host-only、custom四种模式，下面分别介绍其具体分配：</p>
+<ul>
+<li>VMnet0：这是VMware用于虚拟桥接网络下的虚拟交换机；</li>
+<li>VMnet1：这是VMware用于虚拟Host-Only网络下的虚拟交换机；</li>
+<li>VMnet8：这是VMware用于虚拟NAT网络下的虚拟交换机；</li>
+<li>VMnet2~VMnet7及VMnet9：是VMware用于虚拟自定义custom网络下的虚拟交换机；</li>
+<li>VMware Network Adapter VMnet1：这是宿主机用于与Host-Only虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
+<li>VMware Network Adapter VMnet8：这是宿主机用于与NAT虚拟网络进行通信的宿主机使用的虚拟网卡；</li>
+</ul>
+<p>VMware Network Adapter VMnet1与VMware Network Adapter VMnet8可以在宿主机网络连接中看到.</p>
+<h3 id="1-Bridged桥接模式"><a href="#1-Bridged桥接模式" class="headerlink" title="1.Bridged桥接模式"></a>1.Bridged桥接模式</h3><p>VMware在桥接模式下，虚拟机使用VMware为该虚拟机分配的虚拟网卡，宿主机使用自身的物理网卡（有线或无线都行），并且默认使用虚拟交换机VMnet0来连接虚拟机的虚拟网卡和宿主机的物理网卡。在此模式下没有局域网动态地址分配DHCP服务器，也没有网络地址转换ＮＡＴ服务器，虚拟交换机没有连接DHCP服务器和ＮＡＴ服务器。宿主机的网口（插网线的那个口）与宿主机物理网卡相连，同时也就和虚拟机的虚拟网卡相连，也就是和虚拟交换机相连，所以虚拟机相当于在宿主机所在局域网内的一个单独的主机，他的行为和宿主机是同等地位的，没有依存关系。所有桥接下的网卡与网卡都是交换模式的，相互可以访问而不干扰。在桥接模式下，虚拟机ip地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致原理图如下：
+<img src="http://images.wodekouwei.com/net/vmware_netmode_bridged.jpeg" alt="bridged">
+配置虚拟机网卡,编辑<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=none</div><div class="line">IPADDR=192.168.31.128 #设置虚拟机ip地址,与主机ip地址在同一网段</div><div class="line">NETMASK=255.255.255.0 #设置子网掩码</div><div class="line">GATEWAY=192.168.31.1#设置虚拟网关,与主机相同</div><div class="line">DNS1=192.168.31.1 #设置虚拟机DNS,与主机相同</div></pre></td></tr></table></figure></p>
+<p>执行<code>/etc/init.d/network restart</code>重启虚拟机网卡,ping内网与外网测试.</p>
+<h3 id="2-NAT网络地址转换模式："><a href="#2-NAT网络地址转换模式：" class="headerlink" title="2.NAT网络地址转换模式："></a>2.NAT网络地址转换模式：</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_nat.png" alt="nat">
+注意：红色的方框是nat服务器，nat服务器有两个网卡一个是虚拟内网网卡，一个是宿主机的物理网卡。禁用VmNet8，虚拟机仍然可以上网，ping通主机，但是主机ping不通虚拟机的网卡。在NAT模式中，主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网。那么我们会觉得很奇怪，为什么需要虚拟网卡VMware Network Adapter VMnet8呢？原来我们的VMware Network Adapter VMnet8虚拟网卡主要是为了实现主机与虚拟机之间的通信。弥补了NAT协议中外网不能访问局域网的缺点。
+具体配置:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0</div><div class="line">HWADDR=00:0C:29:DA:E9:99</div><div class="line">TYPE=Ethernet</div><div class="line">UUID=0711466f-ae1f-aa83-825cb3dfb5f7</div><div class="line">ONBOOT=yes</div><div class="line">MM_CONTROLLED=yes</div><div class="line">BOOTPROTO=dhcp #动态获取ip地址,如果此处设置为静态,则下面手动配置ip需要在DHCP地址范围内</div><div class="line">#NAT模式也可以设置静态ip,但需要在DHCP地址范围内</div><div class="line">IPADDR=192.168.31.128</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.31.1</div><div class="line">DNS1=192.168.31.1</div></pre></td></tr></table></figure></p>
+<h3 id="3-Host-Only方式"><a href="#3-Host-Only方式" class="headerlink" title="3.Host-Only方式"></a>3.Host-Only方式</h3><p><img src="http://images.wodekouwei.com/net/vmware_netmode_hostonly.png" alt="host-only">
+注意：上图中的VmNet8应该为VmNet1。其实跟nat模式的图片是类似的，只是少了nat服务。
+所以host-only上不了外网，只能实现主机的VmNet1网卡和虚拟机的虚拟网卡通信。</p>
+<h3 id="NAT介绍"><a href="#NAT介绍" class="headerlink" title="NAT介绍"></a>NAT介绍</h3><p>NAT（Network Address Translation，网络地址转换）是1994年提出的。当在专用网内部的一些主机本来已经分配到了本地IP地址（即仅在本专用网内使用的专用地址），但现在又想和因特网上的主机通信（并不需要加密）时，可使用NAT方法。
+这种方法需要在专用网连接到因特网的路由器上安装NAT软件。装有NAT软件的路由器叫做NAT路由器，它至少有一个有效的外部全球IP地址。这样，所有使用本地地址的主机在和外界通信时，都要在NAT路由器上将其本地地址转换成全球IP地址，才能和因特网连接。
+另外，这种通过使用少量的公有IP 地址代表较多的私有IP 地址的方式，将有助于减缓可用的IP地址空间的枯竭。</p>
+<h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><p>NAT不仅能解决了lP地址不足的问题，而且还能够有效地避免来自网络外部的攻击，隐藏并保护网络内部的计算机。</p>
+<ol>
+<li>宽带分享：这是 NAT 主机的最大功能。</li>
+<li>安全防护：NAT 之内的 PC 联机到 Internet 上面时，他所显示的 IP 是 NAT 主机的公共 IP，所以 Client 端的 PC 当然就具有一定程度的安全了，外界在进行 portscan（端口扫描） 的时候，就侦测不到源Client 端的 PC 。</li>
+</ol>
+<h4 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h4><p>NAT的实现方式有三种，即静态转换Static Nat、动态转换Dynamic Nat和端口多路复用OverLoad。</p>
+<ol>
+<li>静态转换是指将内部网络的私有IP地址转换为公有IP地址，IP地址对是一对一的，是一成不变的，某个私有IP地址只转换为某个公有IP地址。借助于静态转换，可以实现外部网络对内部网络中某些特定设备（如服务器）的访问。</li>
+<li>动态转换是指将内部网络的私有IP地址转换为公用IP地址时，IP地址是不确定的，是随机的，所有被授权访问上Internet的私有IP地址可随机转换为任何指定的合法IP地址。也就是说，只要指定哪些内部地址可以进行转换，以及用哪些合法地址作为外部地址时，就可以进行动态转换。动态转换可以使用多个合法外部地址集。当ISP提供的合法IP地址略少于网络内部的计算机数量时。可以采用动态转换的方式。</li>
+<li>端口多路复用（Port address Translation,PAT)是指改变外出数据包的源端口并进行端口转换，即端口地址转换（PAT，Port Address Translation).采用端口多路复用方式。内部网络的所有主机均可共享一个合法外部IP地址实现对Internet的访问，从而可以最大限度地节约IP地址资源。同时，又可隐藏网络内部的所有主机，有效避免来自internet的攻击。因此，目前网络中应用最多的就是端口多路复用方式。</li>
+<li>ALG（Application Level Gateway），即应用程序级网关技术：传统的NAT技术只对IP层和传输层头部进行转换处理，但是一些应用层协议，在协议数据报文中包含了地址信息。为了使得这些应用也能透明地完成NAT转换，NAT使用一种称作ALG的技术，它能对这些应用程序在通信时所包含的地址信息也进行相应的NAT转换。例如：对于FTP协议的PORT/PASV命令、DNS协议的 “A” 和 “PTR” queries命令和部分ICMP消息类型等都需要相应的ALG来支持。
+如果协议数据报文中不包含地址信息，则很容易利用传统的NAT技术来完成透明的地址转换功能，通常我们使用的如下应用就可以直接利用传统的NAT技术：HTTP、TELNET、FINGER、NTP、NFS、ARCHIE、RLOGIN、RSH、RCP等。</li>
+</ol>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>借助于NAT，私有（保留）地址的”内部”网络通过路由器发送数据包时，私有地址被转换成合法的IP地址，一个局域网只需使用少量IP地址（甚至是1个）即可实现私有地址网络内所有计算机与Internet的通信需求。
+NAT将自动修改IP报文的源IP地址和目的IP地址，Ip地址校验则在NAT处理过程中自动完成。有些应用程序将源IP地址嵌入到IP报文的数据部分中，所以还需要同时对报文的数据部分进行修改，以匹配IP头中已经修改过的源IP地址。否则，在报文数据部分嵌入IP地址的应用程序就不能正常工作。</p>
+<h4 id="NAPT"><a href="#NAPT" class="headerlink" title="NAPT"></a>NAPT</h4><p>NAPT（Network Address Port Translation），即网络端口地址转换，可将多个内部地址映射为一个合法公网地址，但以不同的协议端口号与不同的内部地址相对应，也就是&lt;内部地址+内部端口&gt;与&lt;外部地址+外部端口&gt;之间的转换。NAPT普遍用于接入设备中，它可以将中小型的网络隐藏在一个合法的IP地址后面。NAPT也被称为“多对一”的NAT，或者叫PAT（Port Address Translations，端口地址转换）、地址超载（address overloading）。
+NAPT与动态地址NAT不同，它将内部连接映射到外部网络中的一个单独的IP地址上，同时在该地址上加上一个由NAT设备选定的TCP端口号。NAPT算得上是一种较流行的NAT变体，通过转换TCP或UDP协议端口号以及地址来提供并发性。除了一对源和目的IP地址以外，这个表还包括一对源和目的协议端口号，以及NAT盒使用的一个协议端口号。
+NAPT的主要优势在于，能够使用一个全球有效IP地址获得通用性。主要缺点在于其通信仅限于TCP或UDP。当所有通信都采用TCP或UDP，NAPT允许一台内部计算机访问多台外部计算机，并允许多台内部主机访问同一台外部计算机，相互之间不会发生冲突。</p>
+<h4 id="NAT穿透方法"><a href="#NAT穿透方法" class="headerlink" title="NAT穿透方法"></a>NAT穿透方法</h4><p>目前常用的针对UDP的NAT 穿透（NAT Traversal）方法主要有：STUN、TURN、ICE、uPnP等。其中ICE方式由于其结合了STUN和TURN的特点，所以使用最为广泛。针对TCP的NAT穿透技术目前仍为难点。实用的技术仍然不多。</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>在配置NAT(网络地址转换)之前，首先需要了解内部本地地址和内部全局地址的分配情况。根据不同的需求，执行以下不同的配置任务。</p>
+<ul>
+<li>内部源地址NAT配置</li>
+<li>内部源地址NAPT配置</li>
+<li>重叠地址NAT配置</li>
+<li>TCP负载均衡</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/22/linux-networkcard/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/22/linux-networkcard/" itemprop="url">
+                  linux网卡配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-22T17:18:11+08:00">
+                2017-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux管理/" itemprop="url" rel="index">
+                    <span itemprop="name">linux管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>linux网卡可以通过命令和配置文件配置,如果是桌面环境还可以通过图形化界面配置.</p>
+<h3 id="1-ifconfig-interfaces-config-命令方式"><a href="#1-ifconfig-interfaces-config-命令方式" class="headerlink" title="1.ifconfig(interfaces config)命令方式"></a>1.ifconfig(interfaces config)命令方式</h3><p>通常需要以root身份登录或使用sudo以便在Linux机器上使用ifconfig工具。依赖于ifconfig命令中使用一些选项属性，ifconfig工具不仅可以被用来简单地获取网络接口配置信息，还可以修改这些配置(<strong>用ifconfig命令配置的网卡信息，在网卡重启后机器重启后，配置就不存在</strong>)。</p>
+<h4 id="1-1命令格式"><a href="#1-1命令格式" class="headerlink" title="1.1命令格式"></a>1.1命令格式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ifconfig [网络设备] [参数]</div></pre></td></tr></table></figure>
+<h4 id="1-2命令功能"><a href="#1-2命令功能" class="headerlink" title="1.2命令功能"></a>1.2命令功能</h4><p>ifconfig 命令用来查看和配置网络设备。当网络环境发生改变时可通过此命令对网络进行相应的配置。</p>
+<h4 id="1-3命令参数"><a href="#1-3命令参数" class="headerlink" title="1.3命令参数"></a>1.3命令参数</h4><ol>
+<li>up 启动指定网络设备/网卡。</li>
+<li>down 关闭指定网络设备/网卡。该参数可以有效地阻止通过指定接口的IP信息流，如果想永久地关闭一个接口，我们还需要从核心路由表中将该接口的路由信息全部删除。</li>
+<li>arp 设置指定网卡是否支持ARP协议。
+-promisc 设置是否支持网卡的promiscuous模式，如果选择此参数，网卡将接收网络中发给它所有的数据包
+-allmulti 设置是否支持多播模式，如果选择此参数，网卡将接收网络中所有的多播数据包
+-a 显示全部接口信息
+-s 显示摘要信息（类似于 netstat -i）</li>
+<li>add 给指定网卡配置IPv6地址</li>
+<li>del 删除指定网卡的IPv6地址</li>
+<li>&lt;硬件地址&gt; 配置网卡最大的传输单元</li>
+<li>mtu&lt;字节数&gt; 设置网卡的最大传输单元 (bytes)</li>
+<li>netmask&lt;子网掩码&gt; 设置网卡的子网掩码。掩码可以是有前缀0x的32位十六进制数，也可以是用点分开的4个十进制数。如果不打算将网络分成子网，可以不管这一选项；如果要使用子网，那么请记住，网络中每一个系统必须有相同子网掩码。</li>
+<li>tunel 建立隧道</li>
+<li>dstaddr 设定一个远端地址，建立点对点通信</li>
+<li>-broadcast&lt;地址&gt; 为指定网卡设置广播协议</li>
+<li>-pointtopoint&lt;地址&gt; 为网卡设置点对点通讯协议</li>
+<li>multicast 为网卡设置组播标志</li>
+<li>address 为网卡设置IPv4地址</li>
+<li>txqueuelen&lt;长度&gt; 为网卡设置传输列队的长度</li>
+</ol>
+<h4 id="1-4使用实例"><a href="#1-4使用实例" class="headerlink" title="1.4使用实例"></a>1.4使用实例</h4><h5 id="1-4-1显示网络设备信息（激活状态的）"><a href="#1-4-1显示网络设备信息（激活状态的）" class="headerlink" title="1.4.1显示网络设备信息（激活状态的）"></a>1.4.1显示网络设备信息（激活状态的）</h5><p><strong>命令</strong>:<code>ifcofig</code>
+<strong>输出</strong>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:20  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div></pre></td></tr></table></figure></p>
+<p><strong>说明</strong></p>
+<ul>
+<li>eth0 表示第一块网卡， 其中 HWaddr 表示网卡的物理地址，可以看到目前这个网卡的物理地址(MAC地址）是 00:50:56:BF:26:20</li>
+<li>inet addr 用来表示网卡的IP地址，此网卡的 IP地址是 192.168.120.204，广播地址， Bcast:192.168.120.255，掩码地址Mask:255.255.255.0</li>
+<li>lo 是表示主机的回坏地址，这个一般是用来测试一个网络程序，但又不想让局域网或外网的用户能够查看，只能在此台主机上运行和查看所用的网络接口。比如把 HTTPD服务器的指定到回坏地址，在浏览器输入 127.0.0.1 就能看到你所架WEB网站了。但只是您能看得到，局域网的其它主机或用户无从知道。</li>
+<li>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）</li>
+<li>第二行：网卡的IP地址、子网、掩码</li>
+<li>第三行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）MTU:1500（最大传输单元）：1500字节</li>
+<li>第四、五行：接收、发送数据包情况统计</li>
+<li>第七行：接收、发送数据字节数统计信息。</li>
+</ul>
+<h5 id="1-4-2启动关闭指定网卡"><a href="#1-4-2启动关闭指定网卡" class="headerlink" title="1.4.2启动关闭指定网卡"></a>1.4.2启动关闭指定网卡</h5><p><strong>命令</strong>：
+ifconfig eth0 up
+ifconfig eth0 down
+<strong>输出</strong>：
+<strong>说明</strong>：
+ifconfig eth0 up 为启动网卡eth0 ；ifconfig eth0 down 为关闭网卡eth0。ssh登陆linux服务器操作要小心，关闭了就不能开启了，除非你有多网卡。</p>
+<h5 id="1-4-3为网卡配置和删除IPv6地址"><a href="#1-4-3为网卡配置和删除IPv6地址" class="headerlink" title="1.4.3为网卡配置和删除IPv6地址"></a>1.4.3为网卡配置和删除IPv6地址</h5><p><strong>命令</strong>：
+ifconfig eth0 add 33ffe:3240:800:1005::2/64
+ifconfig eth0 del 33ffe:3240:800:1005::2/64
+<strong>输出</strong>：
+<strong>说明</strong>：
+ifconfig eth0 add 33ffe:3240:800:1005::2/64 为网卡eth0配置IPv6地址；
+ifconfig eth0 add 33ffe:3240:800:1005::2/64 为网卡eth0删除IPv6地址；
+练习的时候，ssh登陆linux服务器操作要小心，关闭了就不能开启了，除非你有多网卡。</p>
+<h5 id="1-4-4用ifconfig修改MAC地址"><a href="#1-4-4用ifconfig修改MAC地址" class="headerlink" title="1.4.4用ifconfig修改MAC地址"></a>1.4.4用ifconfig修改MAC地址</h5><p><strong>命令</strong>：
+<code>ifconfig eth0 hw ether 00:AA:BB:CC:DD:EE</code>
+<strong>输出</strong>：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 down //关闭网卡</div><div class="line">[root@localhost ~]# ifconfig eth0 hw ether 00:AA:BB:CC:DD:EE //修改MAC地址</div><div class="line">[root@localhost ~]# ifconfig eth0 up //启动网卡</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:AA:BB:CC:DD:EE  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div><div class="line">[root@localhost ~]# ifconfig eth0 hw ether 00:50:56:BF:26:20 //关闭网卡并修改MAC地址</div><div class="line">[root@localhost ~]# ifconfig eth0 up //启动网卡</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:20  </div><div class="line">          inet addr:192.168.120.204  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8700857 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:31533 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:596390239 (568.7 MiB)  TX bytes:2886956 (2.7 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:68 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:68 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:2856 (2.7 KiB)  TX bytes:2856 (2.7 KiB)</div></pre></td></tr></table></figure></p>
+<h5 id="1-4-5配置IP地址"><a href="#1-4-5配置IP地址" class="headerlink" title="1.4.5配置IP地址"></a>1.4.5配置IP地址</h5><p><strong>输出</strong>:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56</div><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56 netmask 255.255.255.0</div><div class="line">[root@localhost ~]# ifconfig eth0 192.168.120.56 netmask 255.255.255.0 broadcast 192.168.120.255</div></pre></td></tr></table></figure></p>
+<p><strong>说明</strong>:
+ifconfig eth0 192.168.120.56
+给eth0网卡配置IP地：192.168.120.56
+ ifconfig eth0 192.168.120.56 netmask 255.255.255.0
+给eth0网卡配置IP地址：192.168.120.56 ，并加上子掩码：255.255.255.0
+ifconfig eth0 192.168.120.56 netmask 255.255.255.0 broadcast 192.168.120.255
+/给eth0网卡配置IP地址：192.168.120.56，加上子掩码：255.255.255.0，加上个广播地址： 192.168.120.255</p>
+<h5 id="1-4-6启用和关闭ARP协议"><a href="#1-4-6启用和关闭ARP协议" class="headerlink" title="1.4.6启用和关闭ARP协议"></a>1.4.6启用和关闭ARP协议</h5><p><strong>命令</strong>：
+ifconfig eth0 arp
+ifconfig eth0 -arp
+<strong>输出</strong>：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 arp</div><div class="line">[root@localhost ~]# ifconfig eth0 -arp</div></pre></td></tr></table></figure></p>
+<p><strong>说明</strong>
+ifconfig eth0 arp 开启网卡eth0 的arp协议；
+ifconfig eth0 -arp 关闭网卡eth0 的arp协议；</p>
+<h5 id="1-4-7-设置最大传输单元"><a href="#1-4-7-设置最大传输单元" class="headerlink" title="1.4.7 设置最大传输单元"></a>1.4.7 设置最大传输单元</h5><p><strong>命令</strong>：
+ifconfig eth0 mtu 1500
+<strong>输出</strong>：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ifconfig eth0 mtu 1480</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:1F  </div><div class="line">          inet addr:192.168.120.203  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1480  Metric:1</div><div class="line">          RX packets:8712395 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:36631 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:597062089 (569.4 MiB)  TX bytes:2643973 (2.5 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:9973 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:9973 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:518096 (505.9 KiB)  TX bytes:518096 (505.9 KiB)</div><div class="line"></div><div class="line">[root@localhost ~]# ifconfig eth0 mtu 1500</div><div class="line">[root@localhost ~]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:50:56:BF:26:1F  </div><div class="line">          inet addr:192.168.120.203  Bcast:192.168.120.255  Mask:255.255.255.0</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:8712548 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:36685 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000</div><div class="line">          RX bytes:597072333 (569.4 MiB)  TX bytes:2650581 (2.5 MiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:9973 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:9973 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0</div><div class="line">          RX bytes:518096 (505.9 KiB)  TX bytes:518096 (505.9 KiB)</div><div class="line"></div><div class="line">[root@localhost ~]#</div></pre></td></tr></table></figure></p>
+<p>说明:
+设置能通过的最大数据包大小为1500bytes</p>
+<h3 id="2-配置文件方式"><a href="#2-配置文件方式" class="headerlink" title="2.配置文件方式"></a>2.配置文件方式</h3><p>ubuntu配置文件:<code>/etc/network/interfaces</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">auto lo</div><div class="line">iface lo inet loopback</div><div class="line">auto eth0 #配置静态ip</div><div class="line">iface eth0 inet static</div><div class="line">address 192.168.1.100</div><div class="line">netmask 255.255.255.0</div><div class="line">gateway 192.168.1.1</div></pre></td></tr></table></figure></p>
+<p>centos配置文件:<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">DEVICE=eth0(默认)</div><div class="line">HWADDR=00:0C:29:2E:36:16(默认)</div><div class="line">TYPE=Ethernet(默认)</div><div class="line">UUID=XXXXXXX(默认)</div><div class="line">ONBOOT=yes(默认为no,修改为yes意为每次reboot后 ifup eth0)</div><div class="line">MM_CONTROLLED=yes(默认)</div><div class="line">#BOOTPROTO=dhcp(dhcp为自动分配ip地址,我们把他注释了，在下面另外加)</div><div class="line">BOOTPROTO=static(新添加)</div><div class="line">IPV6INIT=no(新添加)</div><div class="line">USERCTL=no(新添加)</div><div class="line">IPADDR=192.168.164.100(新添加)</div><div class="line">NETMASK=255.255.255.0(新添加)</div></pre></td></tr></table></figure></p>
+<p>service network restart重启网卡服务</p>
+<h3 id="3-图形界面方式"><a href="#3-图形界面方式" class="headerlink" title="3.图形界面方式"></a>3.图形界面方式</h3><h3 id="添加虚拟网卡"><a href="#添加虚拟网卡" class="headerlink" title="添加虚拟网卡"></a>添加虚拟网卡</h3><p>一台服务器需要设置多个ip,但又不想添加多块网卡,那就需要设置虚拟网卡.这里介绍几种方式在linux服务器上添加虚拟网卡.
+比如向eth0中添加一块虚拟网卡:</p>
+<h4 id="1-快速创建删除虚拟网卡"><a href="#1-快速创建删除虚拟网卡" class="headerlink" title="1.快速创建删除虚拟网卡"></a>1.快速创建删除虚拟网卡</h4><p><code>sudo ifconfig eth0: 192.168.10.10 up</code>
+以上的命令就可以在eth0网卡上创建一个叫eth0:0的虚拟网卡,他的地址是:192.168.1.63
+如果不想要这个虚拟网卡了,可以使用如下命令删除:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ifconfig eth0:0 down</div></pre></td></tr></table></figure></p>
+<p>重启服务器或者网络后,虚拟网卡就没有了.</p>
+<h4 id="2-修改网卡配置文件"><a href="#2-修改网卡配置文件" class="headerlink" title="2.修改网卡配置文件"></a>2.修改网卡配置文件</h4><p>在ubuntu下,网卡的配置文件是<code>/etc/network/interfaces</code>,所以我们修改它:
+<code>sudo vim /etc/network/interfaces</code>
+在这个文件中增加如下内容并保存:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">auto eth0:0</div><div class="line">iface eth0:0 inet static</div><div class="line">address 192.168.10.10</div><div class="line">netmask 255.255.255.0</div><div class="line">#network 192.168.10.1</div><div class="line">#broadcast 192.168.1.255</div></pre></td></tr></table></figure></p>
+<p>保存后,我们需要重启网卡(重新加载配置文件)才会生效,使用如下命令重启:<code>sudo /etc/init.d/networking restart</code>
+他的优点是重启服务器或者网卡配置不会丢失。</p>
+<h4 id="3-创建tag"><a href="#3-创建tag" class="headerlink" title="3.创建tag"></a>3.创建tag</h4><p>前两种方法都有一个特点，创建的网卡可有不同的ip地址，但是Mac地址相同。无法用来创建虚拟机。
+添加虚拟网卡tap
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tunctl -b</div></pre></td></tr></table></figure></p>
+<p>其他配置命令:
+显示网桥信息:<code>brctl show</code>
+添加网桥:<code>brctl addbr virbr0</code>
+激活网桥:<code>ip link set virbr0 up</code>
+添加虚拟网卡tap:<code>tunctl -b</code>
+tap0 ——-&gt; 执行上面使命就会生成一个tap,后缀从0，1，2依次递增<br>激活创建的tap:<code>ip link set tap0 up</code></p>
+<h2 id="将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0"><a href="#将tap0虚拟网卡添加到指定网桥上-brctl-addif-br0-tap0" class="headerlink" title="将tap0虚拟网卡添加到指定网桥上:brctl addif br0 tap0"></a>将tap0虚拟网卡添加到指定网桥上:<code>brctl addif br0 tap0</code></h2><p>给网桥配制ip地址:<code>ifconfig virbr1 169.254.251.4 up</code>
+将virbr1网桥上绑定的网卡eth5解除:</p>
+<pre><code>brctl delif virb1 eth5
+</code></pre><p>给virbr1网桥添加网卡eth6:<code>brctl addif virbr1 eth6</code>   </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/19/issues-android-audio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/19/issues-android-audio/" itemprop="url">
+                  Android声音播放与录制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T10:31:45+08:00">
+                2017-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AudioTrack"><a href="#AudioTrack" class="headerlink" title="AudioTrack"></a>AudioTrack</h2><h3 id="AudioTrack类说明"><a href="#AudioTrack类说明" class="headerlink" title="AudioTrack类说明:"></a>AudioTrack类说明:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * The AudioTrack class manages and plays a single audio resource for Java applications.</div><div class="line"> * It allows streaming of PCM audio buffers to the audio sink for playback. This is</div><div class="line"> * achieved by &quot;pushing&quot; the data to the AudioTrack object using one of the</div><div class="line"> *  &#123;@link #write(byte[], int, int)&#125;, &#123;@link #write(short[], int, int)&#125;,</div><div class="line"> *  and &#123;@link #write(float[], int, int, int)&#125; methods.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;An AudioTrack instance can operate under two modes: static or streaming.&lt;br&gt;</div><div class="line"> * In Streaming mode, the application writes a continuous stream of data to the AudioTrack, using</div><div class="line"> * one of the &#123;@code write()&#125; methods. These are blocking and return when the data has been</div><div class="line"> * transferred from the Java layer to the native layer and queued for playback. The streaming</div><div class="line"> * mode is most useful when playing blocks of audio data that for instance are:</div><div class="line"> *</div><div class="line"> * &lt;ul&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the duration of the sound to play,&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;too big to fit in memory because of the characteristics of the audio data</div><div class="line"> *         (high sampling rate, bits per sample ...)&lt;/li&gt;</div><div class="line"> *   &lt;li&gt;received or generated while previously queued audio is playing.&lt;/li&gt;</div><div class="line"> * &lt;/ul&gt;</div><div class="line"> *</div><div class="line"> * The static mode should be chosen when dealing with short sounds that fit in memory and</div><div class="line"> * that need to be played with the smallest latency possible. The static mode will</div><div class="line"> * therefore be preferred for UI and game sounds that are played often, and with the</div><div class="line"> * smallest overhead possible.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Upon creation, an AudioTrack object initializes its associated audio buffer.</div><div class="line"> * The size of this buffer, specified during the construction, determines how long an AudioTrack</div><div class="line"> * can play before running out of data.&lt;br&gt;</div><div class="line"> * For an AudioTrack using the static mode, this size is the maximum size of the sound that can</div><div class="line"> * be played from it.&lt;br&gt;</div><div class="line"> * For the streaming mode, data will be written to the audio sink in chunks of</div><div class="line"> * sizes less than or equal to the total buffer size.</div><div class="line"> *</div><div class="line"> * AudioTrack is not final and thus permits subclasses, but such use is not recommended.</div><div class="line"> */</div><div class="line">public class AudioTrack extends PlayerBase</div><div class="line">                        implements AudioRouting&#123;</div><div class="line"></div><div class="line">                        &#125;</div></pre></td></tr></table></figure>
+<h3 id="构造方法说明"><a href="#构造方法说明" class="headerlink" title="构造方法说明"></a>构造方法说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//根据采样率，采样精度，单双声道来得到frame的大小。</div><div class="line">int bufsize = AudioTrack.getMinBufferSize(8000,//每秒8K个点　　AudioFormat.CHANNEL_CONFIGURATION_STEREO,//双声道</div><div class="line">AudioFormat.ENCODING_PCM_16BIT);//一个采样点16比特-2个字节</div><div class="line">//注意，按照数字音频的知识，这个算出来的是一秒钟buffer的大小。//创建AudioTrack</div><div class="line">AudioTrack trackplayer = new AudioTrack(AudioManager.STREAM_MUSIC, 8000,　　AudioFormat.CHANNEL_CONFIGURATION_ STEREO,</div><div class="line">　　AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">　　bufsize,</div><div class="line">AudioTrack.MODE_STREAM);//</div><div class="line"> trackplayer.play() ;//开始</div><div class="line"></div><div class="line">trackplayer.write(bytes_pkg, 0, bytes_pkg.length) ;//往track中写数据</div><div class="line"></div><div class="line">….</div><div class="line"></div><div class="line">trackplayer.stop();//停止播放</div><div class="line"></div><div class="line">trackplayer.release();//释放底层资源。</div></pre></td></tr></table></figure>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><h5 id="1-AudioTrack-MODE-STREAM的意思："><a href="#1-AudioTrack-MODE-STREAM的意思：" class="headerlink" title="1. AudioTrack.MODE_STREAM的意思："></a>1. AudioTrack.MODE_STREAM的意思：</h5><p>AudioTrack中有MODE_STATIC和MODE_STREAM两种分类。</p>
+<ul>
+<li><p>STREAM的意思是由用户在应用程序通过write方式把数据一次一次得写到audiotrack中。这个和我们在socket中发送数据一样，应用层从某个地方获取数据，例如通过编解码得到PCM数据，然后write到audiotrack。这种方式的坏处就是总是在JAVA层和Native层交互，效率损失较大。</p>
+</li>
+<li><p>而STATIC的意思是一开始创建的时候，就把音频数据放到一个固定的buffer，然后直接传给audiotrack，后续就不用一次次得write了。AudioTrack会自己播放这个buffer中的数据。
+这种方法对于铃声等内存占用较小，延时要求较高的声音来说很适用。</p>
+</li>
+</ul>
+<h5 id="2-StreamType"><a href="#2-StreamType" class="headerlink" title="2. StreamType"></a>2. StreamType</h5><p>这个在构造AudioTrack的第一个参数中使用。这个参数和Android中的AudioManager有关系，涉及到手机上的音频管理策略。
+Android将系统的声音分为以下几类常见的（定义在AudioManager)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/** The audio stream for phone calls */</div><div class="line">public static final int STREAM_VOICE_CALL = AudioSystem.STREAM_VOICE_CALL;</div><div class="line">/** The audio stream for system sounds */</div><div class="line">public static final int STREAM_SYSTEM = AudioSystem.STREAM_SYSTEM;</div><div class="line">/** The audio stream for the phone ring */</div><div class="line">public static final int STREAM_RING = AudioSystem.STREAM_RING;</div><div class="line">/** The audio stream for music playback */</div><div class="line">public static final int STREAM_MUSIC = AudioSystem.STREAM_MUSIC;</div><div class="line">/** The audio stream for alarms */</div><div class="line">public static final int STREAM_ALARM = AudioSystem.STREAM_ALARM;</div><div class="line">/** The audio stream for notifications */</div><div class="line">public static final int STREAM_NOTIFICATION = AudioSystem.STREAM_NOTIFICATION;</div><div class="line">/** @hide The audio stream for phone calls when connected to bluetooth */</div><div class="line">public static final int STREAM_BLUETOOTH_SCO = AudioSystem.STREAM_BLUETOOTH_SCO;</div><div class="line">/** @hide The audio stream for enforced system sounds in certain countries (e.g camera in Japan) */</div><div class="line">public static final int STREAM_SYSTEM_ENFORCED = AudioSystem.STREAM_SYSTEM_ENFORCED;</div><div class="line">/** The audio stream for DTMF Tones */</div><div class="line">public static final int STREAM_DTMF = AudioSystem.STREAM_DTMF;</div><div class="line">/** @hide The audio stream for text to speech (TTS) */</div><div class="line">public static final int STREAM_TTS = AudioSystem.STREAM_TTS;</div></pre></td></tr></table></figure></p>
+<p>常用说明:</p>
+<ul>
+<li>STREAM_ALARM：警告声</li>
+<li>STREAM_MUSCI：音乐声，例如music等</li>
+<li>STREAM_RING：铃声</li>
+<li>STREAM_SYSTEM：系统声音</li>
+<li>STREAM_VOCIE_CALL：电话声音</li>
+</ul>
+<p>为什么要分这么多呢？以前在台式机上开发的时候很少知道有这么多的声音类型，不过仔细思考下，发现这样做是有道理的。例如你在听music的时候接到电话，这个时候music播放肯定会停止，此时你只能听到电话，如果你调节音量的话，这个调节肯定只对电话起作用。当电话打完了，再回到music，你肯定不用再调节音量了。</p>
+<p>其实系统将这几种声音的数据分开管理，所以，这个参数对AudioTrack来说，它的含义就是告诉系统，我现在想使用的是哪种类型的声音，这样系统就可以对应管理他们了。</p>
+<h2 id="AudioRecord"><a href="#AudioRecord" class="headerlink" title="AudioRecord"></a>AudioRecord</h2><h3 id="AudioRecord说明"><a href="#AudioRecord说明" class="headerlink" title="AudioRecord说明"></a>AudioRecord说明</h3><p>The AudioRecord class manages the audio resources for Java applications to record audio from the audio input hardware of the platform. This is achieved by “pulling” (reading) the data from the AudioRecord object. The application is responsible for polling the AudioRecord object in time using one of the following three methods: <code>read(byte[], int, int)</code>, <code>read(short[], int, int)</code> or <code>read(ByteBuffer, int)</code>. The choice of which method to use will be based on the audio data storage format that is the most convenient for the user of AudioRecord.</p>
+<p>Upon creation, an AudioRecord object initializes its associated audio buffer that it will fill with the new audio data. The size of this buffer, specified during the construction, determines how long an AudioRecord can record before “over-running” data that has not been read yet. Data should be read from the audio hardware in chunks of sizes inferior to the total recording buffer size.</p>
+<h3 id="audiosource类型"><a href="#audiosource类型" class="headerlink" title="audiosource类型"></a>audiosource类型</h3><p>定义在MediaRecorder中
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/** Default audio source **/</div><div class="line"> public static final int DEFAULT = 0;</div><div class="line"></div><div class="line"> /** Microphone audio source */</div><div class="line"> public static final int MIC = 1;</div><div class="line"></div><div class="line"> /** Voice call uplink (Tx) audio source */</div><div class="line"> public static final int VOICE_UPLINK = 2;</div><div class="line"></div><div class="line"> /** Voice call downlink (Rx) audio source */</div><div class="line"> public static final int VOICE_DOWNLINK = 3;</div><div class="line"></div><div class="line"> /** Voice call uplink + downlink audio source */</div><div class="line"> public static final int VOICE_CALL = 4;</div><div class="line"></div><div class="line"> /** Microphone audio source with same orientation as camera if available, the main</div><div class="line">  *  device microphone otherwise */</div><div class="line"> public static final int CAMCORDER = 5;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice recognition if available, behaves like</div><div class="line">  *  &#123;@link #DEFAULT&#125; otherwise. */</div><div class="line"> public static final int VOICE_RECOGNITION = 6;</div><div class="line"></div><div class="line"> /** Microphone audio source tuned for voice communications such as VoIP. It</div><div class="line">  *  will for instance take advantage of echo cancellation or automatic gain control</div><div class="line">  *  if available. It otherwise behaves like &#123;@link #DEFAULT&#125; if no voice processing</div><div class="line">  *  is applied.</div><div class="line">  */</div><div class="line"> public static final int VOICE_COMMUNICATION = 7;</div></pre></td></tr></table></figure></p>
+<h2 id="AudioManager"><a href="#AudioManager" class="headerlink" title="AudioManager"></a>AudioManager</h2><h3 id="获取系统音量"><a href="#获取系统音量" class="headerlink" title="获取系统音量"></a>获取系统音量</h3><p>代码
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//初始化AudioManager:</div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);</div><div class="line"></div><div class="line">//通话音量</div><div class="line">int max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">int current = mAudioManager.getStreamVolume( AudioManager.STREAM_VOICE_CALL );</div><div class="line">Log.d(“VIOCE_CALL”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//系统音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );</div><div class="line">Log.d(“SYSTEM”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//铃声音量</div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_RING );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_RING );</div><div class="line">Log.d(“RING”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//音乐音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_MUSIC );</div><div class="line">Log.d(“MUSIC”, “max : ” + max + ” current : ” + current);</div><div class="line"></div><div class="line">//提示声音音量</div><div class="line"></div><div class="line">max = mAudioManager.getStreamMaxVolume( AudioManager.STREAM_ALARM );</div><div class="line">current = mAudioManager.getStreamVolume( AudioManager.STREAM_ALARM );</div><div class="line">Log.d(“ALARM”, “max : ” + max + ” current : ” + current);</div></pre></td></tr></table></figure></p>
+<p>ps：
+　　游戏过程中只允许调整多媒体音量，而不允许调整通话音量。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);</div></pre></td></tr></table></figure></p>
+<h3 id="控制音量"><a href="#控制音量" class="headerlink" title="控制音量"></a>控制音量</h3><p>AudioManager提供了设置音量的方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void setStreamVolume(intstreamType,intindex,intflags)</div></pre></td></tr></table></figure></p>
+<p>其中streamType有内置的常量，去文档里面就可以看到。
+使用示例:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//音量控制,初始化定义    </div><div class="line">AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);    </div><div class="line">//最大音量    </div><div class="line">int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);    </div><div class="line">//当前音量    </div><div class="line">int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);</div><div class="line"></div><div class="line">//直接控制音量</div><div class="line">if(isSilent)&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);    </div><div class="line">&#125;else&#123;    </div><div class="line">  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, tempVolume, 0); //tempVolume:音量绝对值    </div><div class="line">&#125;    </div><div class="line"></div><div class="line">//以一步步长控制音量的增减，并弹出系统默认音量控制条：</div><div class="line">//降低音量，调出系统音量控制    </div><div class="line">if(flag == 0)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;    </div><div class="line">//增加音量，调出系统音量控制    </div><div class="line">else if(flag == 1)&#123;    </div><div class="line">  mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,    </div><div class="line">                            AudioManager.FX_FOCUS_NAVIGATION_UP);    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>监听按键手动控制音量
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">AudioManager audio = (AudioManager) getSystemService(Service.AUDIO_SERVICE);</div><div class="line"></div><div class="line">@Override</div><div class="line">public boolean onKeyDown(int keyCode, KeyEvent event) &#123;</div><div class="line">    switch (keyCode) &#123;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_UP:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_RAISE,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    case KeyEvent.KEYCODE_VOLUME_DOWN:</div><div class="line">        audio.adjustStreamVolume(</div><div class="line">            AudioManager.STREAM_MUSIC,</div><div class="line">            AudioManager.ADJUST_LOWER,</div><div class="line">            AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);</div><div class="line">        return true;</div><div class="line">    default:</div><div class="line">        break;</div><div class="line">    &#125;</div><div class="line">    return super.onKeyDown(keyCode, event);</div></pre></td></tr></table></figure></p>
+<h4 id="插入耳机状态仍使用扬声器外放音乐"><a href="#插入耳机状态仍使用扬声器外放音乐" class="headerlink" title="插入耳机状态仍使用扬声器外放音乐"></a>插入耳机状态仍使用扬声器外放音乐</h4><p>插入耳机的时候也可以选择使用扬声器播放音乐，来电铃声就是这么用的。但是只能用MediaPlayer，播放音频文件。
+使用AudioTrack.write播放是行不通的(有待验证)。按理说AudioRecord、AudioTrack类相对于MediaRecorder mediaPlayer来说，更加接近底层，应该也行得通的。</p>
+<p>插入耳机，选择外放的代码如下(兼容性验证)：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);  </div><div class="line">audioManager.setMicrophoneMute(false);          </div><div class="line">audioManager.setSpeakerphoneOn(true);//使用扬声器外放，即使已经插入耳机  </div><div class="line">setVolumeControlStream(AudioManager.STREAM_MUSIC);//控制声音的大小  </div><div class="line">audioManager.setMode(AudioManager.STREAM_MUSIC);   </div><div class="line"></div><div class="line">//播放一段声音，查看效果          </div><div class="line">MediaPlayer playerSound = MediaPlayer.create(this, Uri.parse(&quot;file:///system/media/audio/ui/camera_click.ogg&quot;));  </div><div class="line">playerSound.start();</div></pre></td></tr></table></figure></p>
+<h3 id="使用STREAM-VOCIE-CALL播放声音与耳机冲突"><a href="#使用STREAM-VOCIE-CALL播放声音与耳机冲突" class="headerlink" title="使用STREAM_VOCIE_CALL播放声音与耳机冲突"></a>使用STREAM_VOCIE_CALL播放声音与耳机冲突</h3><p>使用STREAM_VOCIE_CALL播放声音在某些手机,比如魅蓝等上面会导致声音仍外放,耳机没声音现象.
+WebRtc使用STREAM_VOCIE_CALL播放声音,导致某些手机声音低,没法使用音量键调节,插入耳机声音仍外放等问题.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2017/04/16/latex/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1982,7 +2970,7 @@ $$</p>
 <h5 id="IntentServices"><a href="#IntentServices" class="headerlink" title="IntentServices"></a>IntentServices</h5><p>IntentService是Service的子类，是一个异步的，会自动停止的服务，很好解决了传统的Service中处理完耗时操作忘记停止并销毁Service的问题</p>
 <p>生成一个默认的且与线程相互独立的工作线程执行所有发送到onStartCommand()方法的Intent,可以在onHandleIntent()中处理.</p>
 <p>串行队列,每次只运行一个任务,不存在线程安全问题,所有任务执行完后自动停止服务,不需要自己手动调用stopSelf()来停止.</p>
-<h4 id="BroadcastReceiver"><a href="#BroadcastReceiver" class="headerlink" title="BroadcastReceiver\"></a>BroadcastReceiver\</h4><h5 id="Android引入广播机制原因"><a href="#Android引入广播机制原因" class="headerlink" title="Android引入广播机制原因"></a>Android引入广播机制原因</h5><ul>
+<h4 id="BroadcastReceiver"><a href="#BroadcastReceiver" class="headerlink" title="BroadcastReceiver"></a>BroadcastReceiver</h4><h5 id="Android引入广播机制原因"><a href="#Android引入广播机制原因" class="headerlink" title="Android引入广播机制原因"></a>Android引入广播机制原因</h5><ul>
 <li>从MVC的角度考虑(应用程序内) 其实回答这个问题的时候还可以这样问，android为什么要有那4大组件，现在的移动开发模型基本上也是照搬的web那一套MVC架构，只不过是改了点嫁妆而已。android的四大组件本质上就是为了实现移动或者说嵌入式设备上的MVC架构，它们之间有时候是一种相互依存的关系，有时候又是一种补充关系，引入广播机制可以方便几大组件的信息和数据交互。</li>
 <li>程序间互通消息(例如在自己的应用程序内监听系统来电)</li>
 <li>效率上(参考UDP的广播协议在局域网的方便性)</li>
@@ -2184,7 +3172,7 @@ Dalvik解释器采用预先算好的Goto地址，每个指令对内存的访问�
 <p>　　最后，补充一点，byte code并不意味着就是解释执行，也能是加载编译，安装编译，预编译等等。实际上，不同的byte code的程序，不同的技术，不同的具体语言，其真正执行的情况挺复杂，难以一概而论的，好多都是混合技术的案例。</p>
 <p>在智能手机大部分都可以让用户选择使用Dalvik还是ART模式。当然默认还是使用Dalvik模式。
 用法：设置-辅助功能-开发者选项（开发人员工具）-选择运行环境（不同的手机设置的步骤可能不一样）。</p>
-<h3 id="问题整理"><a href="#问题整理" class="headerlink" title="问题整理"></a>问题整理</h3><h4 id="1-View-的onDraw与dispatchDraw"><a href="#1-View-的onDraw与dispatchDraw" class="headerlink" title="1.View 的onDraw与dispatchDraw"></a>1.View 的onDraw与dispatchDraw</h4><p>绘制VIew本身的内容，通过调用View.onDraw(canvas)函数实现
+<h3 id="问题整理"><a href="#问题整理" class="headerlink" title="问题整理"></a>问题整理</h3><h4 id="1-View-的onDraw与dispatchDraw"><a href="#1-View-的onDraw与dispatchDraw" class="headerlink" title="1.View 的onDraw与dispatchDraw"></a>1.View 的onDraw与dispatchDraw</h4><p>绘制View本身的内容，通过调用View.onDraw(canvas)函数实现
 绘制自己的孩子通过dispatchDraw（canvas）实现
 View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是先画Drawable背景，对 drawable调用setBounds()然后是draw(Canvas c)方法.有点注意的是背景drawable的实际大小会影响view组件的大小，drawable的实际大小通过getIntrinsicWidth()和getIntrinsicHeight()获取，当背景比较大时view组件大小等于背景drawable的大小</p>
 <p>画完背景后，draw过程会调用onDraw(Canvas canvas)方法，然后就是dispatchDraw(Canvas canvas)方法, dispatchDraw()主要是分发给子组件进行绘制，我们通常定制组件的时候重写的是onDraw()方法。值得注意的是ViewGroup容器组件的绘制，当它没有背景时直接调用的是dispatchDraw()方法, 而绕过了draw()方法，当它有背景的时候就调用draw()方法，而draw()方法里包含了dispatchDraw()方法的调用。因此要在ViewGroup上绘制东西的时候往往重写的是dispatchDraw()方法而不是onDraw()方法，或者自定制一个Drawable，重写它的draw(Canvas c)和 getIntrinsicWidth(),</p>
@@ -2292,7 +3280,7 @@ View组件的绘制会调用draw(Canvas canvas)方法，draw过程中主要是�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">145</span>
+                <span class="site-state-item-count">150</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

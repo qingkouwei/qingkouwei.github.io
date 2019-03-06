@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wodekouwei.com/"/>
-  <updated>2019-03-01T06:30:35.766Z</updated>
+  <updated>2019-03-05T11:25:01.232Z</updated>
   <id>http://wodekouwei.com/</id>
   
   <author>
@@ -14,6 +14,484 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>应用targetSdkVersion升级指导</title>
+    <link href="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/"/>
+    <id>http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/</id>
+    <published>2019-03-05T08:00:20.000Z</published>
+    <updated>2019-03-05T11:25:01.232Z</updated>
+    
+    <content type="html"><![CDATA[<p>应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。</p>
+<ul>
+<li>对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应用将无法更新。</li>
+<li>对用户来说，未适配Android M或更高版本的应用安装在Android M或更高版本时，会默认授予申请的所有权限，且应用运行时无弹框授权提示。其中包括通讯录、电话、短信、通讯记录、位置、麦克风、相机等危险权限，导致用户在不知情的情况下泄露隐私信息，对用户个人信息安全造成危害。</li>
+</ul>
+<p><strong>应用targetSdkVersion升级流程</strong>
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935161819.jpg" alt="tips-android-targetsdkversion-201935161819"></p>
+<h2 id="targetSdkVersion-相关变更介绍"><a href="#targetSdkVersion-相关变更介绍" class="headerlink" title="targetSdkVersion 相关变更介绍"></a>targetSdkVersion 相关变更介绍</h2><h3 id="Android5-x（22-19）及以下版本变更"><a href="#Android5-x（22-19）及以下版本变更" class="headerlink" title="Android5.x（22-19）及以下版本变更"></a>Android5.x（22-19）及以下版本变更</h3><p><img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935184537.jpg" alt="tips-android-targetsdkversion-201935184537"></p>
+<h3 id="Android6-0变更"><a href="#Android6-0变更" class="headerlink" title="Android6.0变更"></a>Android6.0变更</h3><h4 id="（一）相关变更"><a href="#（一）相关变更" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><p><strong>运行时权限</strong></p>
+<p>此版本引入了一种新的权限模式，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，为安装的应用分别授予或撤销权限，同时为开发者精简了安装和自动更新过程。</p>
+<p>对于以 Android 6.0（API 级别 23）或更高版本为目标平台的应用，请务必在运行时检查和请求权限。确定应用是否已被授予权限，可调用新增的 checkSelfPermission() 方法。请求权限，可调用新增的 requestPermissions() 方法。具体参考：</p>
+<p><a href="https://developer.android.google.cn/training/permissions/requesting" target="_blank" rel="external">https://developer.android.google.cn/training/permissions/requesting</a></p>
+<p>####（二）适配指导</p>
+<p>• 解释需要权限的原因：系统在开发者调用 requestPermissions() 时显示的权限对话框将说明应用需要的权限，但不会解释为何需要这些权限。某些情况下，用户可能会感到困惑，因此，建议在调用 requestPermissions() 之前向用户解释应用需要相应权限的原因。</p>
+<ul>
+<li>仅申请应用真正需要的权限</li>
+<li>如果应用在启动之后一次要求用户提供多项权限，用户可能会感到无所适从并因此退出应用 。建议开发者应根据需要请求权限，对于某一些权限应用可以在真正需要使用的时候再尝试申请用户动态授权。</li>
+</ul>
+<h3 id="Android7-0"><a href="#Android7-0" class="headerlink" title="Android7.0"></a>Android7.0</h3><h4 id="（一）相关变更-1"><a href="#（一）相关变更-1" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><h5 id="1-系统禁止链接到非-NDK-库"><a href="#1-系统禁止链接到非-NDK-库" class="headerlink" title="1.系统禁止链接到非 NDK 库"></a>1.系统禁止链接到非 NDK 库</h5><p>从 Android 7.0 开始，系统将阻止应用动态链接非公开 NDK 库，原因为NDK 库可能会导致应用崩溃，此行为变更主要目的在为跨平台更新和不同设备提供统一的应用体验。即使应用中的代码不会链接私有库，但第三方静态库可能会进行链接，因此建议所有开发者都需进行相应检查，确保应用不会在运行 Android 7.0 的设备上崩溃。如果应用使用的是原生代码，则只能使用公开 NDK API。（<a href="https://developer.android.com/ndk/guides/stable_apis）" target="_blank" rel="external">https://developer.android.com/ndk/guides/stable_apis）</a></p>
+<h5 id="2-低电耗模式DOZE（系统状态）"><a href="#2-低电耗模式DOZE（系统状态）" class="headerlink" title="2.低电耗模式DOZE（系统状态）"></a>2.低电耗模式DOZE（系统状态）</h5><p>进入条件：灭屏、未充电、静止持续1小时
+退出条件：亮屏或移动或充电</p>
+<p>限制资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停应用的Sync任务</li>
+<li>暂停应用的JobScheduler任务</li>
+<li>忽略应用的wakelocks</li>
+<li>标准Alarm推迟到维护窗口</li>
+<li>不执行wifi扫描</li>
+</ul>
+<h5 id="3-低电耗模式Lite-Idle（系统状态）"><a href="#3-低电耗模式Lite-Idle（系统状态）" class="headerlink" title="3.低电耗模式Lite Idle（系统状态）"></a>3.低电耗模式Lite Idle（系统状态）</h5><p>进入条件：灭屏、未充电持续5分钟(Android P调整为3分钟）
+退出条件：亮屏或充电
+限制资源</p>
+<ul>
+<li>限制应用访问网络。</li>
+<li>暂停应用运行Sync任务 。</li>
+<li>暂停应用运行JobScheduler任务。</li>
+</ul>
+<h5 id="4-AppStandby模式（应用状态）"><a href="#4-AppStandby模式（应用状态）" class="headerlink" title="4.AppStandby模式（应用状态）"></a>4.AppStandby模式（应用状态）</h5><p>进入AppIdle条件：应用后台空闲总时间&gt;48小时且亮屏后台空闲时间 &gt; 12小时
+排除&amp;退出条件：前台应用、有前台服务的应用、通知栏或锁屏通知消息的应用或进行充电
+不限制的应用：系统应用UID&lt;10000的，Persist常驻应用，电池优化白名单，系统关联的其他应用
+限制的资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停执行应用的Sync任务</li>
+<li>暂停执行应用的JobScheduler任务</li>
+</ul>
+<h5 id="5-App-Standby-Bucket-应用待机分组模式-Android-P特性）"><a href="#5-App-Standby-Bucket-应用待机分组模式-Android-P特性）" class="headerlink" title="5.App Standby Bucket 应用待机分组模式( Android P特性）"></a>5.App Standby Bucket 应用待机分组模式( Android P特性）</h5><p>应用待机分组模式是在Doze模式未生效时（亮屏或刚刚灭屏时），对运行在后台的用户不可感知应用的耗电管控扩展。</p>
+<h4 id="（二）适配指导"><a href="#（二）适配指导" class="headerlink" title="（二）适配指导"></a>（二）适配指导</h4><p>低电耗模式和应用待机模式适配指导如下：</p>
+<p>• 前台服务</p>
+<p>应用需要在后台访问网络或者使用CPU时可以通过此方式。</p>
+<p>• Doze白名单</p>
+<p>查询应用是不是再doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);</div><div class="line">boolean hasIgnored = powerManager.isIgnoringBatteryOptimizations(activity.getPackageName());</div></pre></td></tr></table></figure></p>
+<p>向用户申请授权添加doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);</div><div class="line">intent.setData(Uri.parse(&quot;package:&quot;+activity.getPackageName()));</div><div class="line">startActivity(intent);</div></pre></td></tr></table></figure></p>
+<h3 id="Android8-0-变更"><a href="#Android8-0-变更" class="headerlink" title="Android8.0 变更"></a>Android8.0 变更</h3><h4 id="1-后台服务限制"><a href="#1-后台服务限制" class="headerlink" title="1.后台服务限制"></a>1.后台服务限制</h4><h5 id="①哪些应用会受到后台服务限制？"><a href="#①哪些应用会受到后台服务限制？" class="headerlink" title="①哪些应用会受到后台服务限制？"></a>①哪些应用会受到后台服务限制？</h5><ul>
+<li>TargetSDK&gt;=26的应用</li>
+<li>TargetSDK&lt;26且被用户主动设置为限制后台活动的应用（华为EMUI8.x未提供配置）</li>
+</ul>
+<p>注意：Doze 白名单中的应用不受限制（用户可以设置，手机管家配置有默认值白名单）</p>
+<h5 id="②前台如何定义？"><a href="#②前台如何定义？" class="headerlink" title="②前台如何定义？"></a>②前台如何定义？</h5><ul>
+<li>前台有可见 Activity</li>
+<li>前台服务可以后台播放</li>
+<li>绑定服务的情况<h5 id="③后台服务限制，限制了哪些行为？"><a href="#③后台服务限制，限制了哪些行为？" class="headerlink" title="③后台服务限制，限制了哪些行为？"></a>③后台服务限制，限制了哪些行为？</h5></li>
+<li>应用进入 uidldle 后，会被调用 Service.stopself()</li>
+<li>应用进入 uidldle 后，不允许通过 startService启动服务</li>
+<li>应用进程仍然存在，JobScheduler、Alarm、广播等均能触发</li>
+<li>广播接收线程处理短暂业务，无法拉起后台服务</li>
+<li>非安卓组件线程 CPU 超标时，谷歌原生机制会强制kill进程<h5 id="④临时白名单机制"><a href="#④临时白名单机制" class="headerlink" title="④临时白名单机制"></a>④临时白名单机制</h5>系统调用应用时，少量场景会将应用添加到临时白名单（有效时间30秒~300秒）：</li>
+<li>处理高优先级 FCM 消息</li>
+<li>接收短信彩信</li>
+<li>用户点击通知栏，执行 PendingIntent<h5 id="⑤用户设置限制后台活动之后的影响（Android-P优化）"><a href="#⑤用户设置限制后台活动之后的影响（Android-P优化）" class="headerlink" title="⑤用户设置限制后台活动之后的影响（Android P优化）"></a>⑤用户设置限制后台活动之后的影响（Android P优化）</h5></li>
+<li>应用退后台，1分钟就会被停止 Service（包括正在执行的前台任务）</li>
+<li>限制访问网络</li>
+<li>限制 Alarm 触发</li>
+<li>限制 JobScheduler 执行</li>
+</ul>
+<h4 id="2-广播限制"><a href="#2-广播限制" class="headerlink" title="2.广播限制"></a>2.广播限制</h4><p>Android 8.0 的应用无法继续在其清单中为隐式广播注册广播接收器,但也存在例外情况：</p>
+<ul>
+<li>应用可以继续在清单中注册显式广播</li>
+<li>应用可以在运行时使用 Context.registerReceiver() 为任意广播（不管是隐式还是显式）注 册接收器</li>
+<li>需要签名权限的广播不受此限制所限，因为这些广播只会发送到使用相同证书签名的应用 ，而不会发送至设备上的所有应用</li>
+<li>白名单豁免隐式广播的列表：<a href="https://developer.android.com/guide/components/broadcast-exceptions" target="_blank" rel="external">https://developer.android.com/guide/components/broadcast-exceptions</a></li>
+</ul>
+<p>后台执行限制的适配建议</p>
+<ul>
+<li>使用 JobScheduler 代替</li>
+<li>增加前台服务</li>
+<li>加 Doze 白名单（不推荐）</li>
+</ul>
+<h4 id="3-最大屏幕纵横比"><a href="#3-最大屏幕纵横比" class="headerlink" title="3.最大屏幕纵横比"></a>3.最大屏幕纵横比</h4><p>以 Android 7.1（API 级别 25）或更低版本为目标平台中应用默认的最大屏幕纵横比为1.86。针对 Android 8.0 或更高版本的应用没有默认的最大纵横比，如需设置请在应用 androidmanifest 文件定义 maxAspectRatio 属性（注意：如果应用没有显示申明不支持 resizeableActivity，系统将会忽略应用设置的 maxAspectRatio属性）</p>
+<h4 id="4-其他变更"><a href="#4-其他变更" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提醒窗口</td>
+<td>使用SYSTEM_ALERT_WINDOW权限的应用无法再使用以下窗口类型来在其他应用和系统窗口上方显示提醒窗口:TYPE_PHONE,TYPE_PRIORITY_PHONE,TYPE_SYSTEM_ALERT,TYPE_SYSTEM_OVERLAY,TYPE_SYSTEM_ERROR,应用必须使用名为TYPE_APPLICATION_OVERLAY的新窗口类型</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>在Android8.0之前,如果应用在运行时请求权限并且被授予该权限,系统会错误地将属于同一权限组并且在清单中注册的其他权限也一起授予应用.对于针对8.0的应用,此行为已被纠正.系统只会授予应用明确请求的权限.然而,一旦用户为应用授予某个权限,则所有后续对该权限组中权限的请求都被自动批准.建议应用在使用所有的敏感权限之前,都先判断一下权限是否已经被授予,如果没有授予需要申请动态权限.</td>
+</tr>
+<tr>
+<td>Linker</td>
+<td>O版本在linker中新增加检查就是在load之前检测一下需要加载的section的权限,被加载的段不允许同事具有E(可执行)和W(可写)权限.如果有这样的段,则linker报错</td>
+</tr>
+<tr>
+<td>Build.SERIAL弃用</td>
+<td>需要知道硬件序列号的应用应改为使用新的Build.getSerial()函数,该函数要求具有READ_PHONE_STATE权限</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Android9-0-变更"><a href="#Android9-0-变更" class="headerlink" title="Android9.0 变更"></a>Android9.0 变更</h3><h4 id="1-非SDK管控"><a href="#1-非SDK管控" class="headerlink" title="1.非SDK管控"></a>1.非SDK管控</h4><table>
+<thead>
+<tr>
+<th>名单类型</th>
+<th>影响</th>
+<th>名单说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浅灰名单</td>
+<td>targetSDK&gt;=P时,警告</td>
+<td>已有应用在使用非SDK接口,仍然可以继续使用</td>
+</tr>
+<tr>
+<td>深灰名单</td>
+<td>targetSDK<p时,警告;>=时,不允许调用</p时,警告;></td>
+<td>应用可能还在使用</td>
+</tr>
+<tr>
+<td>黑名单</td>
+<td>所有三方应用不允许调用</td>
+<td>灰名单(深灰+浅灰)之外的其他所有非SDK接口都会被添加到黑名单,应用发现有使用黑名单的接口需要马上整改,或者反馈给谷歌申请加灰名单</td>
+</tr>
+</tbody>
+</table>
+<p>使用谷歌提供的非 SDK 扫描工具查看应用使用的深灰名单和黑名单非 SDK 接口： <a href="https://android.googlesource.com/platform/prebuilts/runtime/+/" target="_blank" rel="external">https://android.googlesource.com/platform/prebuilts/runtime/+/</a> master/appcompat/</p>
+<h4 id="2-Apache-HTTP-客户端弃用"><a href="#2-Apache-HTTP-客户端弃用" class="headerlink" title="2. Apache HTTP 客户端弃用"></a>2. Apache HTTP 客户端弃用</h4><p>默认情况下该内容库已从 bootclasspath 中移除且不可用于应用，应用不能使用系统的 classloader 加载 org.apache.http.* 库，否则会抛 NoClassDefFoundError。</p>
+<p>适配建议</p>
+<ul>
+<li>方法一：如果要继续使用 Apache HTTP 客户端，以 Android 9.0及更高版本为目标的应用可以向其 AndroidManifest.xml 添加以下内容：<code>&lt;uses-library android:name=&quot;org.apache.http.legacy&quot; android:required=&quot;false&quot;/&gt;</code></li>
+<li>方法二：如果必须要继续使用 Apache HTTP 客户端，开发者可以将 org.apache.http.legacy库打包进自己的apk。</li>
+<li>推荐方法：使用 HttpURLConnection 类替代 apache-http</li>
+</ul>
+<h4 id="3-内联方法不允许跨dex"><a href="#3-内联方法不允许跨dex" class="headerlink" title="3.内联方法不允许跨dex"></a>3.内联方法不允许跨dex</h4><p>Google 在 Android P 新增检测：如果调用某个 inline 方法的类与 inline 方法所在的类由不同的 classloader 加载，就会主动发起 abort（inline不允许跨dex文件）导致应用 crash。
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935181033.jpg" alt="tips-android-targetsdkversion-201935181033"></p>
+<h5 id="兼容性影响"><a href="#兼容性影响" class="headerlink" title="兼容性影响"></a>兼容性影响</h5><p>对使用插件和热修复的应用有很大影响，需要重点测试。</p>
+<h5 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h5><ul>
+<li>启动应用，构造热修复场景，在 app 侧触发热修复</li>
+<li><code>adb shell cmd package compile -m speed -f my-package 应用包名 (inline编译)</code></li>
+<li>重启应用，检查是否会出现闪退问题</li>
+</ul>
+<h5 id="适配建议"><a href="#适配建议" class="headerlink" title="适配建议"></a>适配建议</h5><ul>
+<li>尽量避免使用不同的 classloader 加载相关的类。</li>
+<li>如果一定要这样做的话，需要避免内联，比如在函数里面加 try catch， 这样 compiler就不会将这个函数 inline。</li>
+</ul>
+<h4 id="4-其他变更-1"><a href="#4-其他变更-1" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前台服务</td>
+<td>使用前台服务的应用必须请求FOREGROUND_SERVICE权限.这是普通权限,因此,系统会自动为请求权限的应用授予此权限.如果针对Android9或更高版本的应用尝试创建一个前台服务且未请求FOREGROUND_SERVICE,则系统会引发SecurityException.</td>
+</tr>
+<tr>
+<td>DNS隐私</td>
+<td>应用应采用私有DNS API.具体而言,当系统解析程序正在执行DNS-over-TLS时,应用应确保任何内置DNS客户端均使用加密的DNS查找和系统相同的主机名,或停用它而改用系统解析程序</td>
+</tr>
+<tr>
+<td>默认情况下启用网络传输层安全协议(TLS)</td>
+<td>默认情况下isCleartextTrafficPermitted()函数返回false.如果您的应用需要为特定域名启动明文,您必须在应用的网络安全性配置中针对这些域名将cleartextTrafficPermitted显式设置为true</td>
+</tr>
+<tr>
+<td>webview数据目录不允许共享</td>
+<td>应用无法再让多个进程公用同一个WebView数据目录.如果应用中的多个进程需要访问同一网络数据,您需要自行在这些进程之间复制数据.例如,您可以调用getCookie()和setCooki(),在不同进程之间手动传输Cookie数据</td>
+</tr>
+<tr>
+<td>以应用为单位的SELinux域名</td>
+<td>应用的私有数据只能由该应用访问.要与其他应用共享文件,请使用contentprovider</td>
+</tr>
+</tbody>
+</table>
+<p>其他的变更和非 TargetSdkVersion 相关的变更以及新特性，可以在谷歌开发者网站查阅：<a href="https://developer.android.google.cn/about/versions/oreo/" target="_blank" rel="external">https://developer.android.google.cn/about/versions/oreo/</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android启动过程深入解析</title>
+    <link href="http://wodekouwei.com/2019/03/05/tips-android-system-load/"/>
+    <id>http://wodekouwei.com/2019/03/05/tips-android-system-load/</id>
+    <published>2019-03-05T06:11:16.000Z</published>
+    <updated>2019-03-05T06:29:37.391Z</updated>
+    
+    <content type="html"><![CDATA[<ul>
+<li>A当按下Android设备电源键时究竟发生了什么？</li>
+<li>Android的启动过程是怎么样的？</li>
+<li>A什么是Linux内核？</li>
+<li>A桌面系统linux内核与Android系统linux内核有什么区别？</li>
+<li>A什么是引导装载程序？</li>
+<li>A什么是Zygote？</li>
+<li>A什么是X86以及ARM linux？</li>
+<li>A什么是init.rc?</li>
+<li>A什么是系统服务？
+当我们想到Android启动过程时，脑海中总是冒出很多疑问。本文将介绍Android的启动过程，希望能帮助你找到上面这些问题的答案。</li>
+</ul>
+<p>Android是一个基于Linux的开源操作系统。x86（x86是一系列的基于intel 8086 CPU的计算机微处理器指令集架构）是linux内核部署最常见的系统。然而，所有的Android设备都是运行在ARM处理器（ARM 源自进阶精简指令集机器，源自ARM架构）上，除了英特尔的Xolo设备(<a href="http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz" target="_blank" rel="external">http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz</a> x86处理器。Android设备或者嵌入设备或者基于linux的ARM设备的启动过程与桌面版本相比稍微有些差别。这篇文章中，我将解释Android设备的启动过程。<a href="http://www.ibm.com/developerworks/linux/library/l-linuxboot/" target="_blank" rel="external">深入linux启动</a>过程是一篇讲桌面linux启动过程的好文。</p>
+<p>当你按下电源开关后Android设备执行了以下步骤。</p>
+<p><img src="http://images.wodekouwei.com/tips-android-system-load-201935141326.png" alt="tips-android-system-load-201935141326"></p>
+<h3 id="第一步：启动电源以及系统启动"><a href="#第一步：启动电源以及系统启动" class="headerlink" title="第一步：启动电源以及系统启动"></a>第一步：启动电源以及系统启动</h3><p>当电源按下，引导芯片代码开始从预定义的地方（固化在ROM）开始执行。加载引导程序到RAM，然后执行。</p>
+<h3 id="第二步：引导程序"><a href="#第二步：引导程序" class="headerlink" title="第二步：引导程序"></a>第二步：引导程序</h3><p>引导程序是在Android操作系统开始运行前的一个小程序。引导程序是运行的第一个程序，因此它是针对特定的主板与芯片的。设备制造商要么使用很受欢迎的引导程序比如<a href="http://ecos.sourceware.org/redboot/" target="_blank" rel="external">redboot</a>、<a href="http://www.denx.de/wiki/U-Boot" target="_blank" rel="external">uboot</a>、<a href="http://wiki.openmoko.org/wiki/Qi" target="_blank" rel="external">qi bootloader</a>或者开发自己的引导程序，它不是Android操作系统的一部分。引导程序是OEM厂商或者运营商加锁和限制的地方。</p>
+<p>引导程序分两个阶段执行。第一个阶段，检测外部的RAM以及加载对第二阶段有用的程序；第二阶段，引导程序设置网络、内存等等。这些对于运行内核是必要的，为了达到特殊的目标，引导程序可以根据配置参数或者输入数据设置内核。</p>
+<p>Android引导程序可以在<code>\bootable\bootloader\legacy\usbloader</code>找到。
+传统的加载器包含的个文件，需要在这里说明：</p>
+<ul>
+<li>init.s初始化堆栈，清零BBS段，调用main.c的_main()函数；</li>
+<li>main.c初始化硬件（闹钟、主板、键盘、控制台），创建linux标签。
+更多关于Android引导程序的可以在<a href="https://motorola-global-portal.custhelp.com/app/answers/detail/a_id/86208/~/bootloader-frequently-asked-questions" target="_blank" rel="external">这里</a>了解。</li>
+</ul>
+<h3 id="第三步：内核"><a href="#第三步：内核" class="headerlink" title="第三步：内核"></a>第三步：内核</h3><p>Android内核与桌面linux内核启动的方式差不多。内核启动时，设置缓存、被保护存储器、计划列表，加载驱动。当内核完成系统设置，它首先在系统文件中寻找”init”文件，然后启动root进程或者系统的第一个进程。</p>
+<h3 id="第四步：init进程"><a href="#第四步：init进程" class="headerlink" title="第四步：init进程"></a>第四步：init进程</h3><p>init是第一个进程，我们可以说它是root进程或者说有进程的父进程。init进程有两个责任，一是挂载目录，比如/sys、/dev、/proc，二是运行init.rc脚本。</p>
+<p>init进程可以在/system/core/init找到。
+init.rc文件可以在/system/core/rootdir/init.rc找到。
+readme.txt可以在/system/core/init/readme.txt找到。
+对于init.rc文件，Android中有特定的格式以及规则。在Android中，我们叫做Android初始化语言。
+Android初始化语言由四大类型的声明组成，即Actions（动作）、Commands（命令）、Services（服务）、以及Options（选项）。</p>
+<h4 id="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"><a href="#Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。" class="headerlink" title="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"></a>Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。</h4><p>语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">    on &amp;lt;trigger&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div></pre></td></tr></table></figure></p>
+<h4 id="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"><a href="#Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。" class="headerlink" title="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"></a>Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。</h4><p>语法
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">service &amp;lt;name&amp;gt; &amp;lt;pathname&amp;gt; [&amp;lt;argument&amp;gt;]*</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    ...</div></pre></td></tr></table></figure></p>
+<h4 id="Options（选项）"><a href="#Options（选项）" class="headerlink" title="Options（选项）"></a>Options（选项）</h4><p>选项是对服务的描述。它们影响init进程如何以及何时启动服务。
+咱们来看看默认的init.rc文件。这里我只列出了主要的事件以及服务。
+Table
+|—|—|
+|Action/Service|    描述|
+|on early-init    |设置init进程以及它创建的子进程的优先级，设置init进程的安全环境|
+|on init    |设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点|
+|on fs    |挂载mtd分区|
+|on post-fs    |改变系统目录的访问权限|
+|on post-fs-data    |改变/data目录以及它的子目录的访问权限|
+|on boot    |基本网络的初始化，内存管理等等|
+|service servicemanager    |启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…|
+|service zygote    |启动zygote作为应用进程|
+在这个阶段你可以在设备的屏幕上看到“Android”logo了。</p>
+<h3 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h3><p>在Java中，我们知道不同的虚拟机实例会为不同的应用分配不同的内存。假如Android应用应该尽可能快地启动，但如果Android系统为每一个应用启动不同的Dalvik虚拟机实例，就会消耗大量的内存以及时间。因此，为了克服这个问题，Android系统创造了”Zygote”。Zygote让Dalvik虚拟机共享代码、低内存占用以及最小的启动时间成为可能。Zygote是一个虚拟器进程，正如我们在前一个步骤所说的在系统引导的时候启动。Zygote预加载以及初始化核心库类。通常，这些核心类一般是只读的，也是Android SDK或者核心框架的一部分。在Java虚拟机中，每一个实例都有它自己的核心库类文件和堆对象的拷贝。</p>
+<p>Zygote加载进程</p>
+<ol>
+<li>加载ZygoteInit类，源代码：<code>/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</code></li>
+<li>registerZygoteSocket()为zygote命令连接注册一个服务器套接字。</li>
+<li>preloadClassed “preloaded-classes”是一个简单的包含一系列需要预加载类的文本文件，你可以在<android source="">/frameworks/base找到“preloaded-classes”文件。</android></li>
+<li>preloadResources() preloadResources也意味着本地主题、布局以及android.R文件中包含的所有东西都会用这个方法加载。
+在这个阶段，你可以看到启动动画。</li>
+</ol>
+<h3 id="第六步：系统服务或服务"><a href="#第六步：系统服务或服务" class="headerlink" title="第六步：系统服务或服务"></a>第六步：系统服务或服务</h3><p>完成了上面几步之后，运行环境请求Zygote运行系统服务。系统服务同时使用native以及java编写，系统服务可以认为是一个进程。同一个系统服务在Android SDK可以以System Services形式获得。系统服务包含了所有的System Services。</p>
+<p>Zygote创建新的进程去启动系统服务。你可以在ZygoteInit类的”startSystemServer”方法中找到源代码。</p>
+<p>核心服务：</p>
+<ol>
+<li>启动电源管理器；</li>
+<li>创建Activity管理器；</li>
+<li>启动电话注册；</li>
+<li>启动包管理器；</li>
+<li>设置Activity管理服务为系统进程；</li>
+<li>启动上下文管理器；</li>
+<li>启动系统Context Providers；</li>
+<li>启动电池服务；</li>
+<li>启动定时管理器；</li>
+<li>启动传感服务；</li>
+<li>启动窗口管理器；</li>
+<li>启动蓝牙服务；</li>
+<li>启动挂载服务</li>
+</ol>
+<p>其他服务：</p>
+<ol>
+<li>启动状态栏服务；</li>
+<li>启动硬件服务；</li>
+<li>启动网络状态服务；</li>
+<li>启动网络连接服务；</li>
+<li>启动通知管理器；</li>
+<li>启动设备存储监视服务；</li>
+<li>启动定位管理器；</li>
+<li>启动搜索服务；</li>
+<li>启动剪切板服务；</li>
+<li>启动登记服务；</li>
+<li>启动壁纸服务；</li>
+<li>启动音频服务；</li>
+<li>启动耳机监听；</li>
+<li>启动AdbSettingsObserver（处理adb命令）。</li>
+</ol>
+<h3 id="第七步：引导完成"><a href="#第七步：引导完成" class="headerlink" title="第七步：引导完成"></a>第七步：引导完成</h3><p>一旦系统服务在内存中跑起来了，Android就完成了引导过程。在这个时候“ACTION_BOOT_COMPLETED”开机启动广播就会发出去。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;A当按下Android设备电源键时究竟发生了什么？&lt;/li&gt;
+&lt;li&gt;Android的启动过程是怎么样的？&lt;/li&gt;
+&lt;li&gt;A什么是Linux内核？&lt;/li&gt;
+&lt;li&gt;A桌面系统linux内核与Android系统linux内核有什么区别？&lt;/li&gt;
+&lt;li&gt;A
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>解决方案之美团APP对Crash的治理之路</title>
+    <link href="http://wodekouwei.com/2019/03/05/tips-solution-2/"/>
+    <id>http://wodekouwei.com/2019/03/05/tips-solution-2/</id>
+    <published>2019-03-05T02:06:36.000Z</published>
+    <updated>2019-03-05T14:36:16.604Z</updated>
+    
+    <content type="html"><![CDATA[<p>Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。</p>
+<p>本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。</p>
+<h3 id="美团Crash治理背景"><a href="#美团Crash治理背景" class="headerlink" title="美团Crash治理背景"></a>美团Crash治理背景</h3><p>美团作为一个平台化的APP，背后有20+团队设计和30+业务。</p>
+<p>在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带来的直接影响是沟通成本上升和防范难度加大。因此在实际治理过程，主要围绕基础能力、治理效率两个层面进行探索和优化建设。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg" alt="tips-solution-2-201935223013"></p>
+<h4 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h4><p>Crash治理的基础能力主要体现在三个层面：能发现、能定位和能修复。</p>
+<p>在发现能力层面，美团有一套异常监控退出系统，可发现除Java&amp;JNI Crash&amp;ANR以外其他类型的异常退出。在定位能力层面，有可提供内存泄漏路径及OOM时的内存快照的内存监控体系，有可提供线程现场及任务现场的线程管控体系。除此以外，还有动态日志系统提供额外的方法调用链及参数信息。</p>
+<h4 id="内存监控体系"><a href="#内存监控体系" class="headerlink" title="内存监控体系"></a>内存监控体系</h4><p>内存问题最典型的呈现形式是OOM，其中80%通过Leak监控系统发现预防，另外20%的内存问题，对于大体量APP需要从全局对内存资源问题进行监控和调查分析。</p>
+<p>美团的内存监控体系分为线下和线上两个场景。线下通过Leak监控系统能预防发现80%的OOM问题，线上建立随时获取OOM内存现场的监控能力
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223125.jpg" alt="tips-solution-2-201935223125"></p>
+<h4 id="动态日志"><a href="#动态日志" class="headerlink" title="动态日志"></a>动态日志</h4><p>美团APP经常会遇到用户个性化的使用场景无法复现和定位的问题。对此，美团提出了一套动态日志系统——</p>
+<p>在编译期对应用代码通过插桩实现代理，运行期同步记录，出现异常时可主动触发上报，也可以由服务端主动回捞。基于插桩实现的代理逻辑，可实施获取原方法执行时的方法名、入参和返回值信息，再将这些信息序列化后存储到数据库，由此可在必要的时候获取到较完善的方法调用栈历史，进而定位问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223215.jpg" alt="tips-solution-2-201935223215">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223229.jpg" alt="tips-solution-2-201935223229"></p>
+<h4 id="修复能力"><a href="#修复能力" class="headerlink" title="修复能力"></a>修复能力</h4><p>在修复能力层面，美团APP一度深受机型多、系统杂带来的framework层的问题困扰。此外，美团APP也经常会遇到常规日志体系无法覆盖的接口问题。</p>
+<p>针对这两类问题，参考热修复的方法替换原理，开发并完善了一套小工具——“Graft”。它的基本原理是在native层通过方法替换实现对Java层方法的hook和代理，进而在Java层实现方法代理和方法替换。</p>
+<p>这套工具可以动态代理或替换几乎所有Java层的方法（包括framework层），使得美团APP的修复能力从自有代码和第三方代码有效覆盖到framework层。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223340.jpg" alt="tips-solution-2-201935223340">
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223353.jpg" alt="tips-solution-2-201935223353"></p>
+<h4 id="效率提升"><a href="#效率提升" class="headerlink" title="效率提升"></a>效率提升</h4><p>为了提高治理效率，实际治理过程逐渐形成PR检查流程、自动检查平台和Crash平台三大流程和平台。</p>
+<p>PR检查流程主要针对PR阶段进行代码规范性检查、代码准入检查和稳定性案例检查；自动检查平台针对以往案例进行定制化防范检查。Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。
+<img src="http://images.wodekouwei.com/tips-solution-2-201935223433.jpg" alt="tips-solution-2-201935223433"></p>
+<h3 id="Crash平台"><a href="#Crash平台" class="headerlink" title="Crash平台"></a>Crash平台</h3><p>Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。</p>
+<p>在PR阶段，PR检查流程可自动识别出增量代码是否被现有体系覆盖，并通过Crash平台的接入管控系统督促增量代码的责任人完善基本信息、频道信息、聚合配合及自动工单配置等等。</p>
+<p>在开发或全量过程中一旦发现异常，Crash平台会自动完成堆栈聚合、频道识别、报警评估及工单跟踪等工作。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223539.jpg" alt="tips-solution-2-201935223539">
+<img src="http://images.wodekouwei.com/tips-solution-2-20193522365.jpg" alt="tips-solution-2-20193522365"></p>
+<p>Crash率是APP最重要的指标之一，谌天洲建议开发者建立解决Crash的长效机制，找到最合理的解决方案。随着版本的不断迭代，Crash治理之路才能离目标越来越近。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。&lt;/p&gt;
+&lt;p&gt;本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。&lt;/p&gt;
+&lt;h3 id=
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>性能度量指标及数据平台</title>
+    <link href="http://wodekouwei.com/2019/03/04/tips-solution-1/"/>
+    <id>http://wodekouwei.com/2019/03/04/tips-solution-1/</id>
+    <published>2019-03-04T15:25:17.000Z</published>
+    <updated>2019-03-05T06:11:50.259Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="性能和稳定性系统化提升方案"><a href="#性能和稳定性系统化提升方案" class="headerlink" title="性能和稳定性系统化提升方案"></a>性能和稳定性系统化提升方案</h2><h3 id="高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台"><a href="#高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台" class="headerlink" title="高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台"></a>高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台</h3><h4 id="高可用的定义及度量指标"><a href="#高可用的定义及度量指标" class="headerlink" title="高可用的定义及度量指标"></a>高可用的定义及度量指标</h4><h5 id="移动端高可用定义"><a href="#移动端高可用定义" class="headerlink" title="移动端高可用定义"></a>移动端高可用定义</h5><p>移动端高可用旨在通过设计关键的度量指标,以期望能够客观反映和量化用户再使用过程中的真是感受,同时通过指标，建⽴一系列的工具和平台，从线下到线上快速发现、分析、定位和解决包括稳定性、性能、功能等各类问题，以进一步提升用户体验的系统化解决方案。</p>
+<h5 id="可高勇度量指标"><a href="#可高勇度量指标" class="headerlink" title="可高勇度量指标"></a>可高勇度量指标</h5><p>高可用度量指标由 <strong>性能</strong> 和 <strong>稳定性</strong> 两大度量指标组成。性能度量指标有七个维度，分别是卡顿率、启动时长、页面秒开率、帧率、ANR率、流量、耗电；稳定性度量指标主要是Crash率，分为Java Crash率和Native Crash率。</p>
+<p><img src="http://images.wodekouwei.com/tips-solution-1-201935105618.jpg" alt="tips-solution-1-201935105618"></p>
+<h4 id="自动化测试框架及性能稳定性数据平台"><a href="#自动化测试框架及性能稳定性数据平台" class="headerlink" title="自动化测试框架及性能稳定性数据平台"></a>自动化测试框架及性能稳定性数据平台</h4><h5 id="自动化测试框架"><a href="#自动化测试框架" class="headerlink" title="自动化测试框架"></a>自动化测试框架</h5><h5 id="性能稳定性数据平台"><a href="#性能稳定性数据平台" class="headerlink" title="性能稳定性数据平台"></a>性能稳定性数据平台</h5><p>性能稳定性数据平台，由四个模块组成，用来展示各个维度的监控数据。
+<img src="http://images.wodekouwei.com/tips-solution-1-201935111941.jpg" alt="tips-solution-1-201935111941"></p>
+<h6 id="1-崩溃分析"><a href="#1-崩溃分析" class="headerlink" title="1.崩溃分析"></a>1.崩溃分析</h6><p>主要是Java Crash和Native Crash分析，Java Crash包含了Crash当时调用栈，当前页面、用户历史访问页面、当前内存水位以及logcat信息，帮助开发同学快速分析Java崩溃的原因，从而快速解决问题。Native崩溃主要包含了崩溃的信号量、崩溃使用的调用栈、其他线程的调度栈、logcat信息以及已加载的so信息，通过这些信息，可以让开发同学快速地发现Native崩溃原因。</p>
+<h6 id="2-异常分析"><a href="#2-异常分析" class="headerlink" title="2.异常分析"></a>2.异常分析</h6><p>各个性能维度的指标会在这里展示，主线程卡顿主要是哪条消息超过了阈值，它的调用栈是什么样子的。ANR展示的主要是/data/anr下的文件信息，发生ANR的现场是什么样子的。主线程IO这块展示的是主线程操作IO的一些调用栈以及它的耗时。内存泄露这块分两部分，Java泄露组件的名称，Native泄露的so名称，通过这两部分可以快速地定位内存泄露的原因。资源泄露这块主要展示开发同学调用资源open时的调用栈信息。</p>
+<h6 id="3-性能APM"><a href="#3-性能APM" class="headerlink" title="3.性能APM"></a>3.性能APM</h6><p>启动性能监控了用户点击图标到真正进入页面可视可交互的时间。页面性能是从点击页面图表到下一个页面真正可视可交互的时间。系统监控启动所有阶段子任务的耗时，通过数据变化决策版本的发布是否符合质量标准。如果符合质量标准，可以发布；如果不符合，再进一步分析子任务耗时，具体是哪些任务导致不能正常发布。快速地定位分析，最终解决问题。手淘把数据能力开放给各个业务，通过他们个性化的需求自定义配置性能报表。</p>
+<h6 id="4-远程工具"><a href="#4-远程工具" class="headerlink" title="4.远程工具"></a>4.远程工具</h6><p>远程工具主要是针对特殊用户的特殊案例。当线上用户向舆情平台反馈设备存在某一个性能问题时，通过这个工具，快速地从用户那里获取远程日志、Dump内存和每个方法的耗时，快速分析原因，从而给出解决方案。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;性能和稳定性系统化提升方案&quot;&gt;&lt;a href=&quot;#性能和稳定性系统化提升方案&quot; class=&quot;headerlink&quot; title=&quot;性能和稳定性系统化提升方案&quot;&gt;&lt;/a&gt;性能和稳定性系统化提升方案&lt;/h2&gt;&lt;h3 id=&quot;高可用平台的定义及指标-自动化测试框架和性
+    
+    </summary>
+    
+      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
+    
+      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android系统图形栈(一):OpenGL 介绍</title>
+    <link href="http://wodekouwei.com/2019/03/01/gl-introduce/"/>
+    <id>http://wodekouwei.com/2019/03/01/gl-introduce/</id>
+    <published>2019-03-01T10:06:18.000Z</published>
+    <updated>2019-03-01T10:22:21.082Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="OpenGL基本概念"><a href="#OpenGL基本概念" class="headerlink" title="OpenGL基本概念"></a>OpenGL基本概念</h3><p>OpenGL的结构可以从逻辑上划分为下面3个部分:</p>
+<ul>
+<li>图元(Primitives)</li>
+<li>缓冲区(Buffers)</li>
+<li>光栅化(Rasterize)</li>
+</ul>
+<h4 id="图元-Primitives"><a href="#图元-Primitives" class="headerlink" title="图元(Primitives)"></a>图元(Primitives)</h4><p>在 OpenGL 的世界里，我们只能画点、线、三角形这三种基本图形，而其它复杂的图形都可以通过三角形来组成。所以这里的图元指的就是这三种基础图形：</p>
+<ul>
+<li>点：点存在于三维空间，坐标用（x,y,z）表示。</li>
+<li>线：由两个三维空间中的点组成。</li>
+<li>三角形：由三个三维空间的点组成。</li>
+</ul>
+<h4 id="缓冲区（Buffers）"><a href="#缓冲区（Buffers）" class="headerlink" title="缓冲区（Buffers）"></a>缓冲区（Buffers）</h4><p>OpenGL 中主要有 3 种 Buffer：</p>
+<ul>
+<li>帧缓冲区（Frame Buffers） 帧缓冲区：这个是存储OpenGL 最终渲染输出结果的地方，它是一个包含多个图像的集合，例如颜色图像、深度图像、模板图像等。</li>
+<li>渲染缓冲区（Render Buffers） 渲染缓冲区：渲染缓冲区就是一个图像，它是 Frame Buffer 的一个子集。</li>
+<li>缓冲区对象（Buffer Objects） 缓冲区对象就是程序员输入到 OpenGL 的数据，分为结构类和索引类的。前者被称为“数组缓冲区对象”或“顶点缓冲区对象”（“Array Buffer Object”或“Vertex Buff er Object”），即用来描述模型的数组，如顶点数组、纹理数组等； 后者被称为“索引缓冲区对象”（“Index Buffer Object”），是对上述数组的索引。</li>
+</ul>
+<h4 id="光栅化（Rasterize）"><a href="#光栅化（Rasterize）" class="headerlink" title="光栅化（Rasterize）"></a>光栅化（Rasterize）</h4><p>在介绍光栅化之前，首先来补充 OpenGL 中的两个非常重要的概念：</p>
+<ul>
+<li>Vertex Vertex 就是图形中顶点，一系列的顶点就围成了一个图形。</li>
+<li>Fragment Fragment 是三维空间的点、线、三角形这些基本图元映射到二维平面上的映射区域，通常一个 Fragment 对应于屏幕上的一个像素，但高分辨率的屏幕可能会用多个像素点映射到一个 Fragment，以减少 GPU 的工作。</li>
+</ul>
+<p>而光栅化是把点、线、三角形映射到屏幕上的像素点的过程。</p>
+<h4 id="着色器程序（Shader）"><a href="#着色器程序（Shader）" class="headerlink" title="着色器程序（Shader）"></a>着色器程序（Shader）</h4><p>Shader 用来描述如何绘制（渲染），GLSL 是 OpenGL 的编程语言，全称 OpenGL Shader Language，它的语法类似于 C 语言。OpenGL 渲染需要两种 Shader：Vertex Shader 和 Fragment Shader。</p>
+<ul>
+<li>Vertex Shader Vertex Shader 对于3D模型网格的每个顶点执行一次，主要是确定该顶点的最终位置。</li>
+<li>Fragment Shader Fragment Shader对光栅化之后2D图像中的每个像素处理一次。3D物体的表面最终显示成什么样将由它决定，例如为模型的可见表面添加纹理，处理光照、阴影的影响等等。</li>
+</ul>
+<h4 id="OpenGL-流水线"><a href="#OpenGL-流水线" class="headerlink" title="OpenGL 流水线"></a>OpenGL 流水线</h4><p>OpenGL 中有两种流水线，一种是固定流水线，另外一种则是可编程流水线。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;OpenGL基本概念&quot;&gt;&lt;a href=&quot;#OpenGL基本概念&quot; class=&quot;headerlink&quot; title=&quot;OpenGL基本概念&quot;&gt;&lt;/a&gt;OpenGL基本概念&lt;/h3&gt;&lt;p&gt;OpenGL的结构可以从逻辑上划分为下面3个部分:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li
+    
+    </summary>
+    
+      <category term="OpenGL" scheme="http://wodekouwei.com/categories/OpenGL/"/>
+    
+    
+      <category term="OpenGL" scheme="http://wodekouwei.com/tags/OpenGL/"/>
+    
+  </entry>
   
   <entry>
     <title>软件架构思考</title>
@@ -387,9 +865,19 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
     <link href="http://wodekouwei.com/2019/01/30/gl-egl/"/>
     <id>http://wodekouwei.com/2019/01/30/gl-egl/</id>
     <published>2019-01-30T10:48:27.000Z</published>
-    <updated>2019-01-31T03:09:41.466Z</updated>
+    <updated>2019-03-04T15:33:08.868Z</updated>
     
     <content type="html"><![CDATA[<p>OpenGL ES的javax.microedition.khronos.openges包定义了平台无关的GL绘制指令,EGL(javax.microedition.khronos.egl)则定义了控制dispays,contexts以及surfaces的统一的平台接口.</p>
+<p><img src="http://images.wodekouwei.com/gl/egl2.gif" alt="image">
+EGL 是 OpenGL ES 渲染 API 和本地窗口系统(native platform window system)之间的一个中间接口层，它主要由系统制造商实现。EGL提供如下机制：</p>
+<ul>
+<li>与设备的原生窗口系统通信</li>
+<li>查询绘图表面的可用类型和配置</li>
+<li>创建绘图表面</li>
+<li>在OpenGL ES 和其他图形渲染API之间同步渲染</li>
+<li>管理纹理贴图等渲染资源</li>
+</ul>
+<p>为了让OpenGL ES能够绘制在当前设备上，我们需要EGL作为OpenGL ES与设备的桥梁。</p>
 <p><img src="http://images.wodekouwei.com/gl/egl.png" alt="image"></p>
 <ul>
 <li>Display(EGLDisplay)是对实际显示设备的抽象</li>
@@ -429,6 +917,92 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
 <li><code>frameworks/base/opengl/java/com/google/android/gles_jni/</code></li>
 <li><code>frameworks/base/opengl/java/android/opengl</code> :EGL和OpenGL的Java层接口，提供给应用开发者，通过JNI方式调用底层函数。</li>
 </ul>
+<h5 id="OpenGL-ES-EGL-Wrapper-库"><a href="#OpenGL-ES-EGL-Wrapper-库" class="headerlink" title="OpenGL ES/EGL Wrapper 库"></a>OpenGL ES/EGL Wrapper 库</h5><p>前面我们已经介绍过 OpenGL ES/EGL Wrapper 库是一个将 OpenGL ES API 和 OpenGL ES API 具体实现绑定在一起的库，它对应的源码路径是：/frameworks/native/opengl/libs/，其中:</p>
+<p>libGLESv1_CM.so：OpenGL ES 1.x API 的 Wrapper 库
+libGLESv2.so：OpenGL ES 2.0 的 Wrapper 库
+libGLESv3.so：OpenGL ES 3.0 的 Wrapper 库
+其中因为 OpenGL ES 3.0 API 是兼容 OpenGL ES 2.0 API 的，所以 libGLESv2.so 库本质上和 libGLESv3.so 库是一样的。</p>
+<h5 id="OpenGL-ES-EGL-实现库"><a href="#OpenGL-ES-EGL-实现库" class="headerlink" title="OpenGL ES/EGL 实现库"></a>OpenGL ES/EGL 实现库</h5><p>如果Android系统平台支持 OpenGL ES 硬件加速渲染，那么 OpenGL ES/EGL 实现库由系统厂商以.so的共享链接库的形式提供，例如，Nexus 9 平板中的厂商提供的 OpenGL ES/EGL 实现库为：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">flounder:/vendor/lib64/egl # ls</div><div class="line">libEGL_tegra.so libGLESv1_CM_tegra.so libGLESv2_tegra.so</div></pre></td></tr></table></figure></p>
+<p>如果Android系统平台不支持 OpenGL ES 硬件加速渲染，那么它就会默认启用软件模拟渲染，这时 OpenGL ES/EGL 实现库就是由 AOSP 提供，链接库的存在的路径为： /system/lib64/egl/libGLES_android.so。而 libGLES_android.so 库在 Android 7.1 系统对应的实现源码路径为：/frameworks/native/opengl/libagl/ 。</p>
+<h5 id="Android-7-1-中加载-OpenGL-ES-库的过程"><a href="#Android-7-1-中加载-OpenGL-ES-库的过程" class="headerlink" title="Android 7.1 中加载 OpenGL ES 库的过程"></a>Android 7.1 中加载 OpenGL ES 库的过程</h5><p>Android 中图形渲染所采用的方式（硬件 or 软件）是在系统启动之后动态确定的，而确定渲染方式的这个源码文件就是 /frameworks/native/opengl/libs/EGL/Loader.cpp 。</p>
+<p>####### Android 7.1 OpenGL ES 库和 EGL 库加载说明
+How Android finds OpenGL libraries, and the death of egl.cfg 这篇文章中提到了非常关键的一点，就是从 Android Kitkat 4.4 之后，Android 中加载 OpenGL ES/EGL 库的方法发生了变化了（但是整个加载过程都是由 /frameworks/native/opengl/libs/EGL/Loader.cpp 程序所决定的，也就是说 Loader.cpp 文件发生了变化）。</p>
+<p>在 Android 4.4 之前，加载 OpenGL ES 库是由 /system/lib/egl/egl.cfg 文件所决定的，通过读取这个配置文件来确定是加载 OpenGL ES 软件模拟实现的库，还是OpenGL ES 硬件加速实现的库。</p>
+<p>但是，在Android 4.4 之后，Android 不再通过读取 egl.cfg 配置文件的方式来加载 OpenGL ES 库，新的加载 OpenGL ES 库的规则，如下所示：</p>
+<p>从 /system/lib/egl 或者 /vendor/lib/egl/ 目录下加载 libGLES.so 库文件或者 libEGL_vendor.so，libGLESv1_CM_vendor.so，libGLESv2<em>vendor.so 库文件。
+为了向下兼容旧的库的命名方式，同样也会加载 /system/lib/egl 或者 /vendor/lib/egl/ 目录下的 libGLES</em><em>.so 或者 libEGL_</em>.so，libGLESv1CM<em>.so，libGLESv2_</em>.so 库文件。
+3.2　硬件加速渲染 or 软件模拟渲染？
+前面我们提到 OpenGL ES 库的实现方式有两种，一种是硬件加速实现，一种是软件模拟实现，那么系统是怎么确定加载那一种 OpenGL ES 库的呢？</p>
+<p>Android 7.1 源码中负责加载 OpenGL ES/EGL 库部分的代码位于：/frameworks/native/opengl/libs/EGL/Loader.cpp 文件中，这个文件中代码的主要入口函数是 Loader::open() 函数，而决定加载硬件加速渲染库还是软件模拟渲染库主要涉及到下面两个函数：</p>
+<p>setEmulatorGlesValue()
+checkGlesEmulationStatus()
+下面就来简要的分析一下 Android 系统是如何选择加载硬件加速渲染库还是软件模拟渲染库：</p>
+<ol>
+<li><p>首先，Loader::open() 入口函数会调用 setEmulatorGlesValue() 从 property 属性系统中获取一些属性值来判断当前 Android 系统是否在 Emulator 环境中运行，并根据读取出来的信息来重新设置新的属性键值对，setEmulatorGlesValue() 函数的代码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">static void setEmulatorGlesValue(void) &#123;</div><div class="line">     char prop[PROPERTY_VALUE_MAX];</div><div class="line">     property_get(&quot;ro.kernel.qemu&quot;, prop, &quot;0&quot;); //读取 ro.kernel.qemu 属性值，判断Android系统是否运行在 qemu 中</div><div class="line">     if (atoi(prop) != 1) return;</div><div class="line">    </div><div class="line">     property_get(&quot;ro.kernel.qemu.gles&quot;, prop, &quot;0&quot;); //读取 ro.kernel.qemu.gles 属性值，判断 qemu 中 OpenGL ES 库的实现方式</div><div class="line">     if (atoi(prop) == 1) &#123;</div><div class="line">         ALOGD(&quot;Emulator has host GPU support, qemu.gles is set to 1.&quot;);</div><div class="line">         property_set(&quot;qemu.gles&quot;, &quot;1&quot;);</div><div class="line">         return;</div><div class="line">     &#125;</div><div class="line">    </div><div class="line">     // for now, checking the following</div><div class="line">     // directory is good enough for emulator system images</div><div class="line">     const char* vendor_lib_path =</div><div class="line"> #if defined(__LP64__)</div><div class="line">         &quot;/vendor/lib64/egl&quot;;</div><div class="line"> #else</div><div class="line">         &quot;/vendor/lib/egl&quot;;</div><div class="line"> #endif</div><div class="line">    </div><div class="line">     const bool has_vendor_lib = (access(vendor_lib_path, R_OK) == 0);</div><div class="line">     //如果存在 vendor_lib_path 这个路径，那么就说明厂商提供了 OpenGL ES库自己的软件模拟渲染库，而不是 Android 系统自己编译得到的软件模拟渲染库</div><div class="line">     if (has_vendor_lib) &#123;</div><div class="line">         ALOGD(&quot;Emulator has vendor provided software renderer, qemu.gles is set to 2.&quot;);</div><div class="line">         property_set(&quot;qemu.gles&quot;, &quot;2&quot;);</div><div class="line">     &#125; else &#123;</div><div class="line">         ALOGD(&quot;Emulator without GPU support detected. &quot;</div><div class="line">               &quot;Fallback to legacy software renderer, qemu.gles is set to 0.&quot;);</div><div class="line">         property_set(&quot;qemu.gles&quot;, &quot;0&quot;); //最后，默认采取的是方案就是调用传统的Android系统自己编译得到软件模拟渲染库</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 load_system_driver() 函数中，内部类 MatchFile 类中会调用 checkGlesEmulationStatus() 函数来检查 Android 系统是否运行在模拟器中，以及在模拟器中是否启用了主机硬件加速的功能，然后根据 checkGlesEmulationStatus() 函数的返回状态值来确定要加载共享链接库的文件绝对路径。load_system_driver() 和 checkGlesEmulationStatus() 函数代码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">static void* load_system_driver(const char* kind) &#123;</div><div class="line">     ATRACE_CALL();</div><div class="line">     class MatchFile &#123;</div><div class="line">     public:</div><div class="line">         //这个函数作用是返回需要加载打开的 OpenGL ES 和 EGL API 实现库文件的绝对路径</div><div class="line">         static String8 find(const char* kind) &#123;</div><div class="line">             String8 result;</div><div class="line">             int emulationStatus = checkGlesEmulationStatus(); //检查 Android 系统是否运行在模拟器中，以及在模拟器中是否启用了主机硬件加速的功能</div><div class="line">             switch (emulationStatus) &#123;</div><div class="line">             case 0: //Android 运行在模拟器中，使用系统软件模拟实现的 OpenGL ES API 库 libGLES_android.so</div><div class="line"> #if defined(__LP64__)</div><div class="line">                 result.setTo(&quot;/system/lib64/egl/libGLES_android.so&quot;);</div><div class="line"> #else</div><div class="line">                 result.setTo(&quot;/system/lib/egl/libGLES_android.so&quot;);</div><div class="line"> #endif</div><div class="line">                 return result;</div><div class="line">             case 1: // Android 运行在模拟器中，通过主机系统中实现 OpenGL ES 加速渲染，通过 libGLES_emulation.so 库将  OpenGL ES API 指令重定向到 host 中执行</div><div class="line">                 // Use host-side OpenGL through the &quot;emulation&quot; library</div><div class="line"> #if defined(__LP64__)</div><div class="line">                 result.appendFormat(&quot;/system/lib64/egl/lib%s_emulation.so&quot;, kind);</div><div class="line"> #else</div><div class="line">                 result.appendFormat(&quot;/system/lib/egl/lib%s_emulation.so&quot;, kind);</div><div class="line"> #endif</div><div class="line">                 return result;</div><div class="line">             default:</div><div class="line">                 // Not in emulator, or use other guest-side implementation</div><div class="line">                 break;</div><div class="line">             &#125;</div><div class="line">    </div><div class="line">             // 如果不是上面两种情况，就根据库的命名规则去找到厂商实现库文件的绝对路径</div><div class="line">             String8 pattern;</div><div class="line">             pattern.appendFormat(&quot;lib%s&quot;, kind);</div><div class="line">             const char* const searchPaths[] = &#123;</div><div class="line"> #if defined(__LP64__)</div><div class="line">                 &quot;/vendor/lib64/egl&quot;,</div><div class="line">                 &quot;/system/lib64/egl&quot;</div><div class="line"> #else</div><div class="line">                 &quot;/vendor/lib/egl&quot;,</div><div class="line">                 &quot;/system/lib/egl&quot;</div><div class="line"> #endif</div><div class="line">             &#125;;</div><div class="line">                </div><div class="line">             ......</div><div class="line">     &#125;</div><div class="line">        </div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">static int</div><div class="line"> checkGlesEmulationStatus(void)</div><div class="line"> &#123;</div><div class="line">     /* We&apos;re going to check for the following kernel parameters:</div><div class="line">      *</div><div class="line">      *    qemu=1                      -&gt; tells us that we run inside the emulator</div><div class="line">      *    android.qemu.gles=&lt;number&gt;  -&gt; tells us the GLES GPU emulation status</div><div class="line">      *</div><div class="line">      * Note that we will return &lt;number&gt; if we find it. This let us support</div><div class="line">      * more additionnal emulation modes in the future.</div><div class="line">      */</div><div class="line">     char  prop[PROPERTY_VALUE_MAX];</div><div class="line">     int   result = -1;</div><div class="line">    </div><div class="line">     /* Check if hardware acceleration disabled explicitly */</div><div class="line">     property_get(&quot;debug.egl.hw&quot;, prop, &quot;1&quot;); //读取 debu.egl.hw 属性值，判断3D硬件加速功能是否被关闭了</div><div class="line">     if (!atoi(prop)) &#123;</div><div class="line">         ALOGD(&quot;3D hardware acceleration is disabled&quot;);</div><div class="line">         return 0;</div><div class="line">     &#125;</div><div class="line">    </div><div class="line">     /* First, check for qemu=1 */</div><div class="line">     property_get(&quot;ro.kernel.qemu&quot;, prop, &quot;0&quot;); //读取ro.kernel.qemu，判断是否运行在 qemu 中</div><div class="line">     if (atoi(prop) != 1)</div><div class="line">         return -1;</div><div class="line">    </div><div class="line">     /* We are in the emulator, get GPU status value */</div><div class="line">     property_get(&quot;qemu.gles&quot;, prop, &quot;0&quot;); // 如果 Android 系统运行在 qemu 中，就返回 qemu.gles 的值，根据这个值就可以确定加载的是那种 OpenGL ES 库了</div><div class="line">     return atoi(prop);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>总结一下上面代码的功能就是，首先判断 Android 是否在 qemu 虚拟机中运行，如果不是，那么就直接去加载厂商存放库的路径中去加载 OpenGL ES 实现库（不管是硬件加速实现的，还是软件模拟实现的）；如果是在 qemu 中运行，那么就要根据返回的 emulationStatus 值 来确定是加软件模拟实现的 OpenGL ES API 库 libGLES_android.so，还是加载 libGLES_emulation.so库将 OpenGL ES 指令重定向到 Host 系统中去执行。</li>
+</ol>
+<h6 id="OpenGL-ES-EGL-库加载和解析过程"><a href="#OpenGL-ES-EGL-库加载和解析过程" class="headerlink" title="OpenGL ES/EGL 库加载和解析过程"></a>OpenGL ES/EGL 库加载和解析过程</h6><p>正如Android 系统图形栈: OpenGL ES 和 EGL 介绍这篇文章中分析的那样，在进行 OpenGL 编程时，最先开始需要获取 Display，这将调用 eglgGetDisplay() 函数被调用。在 eglGetDisplay() 里则会调用 egl_init_drivers() 初始化驱动：装载各个库进行解析，将 OpenGL ES/EGL API 函数接口和具体的实现绑定在一起，并将结果保存在 egl_connection_t 类型的全局变量 gEGLImpl 的结构体的成员变量中。</p>
+<p>下面以 SurfaceFlinger 进程为例进行分析，整个 OpenGL ES/EGL 库的加载和解析流程如下所示：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">st=&gt;start: Start</div><div class="line">op1=&gt;operation: SurfaceFlinger::init()</div><div class="line">sub=&gt;subroutine: Your Subroutine</div><div class="line">op2=&gt;operation: eglGetDisplay(EGL_DEFAULT_DISPLAY)</div><div class="line">op3=&gt;operation: egl_init_drivers()</div><div class="line">op4=&gt;operation: egl_init_drivers_locked();</div><div class="line">op5=&gt;operation: loader.open()</div><div class="line">op6=&gt;operation: load_driver()</div><div class="line">op7=&gt;operation: load_system_driver()</div><div class="line">op8=&gt;operation: Loader::init_api()</div><div class="line">e=&gt;end</div><div class="line"></div><div class="line">st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7-&gt;op8-&gt;e</div></pre></td></tr></table></figure></p>
+<p>gEGLImpl 全局变量
+struct egl_connection_t 类型的 gEGLImpl 全局变量是一个非常重要变量，它里面的成员指向了打开的 OpenGL ES/EGL Wrapper 库和 OpenGL ES/EGL 实现库： /frameworks/native/opengl/libs/EGL/egl.cpp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">egl_connection_t gEGLImpl;</div><div class="line">gl_hooks_t gHooks[2];</div><div class="line">gl_hooks_t gHooksNoContext;</div></pre></td></tr></table></figure>
+<p>其中 egl_connection_t 的定义： /frameworks/native/opengl/libs/EGL/egldefs.h
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">struct egl_connection_t &#123;</div><div class="line">    enum &#123;</div><div class="line">        GLESv1_INDEX = 0,</div><div class="line">        GLESv2_INDEX = 1</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    inline egl_connection_t() : dso(0) &#123; &#125;</div><div class="line">    void *              dso; //指向打开的共享链接库的句柄</div><div class="line">    gl_hooks_t *        hooks[2]; //指向打开的 OpenGL ES API 对象</div><div class="line">    EGLint              major; // 主版本好</div><div class="line">    EGLint              minor;</div><div class="line">    egl_t               egl; //dui x</div><div class="line"></div><div class="line">    void*               libEgl;</div><div class="line">    void*               libGles1;</div><div class="line">    void*               libGles2;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>下面就对其中的主要成员进行一个说明：</p>
+<ul>
+<li>hooks：这是一个 gl_hook_t* 类型的指针数组，它最终将 OpenGL ES API 和实现库钩在一起。</li>
+<li>egl：这是一个 egl_t 类型的成员变量，它最终将 EGL API 和 EGL 实现库了钩在一起。
+那么 gl_hook_t 和 egl_t 是什么呢？</li>
+</ul>
+<p>gl_hook_t 和 egl_t 的定义如下所示： /frameworks/native/opengl/libs/hooks.h
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#define GL_ENTRY(_r, _api, ...) _r (*_api)(__VA_ARGS__);</div><div class="line">#define EGL_ENTRY(_r, _api, ...) _r (*_api)(__VA_ARGS__);</div><div class="line"></div><div class="line">struct egl_t &#123;</div><div class="line">    #include &quot;EGL/egl_entries.in&quot;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">struct gl_hooks_t &#123;</div><div class="line">    struct gl_t &#123;</div><div class="line">        #include &quot;entries.in&quot;</div><div class="line">    &#125; gl;</div><div class="line">    struct gl_ext_t &#123;</div><div class="line">        // __eglMustCastToProperFunctionPointerType 是一个 typedef 的函数指针类型，它的返回值是void，参数也是void</div><div class="line">        __eglMustCastToProperFunctionPointerType extensions[MAX_NUMBER_OF_GL_EXTENSIONS];</div><div class="line">    &#125; ext;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>从上面的定义中我们发现，egl_t 和 gl_hooks_t 这两个结构体中主要就是一个 include 语句，那么它们包含的是什么呢？</p>
+<p><code>#include “EGL/egl_entries.in 包含的文件路径如下所示： /frameworks/native/opengl/libs/EGL/egl_entries.in</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">EGL_ENTRY(EGLDisplay, eglGetDisplay, NativeDisplayType)</div><div class="line">EGL_ENTRY(EGLBoolean, eglInitialize, EGLDisplay, EGLint*, EGLint*)</div><div class="line">EGL_ENTRY(EGLBoolean, eglTerminate, EGLDisplay)</div><div class="line">EGL_ENTRY(EGLBoolean, eglGetConfigs, EGLDisplay, EGLConfig*, EGLint, EGLint*)</div><div class="line">EGL_ENTRY(EGLBoolean, eglChooseConfig, EGLDisplay, const EGLint *, EGLConfig *, EGLint, EGLint *)</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>在这个文件中，我们可以看到所有的内容都是 EGL_ENTRY 宏定义的，根据 EGL_ENTRY 宏定义： /frameworks/native/opengl/libs/EGL/hooks.h
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//下面的两个宏定义分别是 OpenGL 和 EGL API 函数的函数指针变量</div><div class="line">//这些函数变量最后会和具体的 OpenGL 和 EGL API 的实现绑定在一起</div><div class="line">#define GL_ENTRY(_r,_api,...) _r (*_api)(__VA_ARGS__);</div><div class="line">#define EGL_ENTRY(_r,_api,...) _r(*_api)(__VA_ARGS__);</div></pre></td></tr></table></figure></p>
+<p>我们可以将下面的这个宏定义展开成如下的形式:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">EGL_ENTRY(EGLDisplay, eglGetDisplay, NativeDisplayType)</div><div class="line">//展开后的形式如下所示，它实际上就是 EGL API 函数声明</div><div class="line">EGLDisplay eglGetDisplay(NativeDisplayType)</div></pre></td></tr></table></figure></p>
+<p><code>#include “entries.in” 包含的文件路径为： /frameworks/native/opengl/libs/entries.in</code>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">GL_ENTRY(void, glReadPixels, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels)</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>和上面的 EGL_ENTRY 一样，GL_ENTRY 都是通过宏定义的形式来将 OpenGL ES 的 API 函数接口进行声明，例如，上面的宏定义声明可以展开成下面的形式：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">GL_ENTRY(void, glReadPixels, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels)</div><div class="line">// 展开后的形式如下所示，它实际上就是 OpenGL ES API 函数声明</div><div class="line">void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels)</div></pre></td></tr></table></figure></p>
+<p>最后，通过 entries.in 和 egl_entries.in 这两个文件，我们就可以得到 OpenGL ES 和 EGL 中的所有 API 函数接口的说明。</p>
+<p>SurfaceFlinger 初始化成员变量 mEGLDisplay
+在 SurfaceFlinger 类中有一个 EGLDisplay 类型的成员变量 mEGLDisplay，它是 EGL 中用来构建 OpenGL ES 渲染环境所需的参数。</p>
+<p>SurfaceFlinger 中调用 eglGetDisplay() 初始化 mEGLDisplay 的代码如下： /frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">void SurfaceFlinger::init() &#123;</div><div class="line">    ALOGI(  &quot;SurfaceFlinger&apos;s main thread ready to run. &quot;</div><div class="line">            &quot;Initializing graphics H/W...&quot;);</div><div class="line"></div><div class="line">    status_t err;</div><div class="line">    Mutex::Autolock _l(mStateLock);</div><div class="line"></div><div class="line">    // initialize EGL for the default display</div><div class="line">    // 调用 eglGetDisplay 函数获取默认的显示设备</div><div class="line">    mEGLDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY); </div><div class="line">    eglInitialize(mEGLDisplay, NULL, NULL);</div><div class="line">    ...</div></pre></td></tr></table></figure>
+<p>紧接着在 eglGetDisplay() 中调用 egl_init_drivers() /frameworks/native/opengl/libs/EGL/eglApi.cpp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">EGLDisplay eglGetDisplay(EGLNativeDisplayType display)</div><div class="line">&#123;</div><div class="line">    ...</div><div class="line">    // 调用egl_init_drivers() 加载 OpenGL ES 库和 EGL 库</div><div class="line">    if (egl_init_drivers() == EGL_FALSE) &#123;</div><div class="line">        return setError(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    EGLDisplay dpy = egl_display_t::getFromNativeDisplay(display);</div><div class="line">    return dpy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后，egl_init_drivers() 函数中使用了 pthread_mutex_lock 上锁保护，继续调用 egl_init_drivers_locked() 函数 /frameworks/native/opengl/libs/EGL/egl.cpp
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">EGLBoolean egl_init_drivers() &#123;</div><div class="line">    EGLBoolean res;</div><div class="line">    pthread_mutex_lock(&amp;sInitDriverMutex);</div><div class="line">    // 使用了 pthread_mutex_lock 上锁保护，继续调用 egl_init_drivers_locked</div><div class="line">    res = egl_init_drivers_locked();</div><div class="line">    pthread_mutex_unlock(&amp;sInitDriverMutex);</div><div class="line">    return res;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下面就是对 egl_init_drivers_locked() 函数进行一个分析：</p>
+<p>egl_init_drivers_locked() 函数代码如下所示： /frameworks/native/opengl/libs/EGL/egl.cpp
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">//在该文件起始位置定义的全局变量</div><div class="line">egl_connection_t gEGLImpl; // 描述EGL实现内容的结构体对象</div><div class="line">gl_hooks_t gHooks[2]; // gl_hooks_t 是包含 OpenGL ES API 函数声明对应的函数指针结构体</div><div class="line">gl_hooks_t gHooksNoContext;</div><div class="line">pthread_key_t gGLWrapperKey = -1;</div><div class="line"></div><div class="line">static EGLBoolean egl_init_drivers_locked() &#123;</div><div class="line">    if (sEarlyInitState) &#123;</div><div class="line">        // initialized by static ctor. should be set here.</div><div class="line">        return EGL_FALSE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 得到 Loader 对象单例</div><div class="line">    // get our driver loader</div><div class="line">    Loader&amp; loader(Loader::getInstance());</div><div class="line"></div><div class="line">    //  gEGLImple 是一个全局变量，数据类型为 egl_connection_t 结构体类型</div><div class="line">    // dynamically load our EGL implementation</div><div class="line">    egl_connection_t* cnx = &amp;gEGLImpl;</div><div class="line"></div><div class="line">    // cnx-&gt;dso 本质上是一个 (void *)类型的指针，它指向的对象是 EGL 共享库打开之后的句柄</div><div class="line">    if (cnx-&gt;dso == 0) &#123; </div><div class="line">        // &gt;= 将cnx中的 hooks 数组中指向OpenGL ES API 函数指针结构体指的数组成员，用 gHooks 中的成员的地址去初始化</div><div class="line">        //也就是说 gEGLImpl 中 hook 数组指向 gHooks 数组，最终指向同一个 OpenGL ES API 函数指针的实现</div><div class="line">        cnx-&gt;hooks[egl_connection_t::GLESv1_INDEX] =</div><div class="line">            &amp;gHooks[egl_connection_t::GLESv1_INDEX];</div><div class="line">        cnx-&gt;hooks[egl_connection_t::GLESv2_INDEX] =</div><div class="line">            &amp;gHooks[egl_connection_t::GLESv2_INDEX];</div><div class="line"></div><div class="line">        // &gt;= 最后通过loader对象的open函数开始加载 OpenGL ES 和 EGL wrapper 库</div><div class="line">        cnx-&gt;dso = loader.open(cnx);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return cnx-&gt;dso ? EGL_TRUE : EGL_FALSE;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在这个函数中，有一个非常关键的 egl_connection_t 指针指向一个全局变量 gEGLImpl，当第一次初始化加载 OpenGL ES 实现库和 EGL 实现库时，还需要将 gEGLImpl 中的 hooks 数组中的两个指针指向一个全局的 gl_hooks_t 数组 gHooks（这就是两个指针钩子，最终初始化完成后将分别勾住 OpenGL ES 1.0 和 OpenGL ES 2.0 的实现库），接着调用 Loader 类的实例的 open() 函数完成从 OpenGL ES 实现库中完成符号解析工作。</p>
+<p>通过 Loader 类加载和解析 OpenGL ES 库和 EGL 库
+Loader::open() 函数的代码如下所示： /frameworks/native/opengl/libs/EGL/Loader.cpp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">// &gt;= Loader 类对象构造完成后，就在 /EGL/egl.cpp 文件中的 egl_init_drivers_locked() 中被调用</div><div class="line">void* Loader::open(egl_connection_t* cnx)</div><div class="line">&#123;</div><div class="line">    ATRACE_CALL();</div><div class="line"></div><div class="line">    void* dso;</div><div class="line">    driver_t* hnd = 0;</div><div class="line"></div><div class="line">    setEmulatorGlesValue();</div><div class="line"></div><div class="line">    dso = load_driver(&quot;GLES&quot;, cnx, EGL | GLESv1_CM | GLESv2);</div><div class="line">    if (dso) &#123;</div><div class="line">        hnd = new driver_t(dso);</div><div class="line">    &#125; else &#123;</div><div class="line">        // Always load EGL first</div><div class="line">        dso = load_driver(&quot;EGL&quot;, cnx, EGL);</div><div class="line">        if (dso) &#123;</div><div class="line">            hnd = new driver_t(dso);</div><div class="line">            hnd-&gt;set( load_driver(&quot;GLESv1_CM&quot;, cnx, GLESv1_CM), GLESv1_CM );</div><div class="line">            hnd-&gt;set( load_driver(&quot;GLESv2&quot;,    cnx, GLESv2),    GLESv2 );</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    LOG_ALWAYS_FATAL_IF(!hnd, &quot;couldn&apos;t find an OpenGL ES implementation&quot;);</div><div class="line"></div><div class="line">    cnx-&gt;libEgl   = load_wrapper(EGL_WRAPPER_DIR &quot;/libEGL.so&quot;);</div><div class="line">    cnx-&gt;libGles2 = load_wrapper(EGL_WRAPPER_DIR &quot;/libGLESv2.so&quot;);</div><div class="line">    cnx-&gt;libGles1 = load_wrapper(EGL_WRAPPER_DIR &quot;/libGLESv1_CM.so&quot;);</div><div class="line"></div><div class="line">    LOG_ALWAYS_FATAL_IF(!cnx-&gt;libEgl,</div><div class="line">            &quot;couldn&apos;t load system EGL wrapper libraries&quot;);</div><div class="line"></div><div class="line">    LOG_ALWAYS_FATAL_IF(!cnx-&gt;libGles2 || !cnx-&gt;libGles1,</div><div class="line">            &quot;couldn&apos;t load system OpenGL ES wrapper libraries&quot;);</div><div class="line"></div><div class="line">    return (void*)hnd;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>open() 函数主要负责 OpenGL ES 库加载前的准备工作，具体的加载细节，则是通过调用 load_driver() 去完成的。</p>
+<p>Loader::load_driver() 函数代码如下所示： /frameworks/native/opengl/libs/EGL/Loader.cpp
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">void *Loader::load_driver(const char* kind,</div><div class="line">                          egl_connection_t* cnx, uint32_t mask)</div><div class="line">&#123;</div><div class="line">    ATRACE_CALL();</div><div class="line"></div><div class="line">    void* dso = nullptr;</div><div class="line">    if (mGetDriverNamespace) &#123;</div><div class="line">        android_namespace_t* ns = mGetDriverNamespace();</div><div class="line">        if (ns) &#123;</div><div class="line">            dso = load_updated_driver(kind, ns); //加载 OpenGL ES 实现库，放回打开的共享链接库的句柄</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if (!dso) &#123;</div><div class="line">        dso = load_system_driver(kind);</div><div class="line">        if (!dso)</div><div class="line">            return NULL;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 解析 EGL 库，并将wrapper 库 libEGL.so 中的函数 API 指针和具体的实现绑定在一起</div><div class="line">    if (mask &amp; EGL) &#123;</div><div class="line">        getProcAddress = (getProcAddressType)dlsym(dso, &quot;eglGetProcAddress&quot;);</div><div class="line"></div><div class="line">        ALOGE_IF(!getProcAddress,</div><div class="line">                 &quot;can&apos;t find eglGetProcAddress() in EGL driver library&quot;);</div><div class="line"></div><div class="line">        egl_t* egl = &amp;cnx-&gt;egl; //将 egl 指针指向描述当前系统支持 OpenGL ES和 EGL 全局变量的 gEGLImpl</div><div class="line">        __eglMustCastToProperFunctionPointerType* curr =</div><div class="line">            (__eglMustCastToProperFunctionPointerType*)egl;</div><div class="line">        char const * const * api = egl_names; //egl_names 是定义在 egl.cpp 文件中的一个数组，数组中的元素是 EGL API 函数指针</div><div class="line">        while (*api) &#123;</div><div class="line">            char const * name = *api;</div><div class="line">            __eglMustCastToProperFunctionPointerType f =</div><div class="line">                (__eglMustCastToProperFunctionPointerType)dlsym(dso, name);</div><div class="line">            if (f == NULL) &#123;</div><div class="line">                // couldn&apos;t find the entry-point, use eglGetProcAddress()</div><div class="line">                f = getProcAddress(name);</div><div class="line">                if (f == NULL) &#123;</div><div class="line">                    f = (__eglMustCastToProperFunctionPointerType)0;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            *curr++ = f; //这一步就是最关键的将共享链接库中的 EGL API 的实现和上层调用的 API 函数指针绑定在一起</div><div class="line">            api++; //指向下一个需要绑定的 api 函数</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 解析 OpenGL ES 库中的 OpenGL ES 1.x API 符号</div><div class="line">    if (mask &amp; GLESv1_CM) &#123;</div><div class="line">        // 调用 init_api 实现 OpenGL API 和对应实现函数的绑定</div><div class="line">        init_api(dso, gl_names, // gl_names 是定义在 egl.cpp 文件中的一个数组，数组中的元素是 OpenGL ES API 函数指针</div><div class="line">                 (__eglMustCastToProperFunctionPointerType*)</div><div class="line">                 &amp;cnx-&gt;hooks[egl_connection_t::GLESv1_INDEX]-&gt;gl, //gl成员变量是一个结构体变量，结构体中的是 OpenGL ES API 函数指针</div><div class="line">                 getProcAddress);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 解析 OpenGL ES 库中的 OpenGL ES 2.0 API 符号</div><div class="line">    if (mask &amp; GLESv2) &#123;</div><div class="line">        init_api(dso, gl_names,</div><div class="line">                 (__eglMustCastToProperFunctionPointerType*)</div><div class="line">                 &amp;cnx-&gt;hooks[egl_connection_t::GLESv2_INDEX]-&gt;gl,</div><div class="line">                 getProcAddress);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return dso;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Loader::load_driver() 它主要实现了两个功能：</p>
+<p>通过 load_system_driver()  函数查找 OpenGL ES/EGL 实现库，并在指定的存放路径中找到共享链接库文件并打开它。
+调用 init_api()解析打开的 OpenGL ES/EGL 共享链接库，将 OpenGL ES/EGL API 函数指针和共享链接库中实现的对应的函数符号绑定在一起，这样调用 OpenGL ES/EGL API 就会调用到具体实现的OpenGL ES/EGL 共享链接库中对应函数。
+具体 load_system_driver() 函数和 init_api() 函数的实现就不一一展开了，大家可以到 /frameworks/native/opengl/libs/EGL/Loader.cpp 文件中查看，应该写得非常直接清楚了。</p>
+<p>整个加载和解析的目的就是将 OpenGL ES/EGL API 和具体实现函数绑定在一起，这样当程序调用 OpenGL ES/EGL API 时，就会调用到实际的实现函数了。然后，在硬件平台上的 Android 系统加载的是硬件厂商提供的 OpenGL ES/EGL 实现库，而在 qemu 模拟器中运行的 Android 系统中加载的则是软件模拟实现的 OpenGL ES/EGL 库或者是将 OpenGL ES 重定向到主机系统中进行硬件加速的库。</p>
+<p><a href="https://woshijpf.github.io/android/2017/09/05/Android%E7%B3%BB%E7%BB%9F%E5%9B%BE%E5%BD%A2%E6%A0%88OpenGLES%E5%92%8CEGL%E5%BA%93%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B.html" target="_blank" rel="external">Android 系统图形栈（二）：OpenGL ES 库和 EGL 库加载过程</a>
+<a href="http://www.2net.co.uk/tutorial/android-egl-cgf-is-dead" target="_blank" rel="external">How Android finds OpenGL libraries, and the death of egl.cfg</a></p>
 <h4 id="eglSwapBuffers接口实现说明"><a href="#eglSwapBuffers接口实现说明" class="headerlink" title="eglSwapBuffers接口实现说明"></a>eglSwapBuffers接口实现说明</h4><p>一般性嵌入式平台
 <img src="http://images.wodekouwei.com/gl/egl_swapbuffer.png" alt="iamge"></p>
 <p>利用双缓冲进行Swap的时候，Display和Surface进行实际意义上的地址交换，来实现eglSwapBuffers的标准， 如上图的右侧所示。上图的左侧表示，单缓冲Framebuffer的形式，Surface永远都在后端， 显示的永远是Display，在GPU出现后已不使用。</p>
@@ -493,9 +1067,119 @@ pip install selenium==3.0.1&lt;/p&gt;
     <link href="http://wodekouwei.com/2019/01/30/at-android-performance/"/>
     <id>http://wodekouwei.com/2019/01/30/at-android-performance/</id>
     <published>2019-01-30T04:20:22.000Z</published>
-    <updated>2019-02-28T09:38:03.064Z</updated>
+    <updated>2019-03-05T14:27:10.552Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="流畅度"><a href="#流畅度" class="headerlink" title="流畅度"></a>流畅度</h3><p>人为感受的性能不好属于下面两种:</p>
+    <content type="html"><![CDATA[<h2 id="性能标准"><a href="#性能标准" class="headerlink" title="性能标准"></a>性能标准</h2><p>安卓绿色联盟应用性能标准主要基于主观体验、资源消耗和应用质量三个方面进行制定。</p>
+<ol>
+<li>主观体验:主观体验主要是对应用启动时间和界面帧率制定标准，要求应用在视觉上足够流畅。其中应用启动时间又分为冷启动时间和热启动时间.安卓绿色联盟性能标准要求，应用冷启动时间需小于1000ms，热启动时间需小于500ms；普通应用帧率应大于55fps，游戏视频帧率应大于25fps。</li>
+<li>资源消耗:资源消耗主要是要求应用不能占用过高的内存和CPU。安卓绿色联盟性能标准要求应用前台内存占用应小于500M，后台内存占用应小于400M；在CPU占用方面要求应用在后台灭屏5分钟后，CPU占用不超过2%。</li>
+<li>应用质量:应用质量主要是对应用过度绘制和内存泄露的情况作出要求，规定应用不能存在过度绘制和内存泄露。安卓绿色联盟性能标准要求应用界面任意像素点不存在4x的绘制的情况， 3x绘制的区域不能超过界面面积的1/3，在Strict Mode中不允许有红框闪烁。</li>
+</ol>
+<h3 id="性能调试方法"><a href="#性能调试方法" class="headerlink" title="性能调试方法"></a>性能调试方法</h3><p>在了解性能调试方法之前，我们可以先通过下图了解安卓应用性能与系统之间的关系。一个应用从应用绘制到最终显示在LCD上经历了一个漫长的路径，在任何一个阶段出现延时都会导致界面上的卡顿。
+<img src="http://images.wodekouwei.com/at-android-performance-201935151844.jpg" alt="at-android-performance-201935151844"></p>
+<h4 id="1、Strict-Mode"><a href="#1、Strict-Mode" class="headerlink" title="1、Strict Mode"></a>1、Strict Mode</h4><p>Strict Mode意思为严格模式，是Android提供的一种运行时检测机制，一般用来检测在主线程发生的耗时动作，比如IO读写、数据库操作、复杂算法等。在手机设置开发者选项把Strict Mode打开，就可以在界面上把它打开了。</p>
+<p>严格模式主要有2个策略，一个是线程策略，即ThreadPolicy，主要检测主线程中的一些耗时操作；另一个是虚拟机策略，即VmPolicy，主要检测一些对象的泄漏。</p>
+<p>两大策略检测的内容和开启方法可以依据下图中的说明进行使用。
+<strong>ThreadPolicy</strong>:</p>
+<ul>
+<li>自定义的耗时调用使用detectCustomSlowCalls()开启</li>
+<li>磁盘读取操作使用detectDiskReads()开启</li>
+<li>磁盘写入操作使用detectDiskWrites()开启</li>
+<li>网络操作使用detectNetwork()开启</li>
+</ul>
+<p><strong>VmPolicy</strong>:</p>
+<ul>
+<li>Activity泄露使用detectActivityLeaks()开启</li>
+<li>未关闭的Closable对象泄露使用detectLeakedClosableObjects()开启</li>
+<li>泄露的Sqlite对象,使用detectLeakedSqlLiteObjects()开启</li>
+<li>检测实例数量,使用setClassInstanceLimit()开启
+严格模式有三种惩罚模式：应用崩溃、弹窗警告和打印日志。在性能测试中，我们可以通过APPLogcat抓取Strict Mode的日志，同时利用代码启用Strict Mode，配合我们所需要的策略和惩罚，就可以及时定位应用的违规细节，并及时进行性能优化。</li>
+</ul>
+<p>当我们碰到违规的行为时，该如何进行治理呢？建议将文件操作放到工作线程去完成，如果在主线程上提及操作，建议使用Apply和Commit去完成。如果存在对象未关闭的情况，可以通过对应的StackTrace进行关闭。</p>
+<h4 id="2、OverDraw-DeBugger"><a href="#2、OverDraw-DeBugger" class="headerlink" title="2、OverDraw DeBugger"></a>2、OverDraw DeBugger</h4><p>Overdraw是指屏幕上的某个像素在同一帧的时间内被绘制了多次，这个工具使用色块来代表不同数量的过度绘制，我们可以使用这个工具来定位由过度绘制引起的用户界面卡顿问题。</p>
+<p>在开发者选项中选择开启 Debug GPU Overdraw选项，即可在安卓设备上将过度绘制问题可视化。
+<img src="http://images.wodekouwei.com/at-android-performance-201935152838.jpg" alt="at-android-performance-201935152838">
+左图为正常模式下显示的视图，右图为开启GPU Overdraw后显示的视图</p>
+<h4 id="3、Profile-GPU-Rendering"><a href="#3、Profile-GPU-Rendering" class="headerlink" title="3、Profile GPU Rendering"></a>3、Profile GPU Rendering</h4><p>ProfileGPU Rendering 工具以滚动直方图的形式直观地显示渲染界面窗口帧所花费的相对时间（以每帧 16 毫秒的速度作为对比基准）。这个工具同样也是在安卓设备的开发者选项中开启。每个管线的高度表示时间，管线中各个彩色区段代表不同含义。</p>
+<p>下表介绍了使用运行Android 6.0及更高版本的设备时分析器中不同竖条区段的含义。
+<img src="http://images.wodekouwei.com/at-android-performance-201935152931.jpg" alt="at-android-performance-201935152931"></p>
+<h4 id="4、Android-Profiler"><a href="#4、Android-Profiler" class="headerlink" title="4、Android Profiler"></a>4、Android Profiler</h4><p>Android Profiler是一个Android Studio集成的应用性能分析器，可以实时查看CPU、Memory和Network的动态情况。以下重点介绍CPU Profiler：</p>
+<p>CPU Profiler 可帮助您实时检查应用的 CPU 使用率和线程 Activity，并记录函数跟踪，方便大家优化和调试应用代码。</p>
+<p>当打开 CPU Profiler 时，它将显示应用的 CPU 使用率和线程 Activity。
+CPU Profiler可以选择不同的标签，并对应用线程进行跟踪。如：</p>
+<ul>
+<li>Flame Chart标签会提供一个倒置的调用图表，汇总相同的调用堆栈，收集调用顺序完全一致的函数，并在火焰图中用一个较长的横条表示它们。</li>
+<li>Top Down标签能够提供每个函数调用上所花费的CPU时间。Self表示函数调用在执行自己的代码上所花的时间；Children表示函数调用子方法所花费的时间；Total表示Self和Children时间的总和。</li>
+</ul>
+<h4 id="5、Systrace"><a href="#5、Systrace" class="headerlink" title="5、Systrace"></a>5、Systrace</h4><p>Systrace是我们分析性能最常用的工具之一，它可以分析整机系统性能及动态场景的性能问题。</p>
+<p>Systrace 允许您在系统级别收集和检查设备上运行的所有进程的计时信息。它将来自Android内核的数据（例如CPU调度程序，磁盘活动和应用程序线程）组合起来，以生成HTML报告。</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-201935153057.jpg" alt="at-android-performance-201935153057">
+上图左部是Systrace的界面，我们可以通过右边的代码抓取Systrace，观察进程的执行时间。在输入抓取命令时，时间参数一般选择5到10秒，因为时间过短可能会抓不到想要的数据，时间过长则可能抓取失败。</p>
+<p>一般我们通过Chrome浏览器查看生成的trace文件，也可以通过DDMS图形界面去抓取Systrace。</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-201935153130.jpg" alt="at-android-performance-201935153130">
+拿到一个Systrace时主要考察哪些因素？首先看一下CPU的频率，找到对应的进程或者线程，查看相关信息；同时还要观察GPU的频率、Surface Flinger还有绘图的Buffer状态等。</p>
+<p>当应用发生卡顿时，我们可以通过Systrace进行分析。在生成的trace文件中，找到主线程UI，每一帧都会标记一个带有F的圆形。当原型为绿色时，代表页面流畅，而黄色和红色则存在超时，我们可以点击去查看具体存在什么问题。</p>
+<h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><p>应用启动时间是应用性能最重要的指标之一,分冷启动和热启动两种情况:</p>
+<ul>
+<li>冷启动:当APP启动时,后台没有该app的进程,这时系统会重新创建一个新的进程分配给该app,这个启动方式就叫做冷启动(后台不存在该APP进程)</li>
+<li>热启动:当APP已经被打开,但是被按下返回键,Home键等按钮时回到桌面或者是其他程序的时候,再重新打开该APP时,这种方式叫做热启动(后台已经存在该APP进程)</li>
+</ul>
+<p>测试方法:
+将手机root之后,使用adb工具连接手机.使用adb shell am start -S -W 命令获取应用冷启动时间,adb shell am Start -W命令获取应用冷启动时间.
+<code>adb shell am start -W -n packagename/packageName.MainActivity</code>
+<code>aapt dump badging &lt;apk路径&gt;</code>:搜package 的 launchable-activity</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-20193512931.png" alt="at-android-performance-20193512931">
+执行成功后将返回三个测量到的时间：</p>
+<ol>
+<li>ThisTime:一般和TotalTime时间一样，除非在应用启动时开了一个透明的Activity预先处理一些事再显示出主Activity，这样将比TotalTime小。</li>
+<li>TotalTime:应用的启动时间，包括创建进程+Application初始化+Activity初始化到界面显示。</li>
+<li>WaitTime:一般比TotalTime大点，包括系统影响的耗时。</li>
+</ol>
+<p>关于ThisTime/TotalTime/WaitTime的区别,下面是其解释：“adb shell am start -W ”的实现在『frameworks\base\cmds\am\src\com\android\commands\am\Am.java』文件中。其实就是跨Binder调用ActivityManagerService.startActivityAndWait() 接口（后面将ActivityManagerService简称为AMS），这个接口返回的结果包含上面打印的ThisTime、TotalTime时间.</p>
+<ul>
+<li>startTime记录的刚准备调用startActivityAndWait()的时间点</li>
+<li>endTime记录的是startActivityAndWait()函数调用返回的时间点</li>
+<li>WaitTime = startActivityAndWait()调用耗时。</li>
+</ul>
+<p>ThisTime、TotalTime 的计算在 frameworks\base\services\core\java\com\android\server\am\ActivityRecord.java 文件的 reportLaunchTimeLocked() 函数中。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">private void reportLaunchTimeLocked(final long curTime) &#123;</div><div class="line">    final ActivityStack stack = task.stack;</div><div class="line">    final long thisTime = curTime - displayStartTime;</div><div class="line">    final long totalTime = stack.mLaunchStartTime != 0</div><div class="line">            ? (curTime - stack.mLaunchStartTime) : thisTime;</div><div class="line">    if (ActivityManagerService.SHOW_ACTIVITY_START_TIME) &#123;</div><div class="line">        Trace.asyncTraceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;launching&quot;, 0);</div><div class="line">        EventLog.writeEvent(EventLogTags.AM_ACTIVITY_LAUNCH_TIME,</div><div class="line">                userId, System.identityHashCode(this), shortComponentName,</div><div class="line">                thisTime, totalTime);</div><div class="line">        StringBuilder sb = service.mStringBuilder;</div><div class="line">        sb.setLength(0);</div><div class="line">        sb.append(&quot;Displayed &quot;);</div><div class="line">        sb.append(shortComponentName);</div><div class="line">        sb.append(&quot;: &quot;);</div><div class="line">        TimeUtils.formatDuration(thisTime, sb);</div><div class="line">        if (thisTime != totalTime) &#123;</div><div class="line">            sb.append(&quot; (total &quot;);</div><div class="line">            TimeUtils.formatDuration(totalTime, sb);</div><div class="line">            sb.append(&quot;)&quot;);</div><div class="line">        &#125;</div><div class="line">        Log.i(ActivityManagerService.TAG, sb.toString());</div><div class="line">    &#125;</div><div class="line">    mStackSupervisor.reportActivityLaunchedLocked(false, this, thisTime, totalTime);</div><div class="line">    if (totalTime &gt; 0) &#123;</div><div class="line">        //service.mUsageStatsService.noteLaunchTime(realActivity, (int)totalTime);</div><div class="line">    &#125;</div><div class="line">    displayStartTime = 0;</div><div class="line">    stack.mLaunchStartTime = 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>curTime表示该函数调用的时间点.</li>
+<li>displayStartTime表示一连串启动Activity中的最后一个Activity的启动时间点.</li>
+<li>mLaunchStartTime表示一连串启动Activity中第一个Activity的启动时间点.</li>
+</ul>
+<p>正常情况下点击桌面图标只启动一个有界面的 Activity，此时 displayStartTime 与mLaunchStartTime 便指向同一时间点，此时 ThisTime=TotalTime。另一种情况是点击桌面图标应用会先启动一个无界面的 Activity 做逻辑处理，接着又启动一个有界面的Activity，在这种启动一连串 Activity 的情况下（知乎的启动就是属于这种情况），displayStartTime 便指向最后一个 Activity 的开始启动时间点，mLaunchStartTime 指向第一个无界面Activity的开始启动时间点，此时 ThisTime！=TotalTime。这两种情况如下图：
+<img src="http://images.wodekouwei.com/at-android-performance-20193514439.png" alt="at-android-performance-20193514439"></p>
+<p>在上面的图中，我用①②③分别标注了三个时间段，在这三个时间段内分别干了什么事呢？</p>
+<ul>
+<li>在第①个时间段内，AMS 创建 ActivityRecord 记录块和选择合理的 Task、将当前Resume 的 Activity 进行 pause</li>
+<li>在第②个时间段内，启动进程、调用无界面 Activity 的 onCreate() 等、 pause/finish 无界面的 Activity</li>
+<li>在第③个时间段内，调用有界面 Activity 的 onCreate、onResume</li>
+</ul>
+<p>看到这里应该清楚 ThisTime、TotalTime、WaitTime 三个时间的关系了吧。WaitTime 就是总的耗时，包括前一个应用 Activity pause 的时间和新应用启动的时间；ThisTime 表示一连串启动 Activity 的最后一个 Activity 的启动耗时；TotalTime 表示新应用启动的耗时，包括新进程的启动和 Activity 的启动，但不包括前一个应用 Activity pause 的耗时。也就是说，开发者一般只要关心 TotalTime 即可，这个时间才是自己应用真正启动的耗时。</p>
+<p>Event log中 TAG=am_activity_launch_time 中的两个值分表表示 ThisTime、TotalTime，跟通过 “adb shell am start -W ” 得到的值是一致的。</p>
+<p>最后再说下系统根据什么来判断应用启动结束。我们知道应用启动包括进程启动、走 Activity生命周期 onCreate/onResume 等。在第一次 onResume 时添加窗口到WMS中，然后measure/layout/draw，窗口绘制完成后通知 WMS，WMS 在合适的时机控制界面开始显示(夹杂了界面切换动画逻辑)。记住是窗口界面显示出来后，WMS 才调用reportLaunchTimeLocked() 通知 AMS Activity 启动完成。</p>
+<p>最后总结一下，如果只关心某个应用自身启动耗时，参考TotalTime；如果关心系统启动应用耗时，参考WaitTime；如果关心应用有界面Activity启动耗时，参考ThisTime。</p>
+<p><strong>指标</strong></p>
+<p>一般情况下，应用启动时间在1秒以内，用户反馈系统响应很快；1-3秒内完成启动，用户认为反应速度尚可；3-5秒内完成启动，用户会认为系统反应很慢，但是还可以接受；若启动时间超过5秒，则大部分用户会认为系统反应糟糕，甚至卸载应用。</p>
+<p>安卓绿色联盟应用体验标准规定，应用冷启动时间应该不超过1000毫秒，热启动时间应该不超过500毫秒，若不满足，则无法获得绿色应用认证。</p>
+<p>从上面的测评结果可以看出，参与测评的8款应用冷启动和热启动的时间都是非常快，也都符合安卓绿色联盟对绿色应用启动时间标准。其中QQ音乐和芒果TV的冷启动时间最为优秀，分别只有283毫秒和596毫秒。</p>
+<p>Android系统上，APP无进程状态，启动流程见下：
+Application的构造器方法 ——&gt;attachBaseContext() ——&gt;onCreate() ——&gt;Activity的构造方法 ——&gt;onCreate() ——&gt;配置主题中背景等属性 ——&gt;onStart() ——&gt;onResume() ——&gt;测量布局绘制显示在界面上。</p>
+<p>当点击APP的启动图标时，安卓系统会从Zygote进程中fork创建出一个新的进程分配给该应用，之后会依次创建和初始化Application类、创建MainActivity类、加载主题样式Theme中的windowBackground等属性设置给MainActivity以及配置Activity层级上的一些属性、再inflate布局、当onCreate/onStart/onResume方法都走完了后最后才进行contentView的measure/layout/draw显示在界面上，所以直到这里，应用的第一次启动才算完成，这时候我们看到的界面也就是所说的第一帧。</p>
+<p>启动时间:</p>
+<ol>
+<li>冷启动时间:当用户点击目标app图标的 timepoint到显示界面第一帧的时间段（当用户点击你的app那一刻到系统调用Activity.onCreate()之间的时间段）,在这个时间段内，WindowManager会先加载app主题样式中的windowBackground做为app的预览元素，然后再真正去加载activity的layout布局。API19 之后，系统会出打印日志输出启动的时间:冷启动时间 = 应用启动（创建进程） —&gt; 完成视图的第一次绘制（Activity内容对用户可见）；</li>
+<li>热启动时间:用户把目标app切换至后台后，点击app图标的timepoint到显示界面第一帧的时间段</li>
+</ol>
+<p>优化建议</p>
+<ol>
+<li>减少Application中过多的三方SDK初始化操作，在真正使用到功能时在进行初始化操作。</li>
+<li>减少首界面布局文件的层级和嵌套，来减少界面的量测和绘制的时间。</li>
+<li>减少首界面oncreate()方法中的复杂逻辑和工作量，从而降低启动时间。</li>
+<li>不要以静态变量的方式在Application中保存数据</li>
+</ol>
+<h3 id="流畅度"><a href="#流畅度" class="headerlink" title="流畅度"></a>流畅度</h3><p>人为感受的性能不好属于下面两种:</p>
 <ol>
 <li>响应时间,界面跳转后响应时间</li>
 <li>流畅度,界面操作时或动画展示的效果</li>
@@ -515,14 +1199,72 @@ pip install selenium==3.0.1&lt;/p&gt;
 <a href="https://developer.android.com/training/testing/performance?hl=zh-cn" target="_blank" rel="external">https://developer.android.com/training/testing/performance?hl=zh-cn</a>
 <a href="https://testerhome.com/topics/4441" target="_blank" rel="external">https://testerhome.com/topics/4441</a>
 <a href="https://testerhome.com/topics/4643" target="_blank" rel="external">https://testerhome.com/topics/4643</a></p>
+<h4 id="页面响应时间TTLB-Time-To-Last-Byte"><a href="#页面响应时间TTLB-Time-To-Last-Byte" class="headerlink" title="页面响应时间TTLB(Time To Last Byte)"></a>页面响应时间TTLB(Time To Last Byte)</h4><p>页面响应时间是指从用户发出请求到客户端收到最后一个字节所耗费的时间.</p>
+<h3 id="性能案例分析"><a href="#性能案例分析" class="headerlink" title="性能案例分析"></a>性能案例分析</h3><h4 id="案例1：界面滑动卡顿"><a href="#案例1：界面滑动卡顿" class="headerlink" title="案例1：界面滑动卡顿"></a>案例1：界面滑动卡顿</h4><p><img src="http://images.wodekouwei.com/at-android-performance-201935154448.jpg" alt="at-android-performance-201935154448"></p>
+<p>从图中可以看到，这是一个手动滑动事件，当deliverInput事件发生后，第一帧就发生了卡顿。从systrace看UI thread执行draw的时间相当耗时导致丢帧卡顿，而且大部分时间都在做decodeBitmap，共耗时99.045ms。这时，我们打开applog发现，有StrictMode相关的错误提示，从中可以定位到耗时函数。</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-20193515453.jpg" alt="at-android-performance-20193515453"></p>
+<p>从上图我们看出有一个网络访问违规，大概可以推测应用在从网络上下载了一个数据流，数据流里可能包含了一些图形，通过decodeBitmap把它解析出来展示在UI界面中。正产情况下，我们应该把网络访问放在工作线程里面去处理，将数据下载完了之后再放到主线程中去展示，避免这种问题的发生。</p>
+<h4 id="案例2：Strict-Mode错误提示"><a href="#案例2：Strict-Mode错误提示" class="headerlink" title="案例2：Strict Mode错误提示"></a>案例2：Strict Mode错误提示</h4><p><img src="http://images.wodekouwei.com/at-android-performance-201935154542.jpg" alt="at-android-performance-201935154542">
+从上图Strict Mode的日志可以看出：StrictMode policy violation耗时2秒左右。通过最下行蓝色的log，可以知道应用是在某一个目录里面寻找一个文件，判断文件是否存在。</p>
+<p>面对这种问题，我们应该把IO操作放到工作线程。正常情况下IO的发生非常快，但是在系统繁忙时，IO放在主线程会产生较大的问题，因为它要等别的程序读写完成之后，才会下发，产生超时。</p>
+<h4 id="案例3：GPU调用不当导致的卡顿问题"><a href="#案例3：GPU调用不当导致的卡顿问题" class="headerlink" title="案例3：GPU调用不当导致的卡顿问题"></a>案例3：GPU调用不当导致的卡顿问题</h4><p><img src="http://images.wodekouwei.com/at-android-performance-201935154612.jpg" alt="at-android-performance-201935154612">
+这是一个GPU的例子，上图主要问题是GPU使用了太长时间处理应用传过来的buffer,例子中Surfaceflinger 使用GPU 做了图像叠加，说明图层比较多。使用GPU做叠加主要会产生功耗和唤醒耗时的问题。大家在做界面设计的时候，尽量不要使用GPU进行叠加。在上面的例子中，GPU叠加之后，导致了大概15ms左右的延时，因为GPU操作完成以后还需要交给Surfaceflinger把图像显示到屏幕上。</p>
+<h4 id="案例4：CPU调用不当导致的界面滑动卡顿问题"><a href="#案例4：CPU调用不当导致的界面滑动卡顿问题" class="headerlink" title="案例4：CPU调用不当导致的界面滑动卡顿问题"></a>案例4：CPU调用不当导致的界面滑动卡顿问题</h4><p><img src="http://images.wodekouwei.com/at-android-performance-201935154711.jpg" alt="at-android-performance-201935154711">
+可以通过上图的红色条块了解messageloop RunTask信息，红色条块上的蓝色bar，表示线程在CPU上的状态。蓝色表示这个线程处于等待CPU调度的状态，可见等待超过8ms的时间，是正常调度周期好几倍。导致这种情况发生的原因有两个：CPU负载过大或CPU调度出现了问题。在上图中我们可以看出，CPU0和CPU1使用率100%，但是CPU2和CPU3是offline的状态，说明系统出现问题，导致CPU2和CPU3未能唤醒，帮助完成系统任务。</p>
+<h3 id="性能优化建议"><a href="#性能优化建议" class="headerlink" title="性能优化建议"></a>性能优化建议</h3><h4 id="1、避免内存泄露"><a href="#1、避免内存泄露" class="headerlink" title="1、避免内存泄露"></a>1、避免内存泄露</h4><p>在应用开发过程中，首先要避免内存泄露的问题，内存泄露是一种比较严重的性能问题，在安卓绿色联盟应用性能标准中也要求应用不允许发生内存泄露。
+常见内存泄露:</p>
+<ol>
+<li>手动关闭try/catch/finally中使用网络文件等流文件的对象,关注对象:HTTP,File, ContentProvider,Bitmap,Uri,Socket</li>
+<li>注意关闭onDestroy()或者onPause()中未及时关闭对象,防止如下内存泄露:线程泄露,Handler泄露,广播泄露,第三方SDK/开源框架泄露,各种callBack/Listener的泄露</li>
+</ol>
+<p>常见内存泄露坚持工具:</p>
+<ul>
+<li>Memory Monitor</li>
+<li>Allocation Tracker</li>
+<li>Heap Viewer</li>
+<li>LeakCanary</li>
+</ul>
+<h4 id="2、避免不良设计或程序算法导致CPU占有率持续偏高"><a href="#2、避免不良设计或程序算法导致CPU占有率持续偏高" class="headerlink" title="2、避免不良设计或程序算法导致CPU占有率持续偏高"></a>2、避免不良设计或程序算法导致CPU占有率持续偏高</h4><ul>
+<li>主要业务处理分散到不同线程，便于后续利用多核处理器的并行处理能力，避免一核累死，7核围观；</li>
+<li>使用top命令观察应用线程的CPU占有率，找出高负载的进程进行分析，并针对优化。</li>
+</ul>
+<h4 id="3、避免OnXXX-回调函数中进行耗时操作，避免主线程卡顿"><a href="#3、避免OnXXX-回调函数中进行耗时操作，避免主线程卡顿" class="headerlink" title="3、避免OnXXX 回调函数中进行耗时操作，避免主线程卡顿"></a>3、避免OnXXX 回调函数中进行耗时操作，避免主线程卡顿</h4><p>Android系统中正常情况下所有onXXX类函数均运行在主线程中。
+两帧中间有一个因为接收广播处理导致的158ms的卡顿。在这些函数中，我们应该避免网络通信操作、文件读写操作、数据库数据改动的操作、图形处理、文本分析等操作，将这些工作尽可能的移到工作线程中去，从而避免主线程卡顿。</p>
+<h4 id="4、合理使用系统资源"><a href="#4、合理使用系统资源" class="headerlink" title="4、合理使用系统资源"></a>4、合理使用系统资源</h4><p>合理使用系统资源主要指的是软资源。下图是对广播资源调用的一些建议。</p>
+<ul>
+<li>避免同一广播在多个不同实例中重复注册</li>
+<li>对象释放时,必须保证注销广播,避免广播注册泄露</li>
+<li>尽量不要过度依赖广播机制进行通信,只注册必要的广播</li>
+<li>尽量不要注册使用频繁放生的系统广播</li>
+<li>不高频调用系统服务接口,避免引起系统互锁造成阻塞</li>
+</ul>
+<h2 id="性能治理"><a href="#性能治理" class="headerlink" title="性能治理"></a>性能治理</h2><h3 id="主线程卡顿"><a href="#主线程卡顿" class="headerlink" title="主线程卡顿"></a>主线程卡顿</h3><p>主线程卡顿是因为主线程的消息超过阈值，从而导致页面丢帧。手淘通过接管主线程消息的分发机制，获取消息的分发耗时和消息类型，从而定位触发主线程卡顿的具体业务并进行针对性治理。</p>
+<p>另外手淘在使用系统的SharedPreferences时，发现页面跳转导致界面ANR的情况。通过阅读系统源码，发现它在做Receiver或者Service时会强制把所有SharedPreferences apply的内容写入文档，导致ANR。针对这个问题，手淘重写SharedPreferences提升性能，减少了这类ANR问题的发生。</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-201935222118.jpg" alt="at-android-performance-201935222118"></p>
+<h3 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h3><p>手淘团队投入了大量时间对内存泄露进行治理。一方面通过接管系统底层组件的生命周期，当组件的生命周期销毁时，对它进行一个WeakReference的引用，然后根据GC事件触发情况来判定该对象是否泄漏。另一方面，在Native层通过Hook操作系统底层malloc和free方法，计算每一个so处理内存的情况，根据malloc与free差值大小与白名单进行对比判断是否存在内存泄露。</p>
+<p>内存使用不当</p>
+<p>何为内存使用不当？举个例子，当开发一个大小为100×100 view，实际却使用了200<em>200甚至更大的bitmap。比如在系统drawable目录下放置一张图片，在高清的设备上展示时，它会根据系统自身的原理对它进行拉伸。这时原本只需要单位1的内存（100</em>100），可能变成单位16的内存（400*400），内存的浪费率达到90%以上。针对这种情况，手淘做了一个内存使用不当排查插件。</p>
+<p>视频也同样存这种问题，在低分辨率设备上播放高质量的视频不仅不会给用户带来更好的体验，还可能让设备出现卡顿。还有就是图片持有的问题，当页面已经沉入栈底，最好不要保留之前页面的图片。这样可以保证有足够的内存给前台页面使用，否则随着页面层级的深入，很容易出现OOM。</p>
+<h3 id="资源泄露"><a href="#资源泄露" class="headerlink" title="资源泄露"></a>资源泄露</h3><p>手淘主要通过接管系统底层的open和close两个Native方法函数对资源泄露进行治理。当open和close没有成对出现，并且该业务并不是伴随整个应用生命周期（伴随整个生命周期的文件有白名单），可以判断该操作可能存在资源泄漏。平台会将该异常行为告知对应的开发同学检查和治理。数据库的治理同样也采用了这套方案。</p>
+<h3 id="线程问题"><a href="#线程问题" class="headerlink" title="线程问题"></a>线程问题</h3><p>线程问题比较复杂。在线程创建时可能会触发一些意想不到的问题，比如Out Of Memory error。Out Of Memory error可能是由线程创建失败导致的。因此，手淘对线程创建进行了接管。业务在创建时，对它的方法调用栈进行聚类，就可以知道每个业务创建的线程数量，以及线程创建是否合理。建议应用开发者在创建线程时一定规范命名，以便快速定位具体的业务方。</p>
+<h3 id="流量监控"><a href="#流量监控" class="headerlink" title="流量监控"></a>流量监控</h3><p>手淘主要是通过接管Socket协议，分析协议头部获取请求和回流数据内容的大小信息进行流量监控治理。如发现异常，可以让开发同学定位解决。同时也可以监听后台流量行为，观察APP切到后台以后是否还有大量的网络请求。</p>
+<p><img src="http://images.wodekouwei.com/at-android-performance-201935222346.jpg" alt="at-android-performance-201935222346"></p>
+<h3 id="设备评级"><a href="#设备评级" class="headerlink" title="设备评级"></a>设备评级</h3><p>安卓设备百花齐放，手淘对不同的设备采取了计分的方法进行评级，根据设备分数采用不同的策略，展示相应的图片、视频和业务，给用户带来最佳的性能体验。这个设备评级方案可以给开发同学提供指导建议，更好的展现业务形态。</p>
+<h3 id="布局性能"><a href="#布局性能" class="headerlink" title="布局性能"></a>布局性能</h3><p>在开发的过程中，常常要通过HierarchyViewer的方法检查布局结构是否合理。手淘写了一套算法，检查页面结构是否合理，页面层级是否过深、页面层级是否还有继续优化的空间。同时还实现了一套OverDraw的算法，给开发同学提示具体哪个层级可以优化，怎么样的降层级，怎么样解决OverDraw的问题。</p>
+<h3 id="用户体验优化"><a href="#用户体验优化" class="headerlink" title="用户体验优化"></a>用户体验优化</h3><p>手淘很关注用户的体验，包括启动时间、每个页面的打开耗时等。通过监控启动时各个子任务的耗时，以及对这些信息快速的分析，判断每一次发版质量变化的具体原因。</p>
+<h3 id="4-X设备体验优化"><a href="#4-X设备体验优化" class="headerlink" title="4.X设备体验优化"></a>4.X设备体验优化</h3><p>随着产品功能越来越丰富和产品体积逐渐的壮大，4.X设备出现了multidex越来越慢的情况。基于这个现象，手淘把谷歌的support multidex包进行了重构改造。经过重构以后的support multidex方案，4.X设备的Dex加载随着Dex越来越多，它性能提升越好。</p>
+<h3 id="内存容灾"><a href="#内存容灾" class="headerlink" title="内存容灾"></a>内存容灾</h3><p>内存容灾手淘一直很关注。当用户使用当前页面时，如果内存不足，手淘期望后台页面可以快速释放内存资源，为前台页面服务。手淘开发了内存容灾插件，监听JVM的GC事件以及轮寻物理页表计算实际使用物理内存，通过这个计算给手淘的业务方发送对应的内存水位事件，如果是属于非常高危的内存事件，就可以让后台快速的释放缓存资源，从而为可视的页面提供更好的服务</p>
+<h2 id="稳定性治理"><a href="#稳定性治理" class="headerlink" title="稳定性治理"></a>稳定性治理</h2><p>稳定性的治理主要是两部分，Java Crash和Native Crash
+<img src="http://images.wodekouwei.com/at-android-performance-201935222554.jpg" alt="at-android-performance-201935222554"></p>
+<h3 id="Java-Crash治理"><a href="#Java-Crash治理" class="headerlink" title="Java Crash治理"></a>Java Crash治理</h3><p>手淘通过接管UncaughtExceptionHandler，拿到具体的Java Crash的信息及它的堆栈来进行Java Crash治理。Java Crash治理还有一个经常遇到的OOM的情况，一方面可能是虚拟机的内存不足导致的，另一方面可能是线程创建失败导致的，可以使用前面讲到的线程创建插件解决。</p>
+<h3 id="Native-Crash治理"><a href="#Native-Crash治理" class="headerlink" title="Native Crash治理"></a>Native Crash治理</h3><p>手淘通过捕获信号量的方式对Native Crash进行治理。当Native发生异常时，创建一个子进程，通过ptrace的方式去dump Native Crash上下文的线程信息。 基于前面讲到的性能治理方式，OOM的Native Crash可以通过malloc和free的接管，定位具体是哪个SO导致这个问题的发生并进行治理。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;流畅度&quot;&gt;&lt;a href=&quot;#流畅度&quot; class=&quot;headerlink&quot; title=&quot;流畅度&quot;&gt;&lt;/a&gt;流畅度&lt;/h3&gt;&lt;p&gt;人为感受的性能不好属于下面两种:&lt;/p&gt;
+      &lt;h2 id=&quot;性能标准&quot;&gt;&lt;a href=&quot;#性能标准&quot; class=&quot;headerlink&quot; title=&quot;性能标准&quot;&gt;&lt;/a&gt;性能标准&lt;/h2&gt;&lt;p&gt;安卓绿色联盟应用性能标准主要基于主观体验、资源消耗和应用质量三个方面进行制定。&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;响应时间,界面跳转后响应时间&lt;/li&gt;
-&lt;li&gt;流畅度,界面操作时或动画
+&lt;li&gt;主观体验:主观体验
     
     </summary>
     
@@ -869,422 +1611,6 @@ format 的后三条理解起来可能比较困难。这里我们以倒数第三�
     
     
       <category term="Mac" scheme="http://wodekouwei.com/tags/Mac/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python之字符串</title>
-    <link href="http://wodekouwei.com/2019/01/14/l-python-string/"/>
-    <id>http://wodekouwei.com/2019/01/14/l-python-string/</id>
-    <published>2019-01-14T02:26:02.000Z</published>
-    <updated>2019-01-14T02:28:27.679Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="字符串截取"><a href="#字符串截取" class="headerlink" title="字符串截取"></a>字符串截取</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">str = ‘0123456789’</div><div class="line">print str[0:3] #截取第一位到第三位的字符</div><div class="line">print str[:] #截取字符串的全部字符</div><div class="line">print str[6:] #截取第七个字符到结尾</div><div class="line">print str[:-3] #截取从头开始到倒数第三个字符之前</div><div class="line">print str[2] #截取第三个字符</div><div class="line">print str[-1] #截取倒数第一个字符</div><div class="line">print str[::-1] #创造一个与原字符串顺序相反的字符串</div><div class="line">print str[-3:-1] #截取倒数第三位与倒数第一位之前的字符</div><div class="line">print str[-3:] #截取倒数第三位到结尾</div><div class="line">print str[:-5:-3] #逆序截取，具体啥意思没搞明白？</div></pre></td></tr></table></figure>
-<p>输出结果:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">012</div><div class="line">0123456789</div><div class="line">6789</div><div class="line">0123456</div><div class="line">2</div><div class="line">9</div><div class="line">987654321</div><div class="line">78</div><div class="line">789</div><div class="line">96</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;字符串截取&quot;&gt;&lt;a href=&quot;#字符串截取&quot; class=&quot;headerlink&quot; title=&quot;字符串截取&quot;&gt;&lt;/a&gt;字符串截取&lt;/h4&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;
-    
-    </summary>
-    
-      <category term="language" scheme="http://wodekouwei.com/categories/language/"/>
-    
-    
-      <category term="language" scheme="http://wodekouwei.com/tags/language/"/>
-    
-      <category term="python" scheme="http://wodekouwei.com/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>gradle使用</title>
-    <link href="http://wodekouwei.com/2019/01/10/tool-gradle/"/>
-    <id>http://wodekouwei.com/2019/01/10/tool-gradle/</id>
-    <published>2019-01-10T10:38:26.000Z</published>
-    <updated>2019-01-11T10:49:29.144Z</updated>
-    
-    <content type="html"><![CDATA[<p>gradle命令:</p>
-<ul>
-<li>gradle -v                  //版本号</li>
-<li>gradle clean               //清除build文件夹</li>
-<li>gradle build               //检查依赖并打包</li>
-<li>gradle assembleDebug       //编译打包Debug包</li>
-<li>gradle assembleRelease     //编译打包Release包</li>
-<li>gradle installRelease      //打包并安装Release包</li>
-<li>gradle unstallRelease      //卸载Release包</li>
-<li>gradle dependencies        //查看依赖图表</li>
-<li>gradle clean build -x test //跳过测试编译</li>
-<li>gradle –profile build     //分析构建任务</li>
-<li>gradle build –dry-run     //编译并不执行任务</li>
-<li>gradle install             //安置项目jar包到本地Maven仓库</li>
-<li>gradle tasks               //查看Gradle任务</li>
-<li>gradle tasks –all         //查看所有Gradle任务</li>
-<li>gradle build –daemon      //使用Gradle守护程序(Daemon)</li>
-<li>gradle build –offline     //用离线模式运行</li>
-<li>gradle clean build –refresh-dependencies     //刷新Gradle依赖缓存</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;gradle命令:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;gradle -v                  //版本号&lt;/li&gt;
-&lt;li&gt;gradle clean               //清除build文件夹&lt;/li&gt;
-&lt;li&gt;gradle build           
-    
-    </summary>
-    
-      <category term="工具" scheme="http://wodekouwei.com/categories/%E5%B7%A5%E5%85%B7/"/>
-    
-    
-      <category term="工具" scheme="http://wodekouwei.com/tags/%E5%B7%A5%E5%85%B7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Mac下快捷键</title>
-    <link href="http://wodekouwei.com/2019/01/09/env-mac-keymap/"/>
-    <id>http://wodekouwei.com/2019/01/09/env-mac-keymap/</id>
-    <published>2019-01-09T01:56:49.000Z</published>
-    <updated>2019-02-28T10:27:20.082Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="AndroidStudio-IntelliJ-快捷键"><a href="#AndroidStudio-IntelliJ-快捷键" class="headerlink" title="AndroidStudio/IntelliJ 快捷键"></a>AndroidStudio/IntelliJ 快捷键</h3><p>之前一直用windows版的eclipse快捷键,现在准备切成mac原生快捷键映射.</p>
-<p>特殊符号 :</p>
-<ul>
-<li>Command () : ⌘ ; </li>
-<li>Control : ⌃ ; </li>
-<li>Option (alt) : ⌥ ; </li>
-<li>Shift : ⇧ ; </li>
-<li>Caps Lock : ⇪ ;</li>
-</ul>
-<h4 id="常用"><a href="#常用" class="headerlink" title="常用:"></a>常用:</h4><ul>
-<li>cmd + F12: 快速定位到方法和属性</li>
-<li>ctrl + o : 查看所有可重写的方法</li>
-<li>ctrl + I : 引入接口或抽象类方法的实现</li>
-<li>cmd + o : 全局查找类</li>
-<li>opt + cmd + o : 全局搜索类/方法/参数</li>
-<li>cmd + f7 : 查看该方法在当前类中被用到的地方</li>
-<li>alt + f7 : find usages</li>
-<li>cmd + ][ : back</li>
-<li>shift + cmd + f : 全局查找</li>
-<li>cmd + d : 快捷向下复制</li>
-<li>cmd + shift + enter : editor actions-&gt;complete current statement,不管光标在哪个位置,直接新开一行</li>
-<li>ctrl + spack : main menu-&gt;Code-&gt;Completion-&gt;basic代码提示列表</li>
-<li>alt + enter : other-&gt;show intention action, 错误修正提示列表</li>
-<li>sht + sht : 搜索任意内容</li>
-<li>cmd + f / cmd + r : 当前文件查找/替换</li>
-<li>cmd + g / sht + cmd + g : 跳到下一个/上一个高亮的变量</li>
-<li>cmd + opt + B : 查看接口的实现</li>
-<li>ctrl + opt + H : 方法被调用层级结构</li>
-<li>cmd + L : 跳转至行</li>
-<li>opt + cmd + T : Surround with 快速调出if, for, try…catch, while等环绕代码</li>
-<li>cmd + J : 快速生成模板代码块,如if,while, return</li>
-<li>cmd + N : 快速生成getter／setter方法，构造方法，toString()方法等</li>
-<li>stf + cmd + enter : 行尾自动添加分号,if后面自动加 “(){}”</li>
-<li>cmd + / : 注释和取消注释,注释效果//…</li>
-<li>opt + cmd + / : 注释与取消注释,注释效果/…/</li>
-<li>sht + cmd + U : 切换大小写</li>
-<li>opt + sht + up/down : 上下移动代码</li>
-<li>cmd + sht + up/down : 上下代码行换位</li>
-<li>opt + cmd + L: 格式化代码</li>
-<li>opt + ctrl + o : 清除无效包引用</li>
-<li>opt + cmd + M : 方法重构,方法抽离</li>
-<li>opt + cmd + P : 抽离成方法参数</li>
-<li>opt + cmd + V : 抽离为局部变量</li>
-<li>opt + cmd + F : 抽离为成员变量</li>
-<li>cmd + left/right : 快速定位到行首行位</li>
-<li>cmd + p : 提示参数类型</li>
-<li>cmd + y : 预览方法的定义</li>
-</ul>
-<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
-<li>Shift+⌘+”+” 展开全部 </li>
-<li>Shift+⌘+”-“ 折叠全部 </li>
-<li>cmd+”+” 展开当前 </li>
-<li>cmd+”-“ 折叠当前</li>
-<li></li>
-<li>shift+⌘+L 展开文档注释 </li>
-<li>ctrl+shift+⌘+L 收起文档注释</li>
-<li></li>
-<li>⌘+/ 当行注释 </li>
-<li>⌘+alt+/ 多行注释</li>
-<li></li>
-<li>alt+F7 查找使用的位置 </li>
-<li>Ctrl+Shift+F FindInPath</li>
-<li></li>
-<li>shift+f6 重命名</li>
-<li></li>
-<li>Ctrl+Enter 生成set/get（或者Ctrl+N） </li>
-<li>Ctrl+J 查看文档说明（同windows中的ctrl+Q） </li>
-<li>Ctrl+O/⌘+O 重写父类方法 </li>
-<li>Ctrl+i 实现方法</li>
-<li></li>
-<li>Ctrl+shift+Q 查看当前光标所在的类 </li>
-<li>alt+回车 查看当前元素可以做的操作</li>
-<li></li>
-<li>alt+⌘+L 格式化代码 </li>
-<li>Ctrl+Alt+O 自动导包 </li>
-<li>Ctrl+Alt+I 自动缩进行</li>
-<li></li>
-<li>⌘+Alt+M 抽取方法 </li>
-<li>⌘+Alt+V 提取变量（还没尝试） </li>
-<li>⌘+Alt+F 提取成员变量 </li>
-<li>⌘+Alt+C 提取为常量 </li>
-<li>⌘+Alt+P 提取参数</li>
-<li></li>
-<li>⌘+E 最近操作的文件</li>
-<li></li>
-<li>⌘+F12 查看当前类的结构 </li>
-<li>⌘+B / ⌘+左键单击 查看元素的源码（或者自定义元素的初始化） </li>
-<li>Shift+left/right 从光标位置开始，向左/右逐个选中字母</li>
-<li></li>
-<li>Ctrl+cmd+”+” 窗口最大化（或者恢复窗口模式） </li>
-<li>Ctrl+shift+向上箭头 类似win中的win+P(切换窗口)</li>
-</ul>
-<h3 id="VSCode"><a href="#VSCode" class="headerlink" title="VSCode"></a>VSCode</h3><h4 id="全局"><a href="#全局" class="headerlink" title="全局"></a>全局</h4><ul>
-<li>Command + Shift + P / F1  显示命令面板</li>
-<li>Command + P 快速打开</li>
-<li>Command + Shift + N 打开新窗口</li>
-<li>Command + W 关闭窗口</li>
-</ul>
-<h4 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h4><ul>
-<li>Command + X 剪切（未选中文本的情况下，剪切光标所在行）</li>
-<li>Command + C 复制（未选中文本的情况下，复制光标所在行）</li>
-<li>Option + Up 向上移动行</li>
-<li>Option + Down 向下移动行</li>
-<li>Option + Shift + Up 向上复制行</li>
-<li>Option + Shift + Down 向下复制行</li>
-<li>Command + Shift + K 删除行</li>
-<li>Command + Enter 下一行插入</li>
-<li>Command + Shift + Enter 上一行插入</li>
-<li>Command + Shift + \ 跳转到匹配的括号</li>
-<li>Command + [ 减少缩进</li>
-<li>Command + ] 增加缩进</li>
-<li>Home 跳转至行首</li>
-<li>End 跳转到行尾</li>
-<li>Command + Up 跳转至文件开头</li>
-<li>Command + Down 跳转至文件结尾</li>
-<li>Ctrl + PgUp 按行向上滚动</li>
-<li>Ctrl + PgDown 按行向下滚动</li>
-<li>Command + PgUp 按屏向上滚动</li>
-<li>Command + PgDown 按屏向下滚动</li>
-<li>Command + Shift + [ 折叠代码块</li>
-<li>Command + Shift + ] 展开代码块</li>
-<li>Command + K  Command + [ 折叠全部子代码块</li>
-<li>Command + K  Command + ] 展开全部子代码块</li>
-<li>Command + K  Command + 0 折叠全部代码块</li>
-<li>Command + K  Command + J 展开全部代码块</li>
-<li>Command + K  Command + C 添加行注释</li>
-<li>Command + K  Command + U 移除行注释</li>
-<li>Command + / 添加、移除行注释</li>
-<li>Option + Shift + A 添加、移除块注释</li>
-<li>Option + Z 自动换行、取消自动换行</li>
-</ul>
-<h4 id="多光标与选择"><a href="#多光标与选择" class="headerlink" title="多光标与选择"></a>多光标与选择</h4><ul>
-<li>Option + 点击 插入多个光标</li>
-<li>Command + Option + Up  向上插入光标</li>
-<li>Command + Option + Down  向下插入光标</li>
-<li>Command + U 撤销上一个光标操作</li>
-<li>Option + Shift + I 在所选行的行尾插入光标</li>
-<li>Command + I 选中当前行</li>
-<li>Command + Shift + L 选中所有与当前选中内容相同部分</li>
-<li>Command + F2 选中所有与当前选中单词相同的单词</li>
-<li>Command + Ctrl + Shift + Left 折叠选中</li>
-<li>Command + Ctrl + Shift + Right 展开选中</li>
-<li>Alt + Shift + 拖动鼠标 选中代码块</li>
-<li>Command + Shift + Option + Up 列选择 向上</li>
-<li>Command + Shift + Option + Down 列选择 向下</li>
-<li>Command + Shift + Option + Left 列选择 向左</li>
-<li>Command + Shift + Option + Right 列选择 向右</li>
-<li>Command + Shift + Option + PgUp 列选择 向上翻页</li>
-<li>Command + Shift + Option + PgDown 列选择 向下翻页</li>
-</ul>
-<h4 id="查找替换"><a href="#查找替换" class="headerlink" title="查找替换"></a>查找替换</h4><p>Command + F 查找
-Command + Option + F 替换
-Command + G 查找下一个
-Command + Shift + G 查找上一个
-Option + Enter 选中所有匹配项
-Command + D 向下选中相同内容
-Command + K  Command + D 移除前一个向下选中相同内容</p>
-<h4 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h4><p>Ctrl + Space 打开建议
-Command + Shift + Space 参数提示
-Tab Emmet插件缩写补全
-Option + Shift + F 格式化
-Command + K Command + F 格式化选中内容
-F12 跳转到声明位置
-Option + F12 查看具体声明内容
-Command + K  F12  分屏查看具体声明内容
-Command + . 快速修复
-Shift + F12 显示引用
-F2 重命名符号
-Command + Shift + . 替换为上一个值
-Command + Shift + , 替换为下一个值
-Command + K Command + X 删除行尾多余空格
-Command + K M 更改文件语言</p>
-<h4 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h4><p>Command + T 显示所有符号
-Ctrl + G 跳转至某行
-Command + P 跳转到某个文件
-Command + Shift + O 跳转到某个符号
-Command + Shift + M 打开问题面板
-F8 下一个错误或警告位置
-Shift + F8 上一个错误或警告位置
-Ctrl + Shift + Tab 编辑器历史记录
-Ctrl + - 后退
-Ctrl + Shift + - 前进
-Ctrl + Shift + M Tab 切换焦点</p>
-<h4 id="编辑器管理"><a href="#编辑器管理" class="headerlink" title="编辑器管理"></a>编辑器管理</h4><p>Command + W 关闭编辑器
-Command + K  F 关闭文件夹
-Command + \  编辑器分屏
-Command + 1 切换到第一分组
-Command + 2 切换到第二分组
-Command + 3  切换到第三分组
-Command + K  Command + Left 切换到上一分组
-Command + K  Command + Right 切换到下一分组
-Command + K  Command + Shift + Left 左移编辑器
-Command +  K Command + Shift + Right 右移编辑器
-Command +  K Left 激活左侧编辑组
-Command +  K Right 激活右侧编辑组</p>
-<h4 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h4><p>Command + N 新建文件
-Command + O 打开文件
-Command + S 保存文件
-Command + Shift + S 另存为
-Command + Option + S 全部保存
-Command + W 关闭
-Command + K Command + W 全部关闭
-Command + Shift + T 重新打开被关闭的编辑器
-Command + K  Enter 保持打开
-Ctrl + Tab 打开下一个
-Ctrl + Shift + Tab 打开上一个
-Command + K  P 复制当前文件路径
-Command + K  R 在资源管理器中查看当前文件
-Command + K  O 新窗口打开当前文件</p>
-<h4 id="显示"><a href="#显示" class="headerlink" title="显示"></a>显示</h4><p>Command + Ctrl + F 全屏、退出全屏
-Command + Option + 1 切换编辑器分屏方式（横、竖）
-Command + + 放大
-Command + - 缩小
-Command + B 显示、隐藏侧边栏
-Command + Shift + E 显示资源管理器 或 切换焦点
-Command + Shift + F 显示搜索框
-Ctrl + Shift + G 显示Git面板
-Command + Shift + D 显示调试面板
-Command + Shift + X 显示插件面板
-Command + Shift + H 全局搜索替换
-Command + Shift + J 显示、隐藏高级搜索
-Command + Shift + C 打开新终端
-Command + Shift + U 显示输出面板
-Command + Shift + V Markdown预览窗口
-Command + K V 分屏显示 Markdown预览窗口</p>
-<h4 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h4><p>F9 设置 或 取消断点
-F5 开始 或 继续
-F11 进入
-Shift + F11 跳出
-F10 跳过
-Command + K Command + I 显示悬停信息</p>
-<h4 id="集成终端"><a href="#集成终端" class="headerlink" title="集成终端"></a>集成终端</h4><p>Ctrl + <code>显示终端
-Ctrl + Shift +</code> 新建终端
-Command + Up 向上滚动
-Command + Down 向下滚动
-PgUp 向上翻页
-PgDown 向下翻页
-Command + Home 滚动到顶部
-Command + End 滚动到底部</p>
-<h4 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h4><h5 id="python格式化代码"><a href="#python格式化代码" class="headerlink" title="python格式化代码"></a>python格式化代码</h5><p><code>pip install yapf</code>安装yapf,安装yapf成功后，打开VScode，文件-&gt;首选项-&gt;用户设置，在settings.json文件中输入”python.formatting.provider”: “yapf”
-Alt+Shift+F即可格式化代码</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;AndroidStudio-IntelliJ-快捷键&quot;&gt;&lt;a href=&quot;#AndroidStudio-IntelliJ-快捷键&quot; class=&quot;headerlink&quot; title=&quot;AndroidStudio/IntelliJ 快捷键&quot;&gt;&lt;/a&gt;AndroidS
-    
-    </summary>
-    
-      <category term="env" scheme="http://wodekouwei.com/categories/env/"/>
-    
-    
-      <category term="Mac" scheme="http://wodekouwei.com/tags/Mac/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Android权限适配</title>
-    <link href="http://wodekouwei.com/2018/12/06/tips-android-permission/"/>
-    <id>http://wodekouwei.com/2018/12/06/tips-android-permission/</id>
-    <published>2018-12-06T14:39:16.000Z</published>
-    <updated>2018-12-17T03:38:48.908Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="动态权限"><a href="#动态权限" class="headerlink" title="动态权限"></a>动态权限</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>从Android6.0版本开始google将权限分为普通权限和特殊权限，app必须在AndroidManifest.xml添加引用权限的语句。 在安装apk时安卓会将普通权限授予该app，但特殊权限需要运行时申请。</p>
-<p>安卓按照权限类别分为权限组和权限， 每个权限都隶属于一个权限组。 当安卓系统授权一个权限时， 那么该权限所属权限组的权限都会自动被授权。</p>
-<p>目前如果app的targetSdkVersion等于21，即按照Android5.0版本特性运行。 技术层面与市场上主流app差距较大， 功能层面也有一些功能可能失效（例如在一些机型上无法打电话、读写SD卡）， 根本原因是没适配动态权限。</p>
-<h4 id="如何申请动态权限"><a href="#如何申请动态权限" class="headerlink" title="如何申请动态权限"></a>如何申请动态权限</h4><p>判断当前手机系统是Android6.0及以上版本， 在Activity/Fragment里申请权限并处理权限结果回调。 这里要说明一下：Fragment是通过Activity申请权限的， 且权限回调onRequestPermissionResult也是Activity调用的Fragment该方法.
-<img src="http://images.wodekouwei.com/technology/android-permission1.png" alt="image">
-上图是权限申请流程图， 我们看到的权限弹窗对应/packages/apps/PackageInstaller/src/com/android/packageinstaller/permission/ui/GrantPermisssionsActivity.java， 点击“同意”或“不同意”通过PackageManager、AppOpsManager将权限操作更新到PackageManagerService和AppOpsService中。</p>
-<p>调用Activity的申请权限方法其实是打开一个系统的Activity，操作结果通过setResult返回过来。</p>
-<p>能不能直接调用PackageManager/AppOpsManagerd的方法授权给自己？ 显然是不行的， PackageManagerService只允许在AndroidManifest.xml配置coreApp=”true”的应用修改权限，而普通app无法设置coreApp属性。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public int getPermissionFlags(String name, String packageName, int userId) &#123;</div><div class="line">      if (!sUserManager.exists(userId)) &#123;</div><div class="line">          return 0;</div><div class="line">      &#125;</div><div class="line">      //普通app调用该方法会抛异常</div><div class="line">      enforceGrantRevokeRuntimePermissionPermissions(&quot;getPermissionFlags&quot;);</div><div class="line">      enforceCrossUserPermission(Binder.getCallingUid(), userId, true, false,</div><div class="line">              &quot;getPermissionFlags&quot;);</div><div class="line">   ...</div><div class="line">&#125;</div><div class="line"> private void enforceGrantRevokeRuntimePermissionPermissions(String message) &#123;</div><div class="line">      if (mContext.checkCallingOrSelfPermission(Manifest.permission.GRANT_RUNTIME_PERMISSIONS)</div><div class="line">              != PackageManager.PERMISSION_GRANTED</div><div class="line">          &amp;&amp; mContext.checkCallingOrSelfPermission(Manifest.permission.REVOKE_RUNTIME_PERMISSIONS)</div><div class="line">              != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">          throw new SecurityException(message + &quot; requires &quot;</div><div class="line">                  + Manifest.permission.GRANT_RUNTIME_PERMISSIONS + &quot; or &quot;</div><div class="line">                  + Manifest.permission.REVOKE_RUNTIME_PERMISSIONS);</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<h4 id="如何判断权限"><a href="#如何判断权限" class="headerlink" title="如何判断权限"></a>如何判断权限</h4><p><img src="http:///images.wodekouwei.com/technology/android-permission2.png" alt="image">
-如上图所示，判断是否有权限最终会执行到PackagerManagerService的checkUidPermission函数中。</p>
-<h4 id="适配动态权限的方式"><a href="#适配动态权限的方式" class="headerlink" title="适配动态权限的方式"></a>适配动态权限的方式</h4><ol>
-<li>基本用法：在Activity、Fragment派生类中添加权限申请和结果回调。 坑：1、在插件中调用View的getContext返回值是PluginContext， 无法通过类型强转调用其附着Activity/Fragment的方法。2、如果界面层级很深，需要逐层添加回调参数。</li>
-<li>AOP方式，推荐<a href="https://github.com/permissions-dispatcher/PermissionsDispatcher，" target="_blank" rel="external">https://github.com/permissions-dispatcher/PermissionsDispatcher，</a> 在需要权限的函数上添加注解并在构建阶段注入代码。缺点是app插件中有多View控件如BaseCard无法使用。</li>
-<li>第三方库<a href="https://github.com/yanzhenjie/AndPermission，" target="_blank" rel="external">https://github.com/yanzhenjie/AndPermission，</a> 原理：新启动个透明Activity申请权限并保存回调函数到静态变量里，用户操作权限提示框结束后通过回调执行成功、失败逻辑。</li>
-</ol>
-<p>示例代码： 为了避免适配动态权限逻辑产生风险， 可以新增if代码块做动态权限逻辑， else分支仍然是现有逻辑。 各业务线可能无法在同一个版本上搞定， 可以按照这种写法先后完成动态权限适配工作，待所有业务线都完成后调整宿主targetSdkVersion到26。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">if (getBaseContext().getApplicationInfo().targetSdkVersion &gt;= Build.VERSION_CODES.M</div><div class="line">    &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) &#123;</div><div class="line">    AndPermission.with(this)</div><div class="line">        .runtime()</div><div class="line">        .permission(permissions)</div><div class="line">        // .rationale(new RuntimeRationale())</div><div class="line">        .onGranted(new Action&lt;List&lt;String&gt;&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onAction(List&lt;String&gt; permissions) &#123;</div><div class="line">                toast(R.string.successfully);</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .onDenied(new Action&lt;List&lt;String&gt;&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public void onAction(@NonNull List&lt;String&gt; permissions) &#123;</div><div class="line">                toast(R.string.failure);</div><div class="line">                if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this,</div><div class="line">                    permissions)) &#123;</div><div class="line">                    showSettingDialog(MainActivity.this, permissions);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        .start();</div><div class="line">&#125; else &#123;</div><div class="line">    //默认有权限， 用现在的业务逻辑</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ol>
-<li>适配小米机型动态权限；</li>
-<li>Android7.0版本开始使用FileProvider， 需要适配拍照功能；</li>
-<li>适配DownloadManager安装apk；</li>
-<li>用户禁用权限且不再提醒， 需要有个提示框提示用户去应用详情界面里放开权限， 弹窗建议使用CustomDialog(各业务UI样式统一)。</li>
-<li>适配WindowManager悬浮窗；</li>
-</ol>
-<h4 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h4><p><a href="https://developer.android.google.cn/training/permissions/requesting" target="_blank" rel="external">官方文档</a>
-<a href="https://github.com/yanzhenjie/AndPermission" target="_blank" rel="external">AndPermission</a></p>
-<h3 id="AndPermission库解决方案"><a href="#AndPermission库解决方案" class="headerlink" title="AndPermission库解决方案"></a>AndPermission库解决方案</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 权限申请其实是startActivityForResult的过程， 弹出的权限提示框是安卓系统应用的GrantPermisssionsActivity.java</div><div class="line"> * 即：申请权限是阻塞的， 在申请权限时当前界面(activity)被GrantPermisssionsActivity盖住了。</div><div class="line"> * 为了实现回调有2种方式：</div><div class="line"> * 1、类似于Glide的做法，在当前activity里添加个空fragment申请权限； 优点是无资源文件，可编译成jar。</div><div class="line"> * 2、新启动个无界面activity申请权限。优点是不限制context类型，缺点是要编译成aar，占位编译只能引用jar，</div><div class="line"> * 打开activity时要依赖链家routerbus。</div><div class="line"> *</div><div class="line"> * 参考新房陈少的实现方式修改，即添加fragment申请权限，返回结果后移除fragment</div><div class="line"> * 没处理8.0的2个新增权限，貌似贝壳没用到</div><div class="line"> *</div><div class="line"> * 备注：</div><div class="line"> *   只是为了集中管理申请权限逻辑，代码要尽量简单好维护。</div><div class="line"> * 1、没有判断入参权限是否在AndroidManifest.xml中声明，感觉没啥必要</div><div class="line"> * 2、申请权限时没有判断是否已经有这个权限了，考虑实际业务场景没添加。</div><div class="line"> * 3、申请&quot;禁用且不再提醒&quot;的权限时会执行返回deny， 不会弹权限申请框。这时需要引导用户去系统设置放开权限。</div><div class="line"> *</div><div class="line"> * 用法：</div><div class="line"> *  LjPermissionUtil.with(MainActivity.this)</div><div class="line"> *             .requestPermissions(Manifest.permission.CAMERA)</div><div class="line"> *             .onCallBack(new LjPermissionUtil.PermissionCallBack() &#123;</div><div class="line"> *               @Override public void onPermissionResult(List&lt;String&gt; granted, List&lt;String&gt; denied) &#123;</div><div class="line"> *                 Log.d(&quot;brycegao&quot;, &quot;onPermissionResult&quot;);</div><div class="line"> *                 if (denied != null &amp;&amp; denied.size() &gt; 0) &#123;</div><div class="line"> *                   boolean isAlwayDeny = LjPermissionUtil.isAlwaysDeniedPermission(MainActivity.this,</div><div class="line"> *                       denied.get(0));</div><div class="line"> *                   //这里要弹出个自定义提示框，引用用户去系统设置里放开权限</div><div class="line"> *                   Log.d(&quot;brycegao&quot;, &quot;&quot;);</div><div class="line"> *                 &#125;</div><div class="line"> *               &#125;</div><div class="line"> *             &#125;).begin();</div><div class="line"> *    集成方式</div><div class="line"> *    compileOnly(&quot;com.lianjia.common.android:lib_permission:1.0.0-SNAPSHOT&quot;) &#123;</div><div class="line"> *     changing = true</div><div class="line"> *   &#125;</div><div class="line"> */</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;动态权限&quot;&gt;&lt;a href=&quot;#动态权限&quot; class=&quot;headerlink&quot; title=&quot;动态权限&quot;&gt;&lt;/a&gt;动态权限&lt;/h3&gt;&lt;h4 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h
-    
-    </summary>
-    
-      <category term="Android" scheme="http://wodekouwei.com/categories/Android/"/>
-    
-    
-      <category term="Android" scheme="http://wodekouwei.com/tags/Android/"/>
-    
-      <category term="tips" scheme="http://wodekouwei.com/tags/tips/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java并发编程：可重入锁ReentrantLock</title>
-    <link href="http://wodekouwei.com/2018/11/13/concurrent-java-reentrantlock/"/>
-    <id>http://wodekouwei.com/2018/11/13/concurrent-java-reentrantlock/</id>
-    <published>2018-11-13T11:21:54.000Z</published>
-    <updated>2018-11-16T04:14:28.744Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://www.ibm.com/developerworks/cn/java/j-jtp10264/index.html" target="_blank" rel="external">JDK 5.0 中更灵活、更具可伸缩性的锁定机制</a>
-<a href="https://www.cnblogs.com/cisol/p/6673190.html" target="_blank" rel="external">用ReentrantLock和Condition实现线程间通信</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;参考&quot;&gt;&lt;a href=&quot;#参考&quot; class=&quot;headerlink&quot; title=&quot;参考&quot;&gt;&lt;/a&gt;参考&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/java/j-jtp10264/index.h
-    
-    </summary>
-    
-      <category term="并发编程" scheme="http://wodekouwei.com/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Java" scheme="http://wodekouwei.com/tags/Java/"/>
-    
-      <category term="concurrent" scheme="http://wodekouwei.com/tags/concurrent/"/>
-    
-      <category term="并发" scheme="http://wodekouwei.com/tags/%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   

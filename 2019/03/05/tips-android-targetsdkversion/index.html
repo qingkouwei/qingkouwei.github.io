@@ -1,0 +1,1227 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,tips," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。  对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应">
+<meta name="keywords" content="Android,tips">
+<meta property="og:type" content="article">
+<meta property="og:title" content="应用targetSdkVersion升级指导">
+<meta property="og:url" content="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。  对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-targetsdkversion-201935161819.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-targetsdkversion-201935184537.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-targetsdkversion-201935181033.jpg">
+<meta property="og:updated_time" content="2019-03-05T11:25:01.232Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="应用targetSdkVersion升级指导">
+<meta name="twitter:description" content="应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。  对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应">
+<meta name="twitter:image" content="http://images.wodekouwei.com/tips-android-targetsdkversion-201935161819.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/"/>
+
+
+
+
+
+  <title> 应用targetSdkVersion升级指导 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                应用targetSdkVersion升级指导
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T16:00:20+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/03/05/tips-android-targetsdkversion/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>应电信终端产业协会（TAF）发布的《移动应用软件高 API 等级预置与分发自律公约》（以下简称《公约》）要求：截止到2019年5月1日所有新发布的应用 API 必须为26或更高，2019年8月1日现有应用 API 必须升级为26或更高。《公约》发布至今得到了国内主流互联网及终端制造企业的积极响应。</p>
+<ul>
+<li>对应用开发者来说，不按时更新Target SDK版本的应用，应用市场将采取强制下架的策略，已上架应用将无法更新。</li>
+<li>对用户来说，未适配Android M或更高版本的应用安装在Android M或更高版本时，会默认授予申请的所有权限，且应用运行时无弹框授权提示。其中包括通讯录、电话、短信、通讯记录、位置、麦克风、相机等危险权限，导致用户在不知情的情况下泄露隐私信息，对用户个人信息安全造成危害。</li>
+</ul>
+<p><strong>应用targetSdkVersion升级流程</strong>
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935161819.jpg" alt="tips-android-targetsdkversion-201935161819"></p>
+<h2 id="targetSdkVersion-相关变更介绍"><a href="#targetSdkVersion-相关变更介绍" class="headerlink" title="targetSdkVersion 相关变更介绍"></a>targetSdkVersion 相关变更介绍</h2><h3 id="Android5-x（22-19）及以下版本变更"><a href="#Android5-x（22-19）及以下版本变更" class="headerlink" title="Android5.x（22-19）及以下版本变更"></a>Android5.x（22-19）及以下版本变更</h3><p><img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935184537.jpg" alt="tips-android-targetsdkversion-201935184537"></p>
+<h3 id="Android6-0变更"><a href="#Android6-0变更" class="headerlink" title="Android6.0变更"></a>Android6.0变更</h3><h4 id="（一）相关变更"><a href="#（一）相关变更" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><p><strong>运行时权限</strong></p>
+<p>此版本引入了一种新的权限模式，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，为安装的应用分别授予或撤销权限，同时为开发者精简了安装和自动更新过程。</p>
+<p>对于以 Android 6.0（API 级别 23）或更高版本为目标平台的应用，请务必在运行时检查和请求权限。确定应用是否已被授予权限，可调用新增的 checkSelfPermission() 方法。请求权限，可调用新增的 requestPermissions() 方法。具体参考：</p>
+<p><a href="https://developer.android.google.cn/training/permissions/requesting" target="_blank" rel="external">https://developer.android.google.cn/training/permissions/requesting</a></p>
+<p>####（二）适配指导</p>
+<p>• 解释需要权限的原因：系统在开发者调用 requestPermissions() 时显示的权限对话框将说明应用需要的权限，但不会解释为何需要这些权限。某些情况下，用户可能会感到困惑，因此，建议在调用 requestPermissions() 之前向用户解释应用需要相应权限的原因。</p>
+<ul>
+<li>仅申请应用真正需要的权限</li>
+<li>如果应用在启动之后一次要求用户提供多项权限，用户可能会感到无所适从并因此退出应用 。建议开发者应根据需要请求权限，对于某一些权限应用可以在真正需要使用的时候再尝试申请用户动态授权。</li>
+</ul>
+<h3 id="Android7-0"><a href="#Android7-0" class="headerlink" title="Android7.0"></a>Android7.0</h3><h4 id="（一）相关变更-1"><a href="#（一）相关变更-1" class="headerlink" title="（一）相关变更"></a>（一）相关变更</h4><h5 id="1-系统禁止链接到非-NDK-库"><a href="#1-系统禁止链接到非-NDK-库" class="headerlink" title="1.系统禁止链接到非 NDK 库"></a>1.系统禁止链接到非 NDK 库</h5><p>从 Android 7.0 开始，系统将阻止应用动态链接非公开 NDK 库，原因为NDK 库可能会导致应用崩溃，此行为变更主要目的在为跨平台更新和不同设备提供统一的应用体验。即使应用中的代码不会链接私有库，但第三方静态库可能会进行链接，因此建议所有开发者都需进行相应检查，确保应用不会在运行 Android 7.0 的设备上崩溃。如果应用使用的是原生代码，则只能使用公开 NDK API。（<a href="https://developer.android.com/ndk/guides/stable_apis）" target="_blank" rel="external">https://developer.android.com/ndk/guides/stable_apis）</a></p>
+<h5 id="2-低电耗模式DOZE（系统状态）"><a href="#2-低电耗模式DOZE（系统状态）" class="headerlink" title="2.低电耗模式DOZE（系统状态）"></a>2.低电耗模式DOZE（系统状态）</h5><p>进入条件：灭屏、未充电、静止持续1小时
+退出条件：亮屏或移动或充电</p>
+<p>限制资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停应用的Sync任务</li>
+<li>暂停应用的JobScheduler任务</li>
+<li>忽略应用的wakelocks</li>
+<li>标准Alarm推迟到维护窗口</li>
+<li>不执行wifi扫描</li>
+</ul>
+<h5 id="3-低电耗模式Lite-Idle（系统状态）"><a href="#3-低电耗模式Lite-Idle（系统状态）" class="headerlink" title="3.低电耗模式Lite Idle（系统状态）"></a>3.低电耗模式Lite Idle（系统状态）</h5><p>进入条件：灭屏、未充电持续5分钟(Android P调整为3分钟）
+退出条件：亮屏或充电
+限制资源</p>
+<ul>
+<li>限制应用访问网络。</li>
+<li>暂停应用运行Sync任务 。</li>
+<li>暂停应用运行JobScheduler任务。</li>
+</ul>
+<h5 id="4-AppStandby模式（应用状态）"><a href="#4-AppStandby模式（应用状态）" class="headerlink" title="4.AppStandby模式（应用状态）"></a>4.AppStandby模式（应用状态）</h5><p>进入AppIdle条件：应用后台空闲总时间&gt;48小时且亮屏后台空闲时间 &gt; 12小时
+排除&amp;退出条件：前台应用、有前台服务的应用、通知栏或锁屏通知消息的应用或进行充电
+不限制的应用：系统应用UID&lt;10000的，Persist常驻应用，电池优化白名单，系统关联的其他应用
+限制的资源</p>
+<ul>
+<li>限制应用访问网络</li>
+<li>暂停执行应用的Sync任务</li>
+<li>暂停执行应用的JobScheduler任务</li>
+</ul>
+<h5 id="5-App-Standby-Bucket-应用待机分组模式-Android-P特性）"><a href="#5-App-Standby-Bucket-应用待机分组模式-Android-P特性）" class="headerlink" title="5.App Standby Bucket 应用待机分组模式( Android P特性）"></a>5.App Standby Bucket 应用待机分组模式( Android P特性）</h5><p>应用待机分组模式是在Doze模式未生效时（亮屏或刚刚灭屏时），对运行在后台的用户不可感知应用的耗电管控扩展。</p>
+<h4 id="（二）适配指导"><a href="#（二）适配指导" class="headerlink" title="（二）适配指导"></a>（二）适配指导</h4><p>低电耗模式和应用待机模式适配指导如下：</p>
+<p>• 前台服务</p>
+<p>应用需要在后台访问网络或者使用CPU时可以通过此方式。</p>
+<p>• Doze白名单</p>
+<p>查询应用是不是再doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);</div><div class="line">boolean hasIgnored = powerManager.isIgnoringBatteryOptimizations(activity.getPackageName());</div></pre></td></tr></table></figure></p>
+<p>向用户申请授权添加doze白名单:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);</div><div class="line">intent.setData(Uri.parse(&quot;package:&quot;+activity.getPackageName()));</div><div class="line">startActivity(intent);</div></pre></td></tr></table></figure></p>
+<h3 id="Android8-0-变更"><a href="#Android8-0-变更" class="headerlink" title="Android8.0 变更"></a>Android8.0 变更</h3><h4 id="1-后台服务限制"><a href="#1-后台服务限制" class="headerlink" title="1.后台服务限制"></a>1.后台服务限制</h4><h5 id="①哪些应用会受到后台服务限制？"><a href="#①哪些应用会受到后台服务限制？" class="headerlink" title="①哪些应用会受到后台服务限制？"></a>①哪些应用会受到后台服务限制？</h5><ul>
+<li>TargetSDK&gt;=26的应用</li>
+<li>TargetSDK&lt;26且被用户主动设置为限制后台活动的应用（华为EMUI8.x未提供配置）</li>
+</ul>
+<p>注意：Doze 白名单中的应用不受限制（用户可以设置，手机管家配置有默认值白名单）</p>
+<h5 id="②前台如何定义？"><a href="#②前台如何定义？" class="headerlink" title="②前台如何定义？"></a>②前台如何定义？</h5><ul>
+<li>前台有可见 Activity</li>
+<li>前台服务可以后台播放</li>
+<li>绑定服务的情况<h5 id="③后台服务限制，限制了哪些行为？"><a href="#③后台服务限制，限制了哪些行为？" class="headerlink" title="③后台服务限制，限制了哪些行为？"></a>③后台服务限制，限制了哪些行为？</h5></li>
+<li>应用进入 uidldle 后，会被调用 Service.stopself()</li>
+<li>应用进入 uidldle 后，不允许通过 startService启动服务</li>
+<li>应用进程仍然存在，JobScheduler、Alarm、广播等均能触发</li>
+<li>广播接收线程处理短暂业务，无法拉起后台服务</li>
+<li>非安卓组件线程 CPU 超标时，谷歌原生机制会强制kill进程<h5 id="④临时白名单机制"><a href="#④临时白名单机制" class="headerlink" title="④临时白名单机制"></a>④临时白名单机制</h5>系统调用应用时，少量场景会将应用添加到临时白名单（有效时间30秒~300秒）：</li>
+<li>处理高优先级 FCM 消息</li>
+<li>接收短信彩信</li>
+<li>用户点击通知栏，执行 PendingIntent<h5 id="⑤用户设置限制后台活动之后的影响（Android-P优化）"><a href="#⑤用户设置限制后台活动之后的影响（Android-P优化）" class="headerlink" title="⑤用户设置限制后台活动之后的影响（Android P优化）"></a>⑤用户设置限制后台活动之后的影响（Android P优化）</h5></li>
+<li>应用退后台，1分钟就会被停止 Service（包括正在执行的前台任务）</li>
+<li>限制访问网络</li>
+<li>限制 Alarm 触发</li>
+<li>限制 JobScheduler 执行</li>
+</ul>
+<h4 id="2-广播限制"><a href="#2-广播限制" class="headerlink" title="2.广播限制"></a>2.广播限制</h4><p>Android 8.0 的应用无法继续在其清单中为隐式广播注册广播接收器,但也存在例外情况：</p>
+<ul>
+<li>应用可以继续在清单中注册显式广播</li>
+<li>应用可以在运行时使用 Context.registerReceiver() 为任意广播（不管是隐式还是显式）注 册接收器</li>
+<li>需要签名权限的广播不受此限制所限，因为这些广播只会发送到使用相同证书签名的应用 ，而不会发送至设备上的所有应用</li>
+<li>白名单豁免隐式广播的列表：<a href="https://developer.android.com/guide/components/broadcast-exceptions" target="_blank" rel="external">https://developer.android.com/guide/components/broadcast-exceptions</a></li>
+</ul>
+<p>后台执行限制的适配建议</p>
+<ul>
+<li>使用 JobScheduler 代替</li>
+<li>增加前台服务</li>
+<li>加 Doze 白名单（不推荐）</li>
+</ul>
+<h4 id="3-最大屏幕纵横比"><a href="#3-最大屏幕纵横比" class="headerlink" title="3.最大屏幕纵横比"></a>3.最大屏幕纵横比</h4><p>以 Android 7.1（API 级别 25）或更低版本为目标平台中应用默认的最大屏幕纵横比为1.86。针对 Android 8.0 或更高版本的应用没有默认的最大纵横比，如需设置请在应用 androidmanifest 文件定义 maxAspectRatio 属性（注意：如果应用没有显示申明不支持 resizeableActivity，系统将会忽略应用设置的 maxAspectRatio属性）</p>
+<h4 id="4-其他变更"><a href="#4-其他变更" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提醒窗口</td>
+<td>使用SYSTEM_ALERT_WINDOW权限的应用无法再使用以下窗口类型来在其他应用和系统窗口上方显示提醒窗口:TYPE_PHONE,TYPE_PRIORITY_PHONE,TYPE_SYSTEM_ALERT,TYPE_SYSTEM_OVERLAY,TYPE_SYSTEM_ERROR,应用必须使用名为TYPE_APPLICATION_OVERLAY的新窗口类型</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>在Android8.0之前,如果应用在运行时请求权限并且被授予该权限,系统会错误地将属于同一权限组并且在清单中注册的其他权限也一起授予应用.对于针对8.0的应用,此行为已被纠正.系统只会授予应用明确请求的权限.然而,一旦用户为应用授予某个权限,则所有后续对该权限组中权限的请求都被自动批准.建议应用在使用所有的敏感权限之前,都先判断一下权限是否已经被授予,如果没有授予需要申请动态权限.</td>
+</tr>
+<tr>
+<td>Linker</td>
+<td>O版本在linker中新增加检查就是在load之前检测一下需要加载的section的权限,被加载的段不允许同事具有E(可执行)和W(可写)权限.如果有这样的段,则linker报错</td>
+</tr>
+<tr>
+<td>Build.SERIAL弃用</td>
+<td>需要知道硬件序列号的应用应改为使用新的Build.getSerial()函数,该函数要求具有READ_PHONE_STATE权限</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Android9-0-变更"><a href="#Android9-0-变更" class="headerlink" title="Android9.0 变更"></a>Android9.0 变更</h3><h4 id="1-非SDK管控"><a href="#1-非SDK管控" class="headerlink" title="1.非SDK管控"></a>1.非SDK管控</h4><table>
+<thead>
+<tr>
+<th>名单类型</th>
+<th>影响</th>
+<th>名单说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浅灰名单</td>
+<td>targetSDK&gt;=P时,警告</td>
+<td>已有应用在使用非SDK接口,仍然可以继续使用</td>
+</tr>
+<tr>
+<td>深灰名单</td>
+<td>targetSDK<p时,警告;>=时,不允许调用</p时,警告;></td>
+<td>应用可能还在使用</td>
+</tr>
+<tr>
+<td>黑名单</td>
+<td>所有三方应用不允许调用</td>
+<td>灰名单(深灰+浅灰)之外的其他所有非SDK接口都会被添加到黑名单,应用发现有使用黑名单的接口需要马上整改,或者反馈给谷歌申请加灰名单</td>
+</tr>
+</tbody>
+</table>
+<p>使用谷歌提供的非 SDK 扫描工具查看应用使用的深灰名单和黑名单非 SDK 接口： <a href="https://android.googlesource.com/platform/prebuilts/runtime/+/" target="_blank" rel="external">https://android.googlesource.com/platform/prebuilts/runtime/+/</a> master/appcompat/</p>
+<h4 id="2-Apache-HTTP-客户端弃用"><a href="#2-Apache-HTTP-客户端弃用" class="headerlink" title="2. Apache HTTP 客户端弃用"></a>2. Apache HTTP 客户端弃用</h4><p>默认情况下该内容库已从 bootclasspath 中移除且不可用于应用，应用不能使用系统的 classloader 加载 org.apache.http.* 库，否则会抛 NoClassDefFoundError。</p>
+<p>适配建议</p>
+<ul>
+<li>方法一：如果要继续使用 Apache HTTP 客户端，以 Android 9.0及更高版本为目标的应用可以向其 AndroidManifest.xml 添加以下内容：<code>&lt;uses-library android:name=&quot;org.apache.http.legacy&quot; android:required=&quot;false&quot;/&gt;</code></li>
+<li>方法二：如果必须要继续使用 Apache HTTP 客户端，开发者可以将 org.apache.http.legacy库打包进自己的apk。</li>
+<li>推荐方法：使用 HttpURLConnection 类替代 apache-http</li>
+</ul>
+<h4 id="3-内联方法不允许跨dex"><a href="#3-内联方法不允许跨dex" class="headerlink" title="3.内联方法不允许跨dex"></a>3.内联方法不允许跨dex</h4><p>Google 在 Android P 新增检测：如果调用某个 inline 方法的类与 inline 方法所在的类由不同的 classloader 加载，就会主动发起 abort（inline不允许跨dex文件）导致应用 crash。
+<img src="http://images.wodekouwei.com/tips-android-targetsdkversion-201935181033.jpg" alt="tips-android-targetsdkversion-201935181033"></p>
+<h5 id="兼容性影响"><a href="#兼容性影响" class="headerlink" title="兼容性影响"></a>兼容性影响</h5><p>对使用插件和热修复的应用有很大影响，需要重点测试。</p>
+<h5 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h5><ul>
+<li>启动应用，构造热修复场景，在 app 侧触发热修复</li>
+<li><code>adb shell cmd package compile -m speed -f my-package 应用包名 (inline编译)</code></li>
+<li>重启应用，检查是否会出现闪退问题</li>
+</ul>
+<h5 id="适配建议"><a href="#适配建议" class="headerlink" title="适配建议"></a>适配建议</h5><ul>
+<li>尽量避免使用不同的 classloader 加载相关的类。</li>
+<li>如果一定要这样做的话，需要避免内联，比如在函数里面加 try catch， 这样 compiler就不会将这个函数 inline。</li>
+</ul>
+<h4 id="4-其他变更-1"><a href="#4-其他变更-1" class="headerlink" title="4.其他变更"></a>4.其他变更</h4><table>
+<thead>
+<tr>
+<th>变更</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前台服务</td>
+<td>使用前台服务的应用必须请求FOREGROUND_SERVICE权限.这是普通权限,因此,系统会自动为请求权限的应用授予此权限.如果针对Android9或更高版本的应用尝试创建一个前台服务且未请求FOREGROUND_SERVICE,则系统会引发SecurityException.</td>
+</tr>
+<tr>
+<td>DNS隐私</td>
+<td>应用应采用私有DNS API.具体而言,当系统解析程序正在执行DNS-over-TLS时,应用应确保任何内置DNS客户端均使用加密的DNS查找和系统相同的主机名,或停用它而改用系统解析程序</td>
+</tr>
+<tr>
+<td>默认情况下启用网络传输层安全协议(TLS)</td>
+<td>默认情况下isCleartextTrafficPermitted()函数返回false.如果您的应用需要为特定域名启动明文,您必须在应用的网络安全性配置中针对这些域名将cleartextTrafficPermitted显式设置为true</td>
+</tr>
+<tr>
+<td>webview数据目录不允许共享</td>
+<td>应用无法再让多个进程公用同一个WebView数据目录.如果应用中的多个进程需要访问同一网络数据,您需要自行在这些进程之间复制数据.例如,您可以调用getCookie()和setCooki(),在不同进程之间手动传输Cookie数据</td>
+</tr>
+<tr>
+<td>以应用为单位的SELinux域名</td>
+<td>应用的私有数据只能由该应用访问.要与其他应用共享文件,请使用contentprovider</td>
+</tr>
+</tbody>
+</table>
+<p>其他的变更和非 TargetSdkVersion 相关的变更以及新特性，可以在谷歌开发者网站查阅：<a href="https://developer.android.google.cn/about/versions/oreo/" target="_blank" rel="external">https://developer.android.google.cn/about/versions/oreo/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/05/tips-android-system-load/" rel="next" title="Android启动过程深入解析">
+                <i class="fa fa-chevron-left"></i> Android启动过程深入解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">150</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#targetSdkVersion-相关变更介绍"><span class="nav-number">1.</span> <span class="nav-text">targetSdkVersion 相关变更介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Android5-x（22-19）及以下版本变更"><span class="nav-number">1.1.</span> <span class="nav-text">Android5.x（22-19）及以下版本变更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android6-0变更"><span class="nav-number">1.2.</span> <span class="nav-text">Android6.0变更</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（一）相关变更"><span class="nav-number">1.2.1.</span> <span class="nav-text">（一）相关变更</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android7-0"><span class="nav-number">1.3.</span> <span class="nav-text">Android7.0</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（一）相关变更-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">（一）相关变更</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-系统禁止链接到非-NDK-库"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">1.系统禁止链接到非 NDK 库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-低电耗模式DOZE（系统状态）"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">2.低电耗模式DOZE（系统状态）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-低电耗模式Lite-Idle（系统状态）"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">3.低电耗模式Lite Idle（系统状态）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-AppStandby模式（应用状态）"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">4.AppStandby模式（应用状态）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-App-Standby-Bucket-应用待机分组模式-Android-P特性）"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">5.App Standby Bucket 应用待机分组模式( Android P特性）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（二）适配指导"><span class="nav-number">1.3.2.</span> <span class="nav-text">（二）适配指导</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android8-0-变更"><span class="nav-number">1.4.</span> <span class="nav-text">Android8.0 变更</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-后台服务限制"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.后台服务限制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#①哪些应用会受到后台服务限制？"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">①哪些应用会受到后台服务限制？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#②前台如何定义？"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">②前台如何定义？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#③后台服务限制，限制了哪些行为？"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">③后台服务限制，限制了哪些行为？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#④临时白名单机制"><span class="nav-number">1.4.1.4.</span> <span class="nav-text">④临时白名单机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#⑤用户设置限制后台活动之后的影响（Android-P优化）"><span class="nav-number">1.4.1.5.</span> <span class="nav-text">⑤用户设置限制后台活动之后的影响（Android P优化）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-广播限制"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.广播限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-最大屏幕纵横比"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.最大屏幕纵横比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-其他变更"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.其他变更</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android9-0-变更"><span class="nav-number">1.5.</span> <span class="nav-text">Android9.0 变更</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-非SDK管控"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.非SDK管控</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Apache-HTTP-客户端弃用"><span class="nav-number">1.5.2.</span> <span class="nav-text">2. Apache HTTP 客户端弃用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-内联方法不允许跨dex"><span class="nav-number">1.5.3.</span> <span class="nav-text">3.内联方法不允许跨dex</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#兼容性影响"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">兼容性影响</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#测试方法"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">测试方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#适配建议"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">适配建议</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-其他变更-1"><span class="nav-number">1.5.4.</span> <span class="nav-text">4.其他变更</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>
