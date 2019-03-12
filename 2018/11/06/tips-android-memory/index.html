@@ -89,18 +89,18 @@
 
 
 
-<meta name="description" content="dumpsys meminfoadb shell dumpsys meminfo -a &amp;lt;process id&amp;gt;/&amp;lt;process name&amp;gt;来查看一个进程的memory。截图如下：  Naitve Heap Size: 从mallinfo usmblks获得，代表最大总共分配空间 Native Heap Alloc: 从mallinfo uorblks获得，总共分配空间">
+<meta name="description" content="查看内存方式Running services通过手机上Running services的Activity查看，可以通过Setting-&amp;gt;Applications-&amp;gt;Running services进。 PS.其实现在有很多查看内存管理的第三方应用了，例如手机管家 用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outI">
 <meta name="keywords" content="Android,interview,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android内存">
 <meta property="og:url" content="http://wodekouwei.com/2018/11/06/tips-android-memory/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="dumpsys meminfoadb shell dumpsys meminfo -a &amp;lt;process id&amp;gt;/&amp;lt;process name&amp;gt;来查看一个进程的memory。截图如下：  Naitve Heap Size: 从mallinfo usmblks获得，代表最大总共分配空间 Native Heap Alloc: 从mallinfo uorblks获得，总共分配空间">
+<meta property="og:description" content="查看内存方式Running services通过手机上Running services的Activity查看，可以通过Setting-&amp;gt;Applications-&amp;gt;Running services进。 PS.其实现在有很多查看内存管理的第三方应用了，例如手机管家 用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outI">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/memory1.png">
-<meta property="og:updated_time" content="2018-11-10T12:59:32.087Z">
+<meta property="og:updated_time" content="2019-03-07T09:19:26.297Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android内存">
-<meta name="twitter:description" content="dumpsys meminfoadb shell dumpsys meminfo -a &amp;lt;process id&amp;gt;/&amp;lt;process name&amp;gt;来查看一个进程的memory。截图如下：  Naitve Heap Size: 从mallinfo usmblks获得，代表最大总共分配空间 Native Heap Alloc: 从mallinfo uorblks获得，总共分配空间">
+<meta name="twitter:description" content="查看内存方式Running services通过手机上Running services的Activity查看，可以通过Setting-&amp;gt;Applications-&amp;gt;Running services进。 PS.其实现在有很多查看内存管理的第三方应用了，例如手机管家 用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outI">
 <meta name="twitter:image" content="http://images.wodekouwei.com/technology/memory1.png">
 
 
@@ -437,7 +437,85 @@
       
 
       
-        <h4 id="dumpsys-meminfo"><a href="#dumpsys-meminfo" class="headerlink" title="dumpsys meminfo"></a>dumpsys meminfo</h4><p><code>adb shell dumpsys meminfo -a &lt;process id&gt;/&lt;process name&gt;</code>来查看一个进程的memory。截图如下：
+        <h3 id="查看内存方式"><a href="#查看内存方式" class="headerlink" title="查看内存方式"></a>查看内存方式</h3><h4 id="Running-services"><a href="#Running-services" class="headerlink" title="Running services"></a>Running services</h4><p>通过手机上Running services的Activity查看，可以通过Setting-&gt;Applications-&gt;Running services进。
+PS.其实现在有很多查看内存管理的第三方应用了，例如手机管家</p>
+<h4 id="用ActivityManager的getMemoryInfo-ActivityManager-MemoryInfo-outInfo"><a href="#用ActivityManager的getMemoryInfo-ActivityManager-MemoryInfo-outInfo" class="headerlink" title="用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outInfo)"></a>用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outInfo)</h4><p>ActivityManager.getMemoryInfo()主要是用于得到当前系统剩余内存的及判断是否处于低内存运行。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">private void displayBriefMemory() &#123;   </div><div class="line">    final ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);   </div><div class="line">    ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();  </div><div class="line">    activityManager.getMemoryInfo(info);   </div><div class="line">    Log.i(tag,&quot;系统剩余内存:&quot;+(info.availMem &gt;&gt; 10)+&quot;k&quot;);  </div><div class="line">    Log.i(tag,&quot;系统是否处于低内存运行：&quot;+info.lowMemory);</div><div class="line">    Log.i(tag,&quot;当系统剩余内存低于&quot;+info.threshold+&quot;时就看成低内存运行&quot;);</div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ActivityManager.getMemoryInfo()是用ActivityManager.MemoryInfo返回结果，而不是Debug.MemoryInfo，他们不一样的。
+ActivityManager.MemoryInfo只有三个Field:</p>
+<ul>
+<li>availMem:表示系统剩余内存</li>
+<li>lowMemory：它是boolean值，表示系统是否处于低内存运行</li>
+<li>hreshold：它表示当系统剩余内存低于好多时就看成低内存运行</li>
+</ul>
+<h4 id="在代码中使用Debug的getMemoryInfo-Debug-MemoryInfo-memoryInfo-或ActivityManager的MemoryInfo-getProcessMemoryInfo-int-pids"><a href="#在代码中使用Debug的getMemoryInfo-Debug-MemoryInfo-memoryInfo-或ActivityManager的MemoryInfo-getProcessMemoryInfo-int-pids" class="headerlink" title="在代码中使用Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)或ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)"></a>在代码中使用Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)或ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)</h4><p>该方式得到的MemoryInfo所描述的内存使用情况比较详细.数据的单位是KＢ.</p>
+<p>MemoryInfo的Field如下</p>
+<ul>
+<li>dalvikPrivateDirty： The private dirty pages used by dalvik。</li>
+<li>dalvikPss ：The proportional set size for dalvik.</li>
+<li>dalvikSharedDirty ：The shared dirty pages used by dalvik.</li>
+<li>nativePrivateDirty ：The private dirty pages used by the native heap.</li>
+<li>nativePss ：The proportional set size for the native heap.</li>
+<li>nativeSharedDirty ：The shared dirty pages used by the native heap.</li>
+<li>otherPrivateDirty ：The private dirty pages used by everything else.</li>
+<li>otherPss ：The proportional set size for everything else.</li>
+<li>otherSharedDirty ：The shared dirty pages used by everything else.</li>
+<li>Android和Linux一样有大量内存在进程之间进程共享。某个进程准确的使用好多内存实际上是很难统计的。</li>
+<li>因为有paging out to disk（换页），所以如果你把所有映射到进程的内存相加，它可能大于你的内存的实际物理大小。</li>
+<li>dalvik：是指dalvik所使用的内存。</li>
+<li>native：是被native堆使用的内存。应该指使用C\C++在堆上分配的内存。</li>
+<li>other:是指除dalvik和native使用的内存。但是具体是指什么呢？至少包括在C\C++分配的非堆内存，比如分配在栈上的内存。puzlle!</li>
+<li>private:是指私有的。非共享的。</li>
+<li>share:是指共享的内存。</li>
+<li>PSS：实际使用的物理内存（比例分配共享库占用的内存）</li>
+<li>Pss：它是把共享内存根据一定比例分摊到共享它的各个进程来计算所得到进程使用内存。网上又说是比例分配共享库占用的内存，那么至于这里的共享是否只是库的共享，还是不清楚。</li>
+<li>PrivateDirty：它是指非共享的，又不能换页出去（can not be paged to disk ）的内存的大小。比如Linux为了提高分配内存速度而缓冲的小对象，即使你的进程结束，该内存也不会释放掉，它只是又重新回到缓冲中而已。</li>
+<li>SharedDirty:参照PrivateDirty我认为它应该是指共享的，又不能换页出去（can not be paged to disk ）的内存的大小。比如Linux为了提高分配内存速度而缓冲的小对象，即使所有共享它的进程结束，该内存也不会释放掉，它只是又重新回到缓冲中而已。</li>
+</ul>
+<p>具体代码请参考实例1</p>
+<ol>
+<li>注意１：MemoryInfo所描述的内存使用情况都可以通过命令adb shell “dumpsys meminfo %curProcessName%” 得到。</li>
+<li>注意２：如果想在代码中同时得到多个进程的内存使用或非本进程的内存使用情况请使用ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)，否则Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)就可以了。</li>
+<li>注意３：可以通过ActivityManager的List<activitymanager.runningappprocessinfo> getRunningAppProcesses()得到当前所有运行的进程信息。ActivityManager.RunningAppProcessInfo中就有进程的id，名字以及该进程包括的所有apk包名列表等。</activitymanager.runningappprocessinfo></li>
+<li>注意4：数据的单位是KB.<h4 id="方式4、使用Debug的getNativeHeapSize-，getNativeHeapAllocatedSize-，getNativeHeapFreeSize-方法。"><a href="#方式4、使用Debug的getNativeHeapSize-，getNativeHeapAllocatedSize-，getNativeHeapFreeSize-方法。" class="headerlink" title="方式4、使用Debug的getNativeHeapSize ()，getNativeHeapAllocatedSize ()，getNativeHeapFreeSize ()方法。"></a>方式4、使用Debug的getNativeHeapSize ()，getNativeHeapAllocatedSize ()，getNativeHeapFreeSize ()方法。</h4></li>
+</ol>
+<p>该方式只能得到Native堆的内存大概情况，数据单位为字节。</p>
+<p>static long getNativeHeapAllocatedSize()</p>
+<p>Returns the amount of allocated memory in the native heap.</p>
+<p>返回的是当前进程navtive堆中已使用的内存大小 
+static long getNativeHeapFreeSize()</p>
+<p>Returns the amount of free memory in the native heap.</p>
+<p>返回的是当前进程navtive堆中已经剩余的内存大小</p>
+<p>static long getNativeHeapSize()</p>
+<p>Returns the size of the native heap.</p>
+<p>返回的是当前进程navtive堆本身总的内存大小</p>
+<p>示例代码：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Log.i(tag,&quot;NativeHeapSizeTotal:&quot;+(Debug.getNativeHeapSize()&gt;&gt;10));</div><div class="line"></div><div class="line">Log.i(tag,&quot;NativeAllocatedHeapSize:&quot;+(Debug.getNativeHeapAllocatedSize()&gt;&gt;10));</div><div class="line"></div><div class="line">Log.i(tag,&quot;NativeAllocatedFree:&quot;+(Debug.getNativeHeapFreeSize()&gt;&gt;10));</div></pre></td></tr></table></figure></p>
+<p>注意：DEBUG中居然没有与上面相对应的关于dalvik的函数。</p>
+<h4 id="使用”adb-shell-cat-proc-meminfo”-命令。"><a href="#使用”adb-shell-cat-proc-meminfo”-命令。" class="headerlink" title="使用”adb shell cat /proc/meminfo” 命令。"></a>使用”adb shell cat /proc/meminfo” 命令。</h4><p>该方式只能得出系统整个内存的大概使用情况。</p>
+<p>MemTotal:         395144 kB</p>
+<p>MemFree:          184936 kB</p>
+<p>Buffers:             880 kB</p>
+<p>Cached:            84104 kB</p>
+<p>SwapCached:            0 kB</p>
+<p>……………………………………………………………………………………</p>
+<p>MemTotal ：可供系统和用户使用的总内存大小 (它比实际的物理内存要小，因为还有些内存要用于radio, DMA buffers, 等).</p>
+<p>MemFree：剩余的可用内存大小。这里该值比较大，实际上一般Android system 的该值通常都很小，因为我们尽量让进程都保持运行，这样会耗掉大量内存。</p>
+<p>Cached: 这个是系统用于文件缓冲等的内存. 通常systems需要20MB 以避免bad paging states;。当内存紧张时，the Android out of memory killer将杀死一些background进程，以避免他们消耗过多的cached RAM ，当然如果下次再用到他们，就需要paging. 那么是说background进程的内存包含在该项中吗？</p>
+<h4 id="使用“adb-shell-ps-x”命令"><a href="#使用“adb-shell-ps-x”命令" class="headerlink" title="使用“adb shell ps -x”命令"></a>使用“adb shell ps -x”命令</h4><p>该方式主要得到的是内存信息是VSIZE 和RSS。</p>
+<p>USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME</p>
+<p>…………………….省略……………………………</p>
+<p>app_70    3407  100   267104 22056 ffffffff afd0eb18 S com.teleca.robin.test (u:55, s:12)</p>
+<p>app_7     3473  100   268780 21784 ffffffff afd0eb18 S com.android.providers.calendar (u:16, s:8)</p>
+<p>radio     3487  100   267980 21140 ffffffff afd0eb18 S com.osp.app.signin (u:11, s:12)</p>
+<p>system    3511  100   273232 22024 ffffffff afd0eb18 S com.android.settings (u:11, s:4)</p>
+<p>app_15    3546  100   267900 20300 ffffffff afd0eb18 S com.sec.android.providers.drm (u:15, s:6)</p>
+<p>app_59    3604  100   272028 22856 ffffffff afd0eb18 S com.wssyncmldm (u:231, s:54)</p>
+<p>root      4528  2     0      0     c0141e4c 00000000 S flush-138:13 (u:0, s:0)</p>
+<p>root      4701  152   676    336   c00a68c8 afd0e7cc S /system/bin/sh (u:0, s:0)</p>
+<p>root      4702  4701  820    340   00000000 afd0d8bc R ps (u:0, s:5)</p>
+<p>VSZIE:意义暂时不明。</p>
+<h4 id="dumpsys-meminfo"><a href="#dumpsys-meminfo" class="headerlink" title="dumpsys meminfo"></a>dumpsys meminfo</h4><p><code>adb shell dumpsys meminfo -a &lt;process id&gt;/&lt;process name&gt;</code>来查看一个进程的memory。截图如下：
 <img src="http://images.wodekouwei.com/technology/memory1.png" alt="image"></p>
 <p>Naitve Heap Size: 从mallinfo usmblks获得，代表最大总共分配空间</p>
 <p>Native Heap Alloc: 从mallinfo uorblks获得，总共分配空间</p>
@@ -609,7 +687,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">150</span>
+                <span class="site-state-item-count">159</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -620,7 +698,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -631,7 +709,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-count">62</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -725,7 +803,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#dumpsys-meminfo"><span class="nav-number">1.</span> <span class="nav-text">dumpsys meminfo</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看内存方式"><span class="nav-number">1.</span> <span class="nav-text">查看内存方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Running-services"><span class="nav-number">1.1.</span> <span class="nav-text">Running services</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用ActivityManager的getMemoryInfo-ActivityManager-MemoryInfo-outInfo"><span class="nav-number">1.2.</span> <span class="nav-text">用ActivityManager的getMemoryInfo(ActivityManager.MemoryInfo outInfo)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在代码中使用Debug的getMemoryInfo-Debug-MemoryInfo-memoryInfo-或ActivityManager的MemoryInfo-getProcessMemoryInfo-int-pids"><span class="nav-number">1.3.</span> <span class="nav-text">在代码中使用Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)或ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方式4、使用Debug的getNativeHeapSize-，getNativeHeapAllocatedSize-，getNativeHeapFreeSize-方法。"><span class="nav-number">1.4.</span> <span class="nav-text">方式4、使用Debug的getNativeHeapSize ()，getNativeHeapAllocatedSize ()，getNativeHeapFreeSize ()方法。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用”adb-shell-cat-proc-meminfo”-命令。"><span class="nav-number">1.5.</span> <span class="nav-text">使用”adb shell cat /proc/meminfo” 命令。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用“adb-shell-ps-x”命令"><span class="nav-number">1.6.</span> <span class="nav-text">使用“adb shell ps -x”命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dumpsys-meminfo"><span class="nav-number">1.7.</span> <span class="nav-text">dumpsys meminfo</span></a></li></ol></li></ol></div>
             
 
           </div>

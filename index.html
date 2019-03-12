@@ -323,6 +323,1690 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/12/tips-net-applicationlayer-diff/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/12/tips-net-applicationlayer-diff/" itemprop="url">
+                  tips-net-applicationlayer-diff
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T15:09:49+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="I-协议优化演进"><a href="#I-协议优化演进" class="headerlink" title="I. 协议优化演进"></a>I. 协议优化演进</h3><h4 id="1-带宽与拥塞"><a href="#1-带宽与拥塞" class="headerlink" title="1. 带宽与拥塞"></a>1. 带宽与拥塞</h4><p><strong>现状</strong></p>
+<p>目前的网络基建越来越好，因此带宽的已经不再是瓶颈， 但是由于相关协议(如TCP)的拥塞窗口(CWND, congestion window)控制算法，很多时候并没有将带宽有效的利用，因此更有效的利用带宽是一个优化方向，特别针对视频、游戏等领域。</p>
+<p><strong>应对</strong></p>
+<ul>
+<li><strong>QUIC:</strong> 基于UDP，QUIC可以支持无序的递交，因此通常单个丢包最多只会影响1个请求stream，并且QUIC中一定程度上拆分拥塞窗口来更好的适配多个多路复用的连接，来尽可能的利用带宽，目前已经在Youtube以及一些Google通用库(如字体库)上应用</li>
+<li><strong>HTTP:</strong> 通过同时建立多个连接通道，由于每个通道有单独的拥塞窗口保证一个丢包最多只拥塞一个连接通道</li>
+<li><strong>BBR:</strong> Google推出的全新的阻塞拥塞控制算法，从根本上解决该问题，通过交替测量带宽和激进的估算算法尽可能的占满带宽与降低延迟（此方式极大的提高了带宽利用率），目前已经在Youtube上应用</li>
+</ul>
+<p><strong>存在该缺陷的协议</strong></p>
+<ul>
+<li><strong>TCP:</strong> 由于采用”加性增，乘性减”的拥塞控制算法，错误的将网络中的错误丢包也认为是拥塞丢包，导致拥塞窗口被收敛的很小，带宽无法有效利用</li>
+<li><strong>SPDY:</strong> 由于SPDY基于TCP，因此存在TCP相同的缺陷问题，并且虽然SPDY采用了多路复用，也做个各类优化，但是由于一个TCP连接只有一个拥塞窗口，因此一个请求stream丢包，就会导致整个通道被阻塞</li>
+</ul>
+<h4 id="2-握手的N-RTT的开销"><a href="#2-握手的N-RTT的开销" class="headerlink" title="2. 握手的N-RTT的开销"></a>2. 握手的N-RTT的开销</h4><p><strong>现状</strong></p>
+<p>目前TCP与SSL/TLS(1.0,1.1,1.2)，每次建连需要TCP三次握手+安全握手需要: <code>4~5-RRT</code>，导致建连效率低下，Google、Facebook、Tencent(Wechat)等公司推出了各类优化策略。</p>
+<p><strong>应对</strong></p>
+<ul>
+<li><strong>TLS1.3:</strong> 安全握手提出了0-RTT草案</li>
+<li><strong>QUIC:</strong> 通过实现自己的安全模块，整个握手过程(TCP + TLS)采用全新的0-RTT方案，并计划当完成时适配到TLS1.3中</li>
+<li><strong>Proxygen:</strong> Facebook基于QUIC的0-RTT协议进行优化，保证安全握手最多只有1-RTT，并运用在TCP中 ，并将贡献各类优化成果给TLS1.3</li>
+<li><strong>mmtls:</strong> Wechat基于TLS1.3草案中的0-RTT，进行优化推出自己的mmtls，其对于长连接保障安全握手1-RTT，对于短连接安全握手尽可能使用0-RTT</li>
+</ul>
+<p><strong>存在该缺陷的协议</strong></p>
+<ul>
+<li><strong>SSL、TLS1.3之前版本:</strong>  在TLS1.2中，需要2~1-RTT(全握手需要2-RTT)</li>
+</ul>
+<h4 id="3-冗余数据"><a href="#3-冗余数据" class="headerlink" title="3. 冗余数据"></a>3. 冗余数据</h4><p><strong>现状</strong></p>
+<p>通常的一般的HTTP请求，每次请求header基本上没什么变化；在一些情况下多个页面使用相同静态资源(js、logo等)，却每次都重复下载。</p>
+<p><strong>应对</strong></p>
+<ul>
+<li><strong>SPDY:</strong> 采用<a href="http://zh.wikipedia.org/wiki/DEFLATE" target="_blank" rel="external">DEFLATE</a>对请求头/响应头进行压缩</li>
+<li><strong>HTTP/2:</strong> 采用<a href="http://http2.github.io/http2-spec/compression.html" target="_blank" rel="external">HPACK</a>算法对请求头/响应头进行压缩，并且通讯双方各自cache一份header fields表，避免了重复header的传输</li>
+<li><strong>QUIC:</strong> 目前版本采用<a href="http://http2.github.io/http2-spec/compression.html" target="_blank" rel="external">HPACK</a>算法对请求头/响应头进行压缩</li>
+<li><strong>HTTP/1.1、HTTP/2:</strong> 支持<code>Cache-Control</code>用于控制资源有效时间,支持<code>Last-Modified</code>来控制资源是否可复用</li>
+<li><strong>Facebook geek方案:</strong>  将<code>expiration time</code>全部设置为1年，所有的资源请求链接，都采用概念性的连接(在请求链接后加上资源名的md5，再做mapping)(只要资源不变化链接就不变化)，保证已下载资源能被有效利用的同时，避免重复检测资源有效性</li>
+<li><strong>浏览器优化:</strong> Facebook联系Chrome与Firefox，针对复用资源可复用检测频率进行调整(如firefox支持在<code>cache-control</code>中的<code>immutable</code>关键字表示资源不可变不用重复检测)</li>
+</ul>
+<p><strong>存在该缺陷的协议</strong></p>
+<ul>
+<li><strong>HTTP/1:</strong> 请求头未做压缩，不支持<code>Cache-Control</code>与<code>Last-Modified</code>因此存在冗余资源重复下载问题</li>
+<li><strong>HTTP/1.1:</strong> 请求头未做压缩</li>
+</ul>
+<h4 id="4-预准备"><a href="#4-预准备" class="headerlink" title="4. 预准备"></a>4. 预准备</h4><ul>
+<li><strong>Taobao:</strong> DNS-Prefetch、Preconnect、Prefetch、Flush HTML early、PreRender</li>
+<li><strong>SPDY、HTTP/2、QUIC:</strong>: 允许服务端主动推服务端认为客户端需要的静态资源</li>
+</ul>
+<h4 id="5-负载均衡、超时策略优化与其他"><a href="#5-负载均衡、超时策略优化与其他" class="headerlink" title="5. 负载均衡、超时策略优化与其他"></a>5. 负载均衡、超时策略优化与其他</h4><ul>
+<li><strong>负载均衡:</strong> 收益较小的长连接，带来服务端没必要的性能开销</li>
+<li><strong>超时策略:</strong> 策略性的调整建连与维连时的超时重连的频率、时间、IP/端口，来应对弱网状况，何时快速放弃节约资源(无网状态)，何时找到可用资源快速恢复连接(被劫持、服务器某端口/IP故障、基站繁忙、连接信号弱、丢包率高)</li>
+<li><strong>策略性阻塞:</strong> 根据网络情况、请求数目动态调整连接数来保证吞吐量与稳定性（如SPDY、HTTP/2、QUIC中的多路复用）</li>
+<li><strong>DNS:</strong> 结合TTL有效管理本地DNS缓存的有效时间、以及缓存大小来减少DNS查询的阻塞，以及可以通过HTTPDNS优化DNS请求的线路以及来避免DNS被篡改等问题(如果使用okhttp3，可以指定DNS，并且可以为请求设定缓存大小与时间，可以很轻易的实现自己的HTTPDNS)</li>
+</ul>
+<h3 id="II-常见协议区分"><a href="#II-常见协议区分" class="headerlink" title="II. 常见协议区分"></a>II. 常见协议区分</h3><h4 id="1-TCP"><a href="#1-TCP" class="headerlink" title="1. TCP"></a>1. TCP</h4><blockquote>
+<p>关于TCP窗口的研究与学习，请移步<a href="/tcp-window/">TCP窗口</a></p>
+</blockquote>
+<p>目前应用最广泛的可靠的、有序的、自带问题校验修复(<a href="https://en.wikipedia.org/wiki/Error_detection_and_correction" target="_blank" rel="external">error-checked</a>)、传输协议，通常情况下发送端与接收端通过TCP协议来保障数据的可靠到达，中间层通过IP协议来路由数据的传递。</p>
+<center><img src="/img/network_basic-1.png" alt=""></center>
+
+<ul>
+<li><strong>建连:</strong> 通过三次握手，保障连接已可靠连接</li>
+<li><strong>超时重试:</strong> 通过连接超时重试、读写超时重试机制，来保障连接的稳定性</li>
+<li><strong>拥塞控制:</strong> 通过”加性增，乘性减”算法，来保障尽量少的报文传输尽量多的数据的同时，减少丢包重传的概率</li>
+<li><strong>校验和:</strong> 通过对TCP/IP头进行”校验和”检查，来保障传输数据与地址信息的可靠</li>
+<li><strong>有序性:</strong> 通过”序列号”来鉴别每个字节数据，保证接收端能够有序的重建传输数据，以及校验数据完整性</li>
+<li><strong>应答机制:</strong> 每次接收端会发送Acks(Acknowledgements)给发送端告知数据以被接收</li>
+<li><strong>断连:</strong> 通过四次挥手，保障连接已可靠断开</li>
+</ul>
+<h4 id="2-HTTP"><a href="#2-HTTP" class="headerlink" title="2. HTTP"></a>2. HTTP</h4><p><strong><code>HTTP1.1</code> vs <code>HTTP1.0</code></strong></p>
+<ul>
+<li><strong>更灵活缓存处理:</strong> 引入Etag(Entity tag)等目前常用的缓存相关策略</li>
+<li><strong>优化带宽使用:</strong> 引入<code>range</code>头域，支持206(Partial Content)，用于数据断点续传。</li>
+<li><strong>错误机制更完善:</strong> 引入24个错误状态码，如409(Conflict)请求资源与当前状态冲突； 410(Gone)资源在服务器上被永久删除</li>
+<li><strong>Host头处理:</strong> 请求头中必须带上<code>host</code>，否则会报400 Bad Request，为了支持一台服务器上有多台虚拟主机，因此通常一个IP对应了多个域名</li>
+<li><strong>长连接:</strong> 默认<code>Connection: keep-alive</code>，以复用已建连通道，不像<code>http1.0</code>每个请求都需要重新创建</li>
+</ul>
+<h4 id="3-HTTPS"><a href="#3-HTTPS" class="headerlink" title="3. HTTPS"></a>3. HTTPS</h4><p>1994年由 <strong>网景</strong> 提出，并应用在网景导航者浏览器中。最新的HTTPS协议在2000年5月公布的<code>RFC 2818</code>正式确定。</p>
+<p>HTTPS协议是基于TLS(Transport Layer Security)/SSL(Secure Sockets Layer)对数据进行加密校验，保障了网络通信中的数据安全。</p>
+<p>在当前大陆的网络环境而言，是有效避免运营商劫持的手段。</p>
+<center><img src="/img/network_basic-2.png" alt="image_1b8ji5se91a1kvn431umcc2vk9.png-44.3kB"></center>
+
+<ul>
+<li><strong>SSL与TLS:</strong> 早期HTTPS是通过SSL对数据验证加密，后SSL逐渐演变为现在的TLS，所以大多数为了有效的支持加密，都同时支持了SSL与STL</li>
+<li><strong>TLS提高了SSL:</strong> 虽然最早的TLS1.0与SSL3.0非常类似，但是TLS采用HMAC(keyed-Hashing for Message Authentication Code)算法对数据验证相比SSL的MAC(Message Authentication Code)算法会更难破解，并且在其他方面也有一些小的改进</li>
+<li><strong>请求端口:</strong> 443</li>
+</ul>
+<h4 id="4-SPDY"><a href="#4-SPDY" class="headerlink" title="4. SPDY"></a>4. SPDY</h4><blockquote>
+<p>读音speedy</p>
+</blockquote>
+<p>是谷歌开发为了加快网页加载速度的网络协议。</p>
+<p>SPDY兼容性: <a href="http://caniuse.com/#feat=spdy" target="_blank" rel="external">http://caniuse.com/#feat=spdy</a></p>
+<center><img src="/img/network_basic-3.png" alt="image_1b8jj8l511lag13eslpm1al918krm.png-23.8kB"></center>
+
+<ul>
+<li><strong>采用多路复用(multiplexing):</strong> 多个请求stream共享一个tcp连接， 降低延时、提高带宽利用率</li>
+<li><strong>请求优先级:</strong> 允许给每个请求设置优先级，使得重要的请求得到优先响应</li>
+<li><strong>TLS/SSL的加密传输:</strong> 强制要求使用TLS/SSL提高数据安全可靠性</li>
+<li><strong>压缩<code>请求头/响应头</code>:</strong> 通过DEFLATE或gzip算法进行对<code>请求头/响应头</code>进行压缩</li>
+<li><strong>支持Server Push:</strong> 允许服务端主动的推送资源(js、css)给客户端，当分析获知客户端将会需要时，以此利用起空闲带宽</li>
+<li><strong>支持Server Hints:</strong> 允许服务端可以在客户端还没有发现将需要哪些资源的时候，主动通知客户端，以便于客户端实现准备好相关资源的缓存</li>
+</ul>
+<h4 id="5-HTTP-2"><a href="#5-HTTP-2" class="headerlink" title="5. HTTP/2"></a>5. HTTP/2</h4><blockquote>
+<p>HTTP/2基于SPDY设计</p>
+</blockquote>
+<center><img src="/img/network_basic-4.png" alt="image_1b90ik3e01di41tgr16hc12ks19uvp.png-129.5kB"></center>
+<center><img src="/img/network_basic-5.png" alt="image_1b8jku3ol1rbveu4es1tp8rk61j.png-125kB"></center>
+
+<p><strong>HTTP/2 vs SPDY</strong></p>
+<ul>
+<li><strong>SSL/TLS:</strong> SPDY强制使用SSL/TLS，HTTP/2非强制(但是部分浏览器(如Chrome)不允许，所以目前如果使用HTTP/2最好都配置SSL/TLS)</li>
+<li><strong>消息头压缩算法:</strong> HTTP/2消息头压缩算法采用<a href="http://http2.github.io/http2-spec/compression.html" target="_blank" rel="external">HPACK</a>，SPDY采用<a href="http://zh.wikipedia.org/wiki/DEFLATE" target="_blank" rel="external">DEFLATE</a>，一般情况下HPACK的压缩率会高于DEFLATE</li>
+<li><strong>传输格式:</strong> HTTP/2传输采用二进制而非文本，因此HTTP/2中的基本单位是帧, 文本形式众多很难权衡健壮、性能与复杂度，二进制弥补了这个缺陷，并且是无序的帧，最终根据头帧重新组装</li>
+<li><strong>继承与优化:</strong> HTTP/2继承并优化了SPDY的多路复用与Server Push</li>
+</ul>
+<h4 id="6-QUIC"><a href="#6-QUIC" class="headerlink" title="6. QUIC"></a>6. QUIC</h4><ul>
+<li>发音<code>quick</code></li>
+<li>QUIC 参考了HTTP/2与SPDY</li>
+<li>Google在2013年10月第一次在IETF展示QUIC, 2016年7月启动工作群</li>
+<li>可靠的，多路复用的基于UDP的网络协议，内置安全加密模块，低延迟、运行在用户空间、开源的新一代网络协议。Google计划在完成后将其服务于所有的Google服务。</li>
+</ul>
+<center><img src="/img/network_basic-6.png" alt=""></center>
+<center><img src="/img/network_basic-7.png" alt=""></center>
+
+<ul>
+<li><strong>减少建连延迟:</strong> 从未访问过服务的情况下1-RTT，其他的可以立马开始传输数据(0-RTT)</li>
+<li><strong>拥塞控制:</strong> 提升TCP Cubic拥塞控制</li>
+<li><strong>HOL阻塞:</strong> 消除多路复用中的HOL阻塞(head-of-line blocking)</li>
+<li><strong>更少的帧消耗:</strong> Quic数据包包含更少的帧，因此更多的数据包可以携带数据</li>
+<li><strong>提升丢包重试:</strong> 丢包重试时使用新的序列号以及采用重新加密</li>
+<li><strong>安全加密:</strong> 内置的加密模块(支持SNI，因此支持一个IP部署多个证书)，并且是默认打开的，相比TLS更高效的向前加密 - 完成以后，将计划适配到TLS 1.3中</li>
+<li><strong>端口:</strong> 使用443端口来处理UDP协议数据 - <a href="https://community.spiceworks.com/topic/601177-port-80-443-udp-traffic-to-google" target="_blank" rel="external">Port 80/443 UDP Traffic to Google?</a></li>
+<li><strong>其他:</strong> 更好的FEC(Forward error correction)机制、与Connection migration机制</li>
+</ul>
+<hr>
+<ul>
+<li><a href="http://lovestblog.cn/blog/2014/05/20/tcp-broken-pipe/" target="_blank" rel="external">从tcp原理角度理解Broken pipe和Connection Reset by Peer的区别</a></li>
+<li><a href="http://velocity.oreilly.com.cn/2015/ppts/lizhenyu.pdf" target="_blank" rel="external">淘宝HTTPS探索</a></li>
+<li><a href="http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/" target="_blank" rel="external">HTTP,HTTP/2,SPDY,HTTPS你应该知道的一些事</a></li>
+<li><a href="https://docs.google.com/document/d/1lmL9EF6qKrk7gbazY8bIdvq3Pno2Xj_l_YShP40GLQE" target="_blank" rel="external">QUIC Geek FAQ</a></li>
+<li><a href="https://github.com/google/bbr" target="_blank" rel="external">google/bbr</a></li>
+<li><a href="http://www.cnblogs.com/mydomain/archive/2013/04/18/3027668.html" target="_blank" rel="external">滑动窗口和拥塞窗口简述</a></li>
+<li><a href="https://www.zhihu.com/question/53559433" target="_blank" rel="external">BBR算法原理 - 李博杰</a></li>
+<li><a href="https://www.nanog.org/sites/default/files/meetings/NANOG64/1051/20150603_Rogan_Quic_Next_Generation_v1.pdf" target="_blank" rel="external">QUIC - Next generation multiplexed transport over UDP</a></li>
+<li><a href="https://code.facebook.com/posts/608854979307125/building-zero-protocol-for-fast-secure-mobile-connections/" target="_blank" rel="external">Building Zero protocol for fast, secure mobile connections</a></li>
+<li><a href="https://github.com/WeMobileDev/article/blob/master/%E5%9F%BA%E4%BA%8ETLS1.3%E7%9A%84%E5%BE%AE%E4%BF%A1%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AEmmtls%E4%BB%8B%E7%BB%8D.md" target="_blank" rel="external">基于TLS1.3的微信安全通信协议mmtls介绍</a></li>
+<li><a href="https://docs.google.com/document/d/1WJvyZflAO2pq77yOLbp9NsGjC1CHetAXV8I0fQe-B_U/edit" target="_blank" rel="external">QUIC Wire Layout Specification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SPDY" target="_blank" rel="external">SPDY - Wiki</a></li>
+<li><a href="https://code.facebook.com/posts/557147474482256/this-browser-tweak-saved-60-of-requests-to-facebook/" target="_blank" rel="external">This browser tweak saved 60% of requests to Facebook</a></li>
+<li><a href="http://jiaolonghuang.github.io/2015/08/16/http2/" target="_blank" rel="external">HTTP2学习(四)—HTTP2的新特性</a></li>
+<li><a href="https://www.chromium.org/spdy/link-headers-and-server-hint" target="_blank" rel="external">Server Push and Server Hints</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/cc784450(v=ws.10" target="_blank" rel="external">What is TLS/SSL?</a>.aspx)</li>
+<li><a href="http://peering.google.com/#/learn-more/quic" target="_blank" rel="external">QUIC - Google-peering</a></li>
+<li><a href="https://www.chromium.org/quic" target="_blank" rel="external">QUIC教材</a></li>
+<li><a href="https://www.youtube.com/watch?v=hQZ-0mXFmk8" target="_blank" rel="external">QUIC视频介绍</a></li>
+<li><a href="https://tools.keycdn.com/http2-test" target="_blank" rel="external">Http2-test</a></li>
+<li><a href="https://community.akamai.com/community/web-performance/blog/2015/06/05/useful-tools-for-http2-debugging" target="_blank" rel="external">Http2-debug</a></li>
+</ul>
+<hr>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-summarize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/11/tips-net-summarize/" itemprop="url">
+                  tips-net-summarize
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T18:42:21+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-http/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/11/tips-net-http/" itemprop="url">
+                  tips-net-http
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T18:22:25+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-mars/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/11/tips-net-mars/" itemprop="url">
+                  tips-net-mars
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T18:17:18+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/11/tips-net-tcp/" itemprop="url">
+                  tips-net-tcp
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T16:59:43+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="首部格式"><a href="#首部格式" class="headerlink" title="首部格式"></a>首部格式</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311171945.png" alt="tips-net-tcp-2019311171945"></p>
+<p>各个段位说明:</p>
+<ul>
+<li>源端口和目的端口:　　各占 2 字节.端口是传输层与应用层的服务接口.传输层的复用和分用功能都要通过端口才能实现</li>
+<li>序号:　　占 4 字节.TCP 连接中传送的数据流中的每一个字节都编上一个序号.序号字段的值则指的是本报文段所发送的数据的第一个字节的序号</li>
+<li>确认号:　　占 4 字节,是期望收到对方的下一个报文段的数据的第一个字节的序号</li>
+<li>数据偏移/首部长度:　　占 4 位,它指出 TCP 报文段的数据起始处距离 TCP 报文段的起始处有多远.“数据偏移”的单位是 32 位字(以 4 字节为计算单位)</li>
+<li>保留:　　占 6 位,保留为今后使用,但目前应置为 0</li>
+<li>紧急URG:　　当 URG=1 时,表明紧急指针字段有效.它告诉系统此报文段中有紧急数据,应尽快传送(相当于高优先级的数据)</li>
+<li>确认ACK:　　只有当 ACK=1 时确认号字段才有效.当 ACK=0 时,确认号无效</li>
+<li>PSH(PuSH):　　接收 TCP 收到 PSH = 1 的报文段,就尽快地交付接收应用进程,而不再等到整个缓存都填满了后再向上交付</li>
+<li>RST (ReSeT):　　当 RST=1 时,表明 TCP 连接中出现严重差错（如由于主机崩溃或其他原因）,必须释放连接,然后再重新建立运输连接</li>
+<li>同步 SYN:　　同步 SYN = 1 表示这是一个连接请求或连接接受报文</li>
+<li>终止 FIN:　　用来释放一个连接.FIN=1 表明此报文段的发送端的数据已发送完毕,并要求释放运输连接</li>
+<li>检验和:　　占 2 字节.检验和字段检验的范围包括首部和数据这两部分.在计算检验和时,要在 TCP 报文段的前面加上 12 字节的伪首部</li>
+<li>紧急指针:　　占 16 位,指出在本报文段中紧急数据共有多少个字节（紧急数据放在本报文段数据的最前面）</li>
+<li>选项:　　长度可变.TCP 最初只规定了一种选项,即最大报文段长度 MSS.MSS 告诉对方 TCP：“我的缓存所能接收的报文段的数据字段的最大长度是 MSS 个字节.” [MSS(Maximum Segment Size)是 TCP 报文段中的数据字段的最大长度.数据字段加上 TCP 首部才等于整个的 TCP 报文段]</li>
+<li>填充:　　这是为了使整个首部长度是 4 字节的整数倍</li>
+<li>其他选项:<ul>
+<li>窗口扩大:　　占 3 字节,其中有一个字节表示移位值 S.新的窗口值等于TCP 首部中的窗口位数增大到(16 + S),相当于把窗口值向左移动 S 位后获得实际的窗口大小</li>
+<li>时间戳:　　占10 字节,其中最主要的字段时间戳值字段(4字节)和时间戳回送回答字段(4字节)</li>
+<li>选择确认:　　接收方收到了和前面的字节流不连续的两2字节.如果这些字节的序号都在接收窗口之内,那么接收方就先收下这些数据,但要把这些信息准确地告诉发送方,使发送方不要再重复发送这些已收到的数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据单位"><a href="#数据单位" class="headerlink" title="数据单位"></a>数据单位</h2><p>TCP 传送的数据单位协议是 TCP 报文段(segment)</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>TCP 是面向连接的传输层协议 每一条 TCP 连接只能有两个端点(endpoint),每一条 TCP 连接只能是点对点的（一对一） TCP 提供可靠交付的服务 TCP 提供全双工通信 面向字节流</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>TCP 对应用进程一次把多长的报文发送到TCP 的缓存中是不关心的 TCP 根据对方给出的窗口值和当前网络拥塞的程度来决定一个报文段应包含多少个字节(UDP 发送的报文长度是应用进程给出的) TCP 可把太长的数据块划分短一些再传送.TCP 也可等待积累有足够多的字节后再构成报文段发送出去 每一条 TCP 连接有两个端点 TCP 连接的端点不是主机,不是主机的IP 地址,不是应用进程,也不是传输层的协议端口.TCP 连接的端点叫做套接字(socket)或插口</p>
+<h2 id="自动重传请求ARQ"><a href="#自动重传请求ARQ" class="headerlink" title="自动重传请求ARQ"></a>自动重传请求ARQ</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h3><p>可靠传输协议常称为自动重传请求ARQ (Automatic Repeat reQuest)</p>
+<h3 id="累积确认"><a href="#累积确认" class="headerlink" title="累积确认:"></a>累积确认:</h3><ul>
+<li>定义:　　接收方一般采用累积确认的方式.即不必对收到的分组逐个发送确认,而是对按序到达的最后一个分组发送确认,这样就表示：到这个分组为止的所有分组都已正确收到了</li>
+<li>优点:　　容易实现,即使确认丢失也不必重传</li>
+<li>缺点:　　不能向发送方反映出接收方已经正确收到的所有分组的信息<h3 id="Go-back-N-回退N"><a href="#Go-back-N-回退N" class="headerlink" title="Go-back-N(回退N):"></a>Go-back-N(回退N):</h3>如果发送方发送了前 5 个分组,而中间的第 3 个分组丢失了.这时接收方只能对前两个分组发出确认.发送方无法知道后面三个分组的下落,而只好把后面的三个分组都再重传一次</li>
+</ul>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明:"></a>说明:</h3><ul>
+<li>TCP 连接的每一端都必须设有两个窗口      一个发送窗口和一个接收窗口</li>
+<li>TCP 可靠传输机制用字节的序号进行控制.TCP 所有的确认都是基于序号而不是基于报文段</li>
+<li>TCP 两端的四个窗口经常处于动态变化之中</li>
+<li>TCP连接的往返时间 RTT 也不是固定不变的.需要使用特定的算法估算较为合理的重传时间</li>
+</ul>
+<h3 id="图释"><a href="#图释" class="headerlink" title="图释"></a>图释</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-201931117259.png" alt="tips-net-tcp-201931117259"></p>
+<h2 id="发送缓存"><a href="#发送缓存" class="headerlink" title="发送缓存"></a>发送缓存</h2><h3 id="发送缓存用来暂时存放："><a href="#发送缓存用来暂时存放：" class="headerlink" title="发送缓存用来暂时存放："></a>发送缓存用来暂时存放：</h3><ul>
+<li>发送应用程序传送给发送方 TCP 准备发送的数据</li>
+<li>TCP 已发送出但尚未收到确认的数据<h3 id="图释-1"><a href="#图释-1" class="headerlink" title="图释:"></a>图释:</h3><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172637.png" alt="tips-net-tcp-2019311172637"></li>
+</ul>
+<h2 id="接收缓存"><a href="#接收缓存" class="headerlink" title="接收缓存"></a>接收缓存</h2><h3 id="接收缓存用来暂时存放："><a href="#接收缓存用来暂时存放：" class="headerlink" title="接收缓存用来暂时存放："></a>接收缓存用来暂时存放：</h3><ul>
+<li>按序到达的、但尚未被接收应用程序读取的数据；</li>
+<li>不按序到达的数据<h3 id="图释-2"><a href="#图释-2" class="headerlink" title="图释:"></a>图释:</h3><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172725.png" alt="tips-net-tcp-2019311172725"></li>
+</ul>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>滑动窗口(rwnd)是用于流控的动态缩放可靠滑动的接收与发送窗口，防止发送端发送过快接收端被淹没
+对应的还有拥塞窗口(rwnd),是在一个RTT内可以最多一次可发送的报文段数 — 发送方的流量控制</p>
+<p>TCP是以报文段(若干字节)为单位，每一个报文段需要一次ACK确认收到，但是其带来的问题很明显，频繁的发送确认等待导致用于确认与等待的时间太长。引入窗口后，发送端只要在窗口内，便不用每次都等待ACK才发送下一个报文段，可以在发送窗口内一次连续发送几个报文段而无需等待ACK</p>
+<h3 id="图释-3"><a href="#图释-3" class="headerlink" title="图释:"></a>图释:</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172750.png" alt="tips-net-tcp-2019311172750"></p>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点:"></a>特点:</h3><ul>
+<li>以字节为单位的滑动窗口</li>
+<li>A 的发送窗口并不总是和 B 的接收窗口一样大（因为有一定的时间滞后）<h3 id="要求"><a href="#要求" class="headerlink" title="要求:"></a>要求:</h3></li>
+<li>TCP 标准没有规定对不按序到达的数据应如何处理.通常是先临时存放在接收窗口中,等到字节流中所缺少的字节收到后,再按序交付上层的应用进程</li>
+<li>TCP 要求接收方必须有累积确认的功能,这样可以减小传输开销</li>
+</ul>
+<h3 id="具体实现-1"><a href="#具体实现-1" class="headerlink" title="具体实现:"></a>具体实现:</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-201931117296.png" alt="tips-net-tcp-201931117296">
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311172934.png" alt="tips-net-tcp-2019311172934">
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311172949.png" alt="tips-net-tcp-2019311172949">
+<img src="http://images.wodekouwei.com/tips-net-tcp-201931117305.png" alt="tips-net-tcp-201931117305"></p>
+<h3 id="发送窗口与接收窗口的关系"><a href="#发送窗口与接收窗口的关系" class="headerlink" title="发送窗口与接收窗口的关系"></a>发送窗口与接收窗口的关系</h3><p>TCP是双工协议，会话双方都可以同时接收与发送数据，因此双方都同时维护一个发送窗口与接收窗口。</p>
+<ul>
+<li>接收窗口大小取决于应用、系统、硬件等限制；</li>
+<li>发送窗口大小取决于对方接收窗口的大小</li>
+</ul>
+<h3 id="窗口滑动协定"><a href="#窗口滑动协定" class="headerlink" title="窗口滑动协定"></a>窗口滑动协定</h3><ul>
+<li>发送窗口只有在收到窗口内字节的ACK确认，才会滑动其左边界</li>
+<li>接收窗口只有在窗口中所有的段都正确收到的情况下，才会滑动其左边界；当有字节未接收，但收到后面的字节的情况下，也会滑动，也不对后续字节确认，确保对方重传未接收字节<h3 id="哪些允许变化"><a href="#哪些允许变化" class="headerlink" title="哪些允许变化"></a>哪些允许变化</h3></li>
+<li>最大报文段大小在握手中，就确定了</li>
+<li>窗口缩放因子在握手中，就确定了</li>
+<li>接收窗口大小在根据本地的处理能力与缓存剩余空间动态调整，通过ACK带给对方当前剩余的接收窗口大小</li>
+</ul>
+<h2 id="确认丢失和确认迟到"><a href="#确认丢失和确认迟到" class="headerlink" title="确认丢失和确认迟到"></a>确认丢失和确认迟到</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311173223.png" alt="tips-net-tcp-2019311173223"></p>
+<h2 id="超时重传时间选择"><a href="#超时重传时间选择" class="headerlink" title="超时重传时间选择"></a>超时重传时间选择</h2><h3 id="具体实现-2"><a href="#具体实现-2" class="headerlink" title="具体实现:"></a>具体实现:</h3><p>TCP 每发送一个报文段,就对这个报文段设置一次计时器.只要计时器设置的重传时间到但还没有收到确认,就要重传这一报文段</p>
+<h3 id="加权平均往返时间"><a href="#加权平均往返时间" class="headerlink" title="加权平均往返时间:"></a>加权平均往返时间:</h3><h4 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h4><p>TCP 保留了 RTT 的一个加权平均往返时间 RTTS（这又称为平滑的往返时间）,第一次测量到 RTT 样本时,RTTS 值就取为所测量到的 RTT 样本值.以后每测量到一个新的 RTT 样本,就按下式重新计算一次 RTTS：</p>
+<h4 id="公式"><a href="#公式" class="headerlink" title="公式:"></a>公式:</h4><p>新的 RTTS = ( 1 - α)×(旧的 RTTS)＋α(新的 RTT 样本)</p>
+<h4 id="说明-1"><a href="#说明-1" class="headerlink" title="说明:"></a>说明:</h4><p>式中,0 ≤ α＜ 1.若α很接近于零,表示 RTT 值更新较慢若选择 α 接近于1,则表示 RTT 值更新较快 RFC 2988 推荐的 α 值为 1/8,即 0.125</p>
+<h3 id="超时重传时间RTO"><a href="#超时重传时间RTO" class="headerlink" title="超时重传时间RTO:"></a>超时重传时间RTO:</h3><p>RTO 应略大于上面得出的加权平均往返时间 RTTS. RFC 2988 建议使用下式计算 RTO：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">RTO=RTTS + 4×RTTD</div></pre></td></tr></table></figure></p>
+<p>RTTD 是 RTT 的偏差的加权平均值 RFC 2988 建议这样计算 RTTD.第一次测量时,RTTD 值取为测量到的 RTT 样本值的一半.在以后的测量中,则使用下式计算加权平均的 RTTD：</p>
+<p><code>新的 RTTD = (1-β)×(旧的RTTD)+β×|RTTS﹣新的 RTT 样本|</code>
+β是个小于 1 的系数,其推荐值是 1/4,即 0.25 在计算平均往返时间 RTT 时,只要报文段重传了,就不采用其往返时间样本</p>
+<h3 id="修正的Karn算法"><a href="#修正的Karn算法" class="headerlink" title="修正的Karn算法:"></a>修正的Karn算法:</h3><p>报文段每重传一次,就把 RTO 增大一些：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">新的 RTO= γ×(旧的 RTO)</div></pre></td></tr></table></figure></p>
+<p>系数γ 的典型值是 2 当不再发生报文段的重传时,才根据报文段的往返时延更新平均往返时延 RTT 和超时重传时间 RTO 的数值</p>
+<h3 id="持续计时器"><a href="#持续计时器" class="headerlink" title="持续计时器"></a>持续计时器</h3><ul>
+<li>TCP 为每一个连接设有一个持续计时器</li>
+<li>只要 TCP 连接的一方收到对方的零窗口通知,就启动持续计时器</li>
+<li>若持续计时器设置的时间到期,就发送一个零窗口探测报文段(仅携带 1 字节的数据),而对方就在确认这个探测报文段时给出了现在的窗口值</li>
+<li>若窗口仍然是零,则收到这个报文段的一方就重新设置持续计时器</li>
+<li>若窗口不是零,则死锁的僵局就可以打破了</li>
+</ul>
+<h2 id="报文段的发送时机"><a href="#报文段的发送时机" class="headerlink" title="报文段的发送时机"></a>报文段的发送时机</h2><p>TCP 维持一个变量,它等于最大报文段长度 MSS.只要缓存中存放的数据达到 MSS 字节时,就组装成一个 TCP 报文段发送出去 由发送方的应用进程指明要求发送报文段,即 TCP 支持的推送(push)操作 发送方的一个计时器期限到了,这时就把当前已有的缓存数据装入报文段（但长度不能超过 MSS）发送出去</p>
+<h2 id="运输连接"><a href="#运输连接" class="headerlink" title="运输连接"></a>运输连接</h2><h3 id="三个阶段"><a href="#三个阶段" class="headerlink" title="三个阶段:"></a>三个阶段:</h3><h4 id="连接建立"><a href="#连接建立" class="headerlink" title="连接建立:"></a>连接建立:</h4><h5 id="图释-4"><a href="#图释-4" class="headerlink" title="图释:"></a>图释:</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174443.jpg" alt="tips-net-tcp-2019311174443"></p>
+<h5 id="步骤"><a href="#步骤" class="headerlink" title="步骤:"></a>步骤:</h5><ul>
+<li>A 的 TCP 向 B 发出连接请求报文段,其首部中的同步位 SYN = 1,并选择序号 seq = x,表明传送数据时的第一个数据字节的序号是 x</li>
+<li>B 的 TCP 收到连接请求报文段后,如同意,则发回确认(B 在确认报文段中应使 SYN = 1,使 ACK = 1,其确认号ack = x﹢1,自己选择的序号 seq = y)</li>
+<li>A 收到此报文段后向 B 给出确认,其 ACK = 1,确认号 ack = y﹢1(A 的 TCP 通知上层应用进程,连接已经建立,B 的 TCP 收到主机 A 的确认后,也通知其上层应用进程：TCP 连接已经建立)</li>
+</ul>
+<h4 id="数据传送"><a href="#数据传送" class="headerlink" title="数据传送"></a>数据传送</h4><h4 id="连接释放"><a href="#连接释放" class="headerlink" title="连接释放:"></a>连接释放:</h4><h5 id="图释-5"><a href="#图释-5" class="headerlink" title="图释"></a>图释</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174722.jpg" alt="tips-net-tcp-2019311174722"></p>
+<h5 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤:"></a>步骤:</h5><ul>
+<li>数据传输结束后,通信的双方都可释放连接.现在 A 的应用进程先向其 TCP 发出连接释放报文段,并停止再发送数据,主动关闭 TCP 连接(A 把连接释放报文段首部的 FIN = 1,其序号seq = u,等待 B 的确认)</li>
+<li>B 发出确认,确认号 ack = u＋1,而这个报文段自己的序号 seq = v(TCP 服务器进程通知高层应用进程.从 A 到 B 这个方向的连接就释放了,TCP 连接处于半关闭状态.B 若发送数据,A 仍要接收)</li>
+<li>若 B 已经没有要向 A 发送的数据,其应用进程就通知 TCP 释放连接</li>
+<li>A 收到连接释放报文段后,必须发出确认,在确认报文段中 ACK = 1,确认号 ack=w﹢1,自己的序号 seq = u + 1</li>
+</ul>
+<h5 id="注意-1"><a href="#注意-1" class="headerlink" title="注意:"></a>注意:</h5><p>TCP 连接必须经过时间 2MSL 后才真正释放掉(2MSL 的时间的用意 — 为了保证 A 发送的最后一个 ACK 报文段能够到达 B.防止 “已失效的连接请求报文段”出现在本连接中.A 在发送完最后一个 ACK 报文段后,再经过时间 2MSL,就可以使本连接持续的时间内所产生的所有报文段,都从网络中消失.这样就可以使下一个新的连接中不会出现这种旧的连接请求报文段)</p>
+<h5 id="发现丢失确认时候的处理"><a href="#发现丢失确认时候的处理" class="headerlink" title="发现丢失确认时候的处理"></a>发现丢失确认时候的处理</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174940.png" alt="tips-net-tcp-2019311174940"></p>
+<h4 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题:"></a>三个问题:</h4><ul>
+<li>要使每一方能够确知对方的存在</li>
+<li>要允许双方协商一些参数(如最大报文段长度,最大窗口大小,服务质量等)</li>
+<li>能够对运输实体资源(如缓存大小,连接表中的项目等)进行分配</li>
+</ul>
+<h2 id="发送TCP请求客户端"><a href="#发送TCP请求客户端" class="headerlink" title="发送TCP请求客户端"></a>发送TCP请求客户端</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311175058.png" alt="tips-net-tcp-2019311175058"></p>
+<h2 id="拥塞处理相关概念"><a href="#拥塞处理相关概念" class="headerlink" title="拥塞处理相关概念"></a>拥塞处理相关概念</h2><h3 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口:"></a>拥塞窗口:</h3><ul>
+<li>含义:拥塞窗口的大小取决于网络的拥塞程度,并且动态地在变化.发送方让自己的发送窗口等于拥塞窗口.如再考虑到接收方的接收能力,则发送窗口还可能小于拥塞窗口</li>
+<li>发送方控制拥塞窗口的原则:只要网络没有出现拥塞,拥塞窗口就再增大一些,以便把更多的分组发送出去.但只要网络出现拥塞,拥塞窗口就减小一些,以减少注入到网络中的分组数</li>
+</ul>
+<h3 id="乘法减小"><a href="#乘法减小" class="headerlink" title="乘法减小:"></a>乘法减小:</h3><p>是指不论在慢开始阶段还是拥塞避免阶段,只要出现一次超时(即出现一次网络拥塞),就把慢开始门限值 ssthresh 设置为当前的拥塞窗口值乘以 0.5</p>
+<h3 id="加法增大"><a href="#加法增大" class="headerlink" title="加法增大:"></a>加法增大:</h3><p>是指执行拥塞避免算法后,在收到对所有报文段的确认后(即经过一个往返时间),就把拥塞窗口 cwnd增加一个 MSS 大小,使拥塞窗口缓慢增大,以防止网络过早出现拥塞</p>
+<h3 id="快重传"><a href="#快重传" class="headerlink" title="快重传:"></a>快重传:</h3><p>快重传算法首先要求接收方每收到一个失序的报文段后就立即发出重复确认.这样做可以让发送方及早知道有报文段没有到达接收方,发送方只要一连收到三个重复确认就应当立即重传对方尚未收到的报文段
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311175358.jpg" alt="tips-net-tcp-2019311175358"></p>
+<h3 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复:"></a>快恢复:</h3><p>当发送端收到连续三个重复的确认时,就执行“乘法减小”算法,把慢开始门限 ssthresh 减半.但接下去不执行慢开始算法</p>
+<h3 id="发送窗口的上限值"><a href="#发送窗口的上限值" class="headerlink" title="发送窗口的上限值:"></a>发送窗口的上限值:</h3><p>发送方的发送窗口的上限值应当取为接收方窗口 rwnd 和拥塞窗口 cwnd 这两个变量中较小的一个,即应按以下公式确定： 发送窗口的上限值   Min [rwnd, cwnd]</p>
+<p>当 rwnd &lt; cwnd 时,是接收方的接收能力限制发送窗口的最大值
+当 cwnd &lt; rwnd 时,则是网络的拥塞限制发送窗口的最大值</p>
+<h2 id="避免拥塞具体实现"><a href="#避免拥塞具体实现" class="headerlink" title="避免拥塞具体实现"></a>避免拥塞具体实现</h2><h3 id="有滑动窗口了，为什么还要拥塞窗口"><a href="#有滑动窗口了，为什么还要拥塞窗口" class="headerlink" title="有滑动窗口了，为什么还要拥塞窗口"></a>有滑动窗口了，为什么还要拥塞窗口</h3><p>发送方与接收方之间存在多个路由器和速率较慢的链路时，一些中间路由器就必须缓存分组，并可能耗尽缓存，此时便会出现拥塞，这将严重降低了TCP连接的吞吐量，拥塞窗口就是为了防止过多的数据注入到网络中，中间路由无法消化的问题。</p>
+<p>TCP的做法是引入拥塞窗口(cwnd)并策略性的调整其大小，如上文提到的发送窗口大小是取滑动窗口大小与拥塞窗口大小的最小值，这个正是用来缓解该问题，下面是拥塞窗口大小变化的策略:</p>
+<h4 id="1-慢开始、拥塞控制"><a href="#1-慢开始、拥塞控制" class="headerlink" title="1. 慢开始、拥塞控制"></a>1. 慢开始、拥塞控制</h4><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312133854.png" alt="tips-net-tcp-2019312133854">
+其目的是: 拥塞发生时循序减少主机发送到网络的报文数，使得这时路由器有足够的时间消化积压的报文。</p>
+<ul>
+<li>当主机开发发送数据时，拥塞窗口(cwnd)被初始化为1个报文段，试探性的发送1个字节的报文</li>
+<li>每收到一个ACK，拥塞窗口大小就指数的增加报文段数目(1,2,4,16…)</li>
+<li>最终到达提前预设的慢开始阀值(ssthresh)，停止使用慢开始算法，改用拥塞避免算法</li>
+<li>拥塞避免算法是每经过一个RTT，拥塞窗口就增加一个报文段，即改为线性的增加报文段</li>
+<li>最终会出现网络拥塞，比如丢包等情况，停止拥塞避免算法，将慢开始阀值设置为目前拥塞时拥塞窗口大小的一半(但不能小于2)，并重置拥塞窗口大小为1个报文段，开始新的一轮慢开始 </li>
+</ul>
+<p>慢开始门限 ssthresh 的用法:</p>
+<ul>
+<li>当 cwnd &lt; ssthresh 时,使用慢开始算法</li>
+<li>当 cwnd &gt; ssthresh 时,停止使用慢开始算法而改用拥塞避免算法</li>
+<li>当 cwnd = ssthresh 时,既可使用慢开始算法,也可使用拥塞避免算法</li>
+</ul>
+<h4 id="2-快重传，快恢复"><a href="#2-快重传，快恢复" class="headerlink" title="2. 快重传，快恢复"></a>2. 快重传，快恢复</h4><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312134328.png" alt="tips-net-tcp-2019312134328">
+其目的是: 减少因为拥塞导致的数据包丢失的重传时间，避免无用的数据到网络</p>
+<p>接收方: 如果一个包丢失，后续的包继续发送针对该包的重传请求</p>
+<p>发送方: 一旦收到三个一样的确认，判定为拥塞:</p>
+<ul>
+<li>立即重传该包</li>
+<li>开始执行快恢复算法</li>
+<li>快恢复是慢开始阀值设置为目前拥塞时拥塞窗口大小的一半；拥塞窗口大小设置为目前设置后的慢开始阀值的大小；执行拥塞避免算法</li>
+</ul>
+<h2 id="TCP窗口特殊情况"><a href="#TCP窗口特殊情况" class="headerlink" title="TCP窗口特殊情况"></a>TCP窗口特殊情况</h2><h3 id="1-Persistence-timer"><a href="#1-Persistence-timer" class="headerlink" title="1. Persistence timer"></a>1. Persistence timer</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312134856.png" alt="tips-net-tcp-2019312134856">
+防止丢包导致发送端停留在上次收到的接收窗口大小为0的情况:</p>
+<ul>
+<li>接收端B: 我的缓存已满，接收窗口为0</li>
+<li>发送端A: 停止发送数据, 并启动持续计时器(Persistence timer)</li>
+<li>接收端B: 消化完缓存，发送报文给发送端A，我的接收窗口大小为400，但是 这个报文丢了</li>
+<li>发送端A: 计时器时间到，发送一个1字节的探测报文</li>
+<li>接收端B: 重新发送，接收窗口大小为400</li>
+<li>发送端A: 继续发送数据<h3 id="2-应用层每次单字节发送"><a href="#2-应用层每次单字节发送" class="headerlink" title="2. 应用层每次单字节发送"></a>2. 应用层每次单字节发送</h3>单个发送字节，然后等待一个确认，再发送一个字节，这样为一个字节添加40个字节头的做法，无疑增加了网络中许多不必要的报文，该问题TCP层的解决方案:</li>
+</ul>
+<p>发送方采用Nagle算法:</p>
+<ul>
+<li>若应用层是逐个字节把数据送到TCP，那么TCP不会逐个的发送，而是先发送第一个数据字节，然后缓存剩余的</li>
+<li>在收到第一个字节的ACK获知网络情况与对方的接收窗口大小后，把缓存的剩余字节组成合适的报文发送出去</li>
+<li>到达的数据达到发送窗口大小的一半或者报文段的最大长度时，立即发送</li>
+</ul>
+<p>接收方的做法:</p>
+<ul>
+<li>等待本地有足够的缓存空间容纳一个报文段，或者等到本地的缓存空间有一半空闲的时候，再通知发送端发送数据。</li>
+</ul>
+<h2 id="TCP-的有限状态机"><a href="#TCP-的有限状态机" class="headerlink" title="TCP 的有限状态机"></a>TCP 的有限状态机</h2><p>说明:</p>
+<ul>
+<li>TCP 有限状态机的图中每一个方框都是 TCP 可能具有的状态</li>
+<li>每个方框中的大写英文字符串是 TCP 标准所使用的 TCP 连接状态名.状态之间的箭头表示可能发生的状态变迁</li>
+<li>箭头旁边的字,表明引起这种变迁的原因,或表明发生状态变迁后又出现什么动作</li>
+<li>图中有三种不同的箭头<ul>
+<li>粗实线箭头表示对客户进程的正常变迁</li>
+<li>粗虚线箭头表示对服务器进程的正常变迁</li>
+<li>另一种细线箭头表示异常变迁</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311175949.png" alt="tips-net-tcp-2019311175949"></p>
+<h2 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h2><h3 id="MTU"><a href="#MTU" class="headerlink" title="MTU"></a>MTU</h3><h4 id="什么是MTU-Maximum-Transmit-Unit"><a href="#什么是MTU-Maximum-Transmit-Unit" class="headerlink" title="什么是MTU(Maximum Transmit Unit)"></a>什么是MTU(Maximum Transmit Unit)</h4><p>由于以太网传输的限制，每个以太网网数据帧的大小都是落在在区间[64Bytes,1518Bytes]中的，不在区间内的一般会被视为错误的数据帧，以太网转发设备直接丢弃。而根据以太网每帧的数据构成，除去固定的部分，留给上层协议的只有Data域的1500Bytes，我们将它称为MTU。</p>
+<p>以太网(Ethernet II)每帧的数据构成: 目的Mac地址(DMAC)+源Mac地址(SMAC)+类型(Type)+数据(Data)+校验(CRC) = 6Bytes(48bit)DMAC + 6Bytes(48bit)SMAC + 2Bytes(16bit)Type + 1500BytesData + 4Bytes(24bit)CRC</p>
+<h4 id="MTU造成什么影响"><a href="#MTU造成什么影响" class="headerlink" title="MTU造成什么影响"></a>MTU造成什么影响</h4><p>由于一个帧放不下，如IP协议，就会对数据包进行分片处理，这就导致了原本一次可以搞定的，被分为多次，降低传输性能，不过我们可以通过在数据包包头加上DF(DonotFragment)标签来强制不被分片处理。</p>
+<p>UDP协议不用关心数据的到达的有序以及正确，因此对分片无特殊要求
+TCP协议相反，因此TCP协议本身的最大报文段大小MSS也受MTU影响，通常MSS是: MTU - 20Bytes(IP Header) - 20Bytes(TCP Header)
+不过好在绝大多数的网络链路都是1500Bytes的MTU或者更大</p>
+<h3 id="什么是MSS-Maximum-Segment-Size"><a href="#什么是MSS-Maximum-Segment-Size" class="headerlink" title="什么是MSS(Maximum Segment Size)"></a>什么是MSS(Maximum Segment Size)</h3><p>TCP的最大报文段大小，只包含TCP Payload(不包含TCP Header与TCP Option)的TCP每次能够传输的最大数据分段的大小，可以用来限制每次发送的字节数。通常大小为1460Bytes(1500BytesMTU - 20Bytes(IP Header) - 20Bytes(TCP Header))</p>
+<p>MSS是在TCP建连时确定的，通讯双方会根据双方提供的MSS值，取最小的MSS作为该次连接数据传输的MSS</p>
+<h3 id="什么是WS-Window-Scaling"><a href="#什么是WS-Window-Scaling" class="headerlink" title="什么是WS(Window Scaling)"></a>什么是WS(Window Scaling)</h3><p>TCP首部中表示Window Size的字段只有16位，因此按照协议，能表示的最大窗口大小是2^16-1=65535Bytes(64Kb)，因此TCP的选项字段中包含了窗口扩大因子(WS)分别用option-kind、option-length、option-data来表示，这个参数可带可不带，只有在双方都支持的情况下，才会生效。如双方的WS都是256，而后我们ACK Window size value是5，那么此时就可以表示我们的接收窗口是1280Bytes(5*256=1280)。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/zhangdaisylove/article/details/47294315" target="_blank" rel="external">TCP的滑动窗口与拥塞窗口</a>
+<a href="http://blog.chinaunix.net/uid-26275986-id-4109679.html" target="_blank" rel="external">计算机网络【七】：可靠传输的实现</a>
+<a href="http://blog.csdn.net/cloud323/article/details/77481711" target="_blank" rel="external">TCP窗口控制、流控制、拥塞控制</a>
+<a href="http://blog.csdn.net/hldjf/article/details/7450565" target="_blank" rel="external">也谈一下TCP segment of a reassembled PDU</a>
+<a href="https://www.zhihu.com/question/48454744" target="_blank" rel="external">TCP流量控制中的滑动窗口大小</a>
+<a href="https://my.oschina.net/xinxingegeya/blog/485650" target="_blank" rel="external">TCP 滑动窗口（发送窗口和接收窗口）</a>
+<a href="https://www.zhihu.com/question/32255109" target="_blank" rel="external">TCP协议的滑动窗口具体是怎样控制流量的？</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-nat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/11/tips-net-nat/" itemprop="url">
+                  tips-net-nat
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T11:05:57+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-NAT"><a href="#1-NAT" class="headerlink" title="1.NAT"></a>1.NAT</h2><p>NAT（Network Address Translation，网络地址转换）是1994年提出的。当在专用网内部的一些主机本来已经分配到了本地IP地址（即仅在本专用网内使用的专用地址），但现在又想和因特网上的主机通信（并不需要加密）时，可使用NAT方法。
+这种方法需要在专用网连接到因特网的路由器上安装NAT软件。装有NAT软件的路由器叫做NAT路由器，它至少有一个有效的外部全球IP地址。这样，所有使用本地地址的主机在和外界通信时，都要在NAT路由器上将其本地地址转换成全球IP地址，才能和因特网连接。
+另外，这种通过使用少量的公有IP 地址代表较多的私有IP 地址的方式，将有助于减缓可用的IP地址空间的枯竭。在RFC 2663中有对NAT的说明。</p>
+<p>NAT的实现方式有三种，即静态转换Static Nat、动态转换Dynamic Nat和端口多路复用OverLoad。</p>
+<h3 id="静态转换"><a href="#静态转换" class="headerlink" title="静态转换"></a>静态转换</h3><p>是指将内部网络的私有IP地址转换为公有IP地址，IP地址对是一对一的，是一成不变的，某个私有IP地址只转换为某个公有IP地址。借助于静态转换，可以实现外部网络对内部网络中某些特定设备（如服务器）的访问。</p>
+<h3 id="动态转换"><a href="#动态转换" class="headerlink" title="动态转换"></a>动态转换</h3><p>是指将内部网络的私有IP地址转换为公用IP地址时，IP地址是不确定的，是随机的，所有被授权访问上Internet的私有IP地址可随机转换为任何指定的合法IP地址。也就是说，只要指定哪些内部地址可以进行转换，以及用哪些合法地址作为外部地址时，就可以进行动态转换。动态转换可以使用多个合法外部地址集。当ISP提供的合法IP地址略少于网络内部的计算机数量时。可以采用动态转换的方式。</p>
+<h3 id="端口多路复用（Port-address-Translation-PAT"><a href="#端口多路复用（Port-address-Translation-PAT" class="headerlink" title="端口多路复用（Port address Translation,PAT)"></a>端口多路复用（Port address Translation,PAT)</h3><p>是指改变外出数据包的源端口并进行端口转换，即端口地址转换（PAT，Port Address Translation).采用端口多路复用方式。内部网络的所有主机均可共享一个合法外部IP地址实现对Internet的访问，从而可以最大限度地节约IP地址资源。同时，又可隐藏网络内部的所有主机，有效避免来自internet的攻击。因此，目前网络中应用最多的就是端口多路复用方式。
+ALG（Application Level Gateway），即应用程序级网关技术：传统的NAT技术只对IP层和传输层头部进行转换处理，但是一些应用层协议，在协议数据报文中包含了地址信息。为了使得这些应用也能透明地完成NAT转换，NAT使用一种称作ALG的技术，它能对这些应用程序在通信时所包含的地址信息也进行相应的NAT转换。例如：对于FTP协议的PORT/PASV命令、DNS协议的 “A” 和 “PTR” queries命令和部分ICMP消息类型等都需要相应的ALG来支持。
+如果协议数据报文中不包含地址信息，则很容易利用传统的NAT技术来完成透明的地址转换功能，通常我们使用的如下应用就可以直接利用传统的NAT技术：HTTP、TELNET、FINGER、NTP、NFS、ARCHIE、RLOGIN、RSH、RCP等。</p>
+<h2 id="2-TCP长连接"><a href="#2-TCP长连接" class="headerlink" title="2.TCP长连接"></a>2.TCP长连接</h2><p>TCP连接建立后只要不明确关闭，逻辑上连接一直存在。
+TCP是有保活定时器的，可以打开保活定时器来维持长连接，设置SO_KEEPALIVE才会开启，时间间隔默认7200s，也就是2h，这个默认是关闭的。</p>
+<p>注意：HTTP的keepalive和TCP的用处不大一样tcp。</p>
+<h2 id="3-NAT超时"><a href="#3-NAT超时" class="headerlink" title="3.NAT超时"></a>3.NAT超时</h2><p>因为 IP v4 的 IP 量有限，运营商分配给手机终端的 IP 是运营商内网的 IP，手机要连接 Internet，就需要通过运营商的网关做一个网络地址转换(Network Address Translation，NAT)。简单的说运营商的网关需要维护一个外网 IP、端口到内网 IP、端口的对应关系，以确保内网的手机可以跟 Internet 的服务器通讯。
+大部分移动无线网络运营商都在链路一段时间没有数据通讯时，会淘汰 NAT 表中的对应项，造成链路中断。
+长连接心跳间隔必须要小于NAT超时时间(aging-time)，如果超过aging-time不做心跳，TCP长连接链路就会中断，Server就无法发送Push给手机，只能等到客户端下次心跳失败后，重建连接才能取到消息。</p>
+<p>因为IPv4地址不足, 或者我们想通过无线路由器上网, 我们的设备可能会处在一个NAT设备的后面, 生活中最常见的NAT设备是家用路由器.
+NAT设备会在IP封包通过设备时修改源/目的IP地址. 对于家用路由器来说, 使用的是网络地址端口转换(NAPT), 它不仅改IP, 还修改TCP和UDP协议的端口号, 这样就能让内网中的设备共用同一个外网IP. 举个例子, NAPT维护一个类似下表的NAT表
+|内网地址|    外网地址|
+|—|—|
+|192.168.0.2:5566|    120.132.92.21:9200|
+|192.168.0.3:7788|    120.132.92.21:9201|
+|192.168.0.3:8888|    120.132.92.21:9202|</p>
+<p>NAT设备会根据NAT表对出去和进来的数据做修改, 比如将192.168.0.3:8888发出去的封包改成120.132.92.21:9202, 外部就认为他们是在和120.132.92.21:9202通信. 同时NAT设备会将120.132.92.21:9202收到的封包的IP和端口改成192.168.0.3:8888, 再发给内网的主机, 这样内部和外部就能双向通信了, 但如果其中192.168.0.3:8888 == 120.132.92.21:9202这一映射因为某些原因被NAT设备淘汰了, 那么外部设备就无法直接与192.168.0.3:8888通信了.</p>
+<p>国内移动无线网络运营商在链路上一段时间内没有数据通讯后, 会淘汰NAT表中的对应项, 造成链路中断.</p>
+<h2 id="4-心跳包"><a href="#4-心跳包" class="headerlink" title="4.心跳包"></a>4.心跳包</h2><ul>
+<li>心跳的原因：虽然理论tcp连接后一直不断，但实际上会断网。见：比如 NAT超时，更多 影响TCP连接寿命的因素</li>
+<li>心跳包的主要作用是告知对方连接端，我还活着，心还在跳。</li>
+<li>心跳时长多少？
+　　
+现实是残酷的, 根据网上的一些说法, 中移动2/3G下, NAT超时时间为5分钟, 中国电信3G则大于28分钟, 理想的情况下, 客户端应当以略小于NAT超时时间的间隔来发送心跳包.
+|地区/网络|NAT超时时间|
+|—|—|
+|中国移动3G和2G|5分钟|
+|中国联通2G|5分钟|
+|中国电信3G|大于28分钟|
+|美国3G|大于28分钟|
+|台湾3G|大于28分钟|</li>
+</ul>
+<p>wifi下, NAT超时时间都会比较长, 据说宽带的网关一般没有空闲释放机制, GCM有些时候在wifi下的心跳比在移动网络下的心跳要快, 可能是因为wifi下联网通信耗费的电量比移动网络下小</p>
+<h2 id="5-心跳包和轮询的区别"><a href="#5-心跳包和轮询的区别" class="headerlink" title="5.心跳包和轮询的区别"></a>5.心跳包和轮询的区别</h2><p>心跳包和轮询看起来类似, 都是客户端主动联系服务器, 但是区别很大.</p>
+<ul>
+<li>轮询是为了获取数据, 而心跳是为了保活TCP连接.</li>
+<li>轮询得越频繁, 获取数据就越及时, 心跳的频繁与否和数据是否及时没有直接关系</li>
+<li>轮询比心跳能耗更高, 因为一次轮询需要经过TCP三次握手, 四次挥手, 单次心跳不需要建立和拆除TCP连接.</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/08/tips-android-net/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/08/tips-android-net/" itemprop="url">
+                  Android架构之网络优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T17:13:46+08:00">
+                2019-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>常规的网络框架设计和常用的网络优化方案。</p>
+<ol>
+<li>网络框架OkHttp</li>
+</ol>
+<ul>
+<li>简洁易用的接口</li>
+<li>拦截器机制，网络重试与跳转</li>
+<li>连接池复用</li>
+</ul>
+<ol>
+<li>网络加速</li>
+</ol>
+<ul>
+<li>HttpDNS与IP直连</li>
+<li>连接加速：短连接复用、Http2多路复用、长连接</li>
+</ul>
+<ol>
+<li>数据压缩与序列化</li>
+</ol>
+<ul>
+<li>Json vs ProtoBuf</li>
+<li>压缩算法</li>
+<li>序列化</li>
+</ul>
+<ol>
+<li>长连接技术与Mars架构</li>
+</ol>
+<ul>
+<li>智能心跳机制</li>
+<li>自动重连</li>
+<li>Android跨进程实现</li>
+<li>智能唤醒</li>
+</ul>
+<ol>
+<li>如何应对复杂网络</li>
+</ol>
+<ul>
+<li>弱网</li>
+<li>网络超时、振荡</li>
+<li>404与DNS劫持</li>
+</ul>
+<ol>
+<li>如何保证网络数据安全</li>
+</ol>
+<ul>
+<li>TLS协议，握手与证书</li>
+<li>数据签名及校验</li>
+</ul>
+<p><a href="https://github.com/dhhAndroid/RxWebSocket" target="_blank" rel="external">https://github.com/dhhAndroid/RxWebSocket</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/07/tips-android-sharedpreferences/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/07/tips-android-sharedpreferences/" itemprop="url">
+                  Android SharedPreference详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T12:17:40+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>SharedPreferences作为一种数据持久化的方式，是处理简单的key-value类型数据时的首选。</p>
+<h3 id="一般用法"><a href="#一般用法" class="headerlink" title="一般用法:"></a>一般用法:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//demo是该sharedpreference对应文件名,对应的是一个xml文件,里面存放key-value格式的数据.</div><div class="line">SharedPreferences sharedPreferences = context.getSharedPreferences(&quot;demo&quot;, MODE_WORLD_WRITEABLE);</div><div class="line">//提供了getXXX的读取数据方法</div><div class="line">boolean xxx = sharedPreferences.getBoolean(&quot;xxx&quot;, false);</div><div class="line">//通过Editor提供了putXXX系列的存储方法,调用完需要使用apply()或commit()使之生效,不同点后面介绍</div><div class="line">SharedPreferences.Editor edit = sharedPreferences.edit();</div><div class="line">edit.putBoolean(&quot;xxx&quot;, true);</div><div class="line">edit.apply();//使存储生效</div><div class="line">//edit.commit();//使存储生效</div></pre></td></tr></table></figure>
+<p>每个SharedPreferences都对应了当前package的<code>data/data/package_name/share_prefs/</code>目录下的一个文件</p>
+<h3 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h3><p>Context.java中getSharedPreferences接口说明:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">     * Retrieve and hold the contents of the preferences file &apos;name&apos;, returning</div><div class="line">     * a SharedPreferences through which you can retrieve and modify its</div><div class="line">     * values.  Only one instance of the SharedPreferences object is returned</div><div class="line">     * to any callers for the same name, meaning they will see each other&apos;s</div><div class="line">     * edits as soon as they are made.</div><div class="line">     *</div><div class="line">     * @param name Desired preferences file. If a preferences file by this name</div><div class="line">     * does not exist, it will be created when you retrieve an</div><div class="line">     * editor (SharedPreferences.edit()) and then commit changes (Editor.commit()).</div><div class="line">     * @param mode Operating mode.  Use 0 or &#123;@link #MODE_PRIVATE&#125; for the</div><div class="line">     * default operation, &#123;@link #MODE_WORLD_READABLE&#125;</div><div class="line">     * and &#123;@link #MODE_WORLD_WRITEABLE&#125; to control permissions.</div><div class="line">     *</div><div class="line">     * @return The single &#123;@link SharedPreferences&#125; instance that can be used</div><div class="line">     *         to retrieve and modify the preference values.</div><div class="line">     *</div><div class="line">     * @see #MODE_PRIVATE</div><div class="line">     * @see #MODE_WORLD_READABLE</div><div class="line">     * @see #MODE_WORLD_WRITEABLE</div><div class="line">     */</div><div class="line">    public abstract SharedPreferences getSharedPreferences(String name,</div><div class="line">            int mode);</div></pre></td></tr></table></figure></p>
+<p>ContextImpl中getSharedPreferences实现:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">    public SharedPreferences getSharedPreferences(String name, int mode) &#123;</div><div class="line">        SharedPreferencesImpl sp;</div><div class="line">        synchronized (ContextImpl.class) &#123;</div><div class="line">            if (sSharedPrefs == null) &#123;</div><div class="line">                sSharedPrefs = new ArrayMap&lt;String, ArrayMap&lt;String, SharedPreferencesImpl&gt;&gt;();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            final String packageName = getPackageName();</div><div class="line">            ArrayMap&lt;String, SharedPreferencesImpl&gt; packagePrefs = sSharedPrefs.get(packageName);</div><div class="line">            if (packagePrefs == null) &#123;</div><div class="line">                packagePrefs = new ArrayMap&lt;String, SharedPreferencesImpl&gt;();</div><div class="line">                sSharedPrefs.put(packageName, packagePrefs);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // At least one application in the world actually passes in a null</div><div class="line">            // name.  This happened to work because when we generated the file name</div><div class="line">            // we would stringify it to &quot;null.xml&quot;.  Nice.</div><div class="line">            if (mPackageInfo.getApplicationInfo().targetSdkVersion &lt;</div><div class="line">                    Build.VERSION_CODES.KITKAT) &#123;</div><div class="line">                if (name == null) &#123;</div><div class="line">                    name = &quot;null&quot;;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            sp = packagePrefs.get(name);</div><div class="line">            if (sp == null) &#123;</div><div class="line">                File prefsFile = getSharedPrefsFile(name);</div><div class="line">                sp = new SharedPreferencesImpl(prefsFile, mode);</div><div class="line">                packagePrefs.put(name, sp);</div><div class="line">                return sp;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if ((mode &amp; Context.MODE_MULTI_PROCESS) != 0 ||</div><div class="line">            getApplicationInfo().targetSdkVersion &lt; android.os.Build.VERSION_CODES.HONEYCOMB) &#123;</div><div class="line">            // If somebody else (some other process) changed the prefs</div><div class="line">            // file behind our back, we reload it.  This has been the</div><div class="line">            // historical (if undocumented) behavior.</div><div class="line">            sp.startReloadIfChangedUnexpectedly();</div><div class="line">        &#125;</div><div class="line">        return sp;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这段代码里，我们可以看出，</p>
+<ol>
+<li>SharedPreferencesImpl是保存在全局个map cache里的，只会创建一次。</li>
+<li>MODE_MULTI_PROCESS模式下，每次获取都会尝试去读取文件reload。当然会有一些逻辑尽量减少读取次数，比如当前是否有正在进行的读取操作，文件的修改时间和大小与上次有没有变化等。</li>
+</ol>
+<p>Context.java中提供了以下四种mode:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">//这是默认模式，仅caller uid的进程可访问</div><div class="line">/**</div><div class="line">     * File creation mode: the default mode, where the created file can only</div><div class="line">     * be accessed by the calling application (or all applications sharing the</div><div class="line">     * same user ID).</div><div class="line">     * @see #MODE_WORLD_READABLE</div><div class="line">     * @see #MODE_WORLD_WRITEABLE</div><div class="line">     */</div><div class="line">int MODE_PRIVATE = 0x0000;</div><div class="line"></div><div class="line">//所有人可写，也就是任何应用都可修改它，这是极其危险的，因此改选项已被Deprected</div><div class="line">/**</div><div class="line">     * @deprecated Creating world-readable files is very dangerous, and likely</div><div class="line">     * to cause security holes in applications.  It is strongly discouraged;</div><div class="line">     * instead, applications should use more formal mechanism for interactions</div><div class="line">     * such as &#123;@link ContentProvider&#125;, &#123;@link BroadcastReceiver&#125;, and</div><div class="line">     * &#123;@link android.app.Service&#125;.  There are no guarantees that this</div><div class="line">     * access mode will remain on a file, such as when it goes through a</div><div class="line">     * backup and restore.</div><div class="line">     * File creation mode: allow all other applications to have read access</div><div class="line">     * to the created file.</div><div class="line">     * @see #MODE_PRIVATE</div><div class="line">     * @see #MODE_WORLD_WRITEABLE</div><div class="line">     */</div><div class="line">int MODE_WORLD_READABLE = 0x0001; </div><div class="line"></div><div class="line">//所有人可读，这个参数同样非常危险，可能导致隐私数据泄漏</div><div class="line">/**</div><div class="line">     * @deprecated Creating world-writable files is very dangerous, and likely</div><div class="line">     * to cause security holes in applications.  It is strongly discouraged;</div><div class="line">     * instead, applications should use more formal mechanism for interactions</div><div class="line">     * such as &#123;@link ContentProvider&#125;, &#123;@link BroadcastReceiver&#125;, and</div><div class="line">     * &#123;@link android.app.Service&#125;.  There are no guarantees that this</div><div class="line">     * access mode will remain on a file, such as when it goes through a</div><div class="line">     * backup and restore.</div><div class="line">     * File creation mode: allow all other applications to have write access</div><div class="line">     * to the created file.</div><div class="line">     * @see #MODE_PRIVATE</div><div class="line">     * @see #MODE_WORLD_READABLE</div><div class="line">     */</div><div class="line">int MODE_WORLD_READABLE = 0x0002</div><div class="line"></div><div class="line">//设置该参数后，每次获取对应的SharedPreferences时都会尝试从磁盘中读取修改过的文件 </div><div class="line">/**</div><div class="line">     * SharedPreference loading flag: when set, the file on disk will</div><div class="line">     * be checked for modification even if the shared preferences</div><div class="line">     * instance is already loaded in this process.  This behavior is</div><div class="line">     * sometimes desired in cases where the application has multiple</div><div class="line">     * processes, all writing to the same SharedPreferences file.</div><div class="line">     * Generally there are better forms of communication between</div><div class="line">     * processes, though.</div><div class="line">     *</div><div class="line">     * &lt;p&gt;This was the legacy (but undocumented) behavior in and</div><div class="line">     * before Gingerbread (Android 2.3) and this flag is implied when</div><div class="line">     * targetting such releases.  For applications targetting SDK</div><div class="line">     * versions &lt;em&gt;greater than&lt;/em&gt; Android 2.3, this flag must be</div><div class="line">     * explicitly set if desired.</div><div class="line">     *</div><div class="line">     * @see #getSharedPreferences</div><div class="line">     *</div><div class="line">     * @deprecated MODE_MULTI_PROCESS does not work reliably in</div><div class="line">     * some versions of Android, and furthermore does not provide any</div><div class="line">     * mechanism for reconciling concurrent modifications across</div><div class="line">     * processes.  Applications should not attempt to use it.  Instead,</div><div class="line">     * they should use an explicit cross-process data management</div><div class="line">     * approach such as &#123;@link android.content.ContentProvider ContentProvider&#125;.</div><div class="line">     */</div><div class="line">int MODE_MULTI_PROCESS = 0x0004;</div></pre></td></tr></table></figure></p>
+<h4 id="MODE-MULTI-PROCESS"><a href="#MODE-MULTI-PROCESS" class="headerlink" title="MODE_MULTI_PROCESS"></a>MODE_MULTI_PROCESS</h4><p>当设置MODE_MULTI_PROCESS这个参数的时候，即使当前进程内已经创建了该SharedPreferences，仍然在每次获取的时候都会尝试从本地文件中刷新。在同一个进程中，同一个文件只有一个实例。MODE_MULTI_PROCESS的作用如上getSharedPreferences实现.这个方法先判断是否已创建SharedPreferences实例，若未创建，则先创建。之后判断mode如果为MODE_MULTI_PROCESS, 则调用startReloadIfChangeUnexpectedly()，看下其实现:
+SharedPreferencesImpl.java
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">void startReloadIfChangedUnexpectedly() &#123;</div><div class="line">        synchronized (this) &#123;</div><div class="line">            // TODO: wait for any pending writes to disk?</div><div class="line">            if (!hasFileChangedUnexpectedly()) &#123;</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">            startLoadFromDisk();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">private void startLoadFromDisk() &#123;</div><div class="line">        synchronized (this) &#123;</div><div class="line">            mLoaded = false;</div><div class="line">        &#125;</div><div class="line">        new Thread(&quot;SharedPreferencesImpl-load&quot;) &#123;</div><div class="line">            public void run() &#123;</div><div class="line">                synchronized (SharedPreferencesImpl.this) &#123;</div><div class="line">                    loadFromDiskLocked();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;.start();</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>可以看出MODE_MULTI_PROCESS的作用就是在每次获取SharedPreferences实例的时候尝试从磁盘中加载修改过的数据，并且读取是在异步线程中，因此一个线程的修改最终会反映到另一个线程，但不能立即反映到另一个进程，所以通过SharedPreferences无法实现多进程同步。
+综合: 如果仅仅让多进程可访问同一个SharedPref文件，不需要设置MODE_MULTI_PROCESS, 如果需要实现多进程同步，必须设置这个参数，但也只能实现最终一致，无法即时同步。</p>
+<p><strong>由于SharedPreference内容都会在内存里存一份，所以不要使用SharedPreference保存较大的内容，避免不必要的内存浪费。</strong></p>
+<p>注意有一个锁mLoaded ,在对SharedPreference做其他操作时，都必须等待该锁释放:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@Nullable</div><div class="line">    public String getString(String key, @Nullable String defValue) &#123;</div><div class="line">        synchronized (this) &#123;</div><div class="line">            awaitLoadedLocked();</div><div class="line">            String v = (String)mMap.get(key);</div><div class="line">            return v != null ? v : defValue;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>写操作有两个commit apply 。 commit 是同步的，写入内存的同时会等待写入文件完成，apply是异步的，先写入内存，在异步线程里再写入文件。apply肯定要快一些,优先推荐使用apply:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">         * Commit your preferences changes back from this Editor to the</div><div class="line">         * &#123;@link SharedPreferences&#125; object it is editing.  This atomically</div><div class="line">         * performs the requested modifications, replacing whatever is currently</div><div class="line">         * in the SharedPreferences.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;Note that when two editors are modifying preferences at the same</div><div class="line">         * time, the last one to call commit wins.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;If you don&apos;t care about the return value and you&apos;re</div><div class="line">         * using this from your application&apos;s main thread, consider</div><div class="line">         * using &#123;@link #apply&#125; instead.</div><div class="line">         *</div><div class="line">         * @return Returns true if the new values were successfully written</div><div class="line">         * to persistent storage.</div><div class="line">         */</div><div class="line">        boolean commit();</div><div class="line">        /**</div><div class="line">         * Commit your preferences changes back from this Editor to the</div><div class="line">         * &#123;@link SharedPreferences&#125; object it is editing.  This atomically</div><div class="line">         * performs the requested modifications, replacing whatever is currently</div><div class="line">         * in the SharedPreferences.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;Note that when two editors are modifying preferences at the same</div><div class="line">         * time, the last one to call apply wins.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;Unlike &#123;@link #commit&#125;, which writes its preferences out</div><div class="line">         * to persistent storage synchronously, &#123;@link #apply&#125;</div><div class="line">         * commits its changes to the in-memory</div><div class="line">         * &#123;@link SharedPreferences&#125; immediately but starts an</div><div class="line">         * asynchronous commit to disk and you won&apos;t be notified of</div><div class="line">         * any failures.  If another editor on this</div><div class="line">         * &#123;@link SharedPreferences&#125; does a regular &#123;@link #commit&#125;</div><div class="line">         * while a &#123;@link #apply&#125; is still outstanding, the</div><div class="line">         * &#123;@link #commit&#125; will block until all async commits are</div><div class="line">         * completed as well as the commit itself.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;As &#123;@link SharedPreferences&#125; instances are singletons within</div><div class="line">         * a process, it&apos;s safe to replace any instance of &#123;@link #commit&#125; with</div><div class="line">         * &#123;@link #apply&#125; if you were already ignoring the return value.</div><div class="line">         *</div><div class="line">         * &lt;p&gt;You don&apos;t need to worry about Android component</div><div class="line">         * lifecycles and their interaction with &lt;code&gt;apply()&lt;/code&gt;</div><div class="line">         * writing to disk.  The framework makes sure in-flight disk</div><div class="line">         * writes from &lt;code&gt;apply()&lt;/code&gt; complete before switching</div><div class="line">         * states.</div><div class="line">         *</div><div class="line">         * &lt;p class=&apos;note&apos;&gt;The SharedPreferences.Editor interface</div><div class="line">         * isn&apos;t expected to be implemented directly.  However, if you</div><div class="line">         * previously did implement it and are now getting errors</div><div class="line">         * about missing &lt;code&gt;apply()&lt;/code&gt;, you can simply call</div><div class="line">         * &#123;@link #commit&#125; from &lt;code&gt;apply()&lt;/code&gt;.</div><div class="line">         */</div><div class="line">        void apply();</div></pre></td></tr></table></figure></p>
+<p>注册/解注册sharedpreference变动监听:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">     * Registers a callback to be invoked when a change happens to a preference.</div><div class="line">     *</div><div class="line">     * &lt;p class=&quot;caution&quot;&gt;&lt;strong&gt;Caution:&lt;/strong&gt; The preference manager does</div><div class="line">     * not currently store a strong reference to the listener. You must store a</div><div class="line">     * strong reference to the listener, or it will be susceptible to garbage</div><div class="line">     * collection. We recommend you keep a reference to the listener in the</div><div class="line">     * instance data of an object that will exist as long as you need the</div><div class="line">     * listener.&lt;/p&gt;</div><div class="line">     *</div><div class="line">     * @param listener The callback that will run.</div><div class="line">     * @see #unregisterOnSharedPreferenceChangeListener</div><div class="line">     */</div><div class="line">    void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener);</div><div class="line">    </div><div class="line">    /**</div><div class="line">     * Unregisters a previous callback.</div><div class="line">     * </div><div class="line">     * @param listener The callback that should be unregistered.</div><div class="line">     * @see #registerOnSharedPreferenceChangeListener</div><div class="line">     */</div><div class="line">    void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener);</div></pre></td></tr></table></figure></p>
+<h4 id="为什么不推荐使用MODE-MULTI-PROCESS"><a href="#为什么不推荐使用MODE-MULTI-PROCESS" class="headerlink" title="为什么不推荐使用MODE_MULTI_PROCESS?"></a>为什么不推荐使用MODE_MULTI_PROCESS?</h4><p>android文档已经Deprected了这个flag，并且说明不应该通过SharedPreference做进程间数据共享？这是为啥呢？从前面但分析可看到当设置这个flag后，每次获取(获取而不是初次创建)SharedPreferences实例的时候，会判断shared_pref文件是否修改过:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">private boolean hasFileChangedUnexpectedly() &#123;</div><div class="line">        synchronized (this) &#123;</div><div class="line">            if (mDiskWritesInFlight &gt; 0) &#123;</div><div class="line">                // If we know we caused it, it&apos;s not unexpected.</div><div class="line">                if (DEBUG) Log.d(TAG, &quot;disk write in flight, not unexpected.&quot;);</div><div class="line">                return false;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        final StructStat stat;</div><div class="line">        try &#123;</div><div class="line">            /*</div><div class="line">             * Metadata operations don&apos;t usually count as a block guard</div><div class="line">             * violation, but we explicitly want this one.</div><div class="line">             */</div><div class="line">            BlockGuard.getThreadPolicy().onReadFromDisk();</div><div class="line">            stat = Os.stat(mFile.getPath());</div><div class="line">        &#125; catch (ErrnoException e) &#123;</div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        synchronized (this) &#123;</div><div class="line">            return mStatTimestamp != stat.st_mtime || mStatSize != stat.st_size;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这里先判断mDiskWritesInFlight&gt;0，如果成立，说明是当前进程修改了文件，不需要重新读取。然后通过文件最后修改时间，判断文件是否修改过。如果修改了，则重新读取:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">private void startLoadFromDisk() &#123;</div><div class="line">        synchronized (this) &#123;</div><div class="line">            mLoaded = false;</div><div class="line">        &#125;</div><div class="line">        new Thread(&quot;SharedPreferencesImpl-load&quot;) &#123;</div><div class="line">            public void run() &#123;</div><div class="line">                synchronized (SharedPreferencesImpl.this) &#123;</div><div class="line">                    loadFromDiskLocked();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void loadFromDiskLocked() &#123;</div><div class="line">        if (mLoaded) &#123;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        if (mBackupFile.exists()) &#123;</div><div class="line">            mFile.delete();</div><div class="line">            mBackupFile.renameTo(mFile);</div><div class="line">        &#125;</div><div class="line">        Map map = null;</div><div class="line">        StructStat stat = null;</div><div class="line">        try &#123;</div><div class="line">            stat = Os.stat(mFile.getPath());</div><div class="line">            if (mFile.canRead()) &#123;</div><div class="line">                BufferedInputStream str = null;</div><div class="line">                try &#123;</div><div class="line">                    str = new BufferedInputStream(</div><div class="line">                            new FileInputStream(mFile), 16*1024);</div><div class="line">                    map = XmlUtils.readMapXml(str);</div><div class="line">                &#125; finally &#123;</div><div class="line">                    IoUtils.closeQuietly(str);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; catch (ErrnoException e) &#123;</div><div class="line">        &#125;</div><div class="line">        mLoaded = true;</div><div class="line">        if (map != null) &#123;</div><div class="line">            mMap = map;</div><div class="line">            mStatTimestamp = stat.st_mtime;</div><div class="line">            mStatSize = stat.st_size;</div><div class="line">        &#125; else &#123;</div><div class="line">            mMap = new HashMap&lt;String, Object&gt;();</div><div class="line">        &#125;</div><div class="line">        notifyAll();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里起码有3个坑！</p>
+<ol>
+<li>使用MODE_MULTI_PROCESS时，不要保存SharedPreference变量，必须每次都从context.getSharedPreferences 获取。如果你图方便使用变量存了下来，那么无法触发reload，有可能两个进程数据不同步。</li>
+<li>前面提到过，load数据是耗时的，并且其他操作会等待该锁。这意味着很多时候获取SharedPreference数据都不得不从文件再读一遍，大大降低了内存缓存的作用。文件读写耗时也影响了性能。</li>
+<li>修改数据时得用commit，保证修改时写入了文件，这样其他进程才能通过文件大小或修改时间感知到。</li>
+</ol>
+<p>重点是这段:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if (mBackupFile.exists()) &#123;</div><div class="line">      mFile.delete();</div><div class="line">      mBackupFile.renameTo(mFile);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>重新读取时，如果发现存在mBackupFile,则将原文件mFile删除，并将mBackupFile重命名为mFile。mBackupFile又是如何创建的呢？答案是在修改SharedPreferences时将内存中的数据写会磁盘时创建的:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">private void writeToFile(MemoryCommitResult mcr) &#123;</div><div class="line">        // Rename the current file so it may be used as a backup during the next read</div><div class="line">        if (mFile.exists()) &#123;</div><div class="line">            if (!mBackupFile.exists()) &#123;</div><div class="line">                if (!mFile.renameTo(mBackupFile)) &#123;</div><div class="line">                    mcr.setDiskWriteResult(false);</div><div class="line">                    return;</div><div class="line">                &#125;</div><div class="line">            &#125; else &#123;</div><div class="line">                mFile.delete();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        FileOutputStream str = createFileOutputStream(mFile);</div><div class="line">        XmlUtils.writeMapXml(mcr.mapToWriteToDisk, str);</div><div class="line">        FileUtils.sync(str);</div><div class="line">        str.close();</div><div class="line">        ContextImpl.setFilePermissionsFromMode(mFile.getPath(), mMode, 0);</div><div class="line">        final StructStat stat = Os.stat(mFile.getPath());</div><div class="line">        synchronized (this) &#123;</div><div class="line">            mStatTimestamp = stat.st_mtime;</div><div class="line">            mStatSize = stat.st_size;</div><div class="line">        &#125;</div><div class="line">        // Writing was successful, delete the backup file if there is one.</div><div class="line">        mBackupFile.delete();</div><div class="line">        mcr.setDiskWriteResult(true);</div><div class="line">        return;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这段代码只保留了核心流程，忽略了错误处理流程。可以看到，写文件的步骤大致是:</p>
+<ol>
+<li>将原文件重命名为mBackupFile</li>
+<li>重新创建原文件mFile, 并将内容写入其中</li>
+<li>删除mBackupFile</li>
+</ol>
+<p>所以，只有当一个进程正处于写文件的过程中的时候，如果另一个进程读文件，才会看到mBackupFile, 这时候读进程会将mBackupFile重命名为mFile, 这样读结果是，读进程只能读到修改前的文件，同时，由于mBackupFile重命名为了mFile,  所以写进程写那个文件就没有文件名引用了，因此其写入的内容无法再被任何进程访问到。所以其内容丢失了，可认为写入失败了，而SharedPreferences对这种失败情况没有任何重试机制，所以就可能出现数据丢失的情况。
+回到这段的重点：为什么不推荐用MODE_MULTI_PROCESS？从前面分析可知，这种模式下，每次获取SharedPreferences都会检测文件是否改变，只要读的时候另一进程在写，就会导致写丢失。这样失败概率就会大幅度提高。反之，若不设置这个模式，则只在第一次创建SharedPreferences的时候读取，导致写失败的概率就会大幅度降低，当然，仍然存在失败的可能。</p>
+<h4 id="为什么不做写失败重试？"><a href="#为什么不做写失败重试？" class="headerlink" title="为什么不做写失败重试？"></a>为什么不做写失败重试？</h4><p>为什么android不做写失败重试呢？原因是写进程并不能发现写失败的情况。难道写的过程中，目标文件被删不会抛异常吗？答案是不会。删除文件只是从文件系统中删除了一个节点信息而已，重命名也是新建了一个具有相同名称的节点信息，并把文件地址指向另一个磁盘地址而已，原来，之前的写过程仍然会成功写到原来的磁盘地址。所以目前的实现方案并不能检测到失败。</p>
+<h4 id="有没有办法解决写失败呢？"><a href="#有没有办法解决写失败呢？" class="headerlink" title="有没有办法解决写失败呢？"></a>有没有办法解决写失败呢？</h4><p>个人觉得是可以做到的，读里面读那段关键操作:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if (mBackupFile.exists()) &#123;</div><div class="line">      mFile.delete();</div><div class="line">      mBackupFile.renameTo(mFile);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>mBackupFile存在，意味着当前正处于写读过程中，这时候是不是可以考虑直接读mBackupFile文件，而不删除mFile呢？这样读话，读取效果一样，都是读的mBackupFile，同时写进程写的mFile也不会被mBacupFile覆盖，写也就能成功了。即使通过这段代码重命名，写进程写完后发现mBackupFile不存在了，其实也能认为发生了读重命名，大可以重试一次。</p>
+<h3 id="多进程使用SharedPreference方案"><a href="#多进程使用SharedPreference方案" class="headerlink" title="多进程使用SharedPreference方案"></a>多进程使用SharedPreference方案</h3><p>说简单也简单，就是依据google的建议使用ContentProvider了。我看过网上很多的例子，但总是觉得少了点什么</p>
+<p>有的方案里将所有读取操作都写作静态方法，没有继承SharedPreference 。 这样做需要强制改变调用者的使用习惯，不怎么好。
+大部分方案做成ContentProvider后，所有的调用都走的ContentProvider。但如果调用进程与SharedPreference 本身就是同一个进程，只用走原生的流程就行了，不用拐个弯去访问ContentProvider，减少不必要的性能损耗。</p>
+<p>我这里也写了一个跨进程方案，简单介绍如下
+SharedPreferenceProxy 继承SharedPreferences。其所有操作都是通过ContentProvider完成。简要代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">public class SharedPreferenceProxy implements SharedPreferences &#123;</div><div class="line">@Nullable</div><div class="line">    @Override</div><div class="line">    public String getString(String key, @Nullable String defValue) &#123;</div><div class="line">        OpEntry result = getResult(OpEntry.obtainGetOperation(key).setStringValue(defValue));</div><div class="line">        return result == null ? defValue : result.getStringValue(defValue);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public Editor edit() &#123;</div><div class="line">        return new EditorImpl();</div><div class="line">    &#125;</div><div class="line">    private OpEntry getResult(@NonNull OpEntry input) &#123;</div><div class="line">        try &#123;</div><div class="line">            Bundle res = ctx.getContentResolver().call(PreferenceUtil.URI</div><div class="line">                    , PreferenceUtil.METHOD_QUERY_VALUE</div><div class="line">                    , preferName</div><div class="line">                    , input.getBundle());</div><div class="line">            return new OpEntry(res);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            return null;</div><div class="line">        &#125;</div><div class="line">...</div><div class="line"></div><div class="line">    public class EditorImpl implements Editor &#123;</div><div class="line">        private ArrayList&lt;OpEntry&gt; mModified = new ArrayList&lt;&gt;();</div><div class="line">        @Override</div><div class="line">        public Editor putString(String key, @Nullable String value) &#123;</div><div class="line">            OpEntry entry = OpEntry.obtainPutOperation(key).setStringValue(value);</div><div class="line">            return addOps(entry);</div><div class="line">        &#125;</div><div class="line">       @Override</div><div class="line">        public void apply() &#123;</div><div class="line">            Bundle intput = new Bundle();</div><div class="line">            intput.putParcelableArrayList(PreferenceUtil.KEY_VALUES, convertBundleList());</div><div class="line">            intput.putInt(OpEntry.KEY_OP_TYPE, OpEntry.OP_TYPE_APPLY);</div><div class="line">            try &#123;</div><div class="line">                ctx.getContentResolver().call(PreferenceUtil.URI, PreferenceUtil.METHOD_EIDIT_VALUE, preferName, intput);</div><div class="line">            &#125; catch (Exception e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">...</div><div class="line">        &#125;</div><div class="line">...</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>OpEntry只是一个对Bundle操作封装的类。
+所有跨进程的操作都是通过SharedPreferenceProvider的call方法完成。SharedPreferenceProvider里会访问真正的SharedPreference
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class SharedPreferenceProvider extends ContentProvider&#123;</div><div class="line"></div><div class="line">    private Map&lt;String, MethodProcess&gt; processerMap = new ArrayMap&lt;&gt;();</div><div class="line">    @Override</div><div class="line">    public boolean onCreate() &#123;</div><div class="line">        processerMap.put(PreferenceUtil.METHOD_QUERY_VALUE, methodQueryValues);</div><div class="line">        processerMap.put(PreferenceUtil.METHOD_CONTAIN_KEY, methodContainKey);</div><div class="line">        processerMap.put(PreferenceUtil.METHOD_EIDIT_VALUE, methodEditor);</div><div class="line">        processerMap.put(PreferenceUtil.METHOD_QUERY_PID, methodQueryPid);</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    @Nullable</div><div class="line">    @Override</div><div class="line">    public Bundle call(@NonNull String method, @Nullable String arg, @Nullable Bundle extras) &#123;</div><div class="line">        MethodProcess processer = processerMap.get(method);</div><div class="line">        return processer == null?null:processer.process(arg, extras);</div><div class="line">    &#125;</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>重要差别的地方在这里：在调用getSharedPreferences时，会先判断caller的进程pid是否与SharedPreferenceProvider相同。如果不同，则返回SharedPreferenceProxy。如果相同，则返回ctx.getSharedPreferences。只会在第一次调用时进行判断，结果会保存起来。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">public static SharedPreferences getSharedPreferences(@NonNull Context ctx, String preferName) &#123;</div><div class="line">        //First check if the same process</div><div class="line">        if (processFlag.get() == 0) &#123;</div><div class="line">            Bundle bundle = ctx.getContentResolver().call(PreferenceUtil.URI, PreferenceUtil.METHOD_QUERY_PID, &quot;&quot;, null);</div><div class="line">            int pid = 0;</div><div class="line">            if (bundle != null) &#123;</div><div class="line">                pid = bundle.getInt(PreferenceUtil.KEY_VALUES);</div><div class="line">            &#125;</div><div class="line">            //Can not get the pid, something wrong!</div><div class="line">            if (pid == 0) &#123;</div><div class="line">                return getFromLocalProcess(ctx, preferName);</div><div class="line">            &#125;</div><div class="line">            processFlag.set(Process.myPid() == pid ? 1 : -1);</div><div class="line">            return getSharedPreferences(ctx, preferName);</div><div class="line">        &#125; else if (processFlag.get() &gt; 0) &#123;</div><div class="line">            return getFromLocalProcess(ctx, preferName);</div><div class="line">        &#125; else &#123;</div><div class="line">            return getFromRemoteProcess(ctx, preferName);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private static SharedPreferences getFromRemoteProcess(@NonNull Context ctx, String preferName) &#123;</div><div class="line">        synchronized (SharedPreferenceProxy.class) &#123;</div><div class="line">            if (sharedPreferenceProxyMap == null) &#123;</div><div class="line">                sharedPreferenceProxyMap = new ArrayMap&lt;&gt;();</div><div class="line">            &#125;</div><div class="line">            SharedPreferenceProxy preferenceProxy = sharedPreferenceProxyMap.get(preferName);</div><div class="line">            if (preferenceProxy == null) &#123;</div><div class="line">                preferenceProxy = new SharedPreferenceProxy(ctx.getApplicationContext(), preferName);</div><div class="line">                sharedPreferenceProxyMap.put(preferName, preferenceProxy);</div><div class="line">            &#125;</div><div class="line">            return preferenceProxy;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static SharedPreferences getFromLocalProcess(@NonNull Context ctx, String preferName) &#123;</div><div class="line">        return ctx.getSharedPreferences(preferName, Context.MODE_PRIVATE);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这样，只有当调用者是正真跨进程时才走的contentProvider。对于同进程的情况，就没有必要走contentProvider了。对调用者来说，这都是透明的，只需要获取SharedPreferences就行了，不用关心获得的是SharedPreferenceProxy，还是SharedPreferenceImpl。即使你当前没有涉及到多进程使用，将所有获取SharedPreference的地方封装并替换后，对当前逻辑也没有任何影响。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/07/flutter-introduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/07/flutter-introduce/" itemprop="url">
+                  Flutter介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T10:19:24+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Flutter是一款由Google开发的开源、跨平台的移动端开发框架，使用Flutter开发出的应用符合不同平台的原生体验，可以让应用看起来跟系统更加协调。
+Flutter是一个全新的移动UI框架，它允许使用同一个代码库构建高性能的Android和iOS应用，同时它也是Google即将推出的Fuchsia操作系统的开发平台。通过自定义的Flutter引擎可以将其嵌入到其他平台，旨在帮助开发者使用一套代码开发高性能、高保真的Android和iOS应用。</p>
+<h3 id="Flutter优点"><a href="#Flutter优点" class="headerlink" title="Flutter优点"></a>Flutter优点</h3><h4 id="原生性能"><a href="#原生性能" class="headerlink" title="原生性能"></a>原生性能</h4><p>Flutter会以原生的性能提供给开发者，它的开发性能非常接近传统的Native，包括渲染方式、AOT的编译方式和其他优化。</p>
+<p>Flutter开发的页面跟Native没有差距。在安卓中低端机型里，基于Flutter开发出来的APP在帧率上会有更流畅的体现，内存占用也会有更低的消耗。</p>
+<p><strong>渲染方式,AOT,无锁GC</strong></p>
+<h4 id="快速开发"><a href="#快速开发" class="headerlink" title="快速开发"></a>快速开发</h4><p>Flutter因其本身的跨端性，大幅提升了传统的安卓开发速度。一般认为，前端开发的速度较快，基于Flutter，开发速度比前端更快。
+<strong>压秒级,有状态的热重载</strong></p>
+<h4 id="统一的应用开发体验"><a href="#统一的应用开发体验" class="headerlink" title="统一的应用开发体验"></a>统一的应用开发体验</h4><p>在跨端层面上，由于Flutter把两端的渲染机制下沉到更低的渲染层，基于统一的C++层的渲染引擎来搭建底层的UI框架，因此，Flutter会让跨端体验得到更一致的效果。
+<strong>两端一致的开发方式,MD和IOS风格</strong></p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>内存的问题。随着Flutter页面的堆栈变得越来越深，内存的释放并没有得到及时的释放。</li>
+<li>字体的问题。不同的字体在不同的机器里渲染的效果非常不一致。</li>
+<li>截图会出现黑屏的问题。</li>
+<li>图片缓存的问题。跟安卓端的图片缓存是完全不同的体系。</li>
+<li>它的暗黑区、适配问题，</li>
+<li>私有库、中间件的适配，</li>
+<li>不支持反射和序列化，</li>
+<li>集成问题,怎么把Native的组件集成到Flutter体系</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-android-targetsdkversion/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -651,1560 +2335,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-android-system-load/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/05/tips-android-system-load/" itemprop="url">
-                  Android启动过程深入解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T14:11:16+08:00">
-                2019-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>A当按下Android设备电源键时究竟发生了什么？</li>
-<li>Android的启动过程是怎么样的？</li>
-<li>A什么是Linux内核？</li>
-<li>A桌面系统linux内核与Android系统linux内核有什么区别？</li>
-<li>A什么是引导装载程序？</li>
-<li>A什么是Zygote？</li>
-<li>A什么是X86以及ARM linux？</li>
-<li>A什么是init.rc?</li>
-<li>A什么是系统服务？
-当我们想到Android启动过程时，脑海中总是冒出很多疑问。本文将介绍Android的启动过程，希望能帮助你找到上面这些问题的答案。</li>
-</ul>
-<p>Android是一个基于Linux的开源操作系统。x86（x86是一系列的基于intel 8086 CPU的计算机微处理器指令集架构）是linux内核部署最常见的系统。然而，所有的Android设备都是运行在ARM处理器（ARM 源自进阶精简指令集机器，源自ARM架构）上，除了英特尔的Xolo设备(<a href="http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz" target="_blank" rel="external">http://xolo.in/xolo-x900-features)。Xolo来源自凌动1.6GHz</a> x86处理器。Android设备或者嵌入设备或者基于linux的ARM设备的启动过程与桌面版本相比稍微有些差别。这篇文章中，我将解释Android设备的启动过程。<a href="http://www.ibm.com/developerworks/linux/library/l-linuxboot/" target="_blank" rel="external">深入linux启动</a>过程是一篇讲桌面linux启动过程的好文。</p>
-<p>当你按下电源开关后Android设备执行了以下步骤。</p>
-<p><img src="http://images.wodekouwei.com/tips-android-system-load-201935141326.png" alt="tips-android-system-load-201935141326"></p>
-<h3 id="第一步：启动电源以及系统启动"><a href="#第一步：启动电源以及系统启动" class="headerlink" title="第一步：启动电源以及系统启动"></a>第一步：启动电源以及系统启动</h3><p>当电源按下，引导芯片代码开始从预定义的地方（固化在ROM）开始执行。加载引导程序到RAM，然后执行。</p>
-<h3 id="第二步：引导程序"><a href="#第二步：引导程序" class="headerlink" title="第二步：引导程序"></a>第二步：引导程序</h3><p>引导程序是在Android操作系统开始运行前的一个小程序。引导程序是运行的第一个程序，因此它是针对特定的主板与芯片的。设备制造商要么使用很受欢迎的引导程序比如<a href="http://ecos.sourceware.org/redboot/" target="_blank" rel="external">redboot</a>、<a href="http://www.denx.de/wiki/U-Boot" target="_blank" rel="external">uboot</a>、<a href="http://wiki.openmoko.org/wiki/Qi" target="_blank" rel="external">qi bootloader</a>或者开发自己的引导程序，它不是Android操作系统的一部分。引导程序是OEM厂商或者运营商加锁和限制的地方。</p>
-<p>引导程序分两个阶段执行。第一个阶段，检测外部的RAM以及加载对第二阶段有用的程序；第二阶段，引导程序设置网络、内存等等。这些对于运行内核是必要的，为了达到特殊的目标，引导程序可以根据配置参数或者输入数据设置内核。</p>
-<p>Android引导程序可以在<code>\bootable\bootloader\legacy\usbloader</code>找到。
-传统的加载器包含的个文件，需要在这里说明：</p>
-<ul>
-<li>init.s初始化堆栈，清零BBS段，调用main.c的_main()函数；</li>
-<li>main.c初始化硬件（闹钟、主板、键盘、控制台），创建linux标签。
-更多关于Android引导程序的可以在<a href="https://motorola-global-portal.custhelp.com/app/answers/detail/a_id/86208/~/bootloader-frequently-asked-questions" target="_blank" rel="external">这里</a>了解。</li>
-</ul>
-<h3 id="第三步：内核"><a href="#第三步：内核" class="headerlink" title="第三步：内核"></a>第三步：内核</h3><p>Android内核与桌面linux内核启动的方式差不多。内核启动时，设置缓存、被保护存储器、计划列表，加载驱动。当内核完成系统设置，它首先在系统文件中寻找”init”文件，然后启动root进程或者系统的第一个进程。</p>
-<h3 id="第四步：init进程"><a href="#第四步：init进程" class="headerlink" title="第四步：init进程"></a>第四步：init进程</h3><p>init是第一个进程，我们可以说它是root进程或者说有进程的父进程。init进程有两个责任，一是挂载目录，比如/sys、/dev、/proc，二是运行init.rc脚本。</p>
-<p>init进程可以在/system/core/init找到。
-init.rc文件可以在/system/core/rootdir/init.rc找到。
-readme.txt可以在/system/core/init/readme.txt找到。
-对于init.rc文件，Android中有特定的格式以及规则。在Android中，我们叫做Android初始化语言。
-Android初始化语言由四大类型的声明组成，即Actions（动作）、Commands（命令）、Services（服务）、以及Options（选项）。</p>
-<h4 id="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"><a href="#Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。" class="headerlink" title="Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。"></a>Action（动作）：动作是以命令流程命名的，有一个触发器决定动作是否发生。</h4><p>语法
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">    on &amp;lt;trigger&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div><div class="line">        &amp;lt;command&amp;gt;</div></pre></td></tr></table></figure></p>
-<h4 id="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"><a href="#Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。" class="headerlink" title="Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。"></a>Service（服务）：服务是init进程启动的程序、当服务退出时init进程会视情况重启服务。</h4><p>语法
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">; html-script: false ]</div><div class="line">service &amp;lt;name&amp;gt; &amp;lt;pathname&amp;gt; [&amp;lt;argument&amp;gt;]*</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    &amp;lt;option&amp;gt;</div><div class="line">    ...</div></pre></td></tr></table></figure></p>
-<h4 id="Options（选项）"><a href="#Options（选项）" class="headerlink" title="Options（选项）"></a>Options（选项）</h4><p>选项是对服务的描述。它们影响init进程如何以及何时启动服务。
-咱们来看看默认的init.rc文件。这里我只列出了主要的事件以及服务。
-Table
-|—|—|
-|Action/Service|    描述|
-|on early-init    |设置init进程以及它创建的子进程的优先级，设置init进程的安全环境|
-|on init    |设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点|
-|on fs    |挂载mtd分区|
-|on post-fs    |改变系统目录的访问权限|
-|on post-fs-data    |改变/data目录以及它的子目录的访问权限|
-|on boot    |基本网络的初始化，内存管理等等|
-|service servicemanager    |启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…|
-|service zygote    |启动zygote作为应用进程|
-在这个阶段你可以在设备的屏幕上看到“Android”logo了。</p>
-<h3 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h3><p>在Java中，我们知道不同的虚拟机实例会为不同的应用分配不同的内存。假如Android应用应该尽可能快地启动，但如果Android系统为每一个应用启动不同的Dalvik虚拟机实例，就会消耗大量的内存以及时间。因此，为了克服这个问题，Android系统创造了”Zygote”。Zygote让Dalvik虚拟机共享代码、低内存占用以及最小的启动时间成为可能。Zygote是一个虚拟器进程，正如我们在前一个步骤所说的在系统引导的时候启动。Zygote预加载以及初始化核心库类。通常，这些核心类一般是只读的，也是Android SDK或者核心框架的一部分。在Java虚拟机中，每一个实例都有它自己的核心库类文件和堆对象的拷贝。</p>
-<p>Zygote加载进程</p>
-<ol>
-<li>加载ZygoteInit类，源代码：<code>/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</code></li>
-<li>registerZygoteSocket()为zygote命令连接注册一个服务器套接字。</li>
-<li>preloadClassed “preloaded-classes”是一个简单的包含一系列需要预加载类的文本文件，你可以在<android source="">/frameworks/base找到“preloaded-classes”文件。</android></li>
-<li>preloadResources() preloadResources也意味着本地主题、布局以及android.R文件中包含的所有东西都会用这个方法加载。
-在这个阶段，你可以看到启动动画。</li>
-</ol>
-<h3 id="第六步：系统服务或服务"><a href="#第六步：系统服务或服务" class="headerlink" title="第六步：系统服务或服务"></a>第六步：系统服务或服务</h3><p>完成了上面几步之后，运行环境请求Zygote运行系统服务。系统服务同时使用native以及java编写，系统服务可以认为是一个进程。同一个系统服务在Android SDK可以以System Services形式获得。系统服务包含了所有的System Services。</p>
-<p>Zygote创建新的进程去启动系统服务。你可以在ZygoteInit类的”startSystemServer”方法中找到源代码。</p>
-<p>核心服务：</p>
-<ol>
-<li>启动电源管理器；</li>
-<li>创建Activity管理器；</li>
-<li>启动电话注册；</li>
-<li>启动包管理器；</li>
-<li>设置Activity管理服务为系统进程；</li>
-<li>启动上下文管理器；</li>
-<li>启动系统Context Providers；</li>
-<li>启动电池服务；</li>
-<li>启动定时管理器；</li>
-<li>启动传感服务；</li>
-<li>启动窗口管理器；</li>
-<li>启动蓝牙服务；</li>
-<li>启动挂载服务</li>
-</ol>
-<p>其他服务：</p>
-<ol>
-<li>启动状态栏服务；</li>
-<li>启动硬件服务；</li>
-<li>启动网络状态服务；</li>
-<li>启动网络连接服务；</li>
-<li>启动通知管理器；</li>
-<li>启动设备存储监视服务；</li>
-<li>启动定位管理器；</li>
-<li>启动搜索服务；</li>
-<li>启动剪切板服务；</li>
-<li>启动登记服务；</li>
-<li>启动壁纸服务；</li>
-<li>启动音频服务；</li>
-<li>启动耳机监听；</li>
-<li>启动AdbSettingsObserver（处理adb命令）。</li>
-</ol>
-<h3 id="第七步：引导完成"><a href="#第七步：引导完成" class="headerlink" title="第七步：引导完成"></a>第七步：引导完成</h3><p>一旦系统服务在内存中跑起来了，Android就完成了引导过程。在这个时候“ACTION_BOOT_COMPLETED”开机启动广播就会发出去。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/05/tips-solution-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/05/tips-solution-2/" itemprop="url">
-                  解决方案之美团APP对Crash的治理之路
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T10:06:36+08:00">
-                2019-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Crash率是衡量一款APP质量好坏的重要指标之一，不仅会影响用户体验，也可能影响用户存量。一旦出现问题，可能会给企业带来严重损失。</p>
-<p>本文由美团技术专家谌天洲分享美团APP Crash率从千分之一到万分之一治理过程中所做的大量实践工作。</p>
-<h3 id="美团Crash治理背景"><a href="#美团Crash治理背景" class="headerlink" title="美团Crash治理背景"></a>美团Crash治理背景</h3><p>美团作为一个平台化的APP，背后有20+团队设计和30+业务。</p>
-<p>在Crash治理过程中面对的挑战有三项：体量大、迭代快和日活高。这三项挑战带来的直接影响是沟通成本上升和防范难度加大。因此在实际治理过程，主要围绕基础能力、治理效率两个层面进行探索和优化建设。
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223013.jpg" alt="tips-solution-2-201935223013"></p>
-<h4 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h4><p>Crash治理的基础能力主要体现在三个层面：能发现、能定位和能修复。</p>
-<p>在发现能力层面，美团有一套异常监控退出系统，可发现除Java&amp;JNI Crash&amp;ANR以外其他类型的异常退出。在定位能力层面，有可提供内存泄漏路径及OOM时的内存快照的内存监控体系，有可提供线程现场及任务现场的线程管控体系。除此以外，还有动态日志系统提供额外的方法调用链及参数信息。</p>
-<h4 id="内存监控体系"><a href="#内存监控体系" class="headerlink" title="内存监控体系"></a>内存监控体系</h4><p>内存问题最典型的呈现形式是OOM，其中80%通过Leak监控系统发现预防，另外20%的内存问题，对于大体量APP需要从全局对内存资源问题进行监控和调查分析。</p>
-<p>美团的内存监控体系分为线下和线上两个场景。线下通过Leak监控系统能预防发现80%的OOM问题，线上建立随时获取OOM内存现场的监控能力
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223125.jpg" alt="tips-solution-2-201935223125"></p>
-<h4 id="动态日志"><a href="#动态日志" class="headerlink" title="动态日志"></a>动态日志</h4><p>美团APP经常会遇到用户个性化的使用场景无法复现和定位的问题。对此，美团提出了一套动态日志系统——</p>
-<p>在编译期对应用代码通过插桩实现代理，运行期同步记录，出现异常时可主动触发上报，也可以由服务端主动回捞。基于插桩实现的代理逻辑，可实施获取原方法执行时的方法名、入参和返回值信息，再将这些信息序列化后存储到数据库，由此可在必要的时候获取到较完善的方法调用栈历史，进而定位问题。
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223215.jpg" alt="tips-solution-2-201935223215">
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223229.jpg" alt="tips-solution-2-201935223229"></p>
-<h4 id="修复能力"><a href="#修复能力" class="headerlink" title="修复能力"></a>修复能力</h4><p>在修复能力层面，美团APP一度深受机型多、系统杂带来的framework层的问题困扰。此外，美团APP也经常会遇到常规日志体系无法覆盖的接口问题。</p>
-<p>针对这两类问题，参考热修复的方法替换原理，开发并完善了一套小工具——“Graft”。它的基本原理是在native层通过方法替换实现对Java层方法的hook和代理，进而在Java层实现方法代理和方法替换。</p>
-<p>这套工具可以动态代理或替换几乎所有Java层的方法（包括framework层），使得美团APP的修复能力从自有代码和第三方代码有效覆盖到framework层。</p>
-<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223340.jpg" alt="tips-solution-2-201935223340">
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223353.jpg" alt="tips-solution-2-201935223353"></p>
-<h4 id="效率提升"><a href="#效率提升" class="headerlink" title="效率提升"></a>效率提升</h4><p>为了提高治理效率，实际治理过程逐渐形成PR检查流程、自动检查平台和Crash平台三大流程和平台。</p>
-<p>PR检查流程主要针对PR阶段进行代码规范性检查、代码准入检查和稳定性案例检查；自动检查平台针对以往案例进行定制化防范检查。Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。
-<img src="http://images.wodekouwei.com/tips-solution-2-201935223433.jpg" alt="tips-solution-2-201935223433"></p>
-<h3 id="Crash平台"><a href="#Crash平台" class="headerlink" title="Crash平台"></a>Crash平台</h3><p>Crash平台是整个稳定性治理的核心，在建设的考量中主要遵循规范化、流程化、自动化，它主要涵盖接入管控、聚合策略、频道工单、报警系统、基础工具、模块覆盖，可以通过强大的复用能力快速接入并管理几乎所有稳定性相关的问题。</p>
-<p>在PR阶段，PR检查流程可自动识别出增量代码是否被现有体系覆盖，并通过Crash平台的接入管控系统督促增量代码的责任人完善基本信息、频道信息、聚合配合及自动工单配置等等。</p>
-<p>在开发或全量过程中一旦发现异常，Crash平台会自动完成堆栈聚合、频道识别、报警评估及工单跟踪等工作。</p>
-<p><img src="http://images.wodekouwei.com/tips-solution-2-201935223539.jpg" alt="tips-solution-2-201935223539">
-<img src="http://images.wodekouwei.com/tips-solution-2-20193522365.jpg" alt="tips-solution-2-20193522365"></p>
-<p>Crash率是APP最重要的指标之一，谌天洲建议开发者建立解决Crash的长效机制，找到最合理的解决方案。随着版本的不断迭代，Crash治理之路才能离目标越来越近。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/04/tips-solution-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/04/tips-solution-1/" itemprop="url">
-                  性能度量指标及数据平台
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T23:25:17+08:00">
-                2019-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="性能和稳定性系统化提升方案"><a href="#性能和稳定性系统化提升方案" class="headerlink" title="性能和稳定性系统化提升方案"></a>性能和稳定性系统化提升方案</h2><h3 id="高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台"><a href="#高可用平台的定义及指标-自动化测试框架和性能稳定性数据平台" class="headerlink" title="高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台"></a>高可用平台的定义及指标,自动化测试框架和性能稳定性数据平台</h3><h4 id="高可用的定义及度量指标"><a href="#高可用的定义及度量指标" class="headerlink" title="高可用的定义及度量指标"></a>高可用的定义及度量指标</h4><h5 id="移动端高可用定义"><a href="#移动端高可用定义" class="headerlink" title="移动端高可用定义"></a>移动端高可用定义</h5><p>移动端高可用旨在通过设计关键的度量指标,以期望能够客观反映和量化用户再使用过程中的真是感受,同时通过指标，建⽴一系列的工具和平台，从线下到线上快速发现、分析、定位和解决包括稳定性、性能、功能等各类问题，以进一步提升用户体验的系统化解决方案。</p>
-<h5 id="可高勇度量指标"><a href="#可高勇度量指标" class="headerlink" title="可高勇度量指标"></a>可高勇度量指标</h5><p>高可用度量指标由 <strong>性能</strong> 和 <strong>稳定性</strong> 两大度量指标组成。性能度量指标有七个维度，分别是卡顿率、启动时长、页面秒开率、帧率、ANR率、流量、耗电；稳定性度量指标主要是Crash率，分为Java Crash率和Native Crash率。</p>
-<p><img src="http://images.wodekouwei.com/tips-solution-1-201935105618.jpg" alt="tips-solution-1-201935105618"></p>
-<h4 id="自动化测试框架及性能稳定性数据平台"><a href="#自动化测试框架及性能稳定性数据平台" class="headerlink" title="自动化测试框架及性能稳定性数据平台"></a>自动化测试框架及性能稳定性数据平台</h4><h5 id="自动化测试框架"><a href="#自动化测试框架" class="headerlink" title="自动化测试框架"></a>自动化测试框架</h5><h5 id="性能稳定性数据平台"><a href="#性能稳定性数据平台" class="headerlink" title="性能稳定性数据平台"></a>性能稳定性数据平台</h5><p>性能稳定性数据平台，由四个模块组成，用来展示各个维度的监控数据。
-<img src="http://images.wodekouwei.com/tips-solution-1-201935111941.jpg" alt="tips-solution-1-201935111941"></p>
-<h6 id="1-崩溃分析"><a href="#1-崩溃分析" class="headerlink" title="1.崩溃分析"></a>1.崩溃分析</h6><p>主要是Java Crash和Native Crash分析，Java Crash包含了Crash当时调用栈，当前页面、用户历史访问页面、当前内存水位以及logcat信息，帮助开发同学快速分析Java崩溃的原因，从而快速解决问题。Native崩溃主要包含了崩溃的信号量、崩溃使用的调用栈、其他线程的调度栈、logcat信息以及已加载的so信息，通过这些信息，可以让开发同学快速地发现Native崩溃原因。</p>
-<h6 id="2-异常分析"><a href="#2-异常分析" class="headerlink" title="2.异常分析"></a>2.异常分析</h6><p>各个性能维度的指标会在这里展示，主线程卡顿主要是哪条消息超过了阈值，它的调用栈是什么样子的。ANR展示的主要是/data/anr下的文件信息，发生ANR的现场是什么样子的。主线程IO这块展示的是主线程操作IO的一些调用栈以及它的耗时。内存泄露这块分两部分，Java泄露组件的名称，Native泄露的so名称，通过这两部分可以快速地定位内存泄露的原因。资源泄露这块主要展示开发同学调用资源open时的调用栈信息。</p>
-<h6 id="3-性能APM"><a href="#3-性能APM" class="headerlink" title="3.性能APM"></a>3.性能APM</h6><p>启动性能监控了用户点击图标到真正进入页面可视可交互的时间。页面性能是从点击页面图表到下一个页面真正可视可交互的时间。系统监控启动所有阶段子任务的耗时，通过数据变化决策版本的发布是否符合质量标准。如果符合质量标准，可以发布；如果不符合，再进一步分析子任务耗时，具体是哪些任务导致不能正常发布。快速地定位分析，最终解决问题。手淘把数据能力开放给各个业务，通过他们个性化的需求自定义配置性能报表。</p>
-<h6 id="4-远程工具"><a href="#4-远程工具" class="headerlink" title="4.远程工具"></a>4.远程工具</h6><p>远程工具主要是针对特殊用户的特殊案例。当线上用户向舆情平台反馈设备存在某一个性能问题时，通过这个工具，快速地从用户那里获取远程日志、Dump内存和每个方法的耗时，快速分析原因，从而给出解决方案。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/01/gl-introduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/01/gl-introduce/" itemprop="url">
-                  Android系统图形栈(一):OpenGL 介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T18:06:18+08:00">
-                2019-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenGL</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="OpenGL基本概念"><a href="#OpenGL基本概念" class="headerlink" title="OpenGL基本概念"></a>OpenGL基本概念</h3><p>OpenGL的结构可以从逻辑上划分为下面3个部分:</p>
-<ul>
-<li>图元(Primitives)</li>
-<li>缓冲区(Buffers)</li>
-<li>光栅化(Rasterize)</li>
-</ul>
-<h4 id="图元-Primitives"><a href="#图元-Primitives" class="headerlink" title="图元(Primitives)"></a>图元(Primitives)</h4><p>在 OpenGL 的世界里，我们只能画点、线、三角形这三种基本图形，而其它复杂的图形都可以通过三角形来组成。所以这里的图元指的就是这三种基础图形：</p>
-<ul>
-<li>点：点存在于三维空间，坐标用（x,y,z）表示。</li>
-<li>线：由两个三维空间中的点组成。</li>
-<li>三角形：由三个三维空间的点组成。</li>
-</ul>
-<h4 id="缓冲区（Buffers）"><a href="#缓冲区（Buffers）" class="headerlink" title="缓冲区（Buffers）"></a>缓冲区（Buffers）</h4><p>OpenGL 中主要有 3 种 Buffer：</p>
-<ul>
-<li>帧缓冲区（Frame Buffers） 帧缓冲区：这个是存储OpenGL 最终渲染输出结果的地方，它是一个包含多个图像的集合，例如颜色图像、深度图像、模板图像等。</li>
-<li>渲染缓冲区（Render Buffers） 渲染缓冲区：渲染缓冲区就是一个图像，它是 Frame Buffer 的一个子集。</li>
-<li>缓冲区对象（Buffer Objects） 缓冲区对象就是程序员输入到 OpenGL 的数据，分为结构类和索引类的。前者被称为“数组缓冲区对象”或“顶点缓冲区对象”（“Array Buffer Object”或“Vertex Buff er Object”），即用来描述模型的数组，如顶点数组、纹理数组等； 后者被称为“索引缓冲区对象”（“Index Buffer Object”），是对上述数组的索引。</li>
-</ul>
-<h4 id="光栅化（Rasterize）"><a href="#光栅化（Rasterize）" class="headerlink" title="光栅化（Rasterize）"></a>光栅化（Rasterize）</h4><p>在介绍光栅化之前，首先来补充 OpenGL 中的两个非常重要的概念：</p>
-<ul>
-<li>Vertex Vertex 就是图形中顶点，一系列的顶点就围成了一个图形。</li>
-<li>Fragment Fragment 是三维空间的点、线、三角形这些基本图元映射到二维平面上的映射区域，通常一个 Fragment 对应于屏幕上的一个像素，但高分辨率的屏幕可能会用多个像素点映射到一个 Fragment，以减少 GPU 的工作。</li>
-</ul>
-<p>而光栅化是把点、线、三角形映射到屏幕上的像素点的过程。</p>
-<h4 id="着色器程序（Shader）"><a href="#着色器程序（Shader）" class="headerlink" title="着色器程序（Shader）"></a>着色器程序（Shader）</h4><p>Shader 用来描述如何绘制（渲染），GLSL 是 OpenGL 的编程语言，全称 OpenGL Shader Language，它的语法类似于 C 语言。OpenGL 渲染需要两种 Shader：Vertex Shader 和 Fragment Shader。</p>
-<ul>
-<li>Vertex Shader Vertex Shader 对于3D模型网格的每个顶点执行一次，主要是确定该顶点的最终位置。</li>
-<li>Fragment Shader Fragment Shader对光栅化之后2D图像中的每个像素处理一次。3D物体的表面最终显示成什么样将由它决定，例如为模型的可见表面添加纹理，处理光照、阴影的影响等等。</li>
-</ul>
-<h4 id="OpenGL-流水线"><a href="#OpenGL-流水线" class="headerlink" title="OpenGL 流水线"></a>OpenGL 流水线</h4><p>OpenGL 中有两种流水线，一种是固定流水线，另外一种则是可编程流水线。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/01/tips-engineering/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/01/tips-engineering/" itemprop="url">
-                  软件架构思考
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:07:48+08:00">
-                2019-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tips/" itemprop="url" rel="index">
-                    <span itemprop="name">tips</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>架构是对工程整体结构与组件的抽象描述，是软件工程的基础骨架。架构在工程层面不分领域，且思想是通用的。引用维基百科对于软件架构的定义：</p>
-<blockquote>
-<p>软件体系结构是构建计算机软件实践的基础。与建筑师设定建筑项目的设计原则和目标，作为绘图员画图的基础一样，软件架构师或者系统架构师陈述软件架构以作为满足不同客户需求的实际系统设计方案的基础。从和目的、主题、材料和结构的联系上来说，软件架构可以和建筑物的架构相比拟。一个软件架构师需要有广泛的软件理论知识和相应的经验来实施和管理软件产品的高级设计。软件架构师定义和设计软件的模块化，模块之间的交互，用户界面风格，对外接口方法，创新的设计特性，以及高层事物的对象操作、逻辑和流程。</p>
-</blockquote>
-<p>架构的合理设计可以解决面对复杂系统时可能面临的很多问题，例如：</p>
-<ol>
-<li>业务边界与模块职责划分问题</li>
-<li>代码权限控制问题（数据库不应直接被业务方调用）</li>
-<li>代码重复，逻辑分支多，坏味道多的问题</li>
-<li>由于考虑不周，可能存在隐藏bug</li>
-<li>修改一个逻辑需要修改N个地方代码逻辑</li>
-</ol>
-<p>移动端通用架构:</p>
-<ol>
-<li>Toolkit/ToolkitSDK module :工具类及与工具类相关的SDK的集合。工具类属于工程架构里最基础的模块，提供了通用的方法与工具类服务（工具类服务是指可以被抽象成一个独立的与业务无关的基础服务，如缓存、数据库操作等）。工具类通常作为最底层的module，被其他所有模块引用。</li>
-<li>基础组件库/基础组件库module:基础组件库提供与业务相关的基础组件，是构建一个移动端应用所需要的通用组件的集合。它与工具类的区别在于基础组件库可能会包含少量业务逻辑代码，是无法拆分给其他应用使用的；另一方面，基础组件库是基础服务接口的实现，是不对业务层暴露的，避免了业务层与基础SDK打交道，有利于整体替换底层基础框架的实现（例如Volley替换为OkHttp、Fresco替换为Glide）</li>
-<li>基础服务接口/业务服务接口module:基础服务接口声明了一组通用的基础服务，业务层通过基础服务接口获取基础服务，如网络请求、图片加载等。业务服务接口声明了一组该模块提供给其他模块的服务，业务之间的通信也是通过服务接口来完成的。例如首页模块需要获取购物车的商品数量，首先通过服务调度中心获取购物车的服务接口，再通过服务接口调用购物车获取商品数量的接口方法即可。</li>
-<li>服务调度中心module:服务调度中心，是一个接口收集与管理的容器。服务调度中心将所有基础服务接口与业务接口收集起来，通过一定的方式与它们的实现类进行绑定。所有的业务都需要通过服务调度中心才能够获取到服务。服务的注册与发现和Spring容器的IoC思想是类似的</li>
-<li>业务module:务层是每个业务的具体实现的集合。业务层的业务之间是没有直接引用关系的，业务层提供了业务服务接口中暴露的服务的具体实现。业务之间的通信需要通过服务调度中心获取其他业务的服务接口。</li>
-</ol>
-<p>后端通用架构:</p>
-<ol>
-<li>展示层（View）:展示层是系统与用户打交道的地方，提供与用户交互的界面。对于用户而言，只有展示层是可见的、可操作的。展示层对于某些工程来说不是必须的，例如提供纯后台服务的工程。</li>
-<li>控制层（Controller）:主要负责与Model和View打交道，但同时又保持其相对独立。Controller决定使用哪些Model，对Model执行什么操作，为视图准备哪些数据，是MVC中沟通的桥梁。在Controller层提供了http服务供展示层调用。在依赖管理中，控制层需要依赖服务层提供服务。</li>
-<li>服务层（Service/Facade）:服务层是业务逻辑实现的地方，上层需要使用的功能都在服务层来实现具体的业务逻辑。服务层就是将底层的数据通过一定的条件和方式进行数据组装并提供给上层调用。服务层可以拆分为业务接口和业务实现，业务实现可以对外部隐藏。在投放工程中，控制层既依赖了业务接口，又依赖了业务实现。后面的改造我们可以看到，编译期红色线依赖是完全没有必要的。服务层需要依赖数据关系映射层与持久层的数据打交道。</li>
-<li>对象关系映射层（ORM）:对象关系映射层的作用是在持久层和业务实体对象之间作一层数据实体的映射，这样在具体操作业务对象时，只需简单的操作对象的属性和方法，不需要去和复杂的SQL语句打交道。ORM使得业务不需要关心底层数据库的任何细节，包括使用的数据库类型、数据库连接与释放细节等。对象关系映射层只依赖数据服务层提供服务。</li>
-<li>数据服务层（Data Server）:数据服务就是提供数据源的地方。数据服务可以提供持久化数据及缓存数据。持久，即把数据（如内存中的对象）保存到可永久保存的存储设备中（如磁盘）。持久化的主要应用是将内存中的数据存储在关系型的数据库中，当然也可以存储在磁盘文件中、XML数据文件中等等。而缓存是将信息（数据或页面）放在内存中以避免频繁的数据库存储或执行整个页面的生命周期，直到缓存的信息过期或依赖变更才再次从数据库中读取数据或重新执行页面的生命周期。数据服务层是数据源头，处于架构的最底层。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/28/at-android-issue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/28/at-android-issue/" itemprop="url">
-                  android自动化测试(三):常见问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T17:36:00+08:00">
-                2019-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>####### 1.appium执行登录按钮的click在华为(FRD-AL10)手机上执行完不起作用
-最开始怀疑是因为输入法遮挡,后来调用hide_keyboard后无法隐藏键盘(在三星手机Samsung SM-N9200上调用hide_keyboard会抛异常,华为手机不显示输入法调用也没有问题),最后在设置-系统设置-语言和输入法中关闭”安全输入”,软件盘就不再弹出了,但是还是执行完不生效,最后appium中指定automationName=UiAutomator2,使用UiAutomator2后该问题得到解决.</p>
-<p>有人说需要打开安全设置中的”允许模拟点击”,但是并没有找到这个开关</p>
-<p>注意:元素必须先出现在页面上，才可以使用click/tap方法。所以需要先使用isDisplay()方法判读该元素出现， 然后点击该元素。但是有可能即使isDisplay()返回的结果为true， 该元素还会因为不可见而点击报错。因为虽然该元素的isDisplay()返回了true，但是该元素的中心点可能仍然不在屏幕上。 tap方法其实点击的就是元素的中心点。可以使用swipe方法再滑动一下屏幕让这个元素完全显示在屏幕上。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/28/at-android-appium-introduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/28/at-android-appium-introduce/" itemprop="url">
-                  at-android-appium-introduce
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T11:45:15+08:00">
-                2019-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Appium UiAutomator2 Server 运行原理分析
-<a href="https://testerhome.com/topics/9240" target="_blank" rel="external">https://testerhome.com/topics/9240</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/28/at-android-uiautomator-usage/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/28/at-android-uiautomator-usage/" itemprop="url">
-                  android自动化测试(N):UiAutomator用法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T11:09:22+08:00">
-                2019-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/autotest/" itemprop="url" rel="index">
-                    <span itemprop="name">autotest</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>它是一个Android自动化测试框架，是谷歌在Android4.1版本发布时推出的一款用Java编写的UI测试框架。它只能用于UI也就是黑盒方面的测试。所以UiAutomator只能运行在4.1以后的版本中。其最大的特点就是可以跨进程操作，我们可以使用uiautomator框架提供的一些方便的API来对安卓应用进行一系列的自动化测试操作，如点击、滑动、键盘输入、长按以及常用的断言方法等。可以替代以前繁琐的手工测试。</p>
-<p>下面总结一下该框架的几个优点：</p>
-<ol>
-<li>Google自家推出的，其稳定性和后续的维护更新可以得到保障，运行时也有更多的权限。</li>
-<li>可以跨进程操作，这点比起其它基于instrumentation框架的自动化工具如Robotium是无法直接做到的。</li>
-<li>运行速度快。
-缺点：</li>
-<li>不支持Android4.1以下的版本。</li>
-<li>不支持Webview，所以一般无法对浏览器应用进行测试。</li>
-</ol>
-<h6 id="UiAutomator-框架原理分析："><a href="#UiAutomator-框架原理分析：" class="headerlink" title="UiAutomator 框架原理分析："></a>UiAutomator 框架原理分析：</h6><p>首先，UiAutomator是Google参考微软的UiAutomation提供的一套用在Android上的自动化测试框架。基于Android AccessilibilityService提供。那么至于什么是AccessilibilityService，在这里简单介绍下：Android AccessilibilityService，是一个可访问服务，它是一个为增强用户界面并帮助残疾用户的应用程序，或者用户可能无法完全与设备的交互。举个简单的例子，假如一个用户在开车。那么用户就有可能需要添加额外的或者替代的用户反馈方式。其应用方式一般有两种：</p>
-<p>第一种方法是：UiAutomatorView + monkey。它与hierachyview + monkey差不多。其区别是：UiAutomatorView通过ADB向设备侧发送一个dump命令，而不是建立一个socket，下载一个包含当前界面控件布局信息的xml文件。相比较hierachyview下载的内容而言，该文件小很多。因此，从效率上讲，这种方法比第一种应用模式快很多。</p>
-<p>第二种方法是： 直接调用UiAutomator框架对外提供的API，主要有UiDevice、UiSelector、UiObject和 UiScrollable等。其原理与第一种方式即HierachyView + Monkey差不多。其过程大致是：首先，UiAutomator测试框架通过Accessibilityservice，获取当前窗口的控件层次关系及属性信息，并查找到目标控件。若是点击事件，则计算出该控件的中心点坐标。其次，UiAutomator通过 InputManager.getInstance().injectInputEvent隐藏接口来注入用户事件（点击、输入类操作），从而实现跨进程自动化的目的。</p>
-<p>UiAutomatorTestCase ：这个类是继承自Junit TestCase （Junit），对外提供setup、teardown等，以便初始化用例、清除环境等。所以我们在编写的UiAutomator 的脚本时一般都要继承这个类，这样就可以直接使用它的一些方法和Junit单元测试框架中的Assert断言机制。</p>
-<h6 id="UIAutomator2-0"><a href="#UIAutomator2-0" class="headerlink" title="UIAutomator2.0"></a>UIAutomator2.0</h6><p>We’re pleased to announce the release of UIAutomator 2.0! This version is a significant update from the previous release. Most importantly, UI Automator is now based on Android Instrumentation and you can build and run tests with the ‘./gradlew connectedCheck’ command.</p>
-<p>UiAutomator2.0的jar包并不是在以前SDK/platforms/android-19/下。现在我们要这么做</p>
-<ol>
-<li>通过Android SDK Manager中的 Android Support Repository 项进行安装</li>
-<li>下载下来的jar包的路径为/extras/android/m2repository</li>
-<li>新建一个android项目，编写一个简单的应用</li>
-<li><p>在build.gradle中配置依赖项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">  androidTestCompile &apos;com.android.support.test:runner:0.3&apos;</div><div class="line">  // Set this dependency to use JUnit 4 rules</div><div class="line">  androidTestCompile &apos;com.android.support.test:rules:0.3&apos;</div><div class="line">  // Set this dependency to build and run Espresso tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.espresso:espresso-core:2.2&apos;</div><div class="line">  // Set this dependency to build and run UI Automator tests</div><div class="line">  androidTestCompile &apos;com.android.support.test.uiautomator:uiautomator-v18:2.1.1&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>设置AndroidJunitRunner为默认的testInstrumentationRunner</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    defaultConfig &#123;</div><div class="line">        testInstrumentationRunner &quot;android.support.test.runner.AndroidJUnitRunner&quot;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>编写测试代码，在androidTest目录下面新建测试类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">public class LoginTest extends InstrumentationTestCase &#123;</div><div class="line"></div><div class="line">    protected UiDevice device = null;</div><div class="line">    protected String appName = &quot;magicCard&quot;;</div><div class="line"></div><div class="line">    public void runApp(String appName) throws UiObjectNotFoundException, RemoteException &#123;</div><div class="line">        device = UiDevice.getInstance(getInstrumentation());</div><div class="line">        device.pressHome();</div><div class="line">        device.waitForWindowUpdate(&quot;&quot;, 2000);</div><div class="line"></div><div class="line">        UiObject2 allAppsButton = device.findObject(By.desc(&quot;Apps&quot;));</div><div class="line">        allAppsButton.click();</div><div class="line">        device.waitForWindowUpdate(&quot;&quot;, 2000);</div><div class="line"></div><div class="line">        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));</div><div class="line">        appViews.setAsHorizontalList();</div><div class="line"></div><div class="line">        UiObject settingsApp = appViews.getChildByText(new UiSelector().className(TextView.class.getName()), appName);</div><div class="line">        settingsApp.clickAndWaitForNewWindow();</div><div class="line"></div><div class="line">        assertTrue(&quot;Unable to detect app&quot;, settingsApp != null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void setUp() throws RemoteException, UiObjectNotFoundException &#123;</div><div class="line">        this.runApp(appName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void tearDown() throws RemoteException, UiObjectNotFoundException &#123;</div><div class="line">        //Empty for the moment</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void testUS1() &#123;</div><div class="line">        UiObject2 usernameLabel = device.findObject(By.clazz(TextView.class.getName()).text(&quot;Username&quot;));</div><div class="line">        assertTrue(&quot;Username label not found&quot;, usernameLabel != null);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>基于Instrument的方便一点就是不需要remote debug的方式进行调试。并且做参数化之类的也方便了很多。
-2.0不用再继承UiAutomatorTestCase，但却需要继承InstrumentationTestCase。</p>
-<p>获取设备的方式也变化了，UiDevice.getInstance(getInstrumentation()) 这才是正确的使用方法。之前常用的两种方式都不再可行。</p>
-<p>可以通过如下的adb命令调用
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell am instrument -w -r   -e debug false -e class com.cxq.uiautomatordemo.UiTest com.cxq.uiautomatordemo.test/android.test.InstrumentationTestRunner</div></pre></td></tr></table></figure></p>
-<p>在dependencies中用到了compile、testCompile、androidTestCompile三种依赖方式，让我们来看看他们有什么区别：</p>
-<p>compile：参与编译，并且会打包到debug/release apk中。
-testCompile：只参与单元测试编译，不会打包到debug/release apk包中，不需要设备支持。
-androidTestCompile：只参与UI测试编译，不会打包到debug/release apk包中，需要设备支持。</p>
-<p>除此之外还有Provided、APK、Debug compile和Release compile：</p>
-<p>Provided：只参与编译，不会打包到debug/release apk中。
-APK：不参与编译，只会打包到debug/release apk中。
-Debug compile：只参与debug编译，只会打包到debug apk中。
-Release compile：只参与release编译，只会打包到release apk中。</p>
-<h6 id="UIAutomator1-0"><a href="#UIAutomator1-0" class="headerlink" title="UIAutomator1.0"></a>UIAutomator1.0</h6><ol>
-<li>新建Java工程</li>
-<li>导入lib包 android.jar 和 uiautomator.jar ，选中点击右键Add to buildPath</li>
-<li><p>新建测试类demo</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public class Demo extends UiAutomatorTestCase&#123;&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>写测试方法A，B，C（testcase）</p>
-</li>
-<li>编译运行：
-5.1. <code>&lt;android-sdk&gt;/tools/android create uitest-project -n &lt;name&gt; -t 1 -p &lt;path&gt;</code>
-说明一下各个参数的作用，如果已经将android sdk的路径配置到了系统的path中，输入命令“android create uitest-project”就可以查看到相应的帮助</li>
-</ol>
-<ul>
-<li><code>-n --name : Project name.</code>  就是在eclipse中创建的项目的名字。</li>
-<li><code>-t --target  : Target ID of the new project. [required]</code>  这个id是本机上android targets的id，可以通过命令 “android list”来查询，得到结果，选择android-17以上版本前面所对应的id,运行完成后，工作空间下生成文件build.xml</li>
-</ul>
-<p>5.2. 修改build.xml 将help改为build
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;            </div><div class="line">&lt;project name=&quot;demo1&quot; default=&quot;build&quot;&gt;</div></pre></td></tr></table></figure></p>
-<p>5.3.在build.xml上点击右键，选择“Run As” -&gt; “Ant Build”,编译成功，在工作空间bin下生成一个jar包demo.jar</p>
-<p>5.4. <code>adb  push  demo.jar   /data/local/tmp/</code></p>
-<p>5.5. <code>adb shell uiautomator runtest  demo.jar  -c A -c B -c C</code>（可指定多个testcase,不指定则运行所有)</p>
-<p>uiautomator的help帮助：
-支持三个子命令:rutest/dump/events</p>
-<ul>
-<li>runtest命令－c指定要测试的class文件，用逗号分开，没有指定的话默认执行测试脚本jar包的所有测试类.注意用户可以以格式$class/$method来指定只是测试该class的某一个指定的方法</li>
-<li>runtest命令－e参数可以指定是否开启debug模式</li>
-<li>runtest命令－e参数可以指定test runner，不指定就使用系统默认。我自己从来没有指定过</li>
-<li>runtest命令－e参数还可以通过键值对来指定传递给测试类的参数</li>
-</ul>
-<p>UiAutomator2改进</p>
-<ol>
-<li>基于 Instrumentation，可以获取应用Context，使用 Android服务及接口</li>
-<li>基于 Junit4，测试用例无需继承于任何父类，方法名不限，使用注解 Annotation进行</li>
-<li>UI执行效率比 1.0 快，测试执行可使用AndroidJunit 方式及gradle 方式</li>
-<li><p>API 更新，新增UiObject2、Until、By、BySelector等：APIFor UI Automator</p>
-</li>
-<li><p>Log 输出变更，以往使用System.out.print输出流回显至执行端，2.0 输出至Logcat</p>
-</li>
-</ol>
-<p><a href="https://developer.android.com/reference/androidx/test/runner/AndroidJUnitRunner.html" target="_blank" rel="external">AndroidJUnitRunner</a>
-<a href="https://developer.android.com/training/testing/junit-runner.html#using-android-test-orchestrator" target="_blank" rel="external">AndroidJUnitRunner</a>
-<a href="https://developer.android.com/reference/android/test/InstrumentationTestRunner.html" target="_blank" rel="external">InstrumentationTestRunner</a>
-<a href="https://developer.android.com/training/testing/fundamentals" target="_blank" rel="external">Fundamentals of Testing</a>
-<a href="https://developer.android.com/training/testing/ui-automator.html#java" target="_blank" rel="external">UI Automator</a>
-<a href="https://developer.android.com/reference/androidx/test/package-summary.html" target="_blank" rel="external">androidx.test</a>
-<a href="https://developer.android.com/training/testing/ui-testing/uiautomator-testing.html" target="_blank" rel="external">Test UI for multiple apps</a>
-<a href="https://developer.android.com/reference/android/app/Instrumentation.html" target="_blank" rel="external">Instrumentation</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/02/26/tips-android-weburl-regular/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="老司机种菜">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/26/tips-android-weburl-regular/" itemprop="url">
-                  Android TextView对URL识别
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T11:32:25+08:00">
-                2019-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>IM开发过程中,对文本消息中的超练级进行点击处理,使用系统的<code>tv.setAutoLinkMask(Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);</code>方法:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">   * 拦截超链接</div><div class="line">   */</div><div class="line">  public static void interceptHyperLink(TextView tv, ChatContext chatContext, int msg_type,</div><div class="line">      long msg_id, String send_ucid) &#123;</div><div class="line">    tv.setAutoLinkMask(Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);</div><div class="line">    tv.setMovementMethod(LinkMovementMethod.getInstance());</div><div class="line">    CharSequence text = tv.getText();</div><div class="line">    if (text instanceof Spannable) &#123;</div><div class="line">      int end = text.length();</div><div class="line">      Spannable spannable = (Spannable) tv.getText();</div><div class="line">      URLSpan[] urlSpans = spannable.getSpans(0, end, URLSpan.class);</div><div class="line">      if (urlSpans.length == 0) &#123;</div><div class="line">        return;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);</div><div class="line">      for (URLSpan uri : urlSpans) &#123;</div><div class="line">        String url = uri.getURL();</div><div class="line">        CustomURLSpan custom = new CustomURLSpan(url, chatContext, msg_type, msg_id, send_ucid);</div><div class="line">        spannableStringBuilder.setSpan(custom, spannableStringBuilder.getSpanStart(uri),</div><div class="line">            spannableStringBuilder.getSpanEnd(uri), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);</div><div class="line">      &#125;</div><div class="line">      tv.setText(spannableStringBuilder);</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<p>Android自带的表达式(android.util.Patterns)，在不同的ROM上表现形式是不一样的，在一些比较诡异的case上基本识别不出来,比如对于<code>http://lianjia.com/xxx 啊啊啊</code>这种连接,华为手机正常识别了,三星手机把后面的汉字也一起识别了,手机兼容性问题,最后只能自己写正则去匹配:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div></pre></td><td class="code"><pre><div class="line">public class LinkifySpannableUtils &#123;</div><div class="line"></div><div class="line">    public static LinkifySpannableUtils mInstance;</div><div class="line"></div><div class="line">    private Context mContext;</div><div class="line">    private TextView mTextView;</div><div class="line">    private SpannableStringBuilder mSpannableStringBuilder;</div><div class="line"></div><div class="line">    private LinkifySpannableUtils() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static LinkifySpannableUtils getInstance() &#123;</div><div class="line">        if (mInstance == null) &#123;</div><div class="line">            mInstance = new LinkifySpannableUtils();</div><div class="line">        &#125;</div><div class="line">        return mInstance;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setSpan(Context context, TextView textView) &#123;</div><div class="line">        this.mContext = context;</div><div class="line">        this.mTextView = textView;</div><div class="line">        addLinks();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private void addLinks() &#123;</div><div class="line">        Linkify.addLinks(mTextView, WEB_URL, null);</div><div class="line">        Linkify.addLinks(mTextView, EMAIL_ADDRESS, null);</div><div class="line">        Linkify.addLinks(mTextView, PHONE, null);</div><div class="line"></div><div class="line">        CharSequence cSequence = mTextView.getText();</div><div class="line">        if (cSequence instanceof Spannable) &#123;</div><div class="line">            int end = mTextView.getText().length();</div><div class="line">            Spannable sp = (Spannable) mTextView.getText();</div><div class="line">            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);</div><div class="line">            mSpannableStringBuilder = new SpannableStringBuilder(sp);</div><div class="line">            mSpannableStringBuilder.clearSpans();</div><div class="line"></div><div class="line">            for (URLSpan url : urls) &#123;</div><div class="line">                String urlString = url.getURL();</div><div class="line">                PatternURLSpan patternURLSpan = new PatternURLSpan(urlString);</div><div class="line">                if (urlString != null &amp;&amp; urlString.length() &gt; 0) &#123;</div><div class="line">                    int _start = sp.getSpanStart(url);</div><div class="line">                    int _end = sp.getSpanEnd(url);</div><div class="line">                    try &#123;</div><div class="line">                        mSpannableStringBuilder.setSpan(patternURLSpan, _start, _end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);</div><div class="line">                    &#125; catch (Exception e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            mTextView.setLinkTextColor(ColorStateList.valueOf(Color.BLUE));</div><div class="line">            mTextView.setHighlightColor(Color.parseColor(&quot;#AAAAAA&quot;));</div><div class="line">            mTextView.setText(mSpannableStringBuilder);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private class PatternURLSpan extends ClickableSpan &#123;</div><div class="line"></div><div class="line">        private String mString;</div><div class="line"></div><div class="line">        PatternURLSpan(String str) &#123;</div><div class="line">            this.mString = str;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void onClick(View widget) &#123;</div><div class="line">                if (EMAIL_ADDRESS.matcher(mString).find()) &#123;</div><div class="line">                    sendEmail(mString);</div><div class="line">                &#125; else if (WEB_URL.matcher(mString).find()) &#123;</div><div class="line">                    openUrl(mString);</div><div class="line">                &#125; else if (PHONE.matcher(mString).find()) &#123;</div><div class="line">                    dialNum(mString);</div><div class="line">                &#125; else &#123;</div><div class="line">                    if (mString.contains(&quot;.&quot;)) &#123;</div><div class="line">                        if (mString.startsWith(&quot;http&quot;)) &#123;</div><div class="line">                            openUrl(mString);</div><div class="line">                        &#125; else &#123;</div><div class="line">                            openUrl(&quot;http://&quot; + mString);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 打开系统浏览器</div><div class="line">     * @param url</div><div class="line">     */</div><div class="line">    private void openUrl(String url) &#123;</div><div class="line">        Intent intent = new Intent(Intent.ACTION_VIEW);</div><div class="line">        intent.setData(Uri.parse(url));</div><div class="line">        intent.setClassName(&quot;com.android.browser&quot;,   </div><div class="line">                &quot;com.android.browser.BrowserActivity&quot;);  </div><div class="line">        mContext.startActivity(intent);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 拨打电话</div><div class="line">     * @param num</div><div class="line">     */</div><div class="line">    private void dialNum(final String num) &#123;</div><div class="line">        if (num != null &amp;&amp; num.length() &gt; 0) &#123;</div><div class="line">            call(num, mContext);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 调用邮箱</div><div class="line">     * @param address</div><div class="line">     */</div><div class="line">    private void sendEmail(String address) &#123;</div><div class="line">        String[] receive = new String[]&#123;address&#125;;</div><div class="line">        Intent intent = new Intent(Intent.ACTION_SEND);</div><div class="line">        intent.setType(&quot;plain/text&quot;);</div><div class="line">        intent.putExtra(Intent.EXTRA_EMAIL, receive);</div><div class="line">        mContext.startActivity(Intent.createChooser(intent, &quot;&quot;));</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private void call(final String mobile, final Context activity) &#123;</div><div class="line">        if (mobile == null || mobile.length() == 0) &#123;</div><div class="line">            Toast.makeText(activity, &quot;电话号码为空&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        String phone = mobile.toLowerCase();</div><div class="line">        if (!phone.startsWith(&quot;tel:&quot;)) &#123;</div><div class="line">            phone = &quot;tel:&quot; + mobile;</div><div class="line">        &#125;</div><div class="line">        final String callMobile = phone;</div><div class="line"></div><div class="line">        //适配6.0系统，申请权限</div><div class="line">        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line"></div><div class="line">            ActivityCompat.requestPermissions((Activity) activity,</div><div class="line">                    new String[]&#123;Manifest.permission.CALL_PHONE&#125;,</div><div class="line">                    MainActivity.REQUESTCODE);</div><div class="line">        &#125;else &#123;</div><div class="line">            callPhone(activity,callMobile);</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void callPhone(Context activity, String callMobile) &#123;</div><div class="line">        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(callMobile));</div><div class="line">        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">        activity.startActivity(intent);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public final String TOP_LEVEL_DOMAIN_STR_FOR_WEB_URL =</div><div class="line">            &quot;(?:&quot;</div><div class="line">                    + &quot;(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])&quot;</div><div class="line">                    + &quot;|(?:biz|b[abdefghijmnorstvwyz])&quot;</div><div class="line">                    + &quot;|(?:cat|com|coop|c[acdfghiklmnoruvxyz])&quot;</div><div class="line">                    + &quot;|d[ejkmoz]&quot;</div><div class="line">                    + &quot;|(?:edu|e[cegrstu])&quot;</div><div class="line">                    + &quot;|f[ijkmor]&quot;</div><div class="line">                    + &quot;|(?:gov|g[abdefghilmnpqrstuwy])&quot;</div><div class="line">                    + &quot;|h[kmnrtu]&quot;</div><div class="line">                    + &quot;|(?:info|int|i[delmnoqrst])&quot;</div><div class="line">                    + &quot;|(?:jobs|j[emop])&quot;</div><div class="line">                    + &quot;|k[eghimnprwyz]&quot;</div><div class="line">                    + &quot;|l[abcikrstuvy]&quot;</div><div class="line">                    + &quot;|(?:mil|mobi|museum|m[acdeghklmnopqrstuvwxyz])&quot;</div><div class="line">                    + &quot;|(?:name|net|n[acefgilopruz])&quot;</div><div class="line">                    + &quot;|(?:org|om)&quot;</div><div class="line">                    + &quot;|(?:pro|p[aefghklmnrstwy])&quot;</div><div class="line">                    + &quot;|qa&quot;</div><div class="line">                    + &quot;|r[eosuw]&quot;</div><div class="line">                    + &quot;|s[abcdeghijklmnortuvyz]&quot;</div><div class="line">                    + &quot;|(?:tel|travel|t[cdfghjklmnoprtvwz])&quot;</div><div class="line">                    + &quot;|u[agksyz]&quot;</div><div class="line">                    + &quot;|v[aceginu]&quot;</div><div class="line">                    + &quot;|w[fs]&quot;</div><div class="line">                    + &quot;|(?:\u03b4\u03bf\u03ba\u03b9\u03bc\u03ae|\u0438\u0441\u043f\u044b\u0442\u0430\u043d\u0438\u0435|\u0440\u0444|\u0441\u0440\u0431|\u05d8\u05e2\u05e1\u05d8|\u0622\u0632\u0645\u0627\u06cc\u0634\u06cc|\u0625\u062e\u062a\u0628\u0627\u0631|\u0627\u0644\u0627\u0631\u062f\u0646|\u0627\u0644\u062c\u0632\u0627\u0626\u0631|\u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629|\u0627\u0644\u0645\u063a\u0631\u0628|\u0627\u0645\u0627\u0631\u0627\u062a|\u0628\u06be\u0627\u0631\u062a|\u062a\u0648\u0646\u0633|\u0633\u0648\u0631\u064a\u0629|\u0641\u0644\u0633\u0637\u064a\u0646|\u0642\u0637\u0631|\u0645\u0635\u0631|\u092a\u0930\u0940\u0915\u094d\u0937\u093e|\u092d\u093e\u0930\u0924|\u09ad\u09be\u09b0\u09a4|\u0a2d\u0a3e\u0a30\u0a24|\u0aad\u0abe\u0ab0\u0aa4|\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe|\u0b87\u0bb2\u0b99\u0bcd\u0b95\u0bc8|\u0b9a\u0bbf\u0b99\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0bc2\u0bb0\u0bcd|\u0baa\u0bb0\u0bbf\u0b9f\u0bcd\u0b9a\u0bc8|\u0c2d\u0c3e\u0c30\u0c24\u0c4d|\u0dbd\u0d82\u0d9a\u0dcf|\u0e44\u0e17\u0e22|\u30c6\u30b9\u30c8|\u4e2d\u56fd|\u4e2d\u570b|\u53f0\u6e7e|\u53f0\u7063|\u65b0\u52a0\u5761|\u6d4b\u8bd5|\u6e2c\u8a66|\u9999\u6e2f|\ud14c\uc2a4\ud2b8|\ud55c\uad6d|xn\\-\\-0zwm56d|xn\\-\\-11b5bs3a9aj6g|xn\\-\\-3e0b707e|xn\\-\\-45brj9c|xn\\-\\-80akhbyknj4f|xn\\-\\-90a3ac|xn\\-\\-9t4b11yi5a|xn\\-\\-clchc0ea0b2g2a9gcd|xn\\-\\-deba0ad|xn\\-\\-fiqs8s|xn\\-\\-fiqz9s|xn\\-\\-fpcrj9c3d|xn\\-\\-fzc2c9e2c|xn\\-\\-g6w251d|xn\\-\\-gecrj9c|xn\\-\\-h2brj9c|xn\\-\\-hgbk6aj7f53bba|xn\\-\\-hlcj6aya9esc7a|xn\\-\\-j6w193g|xn\\-\\-jxalpdlp|xn\\-\\-kgbechtv|xn\\-\\-kprw13d|xn\\-\\-kpry57d|xn\\-\\-lgbbat1ad8j|xn\\-\\-mgbaam7a8h|xn\\-\\-mgbayh7gpa|xn\\-\\-mgbbh1a71e|xn\\-\\-mgbc0a9azcg|xn\\-\\-mgberp4a5d4ar|xn\\-\\-o3cw4h|xn\\-\\-ogbpf8fl|xn\\-\\-p1ai|xn\\-\\-pgbs0dh|xn\\-\\-s9brj9c|xn\\-\\-wgbh1c|xn\\-\\-wgbl6a|xn\\-\\-xkc2al3hye2a|xn\\-\\-xkc2dl3a5ee0h|xn\\-\\-yfro4i67o|xn\\-\\-ygbi2ammx|xn\\-\\-zckzah|xxx)&quot;</div><div class="line">                    + &quot;|y[et]&quot; + &quot;|z[amw]))&quot;;</div><div class="line"></div><div class="line">    public final String GOOD_IRI_CHAR = &quot;a-zA-Z0-9\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF&quot;;</div><div class="line"></div><div class="line"></div><div class="line">    public final Pattern WEB_URL = Pattern</div><div class="line">            .compile(&quot;((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\&apos;\\(\\)&quot;</div><div class="line">                    + &quot;\\,\\;\\?\\&amp;\\=]|(?:\\%[a-fA-F0-9]&#123;2&#125;))&#123;1,64&#125;(?:\\:(?:[a-zA-Z0-9\\$\\-\\_&quot;</div><div class="line">                    + &quot;\\.\\+\\!\\*\\&apos;\\(\\)\\,\\;\\?\\&amp;\\=]|(?:\\%[a-fA-F0-9]&#123;2&#125;))&#123;1,25&#125;)?\\@)?)?&quot;</div><div class="line">                    + &quot;((?:(?:[&quot;</div><div class="line">                    + GOOD_IRI_CHAR</div><div class="line">                    + &quot;][&quot;</div><div class="line">                    + GOOD_IRI_CHAR</div><div class="line">                    + &quot;\\-]&#123;0,64&#125;\\.)+&quot; // named host</div><div class="line">                    + TOP_LEVEL_DOMAIN_STR_FOR_WEB_URL</div><div class="line">                    + &quot;|(?:(?:25[0-5]|2[0-4]&quot; // or ip address</div><div class="line">                    + &quot;[0-9]|[0-1][0-9]&#123;2&#125;|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]&quot;</div><div class="line">                    + &quot;|[0-1][0-9]&#123;2&#125;|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]&quot;</div><div class="line">                    + &quot;[0-9]&#123;2&#125;|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]&#123;2&#125;&quot; + &quot;|[1-9][0-9]|[0-9])))&quot;</div><div class="line">                    + &quot;(?:\\:\\d&#123;1,5&#125;)?)&quot; // plus option port number</div><div class="line">                    + &quot;(\\/(?:(?:[&quot; + GOOD_IRI_CHAR + &quot;\\;\\/\\?\\:\\@\\&amp;\\=\\#\\~&quot; // plus option query</div><div class="line">                    // params</div><div class="line">                    + &quot;\\-\\.\\+\\!\\*\\&apos;\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]&#123;2&#125;))*)?&quot; + &quot;(?:\\b|$)&quot;);</div><div class="line"></div><div class="line">    public static final Pattern EMAIL_ADDRESS = Pattern.compile(&quot;[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]&#123;1,256&#125;&quot; + &quot;\\@&quot;</div><div class="line">            + &quot;[a-zA-Z0-9][a-zA-Z0-9\\-]&#123;0,64&#125;&quot; + &quot;(&quot; + &quot;\\.&quot; + &quot;[a-zA-Z0-9][a-zA-Z0-9\\-]&#123;0,25&#125;&quot; + &quot;)+&quot;);</div><div class="line">    public static final Pattern EMAIL_PATTERN = Pattern.compile(&quot;[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]&#123;2,4&#125;&quot;);</div><div class="line">    public static final Pattern WEB_PATTERN =</div><div class="line">            Pattern</div><div class="line">                    .compile(&quot;((http[s]&#123;0,1&#125;|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]&#123;2,4&#125;)(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=&lt;&gt;]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]&#123;2,4&#125;)(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=&lt;&gt;]*)?)&quot;);</div><div class="line"></div><div class="line">    public static final Pattern PHONE = Pattern.compile( // sdd = space, dot, or dash</div><div class="line">            &quot;(\\+[0-9]+[\\- \\.]*)?&quot; // +&lt;digits&gt;&lt;sdd&gt;*</div><div class="line">                    + &quot;(\\([0-9]+\\)[\\- \\.]*)?&quot; // (&lt;digits&gt;)&lt;sdd&gt;*</div><div class="line">                    + &quot;([0-9][0-9\\- \\.][0-9\\- \\.]+[0-9])&quot;);</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上述WEB_URL正则仍不能正常识别,最后采用:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">// all domain names</div><div class="line">private static final String[] ext = &#123;</div><div class="line">    &quot;top&quot;, &quot;com.cn&quot;, &quot;com&quot;, &quot;net&quot;, &quot;org&quot;, &quot;edu&quot;, &quot;gov&quot;, &quot;int&quot;, &quot;mil&quot;, &quot;cn&quot;, &quot;tel&quot;, &quot;biz&quot;, &quot;cc&quot;, &quot;tv&quot;, &quot;info&quot;, </div><div class="line">    &quot;name&quot;, &quot;hk&quot;, &quot;mobi&quot;, &quot;asia&quot;, &quot;cd&quot;, &quot;travel&quot;, &quot;pro&quot;, &quot;museum&quot;, &quot;coop&quot;, &quot;aero&quot;, &quot;ad&quot;, &quot;ae&quot;, &quot;af&quot;, </div><div class="line">    &quot;ag&quot;, &quot;ai&quot;, &quot;al&quot;, &quot;am&quot;, &quot;an&quot;, &quot;ao&quot;, &quot;aq&quot;, &quot;ar&quot;, &quot;as&quot;, &quot;at&quot;, &quot;au&quot;, &quot;aw&quot;, &quot;az&quot;, &quot;ba&quot;, &quot;bb&quot;, &quot;bd&quot;, </div><div class="line">    &quot;be&quot;, &quot;bf&quot;, &quot;bg&quot;, &quot;bh&quot;, &quot;bi&quot;, &quot;bj&quot;, &quot;bm&quot;, &quot;bn&quot;, &quot;bo&quot;, &quot;br&quot;, &quot;bs&quot;, &quot;bt&quot;, &quot;bv&quot;, &quot;bw&quot;, &quot;by&quot;, &quot;bz&quot;, </div><div class="line">    &quot;ca&quot;, &quot;cc&quot;, &quot;cf&quot;, &quot;cg&quot;, &quot;ch&quot;, &quot;ci&quot;, &quot;ck&quot;, &quot;cl&quot;, &quot;cm&quot;, &quot;cn&quot;, &quot;co&quot;, &quot;cq&quot;, &quot;cr&quot;, &quot;cu&quot;, &quot;cv&quot;, &quot;cx&quot;, </div><div class="line">    &quot;cy&quot;, &quot;cz&quot;, &quot;de&quot;, &quot;dj&quot;, &quot;dk&quot;, &quot;dm&quot;, &quot;do&quot;, &quot;dz&quot;, &quot;ec&quot;, &quot;ee&quot;, &quot;eg&quot;, &quot;eh&quot;, &quot;es&quot;, &quot;et&quot;, &quot;ev&quot;, &quot;fi&quot;, </div><div class="line">    &quot;fj&quot;, &quot;fk&quot;, &quot;fm&quot;, &quot;fo&quot;, &quot;fr&quot;, &quot;ga&quot;, &quot;gb&quot;, &quot;gd&quot;, &quot;ge&quot;, &quot;gf&quot;, &quot;gh&quot;, &quot;gi&quot;, &quot;gl&quot;, &quot;gm&quot;, &quot;gn&quot;, &quot;gp&quot;, </div><div class="line">    &quot;gr&quot;, &quot;gt&quot;, &quot;gu&quot;, &quot;gw&quot;, &quot;gy&quot;, &quot;hk&quot;, &quot;hm&quot;, &quot;hn&quot;, &quot;hr&quot;, &quot;ht&quot;, &quot;hu&quot;, &quot;id&quot;, &quot;ie&quot;, &quot;il&quot;, &quot;in&quot;, &quot;io&quot;, </div><div class="line">    &quot;iq&quot;, &quot;ir&quot;, &quot;is&quot;, &quot;it&quot;, &quot;jm&quot;, &quot;jo&quot;, &quot;jp&quot;, &quot;ke&quot;, &quot;kg&quot;, &quot;kh&quot;, &quot;ki&quot;, &quot;km&quot;, &quot;kn&quot;, &quot;kp&quot;, &quot;kr&quot;, &quot;kw&quot;, </div><div class="line">    &quot;ky&quot;, &quot;kz&quot;, &quot;la&quot;, &quot;lb&quot;, &quot;lc&quot;, &quot;li&quot;, &quot;lk&quot;, &quot;lr&quot;, &quot;ls&quot;, &quot;lt&quot;, &quot;lu&quot;, &quot;lv&quot;, &quot;ly&quot;, &quot;ma&quot;, &quot;mc&quot;, &quot;md&quot;, </div><div class="line">    &quot;mg&quot;, &quot;mh&quot;, &quot;ml&quot;, &quot;mm&quot;, &quot;mn&quot;, &quot;mo&quot;, &quot;mp&quot;, &quot;mq&quot;, &quot;mr&quot;, &quot;ms&quot;, &quot;mt&quot;, &quot;mv&quot;, &quot;mw&quot;, &quot;mx&quot;, &quot;my&quot;, &quot;mz&quot;,</div><div class="line">    &quot;na&quot;, &quot;nc&quot;, &quot;ne&quot;, &quot;nf&quot;, &quot;ng&quot;, &quot;ni&quot;, &quot;nl&quot;, &quot;no&quot;, &quot;np&quot;, &quot;nr&quot;, &quot;nt&quot;, &quot;nu&quot;, &quot;nz&quot;, &quot;om&quot;, &quot;qa&quot;, &quot;pa&quot;, </div><div class="line">    &quot;pe&quot;, &quot;pf&quot;, &quot;pg&quot;, &quot;ph&quot;, &quot;pk&quot;, &quot;pl&quot;, &quot;pm&quot;, &quot;pn&quot;, &quot;pr&quot;, &quot;pt&quot;, &quot;pw&quot;, &quot;py&quot;, &quot;re&quot;, &quot;ro&quot;, &quot;ru&quot;, &quot;rw&quot;, </div><div class="line">    &quot;sa&quot;, &quot;sb&quot;, &quot;sc&quot;, &quot;sd&quot;, &quot;se&quot;, &quot;sg&quot;, &quot;sh&quot;, &quot;si&quot;, &quot;sj&quot;, &quot;sk&quot;, &quot;sl&quot;, &quot;sm&quot;, &quot;sn&quot;, &quot;so&quot;, &quot;sr&quot;, &quot;st&quot;, </div><div class="line">    &quot;su&quot;, &quot;sy&quot;, &quot;sz&quot;, &quot;tc&quot;, &quot;td&quot;, &quot;tf&quot;, &quot;tg&quot;, &quot;th&quot;, &quot;tj&quot;, &quot;tk&quot;, &quot;tm&quot;, &quot;tn&quot;, &quot;to&quot;, &quot;tp&quot;, &quot;tr&quot;, &quot;tt&quot;, </div><div class="line">    &quot;tv&quot;, &quot;tw&quot;, &quot;tz&quot;, &quot;ua&quot;, &quot;ug&quot;, &quot;uk&quot;, &quot;us&quot;, &quot;uy&quot;, &quot;va&quot;, &quot;vc&quot;, &quot;ve&quot;, &quot;vg&quot;, &quot;vn&quot;, &quot;vu&quot;, &quot;wf&quot;, &quot;ws&quot;, </div><div class="line">    &quot;ye&quot;, &quot;yu&quot;, &quot;za&quot;, &quot;zm&quot;, &quot;zr&quot;, &quot;zw&quot;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">static &#123;   </div><div class="line">    StringBuilder sb = new StringBuilder();   </div><div class="line">    sb.append(&quot;(&quot;);   </div><div class="line">    for (int i = 0; i &lt; ext.length; i++) &#123;      </div><div class="line">        sb.append(ext[i]);      </div><div class="line">        sb.append(&quot;|&quot;);   </div><div class="line">    &#125;   </div><div class="line">    sb.deleteCharAt(sb.length() - 1);   </div><div class="line">    sb.append(&quot;)&quot;);   </div><div class="line">    // final pattern str</div><div class="line">    String pattern = &quot;((https?|s?ftp|irc[6s]?|git|afp|telnet|smb)://)?((\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;)|((www\\.|[a-zA-Z\\.\\-]+\\.)?[a-zA-Z0-9\\-]+\\.&quot; + sb.toString() + &quot;(:[0-9]&#123;1,5&#125;)?))((/[a-zA-Z0-9\\./,;\\?&apos;\\+&amp;%\\$#=~_\\-]*)|([^\\u4e00-\\u9fa5\\s0-9a-zA-Z\\./,;\\?&apos;\\+&amp;%\\$#=~_\\-]*))&quot;;   </div><div class="line">    // Log.v(TAG, &quot;pattern = &quot; + pattern);   </div><div class="line">    WEB_URL = Pattern.compile(pattern);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2249,7 +2384,7 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">150</span>
+                <span class="site-state-item-count">159</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2260,7 +2395,7 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2271,7 +2406,7 @@ Release compile：只参与release编译，只会打包到release apk中。</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-count">62</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

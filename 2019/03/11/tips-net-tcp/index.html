@@ -1,0 +1,1225 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="首部格式 各个段位说明:  源端口和目的端口:　　各占 2 字节.端口是传输层与应用层的服务接口.传输层的复用和分用功能都要通过端口才能实现 序号:　　占 4 字节.TCP 连接中传送的数据流中的每一个字节都编上一个序号.序号字段的值则指的是本报文段所发送的数据的第一个字节的序号 确认号:　　占 4 字节,是期望收到对方的下一个报文段的数据的第一个字节的序号 数据偏移/首部长度:　　占 4 位,它">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tips-net-tcp">
+<meta property="og:url" content="http://wodekouwei.com/2019/03/11/tips-net-tcp/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="首部格式 各个段位说明:  源端口和目的端口:　　各占 2 字节.端口是传输层与应用层的服务接口.传输层的复用和分用功能都要通过端口才能实现 序号:　　占 4 字节.TCP 连接中传送的数据流中的每一个字节都编上一个序号.序号字段的值则指的是本报文段所发送的数据的第一个字节的序号 确认号:　　占 4 字节,是期望收到对方的下一个报文段的数据的第一个字节的序号 数据偏移/首部长度:　　占 4 位,它">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311171945.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-201931117259.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311172637.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311172725.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311172750.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-201931117296.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311172934.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311172949.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-201931117305.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311173223.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311174443.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311174722.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311174940.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311175058.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311175358.jpg">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019312133854.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019312134328.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019312134856.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311175949.png">
+<meta property="og:updated_time" content="2019-03-12T05:55:58.687Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tips-net-tcp">
+<meta name="twitter:description" content="首部格式 各个段位说明:  源端口和目的端口:　　各占 2 字节.端口是传输层与应用层的服务接口.传输层的复用和分用功能都要通过端口才能实现 序号:　　占 4 字节.TCP 连接中传送的数据流中的每一个字节都编上一个序号.序号字段的值则指的是本报文段所发送的数据的第一个字节的序号 确认号:　　占 4 字节,是期望收到对方的下一个报文段的数据的第一个字节的序号 数据偏移/首部长度:　　占 4 位,它">
+<meta name="twitter:image" content="http://images.wodekouwei.com/tips-net-tcp-2019311171945.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/03/11/tips-net-tcp/"/>
+
+
+
+
+
+  <title> tips-net-tcp | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/11/tips-net-tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                tips-net-tcp
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T16:59:43+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/03/11/tips-net-tcp/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="首部格式"><a href="#首部格式" class="headerlink" title="首部格式"></a>首部格式</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311171945.png" alt="tips-net-tcp-2019311171945"></p>
+<p>各个段位说明:</p>
+<ul>
+<li>源端口和目的端口:　　各占 2 字节.端口是传输层与应用层的服务接口.传输层的复用和分用功能都要通过端口才能实现</li>
+<li>序号:　　占 4 字节.TCP 连接中传送的数据流中的每一个字节都编上一个序号.序号字段的值则指的是本报文段所发送的数据的第一个字节的序号</li>
+<li>确认号:　　占 4 字节,是期望收到对方的下一个报文段的数据的第一个字节的序号</li>
+<li>数据偏移/首部长度:　　占 4 位,它指出 TCP 报文段的数据起始处距离 TCP 报文段的起始处有多远.“数据偏移”的单位是 32 位字(以 4 字节为计算单位)</li>
+<li>保留:　　占 6 位,保留为今后使用,但目前应置为 0</li>
+<li>紧急URG:　　当 URG=1 时,表明紧急指针字段有效.它告诉系统此报文段中有紧急数据,应尽快传送(相当于高优先级的数据)</li>
+<li>确认ACK:　　只有当 ACK=1 时确认号字段才有效.当 ACK=0 时,确认号无效</li>
+<li>PSH(PuSH):　　接收 TCP 收到 PSH = 1 的报文段,就尽快地交付接收应用进程,而不再等到整个缓存都填满了后再向上交付</li>
+<li>RST (ReSeT):　　当 RST=1 时,表明 TCP 连接中出现严重差错（如由于主机崩溃或其他原因）,必须释放连接,然后再重新建立运输连接</li>
+<li>同步 SYN:　　同步 SYN = 1 表示这是一个连接请求或连接接受报文</li>
+<li>终止 FIN:　　用来释放一个连接.FIN=1 表明此报文段的发送端的数据已发送完毕,并要求释放运输连接</li>
+<li>检验和:　　占 2 字节.检验和字段检验的范围包括首部和数据这两部分.在计算检验和时,要在 TCP 报文段的前面加上 12 字节的伪首部</li>
+<li>紧急指针:　　占 16 位,指出在本报文段中紧急数据共有多少个字节（紧急数据放在本报文段数据的最前面）</li>
+<li>选项:　　长度可变.TCP 最初只规定了一种选项,即最大报文段长度 MSS.MSS 告诉对方 TCP：“我的缓存所能接收的报文段的数据字段的最大长度是 MSS 个字节.” [MSS(Maximum Segment Size)是 TCP 报文段中的数据字段的最大长度.数据字段加上 TCP 首部才等于整个的 TCP 报文段]</li>
+<li>填充:　　这是为了使整个首部长度是 4 字节的整数倍</li>
+<li>其他选项:<ul>
+<li>窗口扩大:　　占 3 字节,其中有一个字节表示移位值 S.新的窗口值等于TCP 首部中的窗口位数增大到(16 + S),相当于把窗口值向左移动 S 位后获得实际的窗口大小</li>
+<li>时间戳:　　占10 字节,其中最主要的字段时间戳值字段(4字节)和时间戳回送回答字段(4字节)</li>
+<li>选择确认:　　接收方收到了和前面的字节流不连续的两2字节.如果这些字节的序号都在接收窗口之内,那么接收方就先收下这些数据,但要把这些信息准确地告诉发送方,使发送方不要再重复发送这些已收到的数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据单位"><a href="#数据单位" class="headerlink" title="数据单位"></a>数据单位</h2><p>TCP 传送的数据单位协议是 TCP 报文段(segment)</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>TCP 是面向连接的传输层协议 每一条 TCP 连接只能有两个端点(endpoint),每一条 TCP 连接只能是点对点的（一对一） TCP 提供可靠交付的服务 TCP 提供全双工通信 面向字节流</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>TCP 对应用进程一次把多长的报文发送到TCP 的缓存中是不关心的 TCP 根据对方给出的窗口值和当前网络拥塞的程度来决定一个报文段应包含多少个字节(UDP 发送的报文长度是应用进程给出的) TCP 可把太长的数据块划分短一些再传送.TCP 也可等待积累有足够多的字节后再构成报文段发送出去 每一条 TCP 连接有两个端点 TCP 连接的端点不是主机,不是主机的IP 地址,不是应用进程,也不是传输层的协议端口.TCP 连接的端点叫做套接字(socket)或插口</p>
+<h2 id="自动重传请求ARQ"><a href="#自动重传请求ARQ" class="headerlink" title="自动重传请求ARQ"></a>自动重传请求ARQ</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h3><p>可靠传输协议常称为自动重传请求ARQ (Automatic Repeat reQuest)</p>
+<h3 id="累积确认"><a href="#累积确认" class="headerlink" title="累积确认:"></a>累积确认:</h3><ul>
+<li>定义:　　接收方一般采用累积确认的方式.即不必对收到的分组逐个发送确认,而是对按序到达的最后一个分组发送确认,这样就表示：到这个分组为止的所有分组都已正确收到了</li>
+<li>优点:　　容易实现,即使确认丢失也不必重传</li>
+<li>缺点:　　不能向发送方反映出接收方已经正确收到的所有分组的信息<h3 id="Go-back-N-回退N"><a href="#Go-back-N-回退N" class="headerlink" title="Go-back-N(回退N):"></a>Go-back-N(回退N):</h3>如果发送方发送了前 5 个分组,而中间的第 3 个分组丢失了.这时接收方只能对前两个分组发出确认.发送方无法知道后面三个分组的下落,而只好把后面的三个分组都再重传一次</li>
+</ul>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明:"></a>说明:</h3><ul>
+<li>TCP 连接的每一端都必须设有两个窗口      一个发送窗口和一个接收窗口</li>
+<li>TCP 可靠传输机制用字节的序号进行控制.TCP 所有的确认都是基于序号而不是基于报文段</li>
+<li>TCP 两端的四个窗口经常处于动态变化之中</li>
+<li>TCP连接的往返时间 RTT 也不是固定不变的.需要使用特定的算法估算较为合理的重传时间</li>
+</ul>
+<h3 id="图释"><a href="#图释" class="headerlink" title="图释"></a>图释</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-201931117259.png" alt="tips-net-tcp-201931117259"></p>
+<h2 id="发送缓存"><a href="#发送缓存" class="headerlink" title="发送缓存"></a>发送缓存</h2><h3 id="发送缓存用来暂时存放："><a href="#发送缓存用来暂时存放：" class="headerlink" title="发送缓存用来暂时存放："></a>发送缓存用来暂时存放：</h3><ul>
+<li>发送应用程序传送给发送方 TCP 准备发送的数据</li>
+<li>TCP 已发送出但尚未收到确认的数据<h3 id="图释-1"><a href="#图释-1" class="headerlink" title="图释:"></a>图释:</h3><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172637.png" alt="tips-net-tcp-2019311172637"></li>
+</ul>
+<h2 id="接收缓存"><a href="#接收缓存" class="headerlink" title="接收缓存"></a>接收缓存</h2><h3 id="接收缓存用来暂时存放："><a href="#接收缓存用来暂时存放：" class="headerlink" title="接收缓存用来暂时存放："></a>接收缓存用来暂时存放：</h3><ul>
+<li>按序到达的、但尚未被接收应用程序读取的数据；</li>
+<li>不按序到达的数据<h3 id="图释-2"><a href="#图释-2" class="headerlink" title="图释:"></a>图释:</h3><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172725.png" alt="tips-net-tcp-2019311172725"></li>
+</ul>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>滑动窗口(rwnd)是用于流控的动态缩放可靠滑动的接收与发送窗口，防止发送端发送过快接收端被淹没
+对应的还有拥塞窗口(rwnd),是在一个RTT内可以最多一次可发送的报文段数 — 发送方的流量控制</p>
+<p>TCP是以报文段(若干字节)为单位，每一个报文段需要一次ACK确认收到，但是其带来的问题很明显，频繁的发送确认等待导致用于确认与等待的时间太长。引入窗口后，发送端只要在窗口内，便不用每次都等待ACK才发送下一个报文段，可以在发送窗口内一次连续发送几个报文段而无需等待ACK</p>
+<h3 id="图释-3"><a href="#图释-3" class="headerlink" title="图释:"></a>图释:</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311172750.png" alt="tips-net-tcp-2019311172750"></p>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点:"></a>特点:</h3><ul>
+<li>以字节为单位的滑动窗口</li>
+<li>A 的发送窗口并不总是和 B 的接收窗口一样大（因为有一定的时间滞后）<h3 id="要求"><a href="#要求" class="headerlink" title="要求:"></a>要求:</h3></li>
+<li>TCP 标准没有规定对不按序到达的数据应如何处理.通常是先临时存放在接收窗口中,等到字节流中所缺少的字节收到后,再按序交付上层的应用进程</li>
+<li>TCP 要求接收方必须有累积确认的功能,这样可以减小传输开销</li>
+</ul>
+<h3 id="具体实现-1"><a href="#具体实现-1" class="headerlink" title="具体实现:"></a>具体实现:</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-201931117296.png" alt="tips-net-tcp-201931117296">
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311172934.png" alt="tips-net-tcp-2019311172934">
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311172949.png" alt="tips-net-tcp-2019311172949">
+<img src="http://images.wodekouwei.com/tips-net-tcp-201931117305.png" alt="tips-net-tcp-201931117305"></p>
+<h3 id="发送窗口与接收窗口的关系"><a href="#发送窗口与接收窗口的关系" class="headerlink" title="发送窗口与接收窗口的关系"></a>发送窗口与接收窗口的关系</h3><p>TCP是双工协议，会话双方都可以同时接收与发送数据，因此双方都同时维护一个发送窗口与接收窗口。</p>
+<ul>
+<li>接收窗口大小取决于应用、系统、硬件等限制；</li>
+<li>发送窗口大小取决于对方接收窗口的大小</li>
+</ul>
+<h3 id="窗口滑动协定"><a href="#窗口滑动协定" class="headerlink" title="窗口滑动协定"></a>窗口滑动协定</h3><ul>
+<li>发送窗口只有在收到窗口内字节的ACK确认，才会滑动其左边界</li>
+<li>接收窗口只有在窗口中所有的段都正确收到的情况下，才会滑动其左边界；当有字节未接收，但收到后面的字节的情况下，也会滑动，也不对后续字节确认，确保对方重传未接收字节<h3 id="哪些允许变化"><a href="#哪些允许变化" class="headerlink" title="哪些允许变化"></a>哪些允许变化</h3></li>
+<li>最大报文段大小在握手中，就确定了</li>
+<li>窗口缩放因子在握手中，就确定了</li>
+<li>接收窗口大小在根据本地的处理能力与缓存剩余空间动态调整，通过ACK带给对方当前剩余的接收窗口大小</li>
+</ul>
+<h2 id="确认丢失和确认迟到"><a href="#确认丢失和确认迟到" class="headerlink" title="确认丢失和确认迟到"></a>确认丢失和确认迟到</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311173223.png" alt="tips-net-tcp-2019311173223"></p>
+<h2 id="超时重传时间选择"><a href="#超时重传时间选择" class="headerlink" title="超时重传时间选择"></a>超时重传时间选择</h2><h3 id="具体实现-2"><a href="#具体实现-2" class="headerlink" title="具体实现:"></a>具体实现:</h3><p>TCP 每发送一个报文段,就对这个报文段设置一次计时器.只要计时器设置的重传时间到但还没有收到确认,就要重传这一报文段</p>
+<h3 id="加权平均往返时间"><a href="#加权平均往返时间" class="headerlink" title="加权平均往返时间:"></a>加权平均往返时间:</h3><h4 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h4><p>TCP 保留了 RTT 的一个加权平均往返时间 RTTS（这又称为平滑的往返时间）,第一次测量到 RTT 样本时,RTTS 值就取为所测量到的 RTT 样本值.以后每测量到一个新的 RTT 样本,就按下式重新计算一次 RTTS：</p>
+<h4 id="公式"><a href="#公式" class="headerlink" title="公式:"></a>公式:</h4><p>新的 RTTS = ( 1 - α)×(旧的 RTTS)＋α(新的 RTT 样本)</p>
+<h4 id="说明-1"><a href="#说明-1" class="headerlink" title="说明:"></a>说明:</h4><p>式中,0 ≤ α＜ 1.若α很接近于零,表示 RTT 值更新较慢若选择 α 接近于1,则表示 RTT 值更新较快 RFC 2988 推荐的 α 值为 1/8,即 0.125</p>
+<h3 id="超时重传时间RTO"><a href="#超时重传时间RTO" class="headerlink" title="超时重传时间RTO:"></a>超时重传时间RTO:</h3><p>RTO 应略大于上面得出的加权平均往返时间 RTTS. RFC 2988 建议使用下式计算 RTO：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">RTO=RTTS + 4×RTTD</div></pre></td></tr></table></figure></p>
+<p>RTTD 是 RTT 的偏差的加权平均值 RFC 2988 建议这样计算 RTTD.第一次测量时,RTTD 值取为测量到的 RTT 样本值的一半.在以后的测量中,则使用下式计算加权平均的 RTTD：</p>
+<p><code>新的 RTTD = (1-β)×(旧的RTTD)+β×|RTTS﹣新的 RTT 样本|</code>
+β是个小于 1 的系数,其推荐值是 1/4,即 0.25 在计算平均往返时间 RTT 时,只要报文段重传了,就不采用其往返时间样本</p>
+<h3 id="修正的Karn算法"><a href="#修正的Karn算法" class="headerlink" title="修正的Karn算法:"></a>修正的Karn算法:</h3><p>报文段每重传一次,就把 RTO 增大一些：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">新的 RTO= γ×(旧的 RTO)</div></pre></td></tr></table></figure></p>
+<p>系数γ 的典型值是 2 当不再发生报文段的重传时,才根据报文段的往返时延更新平均往返时延 RTT 和超时重传时间 RTO 的数值</p>
+<h3 id="持续计时器"><a href="#持续计时器" class="headerlink" title="持续计时器"></a>持续计时器</h3><ul>
+<li>TCP 为每一个连接设有一个持续计时器</li>
+<li>只要 TCP 连接的一方收到对方的零窗口通知,就启动持续计时器</li>
+<li>若持续计时器设置的时间到期,就发送一个零窗口探测报文段(仅携带 1 字节的数据),而对方就在确认这个探测报文段时给出了现在的窗口值</li>
+<li>若窗口仍然是零,则收到这个报文段的一方就重新设置持续计时器</li>
+<li>若窗口不是零,则死锁的僵局就可以打破了</li>
+</ul>
+<h2 id="报文段的发送时机"><a href="#报文段的发送时机" class="headerlink" title="报文段的发送时机"></a>报文段的发送时机</h2><p>TCP 维持一个变量,它等于最大报文段长度 MSS.只要缓存中存放的数据达到 MSS 字节时,就组装成一个 TCP 报文段发送出去 由发送方的应用进程指明要求发送报文段,即 TCP 支持的推送(push)操作 发送方的一个计时器期限到了,这时就把当前已有的缓存数据装入报文段（但长度不能超过 MSS）发送出去</p>
+<h2 id="运输连接"><a href="#运输连接" class="headerlink" title="运输连接"></a>运输连接</h2><h3 id="三个阶段"><a href="#三个阶段" class="headerlink" title="三个阶段:"></a>三个阶段:</h3><h4 id="连接建立"><a href="#连接建立" class="headerlink" title="连接建立:"></a>连接建立:</h4><h5 id="图释-4"><a href="#图释-4" class="headerlink" title="图释:"></a>图释:</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174443.jpg" alt="tips-net-tcp-2019311174443"></p>
+<h5 id="步骤"><a href="#步骤" class="headerlink" title="步骤:"></a>步骤:</h5><ul>
+<li>A 的 TCP 向 B 发出连接请求报文段,其首部中的同步位 SYN = 1,并选择序号 seq = x,表明传送数据时的第一个数据字节的序号是 x</li>
+<li>B 的 TCP 收到连接请求报文段后,如同意,则发回确认(B 在确认报文段中应使 SYN = 1,使 ACK = 1,其确认号ack = x﹢1,自己选择的序号 seq = y)</li>
+<li>A 收到此报文段后向 B 给出确认,其 ACK = 1,确认号 ack = y﹢1(A 的 TCP 通知上层应用进程,连接已经建立,B 的 TCP 收到主机 A 的确认后,也通知其上层应用进程：TCP 连接已经建立)</li>
+</ul>
+<h4 id="数据传送"><a href="#数据传送" class="headerlink" title="数据传送"></a>数据传送</h4><h4 id="连接释放"><a href="#连接释放" class="headerlink" title="连接释放:"></a>连接释放:</h4><h5 id="图释-5"><a href="#图释-5" class="headerlink" title="图释"></a>图释</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174722.jpg" alt="tips-net-tcp-2019311174722"></p>
+<h5 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤:"></a>步骤:</h5><ul>
+<li>数据传输结束后,通信的双方都可释放连接.现在 A 的应用进程先向其 TCP 发出连接释放报文段,并停止再发送数据,主动关闭 TCP 连接(A 把连接释放报文段首部的 FIN = 1,其序号seq = u,等待 B 的确认)</li>
+<li>B 发出确认,确认号 ack = u＋1,而这个报文段自己的序号 seq = v(TCP 服务器进程通知高层应用进程.从 A 到 B 这个方向的连接就释放了,TCP 连接处于半关闭状态.B 若发送数据,A 仍要接收)</li>
+<li>若 B 已经没有要向 A 发送的数据,其应用进程就通知 TCP 释放连接</li>
+<li>A 收到连接释放报文段后,必须发出确认,在确认报文段中 ACK = 1,确认号 ack=w﹢1,自己的序号 seq = u + 1</li>
+</ul>
+<h5 id="注意-1"><a href="#注意-1" class="headerlink" title="注意:"></a>注意:</h5><p>TCP 连接必须经过时间 2MSL 后才真正释放掉(2MSL 的时间的用意 — 为了保证 A 发送的最后一个 ACK 报文段能够到达 B.防止 “已失效的连接请求报文段”出现在本连接中.A 在发送完最后一个 ACK 报文段后,再经过时间 2MSL,就可以使本连接持续的时间内所产生的所有报文段,都从网络中消失.这样就可以使下一个新的连接中不会出现这种旧的连接请求报文段)</p>
+<h5 id="发现丢失确认时候的处理"><a href="#发现丢失确认时候的处理" class="headerlink" title="发现丢失确认时候的处理"></a>发现丢失确认时候的处理</h5><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311174940.png" alt="tips-net-tcp-2019311174940"></p>
+<h4 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题:"></a>三个问题:</h4><ul>
+<li>要使每一方能够确知对方的存在</li>
+<li>要允许双方协商一些参数(如最大报文段长度,最大窗口大小,服务质量等)</li>
+<li>能够对运输实体资源(如缓存大小,连接表中的项目等)进行分配</li>
+</ul>
+<h2 id="发送TCP请求客户端"><a href="#发送TCP请求客户端" class="headerlink" title="发送TCP请求客户端"></a>发送TCP请求客户端</h2><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311175058.png" alt="tips-net-tcp-2019311175058"></p>
+<h2 id="拥塞处理相关概念"><a href="#拥塞处理相关概念" class="headerlink" title="拥塞处理相关概念"></a>拥塞处理相关概念</h2><h3 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口:"></a>拥塞窗口:</h3><ul>
+<li>含义:拥塞窗口的大小取决于网络的拥塞程度,并且动态地在变化.发送方让自己的发送窗口等于拥塞窗口.如再考虑到接收方的接收能力,则发送窗口还可能小于拥塞窗口</li>
+<li>发送方控制拥塞窗口的原则:只要网络没有出现拥塞,拥塞窗口就再增大一些,以便把更多的分组发送出去.但只要网络出现拥塞,拥塞窗口就减小一些,以减少注入到网络中的分组数</li>
+</ul>
+<h3 id="乘法减小"><a href="#乘法减小" class="headerlink" title="乘法减小:"></a>乘法减小:</h3><p>是指不论在慢开始阶段还是拥塞避免阶段,只要出现一次超时(即出现一次网络拥塞),就把慢开始门限值 ssthresh 设置为当前的拥塞窗口值乘以 0.5</p>
+<h3 id="加法增大"><a href="#加法增大" class="headerlink" title="加法增大:"></a>加法增大:</h3><p>是指执行拥塞避免算法后,在收到对所有报文段的确认后(即经过一个往返时间),就把拥塞窗口 cwnd增加一个 MSS 大小,使拥塞窗口缓慢增大,以防止网络过早出现拥塞</p>
+<h3 id="快重传"><a href="#快重传" class="headerlink" title="快重传:"></a>快重传:</h3><p>快重传算法首先要求接收方每收到一个失序的报文段后就立即发出重复确认.这样做可以让发送方及早知道有报文段没有到达接收方,发送方只要一连收到三个重复确认就应当立即重传对方尚未收到的报文段
+<img src="http://images.wodekouwei.com/tips-net-tcp-2019311175358.jpg" alt="tips-net-tcp-2019311175358"></p>
+<h3 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复:"></a>快恢复:</h3><p>当发送端收到连续三个重复的确认时,就执行“乘法减小”算法,把慢开始门限 ssthresh 减半.但接下去不执行慢开始算法</p>
+<h3 id="发送窗口的上限值"><a href="#发送窗口的上限值" class="headerlink" title="发送窗口的上限值:"></a>发送窗口的上限值:</h3><p>发送方的发送窗口的上限值应当取为接收方窗口 rwnd 和拥塞窗口 cwnd 这两个变量中较小的一个,即应按以下公式确定： 发送窗口的上限值   Min [rwnd, cwnd]</p>
+<p>当 rwnd &lt; cwnd 时,是接收方的接收能力限制发送窗口的最大值
+当 cwnd &lt; rwnd 时,则是网络的拥塞限制发送窗口的最大值</p>
+<h2 id="避免拥塞具体实现"><a href="#避免拥塞具体实现" class="headerlink" title="避免拥塞具体实现"></a>避免拥塞具体实现</h2><h3 id="有滑动窗口了，为什么还要拥塞窗口"><a href="#有滑动窗口了，为什么还要拥塞窗口" class="headerlink" title="有滑动窗口了，为什么还要拥塞窗口"></a>有滑动窗口了，为什么还要拥塞窗口</h3><p>发送方与接收方之间存在多个路由器和速率较慢的链路时，一些中间路由器就必须缓存分组，并可能耗尽缓存，此时便会出现拥塞，这将严重降低了TCP连接的吞吐量，拥塞窗口就是为了防止过多的数据注入到网络中，中间路由无法消化的问题。</p>
+<p>TCP的做法是引入拥塞窗口(cwnd)并策略性的调整其大小，如上文提到的发送窗口大小是取滑动窗口大小与拥塞窗口大小的最小值，这个正是用来缓解该问题，下面是拥塞窗口大小变化的策略:</p>
+<h4 id="1-慢开始、拥塞控制"><a href="#1-慢开始、拥塞控制" class="headerlink" title="1. 慢开始、拥塞控制"></a>1. 慢开始、拥塞控制</h4><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312133854.png" alt="tips-net-tcp-2019312133854">
+其目的是: 拥塞发生时循序减少主机发送到网络的报文数，使得这时路由器有足够的时间消化积压的报文。</p>
+<ul>
+<li>当主机开发发送数据时，拥塞窗口(cwnd)被初始化为1个报文段，试探性的发送1个字节的报文</li>
+<li>每收到一个ACK，拥塞窗口大小就指数的增加报文段数目(1,2,4,16…)</li>
+<li>最终到达提前预设的慢开始阀值(ssthresh)，停止使用慢开始算法，改用拥塞避免算法</li>
+<li>拥塞避免算法是每经过一个RTT，拥塞窗口就增加一个报文段，即改为线性的增加报文段</li>
+<li>最终会出现网络拥塞，比如丢包等情况，停止拥塞避免算法，将慢开始阀值设置为目前拥塞时拥塞窗口大小的一半(但不能小于2)，并重置拥塞窗口大小为1个报文段，开始新的一轮慢开始 </li>
+</ul>
+<p>慢开始门限 ssthresh 的用法:</p>
+<ul>
+<li>当 cwnd &lt; ssthresh 时,使用慢开始算法</li>
+<li>当 cwnd &gt; ssthresh 时,停止使用慢开始算法而改用拥塞避免算法</li>
+<li>当 cwnd = ssthresh 时,既可使用慢开始算法,也可使用拥塞避免算法</li>
+</ul>
+<h4 id="2-快重传，快恢复"><a href="#2-快重传，快恢复" class="headerlink" title="2. 快重传，快恢复"></a>2. 快重传，快恢复</h4><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312134328.png" alt="tips-net-tcp-2019312134328">
+其目的是: 减少因为拥塞导致的数据包丢失的重传时间，避免无用的数据到网络</p>
+<p>接收方: 如果一个包丢失，后续的包继续发送针对该包的重传请求</p>
+<p>发送方: 一旦收到三个一样的确认，判定为拥塞:</p>
+<ul>
+<li>立即重传该包</li>
+<li>开始执行快恢复算法</li>
+<li>快恢复是慢开始阀值设置为目前拥塞时拥塞窗口大小的一半；拥塞窗口大小设置为目前设置后的慢开始阀值的大小；执行拥塞避免算法</li>
+</ul>
+<h2 id="TCP窗口特殊情况"><a href="#TCP窗口特殊情况" class="headerlink" title="TCP窗口特殊情况"></a>TCP窗口特殊情况</h2><h3 id="1-Persistence-timer"><a href="#1-Persistence-timer" class="headerlink" title="1. Persistence timer"></a>1. Persistence timer</h3><p><img src="http://images.wodekouwei.com/tips-net-tcp-2019312134856.png" alt="tips-net-tcp-2019312134856">
+防止丢包导致发送端停留在上次收到的接收窗口大小为0的情况:</p>
+<ul>
+<li>接收端B: 我的缓存已满，接收窗口为0</li>
+<li>发送端A: 停止发送数据, 并启动持续计时器(Persistence timer)</li>
+<li>接收端B: 消化完缓存，发送报文给发送端A，我的接收窗口大小为400，但是 这个报文丢了</li>
+<li>发送端A: 计时器时间到，发送一个1字节的探测报文</li>
+<li>接收端B: 重新发送，接收窗口大小为400</li>
+<li>发送端A: 继续发送数据<h3 id="2-应用层每次单字节发送"><a href="#2-应用层每次单字节发送" class="headerlink" title="2. 应用层每次单字节发送"></a>2. 应用层每次单字节发送</h3>单个发送字节，然后等待一个确认，再发送一个字节，这样为一个字节添加40个字节头的做法，无疑增加了网络中许多不必要的报文，该问题TCP层的解决方案:</li>
+</ul>
+<p>发送方采用Nagle算法:</p>
+<ul>
+<li>若应用层是逐个字节把数据送到TCP，那么TCP不会逐个的发送，而是先发送第一个数据字节，然后缓存剩余的</li>
+<li>在收到第一个字节的ACK获知网络情况与对方的接收窗口大小后，把缓存的剩余字节组成合适的报文发送出去</li>
+<li>到达的数据达到发送窗口大小的一半或者报文段的最大长度时，立即发送</li>
+</ul>
+<p>接收方的做法:</p>
+<ul>
+<li>等待本地有足够的缓存空间容纳一个报文段，或者等到本地的缓存空间有一半空闲的时候，再通知发送端发送数据。</li>
+</ul>
+<h2 id="TCP-的有限状态机"><a href="#TCP-的有限状态机" class="headerlink" title="TCP 的有限状态机"></a>TCP 的有限状态机</h2><p>说明:</p>
+<ul>
+<li>TCP 有限状态机的图中每一个方框都是 TCP 可能具有的状态</li>
+<li>每个方框中的大写英文字符串是 TCP 标准所使用的 TCP 连接状态名.状态之间的箭头表示可能发生的状态变迁</li>
+<li>箭头旁边的字,表明引起这种变迁的原因,或表明发生状态变迁后又出现什么动作</li>
+<li>图中有三种不同的箭头<ul>
+<li>粗实线箭头表示对客户进程的正常变迁</li>
+<li>粗虚线箭头表示对服务器进程的正常变迁</li>
+<li>另一种细线箭头表示异常变迁</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://images.wodekouwei.com/tips-net-tcp-2019311175949.png" alt="tips-net-tcp-2019311175949"></p>
+<h2 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h2><h3 id="MTU"><a href="#MTU" class="headerlink" title="MTU"></a>MTU</h3><h4 id="什么是MTU-Maximum-Transmit-Unit"><a href="#什么是MTU-Maximum-Transmit-Unit" class="headerlink" title="什么是MTU(Maximum Transmit Unit)"></a>什么是MTU(Maximum Transmit Unit)</h4><p>由于以太网传输的限制，每个以太网网数据帧的大小都是落在在区间[64Bytes,1518Bytes]中的，不在区间内的一般会被视为错误的数据帧，以太网转发设备直接丢弃。而根据以太网每帧的数据构成，除去固定的部分，留给上层协议的只有Data域的1500Bytes，我们将它称为MTU。</p>
+<p>以太网(Ethernet II)每帧的数据构成: 目的Mac地址(DMAC)+源Mac地址(SMAC)+类型(Type)+数据(Data)+校验(CRC) = 6Bytes(48bit)DMAC + 6Bytes(48bit)SMAC + 2Bytes(16bit)Type + 1500BytesData + 4Bytes(24bit)CRC</p>
+<h4 id="MTU造成什么影响"><a href="#MTU造成什么影响" class="headerlink" title="MTU造成什么影响"></a>MTU造成什么影响</h4><p>由于一个帧放不下，如IP协议，就会对数据包进行分片处理，这就导致了原本一次可以搞定的，被分为多次，降低传输性能，不过我们可以通过在数据包包头加上DF(DonotFragment)标签来强制不被分片处理。</p>
+<p>UDP协议不用关心数据的到达的有序以及正确，因此对分片无特殊要求
+TCP协议相反，因此TCP协议本身的最大报文段大小MSS也受MTU影响，通常MSS是: MTU - 20Bytes(IP Header) - 20Bytes(TCP Header)
+不过好在绝大多数的网络链路都是1500Bytes的MTU或者更大</p>
+<h3 id="什么是MSS-Maximum-Segment-Size"><a href="#什么是MSS-Maximum-Segment-Size" class="headerlink" title="什么是MSS(Maximum Segment Size)"></a>什么是MSS(Maximum Segment Size)</h3><p>TCP的最大报文段大小，只包含TCP Payload(不包含TCP Header与TCP Option)的TCP每次能够传输的最大数据分段的大小，可以用来限制每次发送的字节数。通常大小为1460Bytes(1500BytesMTU - 20Bytes(IP Header) - 20Bytes(TCP Header))</p>
+<p>MSS是在TCP建连时确定的，通讯双方会根据双方提供的MSS值，取最小的MSS作为该次连接数据传输的MSS</p>
+<h3 id="什么是WS-Window-Scaling"><a href="#什么是WS-Window-Scaling" class="headerlink" title="什么是WS(Window Scaling)"></a>什么是WS(Window Scaling)</h3><p>TCP首部中表示Window Size的字段只有16位，因此按照协议，能表示的最大窗口大小是2^16-1=65535Bytes(64Kb)，因此TCP的选项字段中包含了窗口扩大因子(WS)分别用option-kind、option-length、option-data来表示，这个参数可带可不带，只有在双方都支持的情况下，才会生效。如双方的WS都是256，而后我们ACK Window size value是5，那么此时就可以表示我们的接收窗口是1280Bytes(5*256=1280)。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/zhangdaisylove/article/details/47294315" target="_blank" rel="external">TCP的滑动窗口与拥塞窗口</a>
+<a href="http://blog.chinaunix.net/uid-26275986-id-4109679.html" target="_blank" rel="external">计算机网络【七】：可靠传输的实现</a>
+<a href="http://blog.csdn.net/cloud323/article/details/77481711" target="_blank" rel="external">TCP窗口控制、流控制、拥塞控制</a>
+<a href="http://blog.csdn.net/hldjf/article/details/7450565" target="_blank" rel="external">也谈一下TCP segment of a reassembled PDU</a>
+<a href="https://www.zhihu.com/question/48454744" target="_blank" rel="external">TCP流量控制中的滑动窗口大小</a>
+<a href="https://my.oschina.net/xinxingegeya/blog/485650" target="_blank" rel="external">TCP 滑动窗口（发送窗口和接收窗口）</a>
+<a href="https://www.zhihu.com/question/32255109" target="_blank" rel="external">TCP协议的滑动窗口具体是怎样控制流量的？</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/11/tips-net-nat/" rel="next" title="tips-net-nat">
+                <i class="fa fa-chevron-left"></i> tips-net-nat
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/11/tips-net-mars/" rel="prev" title="tips-net-mars">
+                tips-net-mars <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">159</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#首部格式"><span class="nav-number">1.</span> <span class="nav-text">首部格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据单位"><span class="nav-number">2.</span> <span class="nav-text">数据单位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">3.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">4.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动重传请求ARQ"><span class="nav-number">5.</span> <span class="nav-text">自动重传请求ARQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义"><span class="nav-number">5.1.</span> <span class="nav-text">定义:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#累积确认"><span class="nav-number">5.2.</span> <span class="nav-text">累积确认:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Go-back-N-回退N"><span class="nav-number">5.3.</span> <span class="nav-text">Go-back-N(回退N):</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-number">6.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">6.1.</span> <span class="nav-text">说明:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图释"><span class="nav-number">6.2.</span> <span class="nav-text">图释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送缓存"><span class="nav-number">7.</span> <span class="nav-text">发送缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送缓存用来暂时存放："><span class="nav-number">7.1.</span> <span class="nav-text">发送缓存用来暂时存放：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图释-1"><span class="nav-number">7.2.</span> <span class="nav-text">图释:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接收缓存"><span class="nav-number">8.</span> <span class="nav-text">接收缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#接收缓存用来暂时存放："><span class="nav-number">8.1.</span> <span class="nav-text">接收缓存用来暂时存放：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图释-2"><span class="nav-number">8.2.</span> <span class="nav-text">图释:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滑动窗口"><span class="nav-number">9.</span> <span class="nav-text">滑动窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图释-3"><span class="nav-number">9.1.</span> <span class="nav-text">图释:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">9.2.</span> <span class="nav-text">特点:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要求"><span class="nav-number">9.3.</span> <span class="nav-text">要求:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现-1"><span class="nav-number">9.4.</span> <span class="nav-text">具体实现:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送窗口与接收窗口的关系"><span class="nav-number">9.5.</span> <span class="nav-text">发送窗口与接收窗口的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#窗口滑动协定"><span class="nav-number">9.6.</span> <span class="nav-text">窗口滑动协定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哪些允许变化"><span class="nav-number">9.7.</span> <span class="nav-text">哪些允许变化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确认丢失和确认迟到"><span class="nav-number">10.</span> <span class="nav-text">确认丢失和确认迟到</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超时重传时间选择"><span class="nav-number">11.</span> <span class="nav-text">超时重传时间选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现-2"><span class="nav-number">11.1.</span> <span class="nav-text">具体实现:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加权平均往返时间"><span class="nav-number">11.2.</span> <span class="nav-text">加权平均往返时间:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#做法"><span class="nav-number">11.2.1.</span> <span class="nav-text">做法:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公式"><span class="nav-number">11.2.2.</span> <span class="nav-text">公式:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#说明-1"><span class="nav-number">11.2.3.</span> <span class="nav-text">说明:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#超时重传时间RTO"><span class="nav-number">11.3.</span> <span class="nav-text">超时重传时间RTO:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修正的Karn算法"><span class="nav-number">11.4.</span> <span class="nav-text">修正的Karn算法:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持续计时器"><span class="nav-number">11.5.</span> <span class="nav-text">持续计时器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#报文段的发送时机"><span class="nav-number">12.</span> <span class="nav-text">报文段的发送时机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运输连接"><span class="nav-number">13.</span> <span class="nav-text">运输连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#三个阶段"><span class="nav-number">13.1.</span> <span class="nav-text">三个阶段:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#连接建立"><span class="nav-number">13.1.1.</span> <span class="nav-text">连接建立:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图释-4"><span class="nav-number">13.1.1.1.</span> <span class="nav-text">图释:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#步骤"><span class="nav-number">13.1.1.2.</span> <span class="nav-text">步骤:</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据传送"><span class="nav-number">13.1.2.</span> <span class="nav-text">数据传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接释放"><span class="nav-number">13.1.3.</span> <span class="nav-text">连接释放:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图释-5"><span class="nav-number">13.1.3.1.</span> <span class="nav-text">图释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#步骤-1"><span class="nav-number">13.1.3.2.</span> <span class="nav-text">步骤:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注意-1"><span class="nav-number">13.1.3.3.</span> <span class="nav-text">注意:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#发现丢失确认时候的处理"><span class="nav-number">13.1.3.4.</span> <span class="nav-text">发现丢失确认时候的处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三个问题"><span class="nav-number">13.1.4.</span> <span class="nav-text">三个问题:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送TCP请求客户端"><span class="nav-number">14.</span> <span class="nav-text">发送TCP请求客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥塞处理相关概念"><span class="nav-number">15.</span> <span class="nav-text">拥塞处理相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拥塞窗口"><span class="nav-number">15.1.</span> <span class="nav-text">拥塞窗口:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乘法减小"><span class="nav-number">15.2.</span> <span class="nav-text">乘法减小:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加法增大"><span class="nav-number">15.3.</span> <span class="nav-text">加法增大:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快重传"><span class="nav-number">15.4.</span> <span class="nav-text">快重传:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快恢复"><span class="nav-number">15.5.</span> <span class="nav-text">快恢复:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送窗口的上限值"><span class="nav-number">15.6.</span> <span class="nav-text">发送窗口的上限值:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免拥塞具体实现"><span class="nav-number">16.</span> <span class="nav-text">避免拥塞具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有滑动窗口了，为什么还要拥塞窗口"><span class="nav-number">16.1.</span> <span class="nav-text">有滑动窗口了，为什么还要拥塞窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-慢开始、拥塞控制"><span class="nav-number">16.1.1.</span> <span class="nav-text">1. 慢开始、拥塞控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-快重传，快恢复"><span class="nav-number">16.1.2.</span> <span class="nav-text">2. 快重传，快恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP窗口特殊情况"><span class="nav-number">17.</span> <span class="nav-text">TCP窗口特殊情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Persistence-timer"><span class="nav-number">17.1.</span> <span class="nav-text">1. Persistence timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-应用层每次单字节发送"><span class="nav-number">17.2.</span> <span class="nav-text">2. 应用层每次单字节发送</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-的有限状态机"><span class="nav-number">18.</span> <span class="nav-text">TCP 的有限状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他概念"><span class="nav-number">19.</span> <span class="nav-text">其他概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MTU"><span class="nav-number">19.1.</span> <span class="nav-text">MTU</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是MTU-Maximum-Transmit-Unit"><span class="nav-number">19.1.1.</span> <span class="nav-text">什么是MTU(Maximum Transmit Unit)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MTU造成什么影响"><span class="nav-number">19.1.2.</span> <span class="nav-text">MTU造成什么影响</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是MSS-Maximum-Segment-Size"><span class="nav-number">19.2.</span> <span class="nav-text">什么是MSS(Maximum Segment Size)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是WS-Window-Scaling"><span class="nav-number">19.3.</span> <span class="nav-text">什么是WS(Window Scaling)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">20.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>
