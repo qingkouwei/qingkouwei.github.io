@@ -1,0 +1,1189 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言：在13年11月中旬时，因为基础组件组人手紧张，Leo安排我和春哥去广州轮岗支援。刚到广州的时候，Ray让我和春哥对Line和WhatsApp的心跳机制进行分析。我和春哥抓包测试了差不多两个多礼拜，在我们基本上摸清了Line和WhatsApp的心跳机制后，Ray才告诉我们真正的任务——对微信的固定心跳进行优化，并告诉我们这不是一件容易的事情。于是我和春哥开始构思第一个方案，我们开始想用统计的方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android微信智能心跳方案">
+<meta property="og:url" content="http://wodekouwei.com/2019/03/12/tips-net-mars-heartbeat/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="前言：在13年11月中旬时，因为基础组件组人手紧张，Leo安排我和春哥去广州轮岗支援。刚到广州的时候，Ray让我和春哥对Line和WhatsApp的心跳机制进行分析。我和春哥抓包测试了差不多两个多礼拜，在我们基本上摸清了Line和WhatsApp的心跳机制后，Ray才告诉我们真正的任务——对微信的固定心跳进行优化，并告诉我们这不是一件容易的事情。于是我和春哥开始构思第一个方案，我们开始想用统计的方">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312164217.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312164921.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165138.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165229.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165718.png">
+<meta property="og:updated_time" content="2019-03-12T09:01:10.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android微信智能心跳方案">
+<meta name="twitter:description" content="前言：在13年11月中旬时，因为基础组件组人手紧张，Leo安排我和春哥去广州轮岗支援。刚到广州的时候，Ray让我和春哥对Line和WhatsApp的心跳机制进行分析。我和春哥抓包测试了差不多两个多礼拜，在我们基本上摸清了Line和WhatsApp的心跳机制后，Ray才告诉我们真正的任务——对微信的固定心跳进行优化，并告诉我们这不是一件容易的事情。于是我和春哥开始构思第一个方案，我们开始想用统计的方">
+<meta name="twitter:image" content="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312164217.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/03/12/tips-net-mars-heartbeat/"/>
+
+
+
+
+
+  <title> Android微信智能心跳方案 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/03/12/tips-net-mars-heartbeat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android微信智能心跳方案
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T15:54:04+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/03/12/tips-net-mars-heartbeat/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前言：在13年11月中旬时，因为基础组件组人手紧张，Leo安排我和春哥去广州轮岗支援。刚到广州的时候，Ray让我和春哥对Line和WhatsApp的心跳机制进行分析。我和春哥抓包测试了差不多两个多礼拜，在我们基本上摸清了Line和WhatsApp的心跳机制后，Ray才告诉我们真正的任务——对微信的固定心跳进行优化，并告诉我们这不是一件容易的事情。于是我和春哥开始构思第一个方案，我们开始想用统计的方法来解决问题，当我们拿着第一个方案和Ray讨论时，发现不能优雅应对Ray的所有提问：1、测试环境的准确性，失败到底是因为网络的特性导致还是因为用户当前的环境变化导致的暂时失败。2、临界值界定，如果方案选中的心跳值是临界值，我们该怎么办。Ray和组件组同事在网络方面有极其丰富的经验，虽然他没有给我们指出明确的方向，但提出的问题帮助我们更快的补齐需要面对的核心问题。这两个问题让我和春哥意识到如果能很好的解决，就可以给出一个比较好的心跳方案。第一个问题我和春哥开始就意识到，第二个问题我们确实在一开始时疏忽了。但直接解决这两个问题确实不容易，这着实让我和春哥迷茫了几天，有两三天在纺园我都没怎么睡着，因为想不到更好的方法。直到有一天思路发生了一些转变，既然最优解比较复杂，为什么不绕过去，使用有损服务理念找次优解呢。让复杂的事情简单化，好了，想到这里突然有一种拨开云雾的感觉。</p>
+<p>思路对了，方案就可以做到简单并且可靠，大家可以看到最终的方案是比较简单的，并且效果还挺好的。在方案描述之前大概讲一下减低问题复杂度的方法：</p>
+<ol>
+<li>延迟心跳测试法：这是测试结果准确的前提保障，我们认为长连接建立后连续三次成功的短心跳就可以很大程度的保证下一次心跳环境是正常的。</li>
+<li>成功一次认定，失败连续累积认定：成功是绝对的，连续失败多次才可能是失败。</li>
+<li>临界值避免：我们使用比计算出的心跳稍微小一点的值做为稳定心跳避免临界值。</li>
+<li>动态调整：即使在一次完整的智能心跳计算过程中，我们没有找到最好的值，我们还有机会来进行校正。</li>
+</ol>
+<p>当我和春哥想出第二个简单易行的方案后，我们心里就很有底了，去找Ray讨论，Ray听完后一次通过，然后Ray约了Harvey，给Harvey讲完后，Harvey说听起来可以，可以试试。</p>
+<p>然后就开始动手，分析竞品加确定方案花了差不多两个月。写心跳的主要代码，只花了一天时间，我记得那天是年会后的一天。回过头来再看这个方案花费的时间还是值得的，后来灰度的统计数据显示，70%用户都可以达到我们的心跳上限。</p>
+<p>搞完智能心跳后一段时间在广州没事干，我就跟Ray商量，Ray让我去测试下WebView的性能瓶颈。然后我跟周斯基一起来做这件事，搞完了安卓客户端WebView性能瓶颈测试后，因为怀孕的老婆一个人在深圳，领导就安排我先回深圳了。春哥坚守着把GCM部分完成后才回深圳。</p>
+<p>等我们的心跳版本正式发布后，一年前我在公司km上分享了智能心跳方案，吸引不少做push的同事加入了讨论，感觉这方面的交流还是很有必要的。</p>
+<p>好了，废话了很多，下面分享一下微信的智能心跳方案细节。由于字数比较多，建议大家使用PC版微信查看。</p>
+<h2 id="1-主要目标"><a href="#1-主要目标" class="headerlink" title="1.主要目标"></a>1.主要目标</h2><p>本方案的主要目标是，在尽量不影响用户收消息及时性的前提下，根据网络类型自适应的找出保活信令TCP连接的尽可能大的心跳间隔，从而达到减少安卓微信因心跳引起的空中信道资源消耗，减少心跳Server的负载，以及减少部分因心跳引起的耗电。</p>
+<p>主要方法是参考WhatsApp和Line中有价值的做法，结合影响TCP连接寿命的因素，实现Android微信后台自适应心跳算法，同时使用GCM作为辅助通道增加新消息通知的可靠性。</p>
+<h2 id="2-WhatsApp、Line、微信的Push策略分析"><a href="#2-WhatsApp、Line、微信的Push策略分析" class="headerlink" title="2. WhatsApp、Line、微信的Push策略分析"></a>2. WhatsApp、Line、微信的Push策略分析</h2><h3 id="2-1-WhatsApp"><a href="#2-1-WhatsApp" class="headerlink" title="2.1 WhatsApp"></a>2.1 WhatsApp</h3><p>在不支持GCM的设备上，采用和微信类似的长连接+心跳策略，WIFI和手机网络下的心跳间隔都为4分45秒，心跳5次后，主动断开连接再重连。</p>
+<p>在支持GCM的设备上，主要靠GCM来激活WhatsApp，WhatsApp启动后，会建立一个与服务器的长连接，直接通过此长连接发送Push消息，这个长连接10分钟无消息就会主动断掉，且这十分钟内不做心跳，断掉后WhatsApp客户端和它的服务器不再有连接。当有消息时候，服务器发现没有长连接会发送GCM消息，手机收到GCM消息后，会重新建立长连接来收取消息，10分钟无消息会再断开，如此循环。</p>
+<h3 id="2-2-Line"><a href="#2-2-Line" class="headerlink" title="2.2 Line"></a>2.2 Line</h3><p>从测试中发现Line在国内、台湾、美国使用了不同的策略。</p>
+<h4 id="2-2-1美国（使用GCM）："><a href="#2-2-1美国（使用GCM）：" class="headerlink" title="2.2.1美国（使用GCM）："></a>2.2.1美国（使用GCM）：</h4><p>启动时，会保持7分钟心跳（CDMA2000网络）维持长连接半小时，之后主动断开长连接。当有消息时，服务器会发送GCM消息，Line客户端接收到GCM消息后，重新建立长连接，并再次用心跳维持半个小时。</p>
+<h4 id="2-2-2国内（不使用GCM）："><a href="#2-2-2国内（不使用GCM）：" class="headerlink" title="2.2.2国内（不使用GCM）："></a>2.2.2国内（不使用GCM）：</h4><p>在国内，同样帐号在相同网络，不同的手机上测出了两种策略：</p>
+<ul>
+<li>长连接+心跳策略（在Galaxy S3上使用），心跳间隔WIFI下是3分20秒，手机网络是7分钟。</li>
+<li>轮询策略（在红米和Nexus S上使用），如图2-1所示。与心跳策略的主要区别用红色标出，客户端在长连接建立后也会定时发送请求，Server会回复并且同时关闭长连接。客户端等待轮询间隔T1后再次建立TCP连接。Line会根据手机的活跃状态动态调整T1，调整范围是从最小1分到最大到2小时半。而长连接存活时间T2比较固定，在WIFI下4分钟，手机网络7分钟。如果在T2时收到新消息会延长T2的时间。
+<img src="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312164217.png" alt="图2-1 Line在国内的轮询策略"></li>
+</ul>
+<h4 id="2-2-3台湾（不使用GCM）："><a href="#2-2-3台湾（不使用GCM）：" class="headerlink" title="2.2.3台湾（不使用GCM）："></a>2.2.3台湾（不使用GCM）：</h4><p>从IBG同事win和guang提供的测试数据中看到，台湾使用的策略跟国内的轮询策略类似。</p>
+<h3 id="2-3-微信"><a href="#2-3-微信" class="headerlink" title="2.3 微信"></a>2.3 微信</h3><p>微信没有使用GCM，自己维护TCP长连接，使用固定心跳。</p>
+<h3 id="2-4心跳典型值"><a href="#2-4心跳典型值" class="headerlink" title="2.4心跳典型值"></a>2.4心跳典型值</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>WhatsApp</th>
+<th>Line</th>
+<th>GCM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WIFI</td>
+<td>4分45秒</td>
+<td>3分20秒</td>
+<td>15分钟</td>
+</tr>
+<tr>
+<td>手机网络</td>
+<td>4分45秒</td>
+<td>7分钟</td>
+<td>28分钟</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-5Line、WhatsApp、微信Push策略的优点"><a href="#2-5Line、WhatsApp、微信Push策略的优点" class="headerlink" title="2.5Line、WhatsApp、微信Push策略的优点"></a>2.5Line、WhatsApp、微信Push策略的优点</h3><ol>
+<li>微信：当前心跳间隔比竞品短，所以微信在新消息提醒上会最及时。</li>
+<li>使用GCM：Line和WhatsApp使用GCM策略的最大优点就是省电，以及减轻系统负荷（减少后台应用数目）。</li>
+<li>Line：Line的轮询策略，优点是当Line处于活跃状态时，及时收消息。当Line处于不活跃状态时，省电。</li>
+</ol>
+<h3 id="2-6Line、WhatsApp微信Push策略的不足"><a href="#2-6Line、WhatsApp微信Push策略的不足" class="headerlink" title="2.6Line、WhatsApp微信Push策略的不足"></a>2.6Line、WhatsApp微信Push策略的不足</h3><ol>
+<li>微信当前心跳频率相对竞品较大，在耗电、耗流量，占用信令通道等方面有所影响。</li>
+<li>Line的轮询策略，导致的问题是消息可能会延迟接收，测试发现最大延迟间隔到2.5小时。</li>
+<li>WhatsApp和Line使用Push拉起一个定时长连接策略，缺点是要依赖Google的Push服务，如果Google的Push服务不稳定，消息也会延迟接收。</li>
+<li>在国内的移动和联通2G网络下，由于运营商的策略，GCM长连接频繁断连，WhatsApp的Push消息很不及时，体验非常差。</li>
+</ol>
+<h2 id="3-GCM研究"><a href="#3-GCM研究" class="headerlink" title="3. GCM研究"></a>3. GCM研究</h2><h3 id="3-1-GCM特点"><a href="#3-1-GCM特点" class="headerlink" title="3.1 GCM特点"></a>3.1 GCM特点</h3><ol>
+<li>Android2.2以下的手机不支持GCM，2.2到3.0需要安装Google Store并设置Google帐号，4.04及以上版本不需要设置帐号也能支持。</li>
+<li>GCM只传递数据（可以传递小于4kb的数据），对这些数据的处理可以全部由开发者控制。</li>
+<li>Android应用不需要运行就可以接收消息(通过Android广播)。</li>
+<li>GCM不保证发送的消息的顺序，也不保证消息一定能够推送到手机。</li>
+</ol>
+<h3 id="3-2-GCM心跳策略以及存在的问题"><a href="#3-2-GCM心跳策略以及存在的问题" class="headerlink" title="3.2 GCM心跳策略以及存在的问题"></a>3.2 GCM心跳策略以及存在的问题</h3><ol>
+<li>用心跳保活长连接，心跳间隔为WIFI下15分钟，数据网络下28分钟。</li>
+<li>Google可以改变所有Android设备的心跳间隔值（目前还未改变过）。</li>
+<li>GCM由于心跳间隔固定，并且较长，所以在NAT aging-time设置较小的网络（如联通2G，或有些WIFI环境下）会导致TCP长连接在下一次心跳前被网关释放。造成Push延迟接收。</li>
+</ol>
+<h3 id="3-3-GCM的可用性及稳定性"><a href="#3-3-GCM的可用性及稳定性" class="headerlink" title="3.3 GCM的可用性及稳定性"></a>3.3 GCM的可用性及稳定性</h3><p>目前测试发现GCM在国内可用性不高，原因有：</p>
+<ol>
+<li>Android很多被手机厂商定制化，厂商可能会去掉GCM服务。</li>
+<li>Android2.2到3.0之间需要安装Google Store并设置Google帐号。</li>
+<li>由于国内2G和移动3G的NAT超时时间都小于GCM心跳时间(28分钟)，TCP长连接必然无法保活，每次都要等28分钟心跳失败重连后才能收到Push。</li>
+<li>某些运营商可能限制了5228端口，移动3G/2G下，发现几乎无法连接上GCM服务器，也就无法获得GCM通知，WhatsApp放后台10分钟后，经常很长时间都收不到Push消息。</li>
+</ol>
+<p>在美国3G网络下抓包的24小时，GCM的连接极其稳定，24小时内GCM长连接未曾断过，在台湾3G网络下抓包14个小时，GCM连接也只断过一次。WhatsApp用户在此类地区网络下客户端可以获得很及时的Push通知。</p>
+<p>在中国电信3G下抓包，大部分时间GCM连接都比较稳定，只会因为偶尔的DHCP造成断连现象，由于频率很低(平均数小时才发生一次)，对Push体验的影响不大。</p>
+<h3 id="3-4-GCM-Server类型"><a href="#3-4-GCM-Server类型" class="headerlink" title="3.4 GCM Server类型"></a>3.4 GCM Server类型</h3><p>GCM提供两种Server模型：</p>
+<ol>
+<li>HTTP Server : 使用同步接口发送HTTP请求，一次请求可以发给最多1000个设备。</li>
+<li>XMPP Server :使用异步接口发送请求，只支持对单个设备（或同一个用户的多个关联设备发送），发送请求并发数须小于1000，支持设备到云端Server发送数据。需要Google将我们的发送Server加入白名单。</li>
+</ol>
+<h2 id="4-微信可能的改进点探讨"><a href="#4-微信可能的改进点探讨" class="headerlink" title="4.微信可能的改进点探讨"></a>4.微信可能的改进点探讨</h2><p>微信Push的优化主要有几个优化点：</p>
+<ol>
+<li>公共Push通道</li>
+<li>使用GCM Push作为辅助通道</li>
+<li>自适应心跳间隔优化</li>
+</ol>
+<h3 id="4-1-公共Push通道"><a href="#4-1-公共Push通道" class="headerlink" title="4.1 公共Push通道"></a>4.1 公共Push通道</h3><p>由于GCM在国内的可靠性很低，现在国内Android上的Push基本上是各自为政，很多软件都自己实现Push。导致手机被经常性的唤醒，耗电耗流量严重。</p>
+<p>市面上已经有很多第三方的公共推送服务，大家可以选择一个适合自己应用的推送服务。腾讯也有信鸽和维纳斯组件，大家在选择方案的时候可以对比下。</p>
+<p>最终因为我们国内外使用一套方案，并且是辅助公道，所以我们选择使用GCM。</p>
+<h3 id="4-2-使用GCM-Push作为辅助通道"><a href="#4-2-使用GCM-Push作为辅助通道" class="headerlink" title="4.2 使用GCM Push作为辅助通道"></a>4.2 使用GCM Push作为辅助通道</h3><p>当前使用GCM的成本不大，可以使用GCM作为辅助通道来增加新消息的及时性。</p>
+<p>使用GCM作为辅助通道，在支持GCM的设备上微信上传自己的注册GCM ID给微信Server。</p>
+<p>微信Server在发现长连接失效的情况下，可以使用GCM 作为辅助通道通知客户端有新消息，客户端收到push通知后做一次sync。</p>
+<p>只利用GCM来激活微信，不传递消息的具体数据，要控制给同一设备发送GCM通知的时间间隔(如五分钟)。</p>
+<h3 id="4-3-自适应心跳间隔优化"><a href="#4-3-自适应心跳间隔优化" class="headerlink" title="4.3 自适应心跳间隔优化"></a>4.3 自适应心跳间隔优化</h3><h4 id="4-3-1影响TCP连接寿命的因素"><a href="#4-3-1影响TCP连接寿命的因素" class="headerlink" title="4.3.1影响TCP连接寿命的因素"></a>4.3.1影响TCP连接寿命的因素</h4><p>在Android下，不管是GCM，还是微信，都是通过TCP长连接来进行Push消息的，TCP长连接存活，消息Push就及时，所以要对影响TCP连接寿命的因素进行研究。</p>
+<h5 id="1、NAT超时"><a href="#1、NAT超时" class="headerlink" title="1、NAT超时"></a>1、NAT超时</h5><p>大部分移动无线网络运营商都在链路一段时间没有数据通讯时，会淘汰 NAT 表中的对应项，造成链路中断（NAT超时的更多描述见附录6.1）。NAT超时是影响TCP连接寿命的一个重要因素(尤其是国内)，所以客户端自动测算NAT超时时间，来动态调整心跳间隔，是一个重要的优化点。</p>
+<h5 id="2、DHCP的租期（lease-time）"><a href="#2、DHCP的租期（lease-time）" class="headerlink" title="2、DHCP的租期（lease time）"></a>2、DHCP的租期（lease time）</h5><p>目前测试发现安卓系统对DHCP的处理有Bug，DHCP租期到了不会主动续约并且会继续使用过期IP，这个问题会造成TCP长连接偶然的断连。（租期问题的具体描述见附录6.2）。</p>
+<h5 id="3、网络状态变化"><a href="#3、网络状态变化" class="headerlink" title="3、网络状态变化"></a>3、网络状态变化</h5><p>手机网络和WIFI网络切换、网络断开和连上等情况有网络状态的变化，也会使长连接变为无效连接，需要监听响应的网络状态变化事件，重新建立Push长连接。</p>
+<h4 id="4-3-2-心跳范围选择"><a href="#4-3-2-心跳范围选择" class="headerlink" title="4.3.2 心跳范围选择"></a>4.3.2 心跳范围选择</h4><h5 id="1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。"><a href="#1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。" class="headerlink" title="1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。"></a>1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。</h5><p>微信进入后台（或者前台关屏）时，先用几次最小心跳维持长链接。然后进入后台自适应心跳计算。这样做的目的是尽量选择用户不活跃的时间段，来减少心跳计算可能产生的消息不及时收取影响。</p>
+<h5 id="2、后台自适应心跳选择区间："><a href="#2、后台自适应心跳选择区间：" class="headerlink" title="2、后台自适应心跳选择区间："></a>2、后台自适应心跳选择区间：</h5><p>可根据自身产品的特点选择合适的心跳范围。</p>
+<h4 id="4-3-3-状态转换图"><a href="#4-3-3-状态转换图" class="headerlink" title="4.3.3 状态转换图"></a>4.3.3 状态转换图</h4><p><img src="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312164921.png" alt="tips-net-mars-heartbeat-2019312164921"></p>
+<h4 id="4-3-4自适应心跳算法描述"><a href="#4-3-4自适应心跳算法描述" class="headerlink" title="4.3.4自适应心跳算法描述"></a>4.3.4自适应心跳算法描述</h4><h5 id="1、按网络类型区分计算："><a href="#1、按网络类型区分计算：" class="headerlink" title="1、按网络类型区分计算："></a>1、按网络类型区分计算：</h5><p>因为每个网络的NAT时间可能不一致。所以需要区分计算，数据网络按subType做关键字，WIFI按WIFI名做关键字。
+对稳定的网络，因为NAT老化时间的存在，在自适应计算态的时候，暂设计以下步骤在当前心跳区间逼近出最大可用的心跳。</p>
+<h6 id="a）-变量说明："><a href="#a）-变量说明：" class="headerlink" title="a） 变量说明："></a>a） 变量说明：</h6><ul>
+<li>[MinHeart，MaxHeart]——心跳可选区间。</li>
+<li>successHeart——当前成功心跳，初始为MinHeart</li>
+<li>curHeart——当前心跳初始值为successHeart</li>
+<li>heartStep——心跳增加步长</li>
+<li>successStep——稳定期后的探测步长</li>
+</ul>
+<h6 id="b）-最大值探测步骤："><a href="#b）-最大值探测步骤：" class="headerlink" title="b） 最大值探测步骤："></a>b） 最大值探测步骤：</h6><p><img src="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165138.png" alt="图4-1 自适应心跳计算流程"></p>
+<p>自适应心跳计算流程如图4-1所示，经过该流程，会找到必然使心跳失败的curHeart（或者MaxHeart），为了保险起见，我们选择比前一个成功值稍微小一点的值作为后台稳定期的心跳间隔。</p>
+<p>影响手机网络测试的因素太多，为了尽量保证测试结果的可靠性，我们使用延迟心跳测试法。在我们重新建立TCP连接后，先使用 短心跳连续成功三次，我们才认为网络相对稳定，可以使用curHeart进行一次心跳测试。图4-2显示了一次有效心跳测试过程。图4-3显示了在没有达到稳定网络环境时，我们会一直使用固定短心跳直到满足三次连续短心跳成功。</p>
+<p>使用延迟心跳测试的好处是，可以剔除偶然失败，和网络变化较大的情况（如地铁），使测试结果相对可靠（五次延迟测试确定结论）。同时在网络波动较大的情况，使用短心跳，保证收取消息相对及时。</p>
+<h6 id="c）-运行时的动态调整策略-已经按测算心跳稳定值后"><a href="#c）-运行时的动态调整策略-已经按测算心跳稳定值后" class="headerlink" title="c） 运行时的动态调整策略(已经按测算心跳稳定值后)"></a>c） 运行时的动态调整策略(已经按测算心跳稳定值后)</h6><p><strong>NAT超时值算出来后，在维持心跳的过程中的策略</strong></p>
+<ol>
+<li>无网络、网络时好时坏、偶然失败、NAT超时变小：在后台稳定期发生心跳发生失败后，我们使用延迟心跳测试法测试五次。如果有一次成功，则保持当前心跳值不变；如果五次测试全失败，重新计算合理心跳值。该过程如图4-4所示，有一点需要注意，每个新建的长连接需要先用短心跳成功维持3次后才用successHeart进行心跳。
+<img src="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165229.png" alt="图4-2 后台稳定态动态调整心跳策略"></li>
+<li>NAT超时变大：以周为周期，每周三将后台稳定态调至自适应计算态，使用心跳延迟法往后探测心跳间隔。</li>
+<li>successHeart是NAT超时临界值：因为我们现在选择的是一个比successHeart稍小的值作为稳定值，所以在计算过程中可以避开临界值。当运营商在我们后台稳定期将NAT超时调整为我们当前计算值，那么由于我们每周会去向下探索，所以下一周探测时也可以及时调整正确。</li>
+</ol>
+<h4 id="4-3-5-冗余Sync和心跳"><a href="#4-3-5-冗余Sync和心跳" class="headerlink" title="4.3.5 冗余Sync和心跳"></a>4.3.5 冗余Sync和心跳</h4><p>在用户的一些主动操作以及联网状态改变时，增加冗余Sync和心跳，确保及时收到消息。</p>
+<ol>
+<li>当用户点亮屏幕的时候，做一次心跳。</li>
+<li>当微信切换到前台时，做一次Sync。</li>
+<li>联网时重建信令TCP，做一次Sync</li>
+</ol>
+<h2 id="5-可能存在的风险及预防措施"><a href="#5-可能存在的风险及预防措施" class="headerlink" title="5. 可能存在的风险及预防措施"></a>5. 可能存在的风险及预防措施</h2><h3 id="5-1-DHCP租期因素"><a href="#5-1-DHCP租期因素" class="headerlink" title="5.1 DHCP租期因素"></a>5.1 DHCP租期因素</h3><ol>
+<li>问题：根据目前的测试结果显示，安卓不续约到期的IP Bug，会导致TCP连接在不确定的时间点失效，从而会导致一次心跳失败。</li>
+<li>预防：统计后台稳定期的心跳成功率，上报给后台。后台可以按地区分网络监控这个指标的波动，并且后台可以根据不同的波动，动态调整某区域特定网络下可选的心跳区间。</li>
+</ol>
+<h3 id="5-2-其他影响TCP寿命的因素"><a href="#5-2-其他影响TCP寿命的因素" class="headerlink" title="5.2 其他影响TCP寿命的因素"></a>5.2 其他影响TCP寿命的因素</h3><p>是否有遗漏的因素？欢迎各位联系我反馈。</p>
+<h2 id="6-附录"><a href="#6-附录" class="headerlink" title="6 附录"></a>6 附录</h2><h3 id="6-1-附录A——NAT超时介绍"><a href="#6-1-附录A——NAT超时介绍" class="headerlink" title="6.1 附录A——NAT超时介绍"></a>6.1 附录A——NAT超时介绍</h3><p>因为 IP v4 的 IP 量有限，运营商分配给手机终端的 IP 是运营商内网的 IP，手机要连接 Internet，就需要通过运营商的网关做一个网络地址转换(Network Address Translation，NAT)。简单的说运营商的网关需要维护一个外网 IP、端口到内网 IP、端口的对应关系，以确保内网的手机可以跟 Internet 的服务器通讯。
+<img src="http://images.wodekouwei.com/tips-net-mars-heartbeat-2019312165718.png" alt="NAT 功能由图中的 GGSN 模块实现"></p>
+<p>大部分移动无线网络运营商都在链路一段时间没有数据通讯时，会淘汰 NAT 表中的对应项，造成链路中断。下表列出一些已测试过的网络的NAT超时时间(更多数据由于测试条件所限没有测到)：</p>
+<table>
+<thead>
+<tr>
+<th>地区/网络</th>
+<th>NAT超时时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中国移动3G和2G</td>
+<td>5分钟</td>
+</tr>
+<tr>
+<td>中国联通2G</td>
+<td>5分钟</td>
+</tr>
+<tr>
+<td>中国电信3G</td>
+<td>大于28分钟</td>
+</tr>
+<tr>
+<td>美国3G</td>
+<td>大于28分钟</td>
+</tr>
+<tr>
+<td>台湾3G</td>
+<td>大于28分钟</td>
+</tr>
+</tbody>
+</table>
+<p>长连接心跳间隔必须要小于NAT超时时间(aging-time)，如果超过aging-time不做心跳，TCP长连接链路就会中断，Server就无法发送Push给手机，只能等到客户端下次心跳失败后，重建连接才能取到消息。</p>
+<h3 id="6-2-附录B——安卓DHCP的租期（lease-time）问题"><a href="#6-2-附录B——安卓DHCP的租期（lease-time）问题" class="headerlink" title="6.2 附录B——安卓DHCP的租期（lease time）问题"></a>6.2 附录B——安卓DHCP的租期（lease time）问题</h3><p>目前测试发现安卓系统对DHCP的处理有Bug：</p>
+<ol>
+<li>DHCP租期到了不会主动续约并且会继续使用过期IP，详细描述见<a href="http://www.net.princeton.edu/android/android-stops-renewing-lease-keeps-using-IP-address-11236.html。这个问题导致的问题表象是，在超过租期的某个时间点（没有规律）会导致IP过期，老的TCP连接不能正常收发数据。并且系统没有网络变化事件，只有等应用判断主动建立新的TCP连接才引起安卓设备重新向DHCP" target="_blank" rel="external">http://www.net.princeton.edu/android/android-stops-renewing-lease-keeps-using-IP-address-11236.html。这个问题导致的问题表象是，在超过租期的某个时间点（没有规律）会导致IP过期，老的TCP连接不能正常收发数据。并且系统没有网络变化事件，只有等应用判断主动建立新的TCP连接才引起安卓设备重新向DHCP</a> Server申请IP租用。</li>
+<li>未到租期的一半时间，安卓设备重新向DHCP Server申请IP租用。从目前测试结果来看，这种现象恢复的比较快。</li>
+<li>移动2G/3G，联通2G没有抓到DHCP。</li>
+<li>美国3G下抓取24小时，没有抓到DHCP。</li>
+</ol>
+<blockquote>
+<p>转自<a href="https://mp.weixin.qq.com/s/ghnmC8709DvnhieQhkLJpA" target="_blank" rel="external">Android微信智能心跳方案</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/12/tips-net-mars-ip-sort/" rel="next" title="微信终端跨平台组件 Mars 系列（三）连接超时与IP&Port排序">
+                <i class="fa fa-chevron-left"></i> 微信终端跨平台组件 Mars 系列（三）连接超时与IP&Port排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/13/tips-net-socket/" rel="prev" title="tips-net-socket">
+                tips-net-socket <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
+               alt="轻口味" />
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-主要目标"><span class="nav-number">1.</span> <span class="nav-text">1.主要目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-WhatsApp、Line、微信的Push策略分析"><span class="nav-number">2.</span> <span class="nav-text">2. WhatsApp、Line、微信的Push策略分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-WhatsApp"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 WhatsApp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Line"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Line</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1美国（使用GCM）："><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1美国（使用GCM）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2国内（不使用GCM）："><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2国内（不使用GCM）：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3台湾（不使用GCM）："><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3台湾（不使用GCM）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-微信"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 微信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4心跳典型值"><span class="nav-number">2.4.</span> <span class="nav-text">2.4心跳典型值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5Line、WhatsApp、微信Push策略的优点"><span class="nav-number">2.5.</span> <span class="nav-text">2.5Line、WhatsApp、微信Push策略的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6Line、WhatsApp微信Push策略的不足"><span class="nav-number">2.6.</span> <span class="nav-text">2.6Line、WhatsApp微信Push策略的不足</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-GCM研究"><span class="nav-number">3.</span> <span class="nav-text">3. GCM研究</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-GCM特点"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 GCM特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-GCM心跳策略以及存在的问题"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 GCM心跳策略以及存在的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-GCM的可用性及稳定性"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 GCM的可用性及稳定性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-GCM-Server类型"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 GCM Server类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-微信可能的改进点探讨"><span class="nav-number">4.</span> <span class="nav-text">4.微信可能的改进点探讨</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-公共Push通道"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 公共Push通道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-使用GCM-Push作为辅助通道"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 使用GCM Push作为辅助通道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-自适应心跳间隔优化"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 自适应心跳间隔优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-1影响TCP连接寿命的因素"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1影响TCP连接寿命的因素</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、NAT超时"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">1、NAT超时</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、DHCP的租期（lease-time）"><span class="nav-number">4.3.1.2.</span> <span class="nav-text">2、DHCP的租期（lease time）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、网络状态变化"><span class="nav-number">4.3.1.3.</span> <span class="nav-text">3、网络状态变化</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-2-心跳范围选择"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2 心跳范围选择</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。"><span class="nav-number">4.3.2.1.</span> <span class="nav-text">1、前后台区分处理：为了保证微信收消息及时性的体验，当微信处于前台活跃状态时，使用固定心跳。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、后台自适应心跳选择区间："><span class="nav-number">4.3.2.2.</span> <span class="nav-text">2、后台自适应心跳选择区间：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-3-状态转换图"><span class="nav-number">4.3.3.</span> <span class="nav-text">4.3.3 状态转换图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-4自适应心跳算法描述"><span class="nav-number">4.3.4.</span> <span class="nav-text">4.3.4自适应心跳算法描述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、按网络类型区分计算："><span class="nav-number">4.3.4.1.</span> <span class="nav-text">1、按网络类型区分计算：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#a）-变量说明："><span class="nav-number">4.3.4.1.1.</span> <span class="nav-text">a） 变量说明：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#b）-最大值探测步骤："><span class="nav-number">4.3.4.1.2.</span> <span class="nav-text">b） 最大值探测步骤：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#c）-运行时的动态调整策略-已经按测算心跳稳定值后"><span class="nav-number">4.3.4.1.3.</span> <span class="nav-text">c） 运行时的动态调整策略(已经按测算心跳稳定值后)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-5-冗余Sync和心跳"><span class="nav-number">4.3.5.</span> <span class="nav-text">4.3.5 冗余Sync和心跳</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-可能存在的风险及预防措施"><span class="nav-number">5.</span> <span class="nav-text">5. 可能存在的风险及预防措施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-DHCP租期因素"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 DHCP租期因素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-其他影响TCP寿命的因素"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 其他影响TCP寿命的因素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-附录"><span class="nav-number">6.</span> <span class="nav-text">6 附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-附录A——NAT超时介绍"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 附录A——NAT超时介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-附录B——安卓DHCP的租期（lease-time）问题"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 附录B——安卓DHCP的租期（lease time）问题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

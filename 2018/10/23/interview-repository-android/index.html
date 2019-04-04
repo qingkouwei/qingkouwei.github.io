@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/10/23/interview-repository-android/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1. View 的绘制原理https://www.cnblogs.com/jycboy/p/6219915.html https://www.jianshu.com/p/5a71014e7b1b http://blog.csdn.net/fwt336/article/details/52979876 2. Android 进程间通信方式http://blog.csdn.net/fiendvip/a">
-<meta property="og:updated_time" content="2018-10-31T11:24:47.073Z">
+<meta property="og:updated_time" content="2019-03-13T12:05:30.171Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题库Android">
 <meta name="twitter:description" content="1. View 的绘制原理https://www.cnblogs.com/jycboy/p/6219915.html https://www.jianshu.com/p/5a71014e7b1b http://blog.csdn.net/fwt336/article/details/52979876 2. Android 进程间通信方式http://blog.csdn.net/fiendvip/a">
@@ -482,7 +482,61 @@ http://blog.csdn.net/zhangyongfeiyong/article/details/61925399
     1. 插件独立使用一个资源管理器
     2. 添加所有资源路径到宿主,为避免资源冲突,需要对资源ID进行分段,不同的插件使用不同分段的资源ID
 组件的动态注册
-</code></pre>
+</code></pre><h3 id="Android架构师"><a href="#Android架构师" class="headerlink" title="Android架构师"></a>Android架构师</h3><ol>
+<li>整体性能如何探测，有哪些方面，什么指标，怎么保证更流畅</li>
+<li>谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端</li>
+<li>android的发展大事件和主要技术发展</li>
+<li>avtivity（service）启动流程简述</li>
+<li>动态化的几种方案</li>
+<li>热修复的原理</li>
+<li>网络这块怎么优化</li>
+<li>数据库性能怎么保证</li>
+<li>线程安全怎么保证，异步并发这块你怎么做的</li>
+</ol>
+<p>其实不一定面试时才了解这些，并且了解绝对不是重点，而是实践，绝知此事要躬行是真理，这样的问题也似乎没有“最佳答案”，但是可以发表一下自己观点和实践结论。</p>
+<p>有些做法或观点一下子想不起来，需要具体做的时候再google一下，或者跟朋友沟通拓展一下，所以先做个简单的回答，请大家补充。</p>
+<h4 id="1-App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？"><a href="#1-App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？" class="headerlink" title="1. App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？"></a>1. App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？</h4><p>性能可以根据帧率、内存、CPU、GPU等指标的数据和表现辅助判断，可以从/proc文件夹下读取文件获取cpu、内存等信息，也可以用dumpsys命令获取帧率等信息，也可以通过android API获取相关信息。</p>
+<p>还有很多性能相关的分析工具很重要，辅助判断和分析，比如Heap Tool、Memory Monitor、Lint、HierarchyView、WireShark、TraceView等。</p>
+<p>保证流畅有很多点可以去研究，比如布局、代码、缓存、网络、数据库、异步并发等方面的优化，涉及很多的知识点，可以google下，先简单说下，有时间再细述。</p>
+<p>布局充分利用include、viewstub、merge 等标签，控制层级，避免过度渲染（绘制）。</p>
+<p>代码上尽量使用final、局部变量、系统函数如arraycopy等、位移操作是否可以代替乘除、for循环是否可以避免size计算和new对象等等。</p>
+<p>缓存方面，线程、位图、视图、网络数据是否可以被缓存，IO用缓冲流。 
+网络方面，如尽量避免轮询，控制节奏和频率，IP直连，采用SPDY方案（或HTTP2.0）来实现压缩header、多路复用、双向通信等，API数据压缩，多个请求是否可以合并，数据压缩和尝试protocol buffer相关序列化方案。</p>
+<p>数据库方面，尝试用SQLiteStatement代替SQLiteDatabase完成操作，索引和事务的充分理解和使用，注意SQL语句语法和拼接，采用部分查询和延迟加载。</p>
+<p>异步并发方面，全App只有一个线程池，控制核心并发数量，控制超载时排队数量和策略，合理调度任务，优化业务逻辑。</p>
+<p>最后关于帧率，你看到的视觉卡顿，直接原因基本是“掉帧”。关于帧率，尽量保证主线程里做的事情，不会超过16毫秒（其实这挺难的），16毫秒大法好，具体可以去理解下CPU、GPU、屏幕三者如何配合完成渲染的，推荐老罗的博客。</p>
+<h4 id="2-谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端"><a href="#2-谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端" class="headerlink" title="2. 谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端"></a>2. 谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端</h4><p>适当参考我在知乎的一个回答 怎样搭高质量的Android项目框架，框架的结构具体描述？ ，结合模块化、组件化思想去做，多实践一下mvp、mvvm等策略。</p>
+<h4 id="3-android的发展大事件和主要技术发展"><a href="#3-android的发展大事件和主要技术发展" class="headerlink" title="3. android的发展大事件和主要技术发展"></a>3. android的发展大事件和主要技术发展</h4><p>额，挺多的，朋友们补充吧。 
+这个问题蛮好的 Android 开发有哪些新技术出现？</p>
+<h4 id="4-avtivity（service）启动流程简述"><a href="#4-avtivity（service）启动流程简述" class="headerlink" title="4. avtivity（service）启动流程简述"></a>4. avtivity（service）启动流程简述</h4><p>可以自己阅读源代码，结合罗老师的博客，研究的非常棒：Android应用程序启动过程源代码分析</p>
+<h4 id="5-动态化的几种方案"><a href="#5-动态化的几种方案" class="headerlink" title="5. 动态化的几种方案"></a>5. 动态化的几种方案</h4><p>早期的H5方案，通过js和java互通增强h5的能力。 
+还有DexClasssLoader结合反射代理的方案。 
+还有React Native方案，手淘的Weex框架。 
+还有Lua等脚本实现动态化方案。</p>
+<h4 id="6-热修复的原理"><a href="#6-热修复的原理" class="headerlink" title="6. 热修复的原理"></a>6. 热修复的原理</h4><p>Github上读一下AndFix这个项目的源码，还有xposed、dexposed。</p>
+<p>大致原理就是将java方法通过c/c++修改属性变为public native方法，上下文携带到native层，然后根据上下文指向另一个java方法，从而“偷梁换柱”，如果是支持ART的手机，那么策略不一样，将bug method的关键信息（classloader、theadid等）保留，将修复过的方法的各种信息赋给bug method，完成“移花接木”。</p>
+<p>另外，其实有挺多的策略改变运行时行为的，比如： 
+Javasisst：字节码修改类库，依赖字节码修改和DX类库，可以完成动态替换和切面编程。 
+AspectJ：依赖字节码编织器，需要按照其语法来编写，需要一点“编织”时间。 
+Xposed方案，简直是一个Bug，神器般的存在，没准以后会被Android系统修复呢，不仅可以改变自己的类行为还可以hook系统的方法，root过的机器还可以hook其他App和系统进程。</p>
+<h4 id="7-网络这块怎么优化"><a href="#7-网络这块怎么优化" class="headerlink" title="7. 网络这块怎么优化"></a>7. 网络这块怎么优化</h4><p>尽量避免轮询，控制节奏和频率。</p>
+<p>IP直连节省DNS解析时间。</p>
+<p>尝试其他数据序列化方案比如protocol buffer等。</p>
+<p>采用SPDY方案（或HTTP2.0）来压缩header、多路复用、双向通信等。</p>
+<p>服务器做优化，比如分布式、缓存之类的，减少API涉及的业务操作所需要的时间嘛。</p>
+<p>API接口数据精简，多个请求是否可以合并，增量请求啊、GIP压缩啊什么的，等等。</p>
+<h4 id="8-数据库性能怎么保证"><a href="#8-数据库性能怎么保证" class="headerlink" title="8. 数据库性能怎么保证"></a>8. 数据库性能怎么保证</h4><p>尝试使用SQLiteStatement取代SQLiteDatabase对象完成操作，避免直接使用SQLiteDatabase提供的update、inset等方法。</p>
+<p>索引和事务的充分理解和使用，批量操作使用事务极大提升速度，这个我是做过试验的，效果惊人。</p>
+<p>SQL语句拼接和本身的优化，仅查询部分局部数据，使用延迟加载策略。</p>
+<p>10万条数据插入比系统SQLiteDatabase操作快一倍，推荐我的LiteOrm数据库框架 <a href="https://github.com/litesuits/android-lite-orm" target="_blank" rel="external">https://github.com/litesuits/android-lite-orm</a></p>
+<h4 id="9-线程安全怎么保证，异步并发这块你怎么做的"><a href="#9-线程安全怎么保证，异步并发这块你怎么做的" class="headerlink" title="9. 线程安全怎么保证，异步并发这块你怎么做的"></a>9. 线程安全怎么保证，异步并发这块你怎么做的</h4><p>理解并使用ReentrantLock，Synchronized保护对象或过程，final来保护不可变对象，无状态和只读对象是安全的，合理使用一些 concurrent容器，比如concurrenthashmap等，重量级耗时任务考虑是否可以释放锁，多线程下实例化或延迟加载需要保护起来，保护多线程下关键数据访问的原子性，等等还有很多的。。。</p>
+<p>推荐研究下Doug Lea主写和设计的java concurrent包，理解CountDownLatch、CyclicBarrier、Semaphore、FutureTask等对象。</p>
+<p>我使用自己写的SmartExecutor，直接继承ExecutorService，封装了一个公共线程池，全App保证只有一个线程池。源码在这个开源项目里：<a href="https://github.com/litesuits/android-lite-http" target="_blank" rel="external">https://github.com/litesuits/android-lite-http</a> 。</p>
+<p>在一个 App 中 SmartExecutor 可以有多个实例，每个实例都有独立核心和等待线程数指标，每个实例都有独立的调度和满载处理策略，但它们 共享一个线程池。这种机制既满足不同木块对线程控制和任务调度的独立需求，又共享一个池资源。独立又共享，最大程度上节省资源，提升性能。</p>
+<p>控制核心并发数，尽量和CPU核数保持一致（或者多两个）我认为吞吐量是最佳的，线程过多则调度线程消耗CPU和时间，过少则不能充分利用多核的能力。</p>
+<p>控制排队策略和排队数量，是否考虑新任务先处理，过度超载丢掉最老的任务。</p>
+<p>还有就是业务上，合理调度任务，优化业务逻辑，不要胡搞乱搞，不作恶。</p>
+
       
     </div>
 
@@ -639,7 +693,7 @@ http://blog.csdn.net/zhangyongfeiyong/article/details/61925399
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">159</span>
+                <span class="site-state-item-count">167</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -755,7 +809,7 @@ http://blog.csdn.net/zhangyongfeiyong/article/details/61925399
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-View-的绘制原理"><span class="nav-number">1.</span> <span class="nav-text">1. View 的绘制原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Android-进程间通信方式"><span class="nav-number">2.</span> <span class="nav-text">2. Android 进程间通信方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Android-Binder-机制"><span class="nav-number">3.</span> <span class="nav-text">3. Android Binder 机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Activity-加载过程"><span class="nav-number">4.</span> <span class="nav-text">4. Activity 加载过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Activity-启动模式"><span class="nav-number">5.</span> <span class="nav-text">5. Activity 启动模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-MVP-和-MVC-和MVVM-有什么区别"><span class="nav-number">6.</span> <span class="nav-text">6. MVP 和 MVC 和MVVM 有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-Android-性能优化"><span class="nav-number">7.</span> <span class="nav-text">7. Android 性能优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-Service-概况"><span class="nav-number">8.</span> <span class="nav-text">8. Service 概况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Android-最新官方框架"><span class="nav-number">9.</span> <span class="nav-text">9. Android 最新官方框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-Android-类加载机制"><span class="nav-number">10.</span> <span class="nav-text">10. Android 类加载机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）"><span class="nav-number">11.</span> <span class="nav-text">11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-Android-事件分发机制"><span class="nav-number">12.</span> <span class="nav-text">12. Android 事件分发机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-Retrofit-分析"><span class="nav-number">13.</span> <span class="nav-text">13. Retrofit 分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-Android-动画"><span class="nav-number">14.</span> <span class="nav-text">14. Android 动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-Rxjava-使用介绍"><span class="nav-number">15.</span> <span class="nav-text">15. Rxjava 使用介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-View-和-SurfaceView-的区别"><span class="nav-number">16.</span> <span class="nav-text">16. View 和 SurfaceView 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-LruCache-原理解析"><span class="nav-number">17.</span> <span class="nav-text">17. LruCache 原理解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18-多线程断点续传"><span class="nav-number">18.</span> <span class="nav-text">18. 多线程断点续传</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19-Android-APP-冷启动时间统计及优化"><span class="nav-number">19.</span> <span class="nav-text">19. Android APP 冷启动时间统计及优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#20-热修复原理"><span class="nav-number">20.</span> <span class="nav-text">20. 热修复原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#21-插件化原理"><span class="nav-number">21.</span> <span class="nav-text">21. 插件化原理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-View-的绘制原理"><span class="nav-number">1.</span> <span class="nav-text">1. View 的绘制原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Android-进程间通信方式"><span class="nav-number">2.</span> <span class="nav-text">2. Android 进程间通信方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Android-Binder-机制"><span class="nav-number">3.</span> <span class="nav-text">3. Android Binder 机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Activity-加载过程"><span class="nav-number">4.</span> <span class="nav-text">4. Activity 加载过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Activity-启动模式"><span class="nav-number">5.</span> <span class="nav-text">5. Activity 启动模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-MVP-和-MVC-和MVVM-有什么区别"><span class="nav-number">6.</span> <span class="nav-text">6. MVP 和 MVC 和MVVM 有什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-Android-性能优化"><span class="nav-number">7.</span> <span class="nav-text">7. Android 性能优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-Service-概况"><span class="nav-number">8.</span> <span class="nav-text">8. Service 概况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Android-最新官方框架"><span class="nav-number">9.</span> <span class="nav-text">9. Android 最新官方框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-Android-类加载机制"><span class="nav-number">10.</span> <span class="nav-text">10. Android 类加载机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-Android-消息处理机制（Looper、Handler、MessageQueue-Message）"><span class="nav-number">11.</span> <span class="nav-text">11. Android 消息处理机制（Looper、Handler、MessageQueue,Message）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-Android-事件分发机制"><span class="nav-number">12.</span> <span class="nav-text">12. Android 事件分发机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-Retrofit-分析"><span class="nav-number">13.</span> <span class="nav-text">13. Retrofit 分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-Android-动画"><span class="nav-number">14.</span> <span class="nav-text">14. Android 动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-Rxjava-使用介绍"><span class="nav-number">15.</span> <span class="nav-text">15. Rxjava 使用介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-View-和-SurfaceView-的区别"><span class="nav-number">16.</span> <span class="nav-text">16. View 和 SurfaceView 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-LruCache-原理解析"><span class="nav-number">17.</span> <span class="nav-text">17. LruCache 原理解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18-多线程断点续传"><span class="nav-number">18.</span> <span class="nav-text">18. 多线程断点续传</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19-Android-APP-冷启动时间统计及优化"><span class="nav-number">19.</span> <span class="nav-text">19. Android APP 冷启动时间统计及优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#20-热修复原理"><span class="nav-number">20.</span> <span class="nav-text">20. 热修复原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#21-插件化原理"><span class="nav-number">21.</span> <span class="nav-text">21. 插件化原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android架构师"><span class="nav-number"></span> <span class="nav-text">Android架构师</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？"><span class="nav-number">1.</span> <span class="nav-text">1. App性能如何探测，有哪些方面，什么指标，怎么保证更流畅？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端"><span class="nav-number">2.</span> <span class="nav-text">2. 谈谈架构。大项目，逻辑多怎么办，如何应对多App和多终端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-android的发展大事件和主要技术发展"><span class="nav-number">3.</span> <span class="nav-text">3. android的发展大事件和主要技术发展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-avtivity（service）启动流程简述"><span class="nav-number">4.</span> <span class="nav-text">4. avtivity（service）启动流程简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-动态化的几种方案"><span class="nav-number">5.</span> <span class="nav-text">5. 动态化的几种方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-热修复的原理"><span class="nav-number">6.</span> <span class="nav-text">6. 热修复的原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-网络这块怎么优化"><span class="nav-number">7.</span> <span class="nav-text">7. 网络这块怎么优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-数据库性能怎么保证"><span class="nav-number">8.</span> <span class="nav-text">8. 数据库性能怎么保证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-线程安全怎么保证，异步并发这块你怎么做的"><span class="nav-number">9.</span> <span class="nav-text">9. 线程安全怎么保证，异步并发这块你怎么做的</span></a></li></ol></div>
             
 
           </div>
