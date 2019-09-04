@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="源码,webrtc," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="源码,webrtc,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,6 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/07/23/webrtc-source-thread/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="webrtc的base的 thread，是我见过的封装最帅的c++线程库，根据比qt的还好用,发个例子给你 1234567891011121314151617181920212223242526 using namespace webrtc;using namespace rtc;//std::cout&amp;lt;&amp;lt;&amp;quot;Thread::Current()：&amp;quot; &amp;lt;&amp;lt;">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-07-24T07:07:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Webrtc线程模型">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/07/23/webrtc-source-thread/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/07/23/webrtc-source-thread/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -435,8 +434,9 @@
       
 
       
-        <p>webrtc的base的 thread，是我见过的封装最帅的c++线程库，根据比qt的还好用,发个例子给你
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"> using namespace webrtc;</div><div class="line">using namespace rtc;</div><div class="line">//std::cout&lt;&lt;&quot;Thread::Current()：&quot; &lt;&lt; Thread::Current()-&gt;GetId();</div><div class="line">//Thread::Current()-&gt;Start(); 不能调用start，因为不是我创建的，他已经开始了</div><div class="line">   //Thread::Current()-&gt;Run(); //阻塞当前线程进入线程循环</div><div class="line"></div><div class="line">Thread * thread = new Thread();</div><div class="line">//MyRunnable run;</div><div class="line">//thread-&gt;Start(&amp;run);//可以带一个Runnable参数运行,运行完就结束，否则运行Thread::Run进入消息循环</div><div class="line">thread-&gt;Start();</div><div class="line">//std::cout &lt;&lt; &quot;Thread::Invoke()：&quot;&lt;&lt; thread-&gt;Invoke&lt;bool&gt;(RTC_FROM_HERE, &amp;task)&lt;&lt; &quot; at &quot; &lt;&lt; Thread::Current()-&gt;GetId() &lt;&lt; std::endl;</div><div class="line">thread-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">auto  handler= new MessageClient;</div><div class="line">//thread-&gt;PostAt(RTC_FROM_HERE, (int64_t)3000,handler);</div><div class="line">//thread-&gt;PostDelayed(RTC_FROM_HERE, (int64_t)5000, handler);</div><div class="line">//thread-&gt;Stop();</div><div class="line"></div><div class="line"></div><div class="line">Thread * thread2 = new Thread();</div><div class="line">thread2-&gt;Start();</div><div class="line">thread2-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</div><div class="line">//thread2-&gt;Invoke() 非常有用，在任何地方可以指定我的代码运行在某个线程</div><div class="line"></div><div class="line">//api下的proxy机制，实际上就是设置要执行的线程，然后加锁等待线程执行结果。这是我设计对外接口可以在任何线程调用而不出错的常用方法</div><div class="line"></div><div class="line">//base的asyncinvoker与proxy类似的机制。</div></pre></td></tr></table></figure></p>
+        <p>webrtc的base的 thread，是我见过的封装最帅的c++线程库，根据比qt的还好用,发个例子给你</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> using namespace webrtc;</span><br><span class="line">using namespace rtc;</span><br><span class="line">//std::cout&lt;&lt;&quot;Thread::Current()：&quot; &lt;&lt; Thread::Current()-&gt;GetId();</span><br><span class="line">//Thread::Current()-&gt;Start(); 不能调用start，因为不是我创建的，他已经开始了</span><br><span class="line">   //Thread::Current()-&gt;Run(); //阻塞当前线程进入线程循环</span><br><span class="line"></span><br><span class="line">Thread * thread = new Thread();</span><br><span class="line">//MyRunnable run;</span><br><span class="line">//thread-&gt;Start(&amp;run);//可以带一个Runnable参数运行,运行完就结束，否则运行Thread::Run进入消息循环</span><br><span class="line">thread-&gt;Start();</span><br><span class="line">//std::cout &lt;&lt; &quot;Thread::Invoke()：&quot;&lt;&lt; thread-&gt;Invoke&lt;bool&gt;(RTC_FROM_HERE, &amp;task)&lt;&lt; &quot; at &quot; &lt;&lt; Thread::Current()-&gt;GetId() &lt;&lt; std::endl;</span><br><span class="line">thread-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</span><br><span class="line">auto  handler= new MessageClient;</span><br><span class="line">//thread-&gt;PostAt(RTC_FROM_HERE, (int64_t)3000,handler);</span><br><span class="line">//thread-&gt;PostDelayed(RTC_FROM_HERE, (int64_t)5000, handler);</span><br><span class="line">//thread-&gt;Stop();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Thread * thread2 = new Thread();</span><br><span class="line">thread2-&gt;Start();</span><br><span class="line">thread2-&gt;Post(RTC_FROM_HERE, Bind(task2));//将最常用的</span><br><span class="line">//thread2-&gt;Invoke() 非常有用，在任何地方可以指定我的代码运行在某个线程</span><br><span class="line"></span><br><span class="line">//api下的proxy机制，实际上就是设置要执行的线程，然后加锁等待线程执行结果。这是我设计对外接口可以在任何线程调用而不出错的常用方法</span><br><span class="line"></span><br><span class="line">//base的asyncinvoker与proxy类似的机制。</span><br></pre></td></tr></table></figure>
+
 <p>有ios的gdc，android的handler异曲同工</p>
 <p>因为编写复杂稳定的多线程C++项目实在太难，所以一个好的跨平台C++基础库是我最求的目标,目前比较欣赏的项目有：</p>
 <p>Boost:大而全，缺少一些可以直接上手的东西如线程消息队列，智能指针并非线程安全。
@@ -500,13 +500,13 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -611,7 +611,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -622,9 +622,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -635,7 +633,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -657,7 +655,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -771,7 +769,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -808,7 +806,7 @@ shared_ptr不是线程安全的，因为shared_ptr有两个成员：引用计数
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

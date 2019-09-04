@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,42 +66,43 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android,tips,Pluggable," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+  <meta name="keywords" content="Android,tips,Pluggable,">
 
 
 
 
 
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
 
-<meta name="description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名    增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
 <meta name="keywords" content="Android,tips,Pluggable">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android插件化(一)技术调研">
 <meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
+<meta property="og:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名    增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/virtualapk_arch.png">
 <meta property="og:image" content="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg">
-<meta property="og:updated_time" content="2018-12-29T07:33:18.621Z">
+<meta property="og:updated_time" content="2018-12-29T07:33:18.622Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android插件化(一)技术调研">
-<meta name="twitter:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名     增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
+<meta name="twitter:description" content="前言有关APK更新的技术比较多，例如：增量更新、插件式开发、热修复、RN、静默安装。 下面简单介绍一下：    更新方式 签名    增量更新 旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。   插件式开发 给宿主APK提供插件，扩展（需要的时候再下载），可以动态地替换。主要技术是动态代理的知识。">
 <meta name="twitter:image" content="http://images.wodekouwei.com/technology/virtualapk_arch.png">
 
 
@@ -130,7 +131,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -250,7 +251,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -260,7 +261,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -273,7 +274,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -294,9 +295,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -333,7 +332,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -376,7 +375,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -419,7 +418,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -447,8 +446,7 @@
 <th>签名</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>增量更新</td>
 <td>旧版本Apk（v1.0）和新（v2.0）、旧版本Apk（v1.0）生成的差分包（apk.patch 质量小）合并成为新版本Apk（v2.0）安装。</td>
 </tr>
@@ -468,8 +466,7 @@
 <td>静默安装</td>
 <td>需要root权限，适配不同手机ROM很麻烦。</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>插件化、热修复（思想）的发展历程</p>
 <ul>
 <li>2012年7月，AndroidDynamicLoader，大众点评，陶毅敏：思想是通过Fragment以及schema的方式实现的，这是一种可行的技术方案，但是还有限制太多，这意味这你的activity必须通过Fragment去实现，这在activity跳转和灵活性上有一定的不便，在实际的使用中会有一些很奇怪的bug不好解决，总之，这还是一种不是特别完备的动态加载技术。</li>
@@ -493,37 +490,46 @@
 </ol>
 <p>差分的处理比较麻烦的地方就是要针对不同的应用市场渠道和众多不同版本进行差分。
 注意：新版本有可能比旧版本小，差分只是把变化的部分记录下来。</p>
-<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="external">http://www.daemonology.net/bsdiff/</a></p>
-<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class BsDiff &#123;</div><div class="line">    /**</div><div class="line">     * 差分</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bsdiff&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</div><div class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数(第一个参数无效)</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bsdiff_main(argc, argv);</div><div class="line"></div><div class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</div><div class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</div></pre></td></tr></table></figure></p>
-<p>根据提示需要传入4个参数：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</div><div class="line">argv[1] = oldPath;//旧APK文件路径</div><div class="line">argv[2] = newPath;/新APK文件路径</div><div class="line">argv[3] = patchPath;//APK差分文件路径</div></pre></td></tr></table></figure></p>
+<h4 id="1-2服务器端行为（后台工程师操作）"><a href="#1-2服务器端行为（后台工程师操作）" class="headerlink" title="1.2服务器端行为（后台工程师操作）"></a>1.2服务器端行为（后台工程师操作）</h4><h5 id="1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><a href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）"></a>1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</h5><p>我们使用到的第三方库是：Binary diff，简称bsdiff，这个库专门用来实现文件的差分和合并的，它的官网如下：<a href="http://www.daemonology.net/bsdiff/" target="_blank" rel="noopener">http://www.daemonology.net/bsdiff/</a></p>
+<h5 id="1-2-2Java代码调用"><a href="#1-2-2Java代码调用" class="headerlink" title="1.2.2Java代码调用:"></a>1.2.2Java代码调用:</h5><p>创建Web项目，用来做APP的服务端。创建工具类专门用于产生差分包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class BsDiff &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 差分</span><br><span class="line">     * @param oldfile</span><br><span class="line">     * @param newfile</span><br><span class="line">     * @param patchfile</span><br><span class="line">     */</span><br><span class="line">    public native static void diff(String oldfile,String newfile,String patchfile);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(&quot;bsdiff&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中JNI的实现如下（该实现写在bsdiff.cpp中）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT void JNICALL Java_com_haocai_bsdiff_BsDiff_diff</span><br><span class="line">(JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr) &#123;</span><br><span class="line">    int argc = 4;</span><br><span class="line">    char* oldfile = (char*)env-&gt;GetStringUTFChars(oldfile_jstr, NULL);</span><br><span class="line">    char* newfile = (char*)env-&gt;GetStringUTFChars(newfile_jstr, NULL);</span><br><span class="line">    char* patchfile = (char*)env-&gt;GetStringUTFChars(patchfile_jstr, NULL);</span><br><span class="line"></span><br><span class="line">    //参数(第一个参数无效)</span><br><span class="line">    char *argv[4];</span><br><span class="line">    argv[0] = &#123; &quot;bsdiff&quot; &#125;;</span><br><span class="line">    argv[1] = oldfile;</span><br><span class="line">    argv[2] = newfile;</span><br><span class="line">    argv[3] = patchfile;</span><br><span class="line"></span><br><span class="line">    bsdiff_main(argc, argv);</span><br><span class="line"></span><br><span class="line">    env-&gt;ReleaseStringUTFChars(oldfile_jstr, oldfile);</span><br><span class="line">    env-&gt;ReleaseStringUTFChars(newfile_jstr, newfile);</span><br><span class="line">    env-&gt;ReleaseStringUTFChars(patchfile_jstr, patchfile);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>通过研究bsdiff的源码，我们发现bsdiff.cpp里面的main函数就是入口函数，避免歧义把函数名main改为bsdiff_main，然后通过JNI去调用。根据bsdiff.cpp中bsdiff_main函数方法中有以下关键语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (argc != 4) errx(1, &quot;usage: %s oldfile newfile patchfile\n&quot;, argv[0]);</span><br></pre></td></tr></table></figure>
+
+<p>根据提示需要传入4个参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">argv[0] = &quot;bsdiff&quot;;//这个参数没用</span><br><span class="line">argv[1] = oldPath;//旧APK文件路径</span><br><span class="line">argv[2] = newPath;/新APK文件路径</span><br><span class="line">argv[3] = patchPath;//APK差分文件路径</span><br></pre></td></tr></table></figure>
+
 <p>然后我们准备两个APK文件，不同版本的，最好Java代码、资源都不一样。</p>
-<p>写一个Java测试类生成差分包：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">public class ConstantsWin &#123;</div><div class="line"></div><div class="line">    //路径不能包含中文</div><div class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</div><div class="line"></div><div class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</div><div class="line"></div><div class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">package com.haocai.bsdiff;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Administrator on 2017/11/14.</div><div class="line"> */</div><div class="line">public class BsDiffTest &#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        //得到差分包</div><div class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>写一个Java测试类生成差分包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package com.haocai.bsdiff;</span><br><span class="line"></span><br><span class="line">public class ConstantsWin &#123;</span><br><span class="line"></span><br><span class="line">    //路径不能包含中文</span><br><span class="line">    public static final String OLD_APK_PATH = &quot;D:/android_apks/test_old.apk&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String NEW_APK_PATH = &quot;D:/android_apks/test_new.apk&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String PATCH_PATH = &quot;D:/android_apks/apk.patch&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">package com.haocai.bsdiff;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by Administrator on 2017/11/14.</span><br><span class="line"> */</span><br><span class="line">public class BsDiffTest &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        //得到差分包</span><br><span class="line">        BsDiff.diff(ConstantsWin.OLD_APK_PATH,ConstantsWin.NEW_APK_PATH,ConstantsWin.PATCH_PATH);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>注意:</p>
 <ul>
 <li>test_new.apk、test_old.apk 要先放在目标目录</li>
 <li>bsdiff.cpp中生成差分包的程序方法是异步的，所以生成完整的apk.patch可能要等一下。apk.patch体积大小停止增长，表示生成结束。<h5 id="1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><a href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包" class="headerlink" title="1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包"></a>1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</h5></li>
 </ul>
-<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by Xionghu on 2017/11/14.</div><div class="line"> * Desc:</div><div class="line"> */</div><div class="line"></div><div class="line">public class BsPatch &#123;</div><div class="line">    /**</div><div class="line">     * 合并</div><div class="line">     * @param oldfile</div><div class="line">     * @param newfile</div><div class="line">     * @param patchfile</div><div class="line">     */</div><div class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        System.loadLibrary(&quot;bspatch&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">//合并</div><div class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</div><div class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</div><div class="line">    int argc = 4;</div><div class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</div><div class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</div><div class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</div><div class="line"></div><div class="line">    //参数（第一个参数无效）</div><div class="line">    char *argv[4];</div><div class="line">    argv[0] = &quot;bspatch&quot;;</div><div class="line">    argv[1] = oldfile;</div><div class="line">    argv[2] = newfile;</div><div class="line">    argv[3] = patchfile;</div><div class="line"></div><div class="line">    bspatch_main(argc,argv);</div><div class="line"></div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</div><div class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<p>代码v1.0差分包合并核心代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line">package com.haocai.app.update;</div><div class="line"></div><div class="line">import android.Manifest;</div><div class="line">import android.content.pm.PackageManager;</div><div class="line">import android.os.Handler;</div><div class="line">import android.os.Message;</div><div class="line">import android.support.annotation.NonNull;</div><div class="line">import android.support.annotation.Nullable;</div><div class="line">import android.support.v4.app.ActivityCompat;</div><div class="line">import android.support.v7.app.AppCompatActivity;</div><div class="line">import android.os.Bundle;</div><div class="line">import android.text.format.Formatter;</div><div class="line">import android.widget.Toast;</div><div class="line">import com.lzy.okgo.OkGo;</div><div class="line">import com.lzy.okgo.callback.FileCallback;</div><div class="line">import com.lzy.okgo.model.Progress;</div><div class="line">import com.lzy.okgo.model.Response;</div><div class="line">import com.lzy.okgo.request.base.Request;</div><div class="line">import java.io.File;</div><div class="line">import java.text.NumberFormat;</div><div class="line"></div><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line"></div><div class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</div><div class="line">    private Handler mHandler = new Handler() &#123;</div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            super.handleMessage(msg);</div><div class="line">            switch (msg.what) &#123;</div><div class="line">                case 0:</div><div class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    private NumberFormat numberFormat;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        setTitle(&quot;简单文件下载&quot;);</div><div class="line"></div><div class="line">        numberFormat = NumberFormat.getPercentInstance();</div><div class="line">        numberFormat.setMinimumFractionDigits(2);</div><div class="line"></div><div class="line">        checkSDCardPermission();</div><div class="line"></div><div class="line">        /**</div><div class="line">         * 因为后台没有写版本判断语句</div><div class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</div><div class="line">         *</div><div class="line">         * 低版本下运行fileDownload();</div><div class="line">         */</div><div class="line">         fileDownload();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * 检查SD卡权限</div><div class="line">     */</div><div class="line">    protected void checkSDCardPermission() &#123;</div><div class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</div><div class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</div><div class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                //获取权限</div><div class="line">                fileDownload();</div><div class="line">            &#125; else &#123;</div><div class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onDestroy() &#123;</div><div class="line">        super.onDestroy();</div><div class="line">        //Activity销毁时，取消网络请求</div><div class="line">        OkGo.getInstance().cancelTag(this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    public void fileDownload() &#123;</div><div class="line"></div><div class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</div><div class="line">                .tag(this)//</div><div class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                        new Thread(new Runnable() &#123;</div><div class="line">                            @Override</div><div class="line">                            public void run() &#123;</div><div class="line"></div><div class="line">                                try &#123;</div><div class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</div><div class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</div><div class="line">                                    String newfile = Constants.NEW_APK_PATH;</div><div class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</div><div class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</div><div class="line"></div><div class="line">                                    mHandler.sendEmptyMessage(0);</div><div class="line">                                &#125; catch (Exception e) &#123;</div><div class="line">                                    e.printStackTrace();</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;).start();</div><div class="line"></div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onError(Response&lt;File&gt; response) &#123;</div><div class="line"></div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void downloadProgress(Progress progress) &#123;</div><div class="line">                        System.out.println(progress);</div><div class="line"></div><div class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</div><div class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</div><div class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</div><div class="line">                        System.out.println(downloadLength);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="1-3Android客户端行为"><a href="#1-3Android客户端行为" class="headerlink" title="1.3Android客户端行为"></a>1.3Android客户端行为</h4><h5 id="1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><a href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）" class="headerlink" title="1.3.1编译合并要用的第三方库（bsdiff、bzip2）"></a>1.3.1编译合并要用的第三方库（bsdiff、bzip2）</h5><p>对应的Java代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">package com.haocai.app.update;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by Xionghu on 2017/11/14.</span><br><span class="line"> * Desc:</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class BsPatch &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 合并</span><br><span class="line">     * @param oldfile</span><br><span class="line">     * @param newfile</span><br><span class="line">     * @param patchfile</span><br><span class="line">     */</span><br><span class="line">    public native static void patch(String oldfile,String newfile,String patchfile);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(&quot;bspatch&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Android端，我们需要把bzip2以及bsdiff的文件拷贝到jni目录里面，同样的，我们只需要编译一个bspatch.c源文件即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//合并</span><br><span class="line">JNIEXPORT void JNICALL Java_com_haocai_app_update_BsPatch_patch</span><br><span class="line">  (JNIEnv *env, jclass jcls, jstring oldfile_jstr, jstring newfile_jstr, jstring patchfile_jstr)&#123;</span><br><span class="line">    int argc = 4;</span><br><span class="line">    char* oldfile = (char*)(*env)-&gt;GetStringUTFChars(env,oldfile_jstr, NULL);</span><br><span class="line">    char* newfile = (char*)(*env)-&gt;GetStringUTFChars(env,newfile_jstr, NULL);</span><br><span class="line">    char* patchfile = (char*)(*env)-&gt;GetStringUTFChars(env,patchfile_jstr, NULL);</span><br><span class="line"></span><br><span class="line">    //参数（第一个参数无效）</span><br><span class="line">    char *argv[4];</span><br><span class="line">    argv[0] = &quot;bspatch&quot;;</span><br><span class="line">    argv[1] = oldfile;</span><br><span class="line">    argv[2] = newfile;</span><br><span class="line">    argv[3] = patchfile;</span><br><span class="line"></span><br><span class="line">    bspatch_main(argc,argv);</span><br><span class="line"></span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env,oldfile_jstr, oldfile);</span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env,newfile_jstr, newfile);</span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env,patchfile_jstr, patchfile);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码v1.0差分包合并核心代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><span class="line">package com.haocai.app.update;</span><br><span class="line"></span><br><span class="line">import android.Manifest;</span><br><span class="line">import android.content.pm.PackageManager;</span><br><span class="line">import android.os.Handler;</span><br><span class="line">import android.os.Message;</span><br><span class="line">import android.support.annotation.NonNull;</span><br><span class="line">import android.support.annotation.Nullable;</span><br><span class="line">import android.support.v4.app.ActivityCompat;</span><br><span class="line">import android.support.v7.app.AppCompatActivity;</span><br><span class="line">import android.os.Bundle;</span><br><span class="line">import android.text.format.Formatter;</span><br><span class="line">import android.widget.Toast;</span><br><span class="line">import com.lzy.okgo.OkGo;</span><br><span class="line">import com.lzy.okgo.callback.FileCallback;</span><br><span class="line">import com.lzy.okgo.model.Progress;</span><br><span class="line">import com.lzy.okgo.model.Response;</span><br><span class="line">import com.lzy.okgo.request.base.Request;</span><br><span class="line">import java.io.File;</span><br><span class="line">import java.text.NumberFormat;</span><br><span class="line"></span><br><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">    private static final int REQUEST_PERMISSION_STORAGE = 0x01;</span><br><span class="line">    private Handler mHandler = new Handler() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">            super.handleMessage(msg);</span><br><span class="line">            switch (msg.what) &#123;</span><br><span class="line">                case 0:</span><br><span class="line">                    Toast.makeText(MainActivity.this, &quot;您正在进行省流量更新&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">                    ApkUtils.installApk(MainActivity.this, Constants.NEW_APK_PATH);</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    private NumberFormat numberFormat;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        setTitle(&quot;简单文件下载&quot;);</span><br><span class="line"></span><br><span class="line">        numberFormat = NumberFormat.getPercentInstance();</span><br><span class="line">        numberFormat.setMinimumFractionDigits(2);</span><br><span class="line"></span><br><span class="line">        checkSDCardPermission();</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 因为后台没有写版本判断语句</span><br><span class="line">         * 在高版本下暂时先注释fileDownload(); 否则一直下载安装</span><br><span class="line">         *</span><br><span class="line">         * 低版本下运行fileDownload();</span><br><span class="line">         */</span><br><span class="line">         fileDownload();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 检查SD卡权限</span><br><span class="line">     */</span><br><span class="line">    protected void checkSDCardPermission() &#123;</span><br><span class="line">        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            ActivityCompat.requestPermissions(this, new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE&#125;, REQUEST_PERMISSION_STORAGE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</span><br><span class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</span><br><span class="line">        if (requestCode == REQUEST_PERMISSION_STORAGE) &#123;</span><br><span class="line">            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">                //获取权限</span><br><span class="line">                fileDownload();</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                Toast.makeText(getApplicationContext(), &quot;权限被禁止，无法下载文件！&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">        //Activity销毁时，取消网络请求</span><br><span class="line">        OkGo.getInstance().cancelTag(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void fileDownload() &#123;</span><br><span class="line"></span><br><span class="line">        OkGo.&lt;File&gt;get(Constants.URL_PATCH_DOWNLOAD)//</span><br><span class="line">                .tag(this)//</span><br><span class="line">                .execute(new FileCallback(Constants.SD_CARD, Constants.PATCH_FILE) &#123;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onStart(Request&lt;File, ? extends Request&gt; request) &#123;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onSuccess(Response&lt;File&gt; response) &#123;</span><br><span class="line"></span><br><span class="line">                        new Thread(new Runnable() &#123;</span><br><span class="line">                            @Override</span><br><span class="line">                            public void run() &#123;</span><br><span class="line"></span><br><span class="line">                                try &#123;</span><br><span class="line">                                    //      File patchFile = new File(Constants.SD_CARD, Constants.PATCH_FILE);</span><br><span class="line">                                    String oldfile = ApkUtils.getSourceApkPath(MainActivity.this, getPackageName());</span><br><span class="line">                                    String newfile = Constants.NEW_APK_PATH;</span><br><span class="line">                                    String patchfile = Constants.SD_CARD + File.separator + Constants.PATCH_FILE;</span><br><span class="line">                                    BsPatch.patch(oldfile, newfile, patchfile);</span><br><span class="line"></span><br><span class="line">                                    mHandler.sendEmptyMessage(0);</span><br><span class="line">                                &#125; catch (Exception e) &#123;</span><br><span class="line">                                    e.printStackTrace();</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;).start();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void onError(Response&lt;File&gt; response) &#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void downloadProgress(Progress progress) &#123;</span><br><span class="line">                        System.out.println(progress);</span><br><span class="line"></span><br><span class="line">                        String downloadLength = Formatter.formatFileSize(getApplicationContext(), progress.currentSize);</span><br><span class="line">                        String totalLength = Formatter.formatFileSize(getApplicationContext(), progress.totalSize);</span><br><span class="line">                        String speed = Formatter.formatFileSize(getApplicationContext(), progress.speed);</span><br><span class="line">                        System.out.println(downloadLength);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>注意：这里7.0可能会有问题，把路径暴露给别的app，需要FileProvider去实现（不难，这个留给大家去做吧）。</p>
 <blockquote>
-<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="external">源码下载</a>
-作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="external">(简书)香沙小熊</a></p>
+<p><a href="https://github.com/kpioneer123/DiffInstallApp" target="_blank" rel="noopener">源码下载</a>
+作者: <a href="http://www.jianshu.com/p/4c80d732e7c3" target="_blank" rel="noopener">(简书)香沙小熊</a></p>
 </blockquote>
 <h3 id="2-插件化"><a href="#2-插件化" class="headerlink" title="2.插件化"></a>2.插件化</h3><p>插件化框架的一些对比，下面引用
-<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="external">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
+<a href="https://github.com/wequick/Small/blob/master/Android/COMPARISION.md" target="_blank" rel="noopener">https://github.com/wequick/Small/blob/master/Android/COMPARISION.md</a></p>
 <table>
 <thead>
 <tr>
@@ -536,8 +542,7 @@
 <th>RePlugin</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>支持四大组件</td>
 <td>只支持Activity</td>
 <td>只支持Activity</td>
@@ -604,7 +609,7 @@
 <td>源码</td>
 <td><code>https://github.com/singwhatiwanna/dynamic-load-apk</code></td>
 <td><code>https://github.com/CtripMobile/DynamicAPK</code></td>
-<td><a href="https://github.com/wequick/Small" target="_blank" rel="external">https://github.com/wequick/Small</a></td>
+<td><a href="https://github.com/wequick/Small" target="_blank" rel="noopener">https://github.com/wequick/Small</a></td>
 <td><code>https://github.com/DroidPluginTeam/DroidPlugin</code></td>
 <td><code>https://github.com/didi/VirtualAPK</code></td>
 <td><code>https://github.com/Qihoo360/RePlugin</code></td>
@@ -618,8 +623,7 @@
 <td>滴滴</td>
 <td>360</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h4 id="2-1DynamicLoadApk"><a href="#2-1DynamicLoadApk" class="headerlink" title="2.1DynamicLoadApk"></a>2.1DynamicLoadApk</h4><p>基于静态代理的实现</p>
 <h4 id="2-2VirtualAPK"><a href="#2-2VirtualAPK" class="headerlink" title="2.2VirtualAPK"></a>2.2VirtualAPK</h4><h5 id="2-2-1特性"><a href="#2-2-1特性" class="headerlink" title="2.2.1特性"></a>2.2.1特性</h5><table>
 <thead>
@@ -628,8 +632,7 @@
 <th>Detail</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Supported components</td>
 <td>Activity, Service, Receiver and Provider</td>
 </tr>
@@ -661,9 +664,15 @@
 <td>Supported Android versions</td>
 <td>API Level 15+</td>
 </tr>
-</tbody>
-</table>
-<h5 id="2-2-2架构"><a href="#2-2-2架构" class="headerlink" title="2.2.2架构"></a>2.2.2架构</h5><p><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></p>
+<tr>
+<td>##### 2.2.2架构</td>
+<td></td>
+</tr>
+<tr>
+<td><img src="http://images.wodekouwei.com/technology/virtualapk_arch.png" alt="image"></td>
+<td></td>
+</tr>
+</tbody></table>
 <h5 id="2-2-3原理"><a href="#2-2-3原理" class="headerlink" title="2.2.3原理"></a>2.2.3原理</h5><h6 id="2-2-3-1基本原理"><a href="#2-2-3-1基本原理" class="headerlink" title="2.2.3.1基本原理"></a>2.2.3.1基本原理</h6><ul>
 <li>合并宿主和插件的ClassLoader 需要注意的是，插件中的类不可以和宿主重复</li>
 <li>合并插件和宿主的资源 重设插件资源的packageId，将插件资源和宿主资源合并</li>
@@ -680,8 +689,7 @@
 <th>描述</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>组件</td>
 <td>四大组件（含静态Receiver）</td>
 </tr>
@@ -729,8 +737,7 @@
 <td>Android 版本</td>
 <td>API Level 9+ （2.3及以上）</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h5 id="2-3-2架构"><a href="#2-3-2架构" class="headerlink" title="2.3.2架构"></a>2.3.2架构</h5><p><img src="http://images.wodekouwei.com/technology/RePluginFramePic.jpeg" alt="image"></p>
 <h3 id="模块化-组件化-插件化"><a href="#模块化-组件化-插件化" class="headerlink" title="模块化,组件化,插件化"></a>模块化,组件化,插件化</h3><p>在技术开发领域，模块化是指分拆代码，即当我们的代码特别臃肿的时候，用模块化将代码分而治之、解耦分层。具体到 android 领域，模块化的具体实施方法分为插件化和组件化。</p>
 <p>一套完整的插件化或组件化都必须能够实现单独调试、集成编译、数据传输、UI 跳转、生命周期和代码边界这六大功能。</p>
@@ -803,13 +810,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -916,7 +923,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -927,9 +934,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -940,7 +945,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -962,7 +967,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1056,7 +1061,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-增量更新"><span class="nav-number">2.</span> <span class="nav-text">1.增量更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1增量更新的流程"><span class="nav-number">2.1.</span> <span class="nav-text">1.1增量更新的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2服务器端行为（后台工程师操作）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2服务器端行为（后台工程师操作）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-2Java代码调用"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2Java代码调用:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><span class="nav-number">2.2.3.</span> <span class="nav-text">1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3Android客户端行为"><span class="nav-number">2.3.</span> <span class="nav-text">1.3Android客户端行为</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.3.1.</span> <span class="nav-text">1.3.1编译合并要用的第三方库（bsdiff、bzip2）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-插件化"><span class="nav-number">3.</span> <span class="nav-text">2.插件化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1DynamicLoadApk"><span class="nav-number">3.1.</span> <span class="nav-text">2.1DynamicLoadApk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2VirtualAPK"><span class="nav-number">3.2.</span> <span class="nav-text">2.2VirtualAPK</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1特性"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.2.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2架构"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2.2架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3原理"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.2.3原理</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-3-1基本原理"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">2.2.3.1基本原理</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-2四大组件的实现原理"><span class="nav-number">3.2.4.</span> <span class="nav-text">2.2.3.2四大组件的实现原理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3RePlugin"><span class="nav-number">3.3.</span> <span class="nav-text">2.3RePlugin</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1特性"><span class="nav-number">3.3.1.</span> <span class="nav-text">2.3.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2架构"><span class="nav-number">3.3.2.</span> <span class="nav-text">2.3.2架构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块化-组件化-插件化"><span class="nav-number">4.</span> <span class="nav-text">模块化,组件化,插件化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-增量更新"><span class="nav-number">2.</span> <span class="nav-text">1.增量更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1增量更新的流程"><span class="nav-number">2.1.</span> <span class="nav-text">1.1增量更新的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2服务器端行为（后台工程师操作）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2服务器端行为（后台工程师操作）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1下载拆分和合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.2.1下载拆分和合并要用的第三方库（bsdiff、bzip2）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-2Java代码调用"><span class="nav-number">2.2.2.</span> <span class="nav-text">1.2.2Java代码调用:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-3简单搭建后台JavaWeb供Android前端下载apk-patch差分包"><span class="nav-number">2.2.3.</span> <span class="nav-text">1.2.3简单搭建后台JavaWeb供Android前端下载apk.patch差分包</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3Android客户端行为"><span class="nav-number">2.3.</span> <span class="nav-text">1.3Android客户端行为</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-1编译合并要用的第三方库（bsdiff、bzip2）"><span class="nav-number">2.3.1.</span> <span class="nav-text">1.3.1编译合并要用的第三方库（bsdiff、bzip2）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-插件化"><span class="nav-number">3.</span> <span class="nav-text">2.插件化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1DynamicLoadApk"><span class="nav-number">3.1.</span> <span class="nav-text">2.1DynamicLoadApk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2VirtualAPK"><span class="nav-number">3.2.</span> <span class="nav-text">2.2VirtualAPK</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1特性"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.2.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3原理"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2.3原理</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-3-1基本原理"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">2.2.3.1基本原理</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-2四大组件的实现原理"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.2.3.2四大组件的实现原理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3RePlugin"><span class="nav-number">3.3.</span> <span class="nav-text">2.3RePlugin</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1特性"><span class="nav-number">3.3.1.</span> <span class="nav-text">2.3.1特性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2架构"><span class="nav-number">3.3.2.</span> <span class="nav-text">2.3.2架构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块化-组件化-插件化"><span class="nav-number">4.</span> <span class="nav-text">模块化,组件化,插件化</span></a></li></ol></div>
             
 
           </div>
@@ -1076,7 +1081,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -1113,7 +1118,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

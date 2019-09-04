@@ -1,0 +1,1083 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="一、介绍WSGI（Web Server Gateway Interface），翻译为Python web服务器网关接口，即Python的Web应用程序（如Flask）和Web服务器(如Nginx)之间的一种通信协议。也就是说，如果让你的Web应用在任何服务器上运行，就必须遵循这个协议。 那么实现WSGI协议的web服务器有哪些呢？就比如uWSGI与gunicorn。两者都可以作为Web服务器。可能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python服务器程序部署">
+<meta property="og:url" content="http://wodekouwei.com/2019/06/19/l-python-deploy/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="一、介绍WSGI（Web Server Gateway Interface），翻译为Python web服务器网关接口，即Python的Web应用程序（如Flask）和Web服务器(如Nginx)之间的一种通信协议。也就是说，如果让你的Web应用在任何服务器上运行，就必须遵循这个协议。 那么实现WSGI协议的web服务器有哪些呢？就比如uWSGI与gunicorn。两者都可以作为Web服务器。可能">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-19T14:34:50.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python服务器程序部署">
+<meta name="twitter:description" content="一、介绍WSGI（Web Server Gateway Interface），翻译为Python web服务器网关接口，即Python的Web应用程序（如Flask）和Web服务器(如Nginx)之间的一种通信协议。也就是说，如果让你的Web应用在任何服务器上运行，就必须遵循这个协议。 那么实现WSGI协议的web服务器有哪些呢？就比如uWSGI与gunicorn。两者都可以作为Web服务器。可能">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/06/19/l-python-deploy/">
+
+
+
+
+
+  <title> python服务器程序部署 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/06/19/l-python-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python服务器程序部署
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T22:23:10+08:00">
+                2019-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/06/19/l-python-deploy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p>WSGI（Web Server Gateway Interface），翻译为Python web服务器网关接口，即Python的Web应用程序（如Flask）和Web服务器(如Nginx)之间的一种通信协议。也就是说，如果让你的Web应用在任何服务器上运行，就必须遵循这个协议。
+那么实现WSGI协议的web服务器有哪些呢？就比如uWSGI与gunicorn。两者都可以作为Web服务器。可能你在许多地方看到的都是采用Nginx + uWSGI（或gunicorn）的部署方式。实际上，直接通过uWSGI或gunicorn直接部署也是可以让外网访问的，那你可能会说，那要Nginx何用？别急，那么接来下介绍另一个Web服务器——Nginx
+Nginx作为一个高性能Web服务器，具有负载均衡、拦截静态请求、高并发…等等许多功能，你可能要问了，这些功能和使用Nginx + WSGI容器的部署方式有什么关系？
+首先是负载均衡，如果你了解过OSI模型的话，其实负载均衡器就是该模型中4~7层交换机中的一种，它的作用是能够仅通过一个前端唯一的URL访问分发到后台的多个服务器，这对于并发量非常大的企业级Web站点非常有效。在实际应用中我们通常会让Nginx监听（绑定）80端口，通过多域名或者多个location分发到不同的后端应用。
+其次是拦截静态请求，简单来说，Nginx会拦截到静态请求（静态文件，如图片），并交给自己处理。而动态请求内容将会通过WSGI容器交给Web应用处理;
+Nginx还有其他很多的功能，这里便不一一介绍。那么前面说了，直接通过uWSGI或gunicorn也可以让外网访问到的，但是鉴于Nginx具有高性能、高并发、静态文件缓存、及以上两点、甚至还可以做到限流与访问控制，所以选择Nginx是很有必要的；
+这里可以说明，如果你选择的架构是：Nginx + WSGI容器 + web应用，WSGI容器相当于一个中间件；如果选择的架构是uWSGI + web应用，WSGI容器则为一个web服务器</p>
+<h3 id="二、实际部署："><a href="#二、实际部署：" class="headerlink" title="二、实际部署："></a>二、实际部署：</h3><p>普遍的部署方式都是通过让Nginx绑定80端口，并接受客户端的请求将动态内容的请求反向代理给运行在本地端口的uWSGI或者Gunicorn，所以既可以通过Nginx + uWSGI也可以通过Nginx + Gunicorn来部署Flask应用，这篇教程中都将一一介绍这两种方法
+当然采用不同的WSGI容器，Nginx中的配置也会有所不同</p>
+<h4 id="1-Nginx-uWSGI"><a href="#1-Nginx-uWSGI" class="headerlink" title="1. Nginx + uWSGI"></a>1. Nginx + uWSGI</h4><h5 id="1-1-配置uWSGI："><a href="#1-1-配置uWSGI：" class="headerlink" title="1.1 配置uWSGI："></a>1.1 配置uWSGI：</h5><p>我们现在虚拟环境下安装好uWSGI：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install uwsgi</span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后我们在项目的目录下（即你实际创建的Flask项目目录，在本文所指的项目目录都假设为/www/demo）创建以.ini为扩展名的配置文件。在设置与Nginx交互的时候有两种方式：
+第一种是通过配置网络地址，第二种是通过本地的.socket文件进行通信。需要注意的是，不同的交互方式下，Nginx中的配置也会有所不同
+如果采用的是第一种网络地址的方式，则将之前创建uwsgi.ini配置文件添加如下的配置内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line">socket = 127.0.0.1:8001  //与nginx通信的端口</span><br><span class="line">chdir = /www/demo/     //你的Flask项目目录</span><br><span class="line">wsgi-file = run.py </span><br><span class="line">callable = app      //run.py文件中flask实例化的对象名</span><br><span class="line">processes = 4     //处理器个数</span><br><span class="line">threads = 2     //线程个数</span><br><span class="line">stats = 127.0.0.1:9191   //获取uwsgi统计信息的服务地址</span><br></pre></td></tr></table></figure>
+
+<p>这里的wsgi-file参数所指的run.py其实是启动文件，你也可以使用manage.py。不过我通常习惯创建一个这样的文件，可以直接运行该文件来启动项目：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from app import app</span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+
+<p>保存好配置文件后，就可以通过如下的命令来启动应用了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi uwsig.ini</span><br></pre></td></tr></table></figure>
+
+<p>如果你采用的是第二种本地socket文件的方式，则添加如下的配置内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line">socket = /www/demo/socket/nginx_uwsgi.socket  //与nginx通信的socket文件</span><br><span class="line">chdir = /www/demo/  </span><br><span class="line">wsgi-file = run.py</span><br><span class="line">callable = app  </span><br><span class="line">processes = 4  </span><br><span class="line">threads = 2 </span><br><span class="line">stats = 127.0.0.1:9191</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，其实与网络地址的配置方式只有socket参数的配置不同，在这里填写好路径名和文件名并启动uWSGI后，将会自动在改目录下生成nginx_uwsgi.socket文件，这个文件就是用来与Nginx交互的。</p>
+<h5 id="1-2-配置Nginx"><a href="#1-2-配置Nginx" class="headerlink" title="1.2 配置Nginx"></a>1.2 配置Nginx</h5><p>首先我们来通过apt安装Nginx：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后，我们cd到/etc/nginx/的目录下（可能由于不同系统导致不同的Nginx发行版缘故，目录有所差别，在此只针对Ubuntu中的发行版的Nginx），可以看到Nginx的所有配置文件。
+其中nginx.conf文件为主配置文件，可以用来修改其全局配置；sites-available存放你的配置文件，但是在这里添加配置是不会应用到Nginx的配置当中，需要软连接到同目录下的sites-enabled当中。但是在我实际操作的过程中中，当我在sites-available修改好配置文件后，会自动更新到sites-enabled。如果没有的话，则需要像上述的操作那样，将修改好的配置文件软链接到sites-enabled当中
+在上边说到，配置uWSGI有两种与Nginx交互的方式，那么选择不同的方式的话在Nginx的配置也会有所不同：</p>
+<h6 id="第一种：网络配置方式："><a href="#第一种：网络配置方式：" class="headerlink" title="第一种：网络配置方式："></a>第一种：网络配置方式：</h6><p>这里的proxy_set_header设置的三个参数的作用都是能够直接获得到客户端的IP，如果你感兴趣可以参考：<a href="https://www.jianshu.com/p/cc5167032525" target="_blank" rel="noopener">Nginx中proxy_set_header 理解</a>
+用include uwsgi_params导入uWSGI所引用的参数，通过uwsgi_pass反向代理给在localhost:8001运行的uWSGI：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80; # 监听的端口号</span><br><span class="line">        root /www/demo; #Flask的项目目录</span><br><span class="line">        server_name xxx.xx.xxx.xxx; # 你的公网ip或者域名</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_set_header x-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_set_header Host $http_host;</span><br><span class="line">            include uwsgi_params;</span><br><span class="line">            uwsgi_pass localhost:8001;</span><br><span class="line">        &#125;</span><br><span class="line">        # 配置static的静态文件：</span><br><span class="line">        location ~ ^\/static\/.*$ &#123;</span><br><span class="line">            root /www/demo; # 注意！这里不需要再加/static了</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在每次完Nginx配置文件内容后，需要通过如下的命令来重启Nginx：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<h6 id="第二种：socket文件方式："><a href="#第二种：socket文件方式：" class="headerlink" title="第二种：socket文件方式："></a>第二种：socket文件方式：</h6><p>与上边的配置内容大体相同，只是在配置uwsgi_pass不是反向代理给网络地址，而是通过socket文件进行交互，我们只需要指定之前设置的路径和文件名即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        root /www/demo;</span><br><span class="line">        server_name xxx.xx.xxx.xxx;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_set_header x-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_set_header Host $http_host;</span><br><span class="line">            include uwsgi_params;</span><br><span class="line">            uwsgi_pass unix:/www/demo/socket/nginx_uwsgi.socket;</span><br><span class="line">        &#125;</span><br><span class="line">        location ~ ^\/static\/.*$ &#123;</span><br><span class="line">            root /www/demo;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-Nginx-Gunicorn"><a href="#2-Nginx-Gunicorn" class="headerlink" title="2. Nginx + Gunicorn"></a>2. Nginx + Gunicorn</h4><h5 id="2-1-配置Gunicorn"><a href="#2-1-配置Gunicorn" class="headerlink" title="2.1 配置Gunicorn:"></a>2.1 配置Gunicorn:</h5><p>首先先在虚拟环境下安装Gunicorn：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install gunicorn</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，我们来创建以.py结尾的配置文件，这里我参考了Jiyuankai的<a href="https://github.com/jiyuankai/myblog/blob/master/gunicorn_config.py" target="_blank" rel="noopener">GitHub</a>关于Gunicorn的配置文件内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">from gevent import monkey</span><br><span class="line">monkey.patch_all()</span><br><span class="line">import multiprocessing</span><br><span class="line">debug = True</span><br><span class="line">loglevel = &apos;debug&apos;</span><br><span class="line">bind = &apos;127.0.0.1:5000&apos; //绑定与Nginx通信的端口</span><br><span class="line">pidfile = &apos;log/gunicorn.pid&apos;</span><br><span class="line">logfile = &apos;log/debug.log&apos;</span><br><span class="line">workers = multiprocessing.cpu_count() * 2 + 1</span><br><span class="line">worker_class = &apos;gevent&apos; //默认为阻塞模式，最好选择gevent模式</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是要在配置文件的同层目录下创建log文件，否则运行gunicorn将报错。添加完配置内容并保存为gconfig.py文件后，我们就也可以通过gunicorn来运行Flask应用了:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunicorn -c /www/demo/gconfig.py run:app</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-2-配置Nginx"><a href="#2-2-配置Nginx" class="headerlink" title="2.2 配置Nginx:"></a>2.2 配置Nginx:</h5><p>和uWSGI的任意一种配置方法类似，只是在location中的配置有所不同：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80; </span><br><span class="line">        root /www/demo;</span><br><span class="line">        server_name xxx.xx.xxx.xxx;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_set_header x-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_set_header Host $http_host;</span><br><span class="line">            proxy_pass http://localhost:5000/; # gunicorn绑定的端口号</span><br><span class="line">        &#125;</span><br><span class="line">        # 配置static的静态文件：</span><br><span class="line">        location ~ ^\/static\/.*$ &#123;</span><br><span class="line">            root /www/demo;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过Gunicorn的Nginx配置中，我们只需要通过proxy_pass参数反向代理给运行在<a href="http://localhost:5000/上的Gunicorn" target="_blank" rel="noopener">http://localhost:5000/上的Gunicorn</a></p>
+<h3 id="三、守护进程"><a href="#三、守护进程" class="headerlink" title="三、守护进程"></a>三、守护进程</h3><p>如果你采取如上的任意一种部署方式，在Nginx与uWSGI或Gunicorn同时运行，并且配置无误的状态下，那么你现在应该是可以通过你的公网ip或者域名访问到你的网站了。
+但是还有一个问题，到目前为止，uWSGI和gunicorn都是直接通过命令行运行，并不能够在后台运行，也是当我们关闭了xShell（或者你使用的是Putty及其他SSH连接的软件），将无法再访问到你的应用。所以我们需要让uWSGI或gunicorn在后台运行，也就是所谓的daemon（守护进程）。</p>
+<h4 id="1-nohup："><a href="#1-nohup：" class="headerlink" title="1. nohup："></a>1. nohup：</h4><p>如果你熟悉Linux命令，你应该知道在Linux中后台运行可以通过nohup命令，例如我们要让gunicorn在后台运行，我们只需要运行nohup命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup gunicorn -c gconfig.py run:app &amp;</span><br></pre></td></tr></table></figure>
+
+<p>运行后你可以通过ps -e | grep gunicorn指令来查看到当前gunicorn的运行状态：
+如果你选择的是uWSGI，同样也可以通过nohup命令来实现守护进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup uwsgi uwsgi.ini &amp;</span><br></pre></td></tr></table></figure>
+
+<p>这样你就可以关闭连接服务器的终端，还能通过你的浏览器访问到你的Flask应用了！</p>
+<h4 id="2-supervisor"><a href="#2-supervisor" class="headerlink" title="2. supervisor"></a>2. supervisor</h4><p>但是nohup运行的后台程序并不能够可靠的在后台运行，我们最好让我们的后台程序能够监控进程状态，还能在意外结束时自动重启，这就可以使用一个使用Python开发的进程管理程序supervisor。
+参考：<a href="https://www.cnblogs.com/Dicky-Zhang/p/6171954.html" target="_blank" rel="noopener">https://www.cnblogs.com/Dicky-Zhang/p/6171954.html</a>
+首先我们通过apt来安装supervisor：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install supervisor</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，我们在/etc/supervisor/conf.d/目录下创建我们控制进程的配置文件，并以.conf结尾，这样将会自动应用到主配置文件当中，创建后添加如下的配置内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[program:demo]</span><br><span class="line">command=/www/demo/venv/bin/gunicorn -c /pushy/blog/gconfig.py run:app</span><br><span class="line">directory=/www/demo  //项目目录</span><br><span class="line">user=root</span><br><span class="line">autorestart=true //设置自动重启</span><br><span class="line">startretires=3  //重启失败3次</span><br><span class="line"></span><br><span class="line">[program:gunicorn_demo]</span><br><span class="line">process_name=%(program_name)s</span><br><span class="line">numprocs=1</span><br><span class="line">priority=901</span><br><span class="line">gunicorn_demo:app</span><br><span class="line">autostart = true</span><br><span class="line">startsecs = 20</span><br><span class="line">startretries = 3</span><br><span class="line">redirect_stderr = true</span><br><span class="line">stdout_logfile_maxbytes = 20MB</span><br><span class="line">stdout_logfile_backups = 10</span><br><span class="line">stdout_logfile = /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>在上面的配置文件中，[program:demo]设置了进程名，这与之后操作进程的状态名称有关，为demo;command为进程运行的命令，必须使用绝对路径，并且使用虚拟环境下的gunicorn命令；user指定了运行进程的用户，这里设置为root
+保存配置文件之后，我们需要通过命令来更新配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl update</span><br></pre></td></tr></table></figure>
+
+<p>命令行将显示：demo: added process group，然后我们来启动这个demo进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl start demo</span><br></pre></td></tr></table></figure>
+
+<p>当然你也直接在命令行输入supervisorctl进入supevisor的客户端，查看到当前的进程状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">demo        RUNNING   pid 17278, uptime 0:08:51</span><br></pre></td></tr></table></figure>
+
+<p>通过stop命令便可以方便的停止该进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisor&gt; stop demo</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/19/db-mysql/" rel="next" title="db-mysql">
+                <i class="fa fa-chevron-left"></i> db-mysql
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/28/tips-net-multiplexing/" rel="prev" title="I/O多路复用">
+                I/O多路复用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、介绍"><span class="nav-number">1.</span> <span class="nav-text">一、介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、实际部署："><span class="nav-number">2.</span> <span class="nav-text">二、实际部署：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Nginx-uWSGI"><span class="nav-number">2.1.</span> <span class="nav-text">1. Nginx + uWSGI</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-配置uWSGI："><span class="nav-number">2.1.1.</span> <span class="nav-text">1.1 配置uWSGI：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-配置Nginx"><span class="nav-number">2.1.2.</span> <span class="nav-text">1.2 配置Nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#第一种：网络配置方式："><span class="nav-number">2.1.2.1.</span> <span class="nav-text">第一种：网络配置方式：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#第二种：socket文件方式："><span class="nav-number">2.1.2.2.</span> <span class="nav-text">第二种：socket文件方式：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Nginx-Gunicorn"><span class="nav-number">2.2.</span> <span class="nav-text">2. Nginx + Gunicorn</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-配置Gunicorn"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 配置Gunicorn:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-配置Nginx"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 配置Nginx:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、守护进程"><span class="nav-number">3.</span> <span class="nav-text">三、守护进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-nohup："><span class="nav-number">3.1.</span> <span class="nav-text">1. nohup：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-supervisor"><span class="nav-number">3.2.</span> <span class="nav-text">2. supervisor</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

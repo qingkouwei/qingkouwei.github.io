@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android,tips,Pluggable," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="Android,tips,Pluggable,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,7 +96,8 @@
 <meta property="og:url" content="http://wodekouwei.com/2018/01/12/tips-android-pluggable-4/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1、寻找Hook点的原则Android中主要是依靠分析系统源码类来做到的，首先我们得找到被Hook的对象，我称之为Hook点；什么样的对象比较好Hook呢？一般来说，静态变量和单例变量是相对不容易改变，是一个比较好的hook点，而普通的对象有易变的可能，每个版本都不一样，处理难度比较大。我们根据这个原则找到所谓的Hook点。 2、寻找Hook点通常点击一个Button就开始Activity跳转了，">
-<meta property="og:updated_time" content="2018-01-13T09:39:40.444Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-13T09:39:40.445Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android插件化(四)基础之Hook">
 <meta name="twitter:description" content="1、寻找Hook点的原则Android中主要是依靠分析系统源码类来做到的，首先我们得找到被Hook的对象，我称之为Hook点；什么样的对象比较好Hook呢？一般来说，静态变量和单例变量是相对不容易改变，是一个比较好的hook点，而普通的对象有易变的可能，每个版本都不一样，处理难度比较大。我们根据这个原则找到所谓的Hook点。 2、寻找Hook点通常点击一个Button就开始Activity跳转了，">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-4/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2018/01/12/tips-android-pluggable-4/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -436,37 +435,51 @@
 
       
         <h4 id="1、寻找Hook点的原则"><a href="#1、寻找Hook点的原则" class="headerlink" title="1、寻找Hook点的原则"></a>1、寻找Hook点的原则</h4><p>Android中主要是依靠分析系统源码类来做到的，首先我们得找到被Hook的对象，我称之为Hook点；什么样的对象比较好Hook呢？一般来说，静态变量和单例变量是相对不容易改变，是一个比较好的hook点，而普通的对象有易变的可能，每个版本都不一样，处理难度比较大。我们根据这个原则找到所谓的Hook点。</p>
-<h4 id="2、寻找Hook点"><a href="#2、寻找Hook点" class="headerlink" title="2、寻找Hook点"></a>2、寻找Hook点</h4><p>通常点击一个Button就开始Activity跳转了，这中间发生了什么，我们如何Hook,来实现Activity启动的拦截呢？
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, OtherActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>我们的目的是要拦截startActivity方法，跟踪源码，发现最后启动Activity是由Instrumentation类的execStartActivity做到的。其实这个类相当于启动Activity的中间者，启动Activity中间都是由它来操作的
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public ActivityResult execStartActivity(</div><div class="line">            Context who, IBinder contextThread, IBinder token, Activity target,</div><div class="line">            Intent intent, int requestCode, Bundle options) &#123;</div><div class="line">        IApplicationThread whoThread = (IApplicationThread) contextThread;</div><div class="line">        ....</div><div class="line">        try &#123;</div><div class="line">            intent.migrateExtraStreamToClipData();</div><div class="line">            intent.prepareToLeaveProcess(who);</div><div class="line"></div><div class="line">        //通过ActivityManagerNative.getDefault()获取一个对象，开始启动新的Activity</div><div class="line">            int result = ActivityManagerNative.getDefault()</div><div class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</div><div class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</div><div class="line">                        token, target != null ? target.mEmbeddedID : null,</div><div class="line">                        requestCode, 0, null, options);</div><div class="line"></div><div class="line"></div><div class="line">            checkStartActivityResult(result, intent);</div><div class="line">        &#125; catch (RemoteException e) &#123;</div><div class="line">            throw new RuntimeException(&quot;Failure from system&quot;, e);</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>对于ActivityManagerNative这个东东，熟悉Activity/Service启动过程的都不陌生
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public abstract class ActivityManagerNative extends Binder implements IActivityManager</div></pre></td></tr></table></figure></p>
-<p>继承了Binder，实现了一个IActivityManager接口，这就是为了远程服务通信做准备的”Stub”类，一个完整的AID L有两部分，一个是个跟服务端通信的Stub,一个是跟客户端通信的Proxy。ActivityManagerNative就是Stub,阅读源码发现在ActivityManagerNative 文件中还有个ActivityManagerProxy，这里就多不扯了。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">static public IActivityManager getDefault() &#123;</div><div class="line">    return gDefault.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2、寻找Hook点"><a href="#2、寻找Hook点" class="headerlink" title="2、寻找Hook点"></a>2、寻找Hook点</h4><p>通常点击一个Button就开始Activity跳转了，这中间发生了什么，我们如何Hook,来实现Activity启动的拦截呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public void start(View view) &#123;</span><br><span class="line">        Intent intent = new Intent(this, OtherActivity.class);</span><br><span class="line">        startActivity(intent);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们的目的是要拦截startActivity方法，跟踪源码，发现最后启动Activity是由Instrumentation类的execStartActivity做到的。其实这个类相当于启动Activity的中间者，启动Activity中间都是由它来操作的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public ActivityResult execStartActivity(</span><br><span class="line">            Context who, IBinder contextThread, IBinder token, Activity target,</span><br><span class="line">            Intent intent, int requestCode, Bundle options) &#123;</span><br><span class="line">        IApplicationThread whoThread = (IApplicationThread) contextThread;</span><br><span class="line">        ....</span><br><span class="line">        try &#123;</span><br><span class="line">            intent.migrateExtraStreamToClipData();</span><br><span class="line">            intent.prepareToLeaveProcess(who);</span><br><span class="line"></span><br><span class="line">        //通过ActivityManagerNative.getDefault()获取一个对象，开始启动新的Activity</span><br><span class="line">            int result = ActivityManagerNative.getDefault()</span><br><span class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</span><br><span class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</span><br><span class="line">                        token, target != null ? target.mEmbeddedID : null,</span><br><span class="line">                        requestCode, 0, null, options);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            checkStartActivityResult(result, intent);</span><br><span class="line">        &#125; catch (RemoteException e) &#123;</span><br><span class="line">            throw new RuntimeException(&quot;Failure from system&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于ActivityManagerNative这个东东，熟悉Activity/Service启动过程的都不陌生</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public abstract class ActivityManagerNative extends Binder implements IActivityManager</span><br></pre></td></tr></table></figure>
+
+<p>继承了Binder，实现了一个IActivityManager接口，这就是为了远程服务通信做准备的”Stub”类，一个完整的AID L有两部分，一个是个跟服务端通信的Stub,一个是跟客户端通信的Proxy。ActivityManagerNative就是Stub,阅读源码发现在ActivityManagerNative 文件中还有个ActivityManagerProxy，这里就多不扯了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static public IActivityManager getDefault() &#123;</span><br><span class="line">    return gDefault.get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>ActivityManagerNative.getDefault()获取的是一个IActivityManager对象，由IActivityManager去启动Activity，IActivityManager的实现类是ActivityManagerService，ActivityManagerService是在另外一个进程之中，所有Activity 启动是一个跨进程的通信的过程，所以真正启动Activity的是通过远端服务ActivityManagerService来启动的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private static final Singleton&lt;IActivityManager&gt; gDefault = new Singleton&lt;IActivityManager&gt;() &#123;</div><div class="line">        protected IActivityManager create() &#123;</div><div class="line">            IBinder b = ServiceManager.getService(&quot;activity&quot;);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service binder = &quot; + b);</div><div class="line">            &#125;</div><div class="line">            IActivityManager am = asInterface(b);</div><div class="line">            if (false) &#123;</div><div class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service = &quot; + am);</div><div class="line">            &#125;</div><div class="line">            return am;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private static final Singleton&lt;IActivityManager&gt; gDefault = new Singleton&lt;IActivityManager&gt;() &#123;</span><br><span class="line">        protected IActivityManager create() &#123;</span><br><span class="line">            IBinder b = ServiceManager.getService(&quot;activity&quot;);</span><br><span class="line">            if (false) &#123;</span><br><span class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service binder = &quot; + b);</span><br><span class="line">            &#125;</span><br><span class="line">            IActivityManager am = asInterface(b);</span><br><span class="line">            if (false) &#123;</span><br><span class="line">                Log.v(&quot;ActivityManager&quot;, &quot;default service = &quot; + am);</span><br><span class="line">            &#125;</span><br><span class="line">            return am;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
 <p>实gDefalut借助Singleton实现的单例模式，而在内部可以看到先从ServiceManager中获取到AMS远端服务的Binder对象，然后使用asInterface方法转化成本地化对象，我们目的是拦截startActivity,所以改变IActivityManager对象可以做到这个一点，这里gDefault又是静态的，根据Hook原则，这是一个比较好的Hook点。</p>
-<h4 id="3、Hook掉startActivity，输出日志"><a href="#3、Hook掉startActivity，输出日志" class="headerlink" title="3、Hook掉startActivity，输出日志"></a>3、Hook掉startActivity，输出日志</h4><p>我们先实现一个小需求，启动Activity的时候打印一条日志，写一个工具类HookUtil。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">public class HookUtil &#123;</div><div class="line"></div><div class="line">    private Class&lt;?&gt; proxyActivity;</div><div class="line"></div><div class="line">    private Context context;</div><div class="line"></div><div class="line">    public HookUtil(Class&lt;?&gt; proxyActivity, Context context) &#123;</div><div class="line">        this.proxyActivity = proxyActivity;</div><div class="line">        this.context = context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void hookAms() &#123;</div><div class="line"></div><div class="line">        //一路反射，直到拿到IActivityManager的对象</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; ActivityManagerNativeClss = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</div><div class="line">            Field defaultFiled = ActivityManagerNativeClss.getDeclaredField(&quot;gDefault&quot;);</div><div class="line">            defaultFiled.setAccessible(true);</div><div class="line">            Object defaultValue = defaultFiled.get(null);</div><div class="line">            //反射SingleTon</div><div class="line">            Class&lt;?&gt; SingletonClass = Class.forName(&quot;android.util.Singleton&quot;);</div><div class="line">            Field mInstance = SingletonClass.getDeclaredField(&quot;mInstance&quot;);</div><div class="line">            mInstance.setAccessible(true);</div><div class="line">            //到这里已经拿到ActivityManager对象</div><div class="line">            Object iActivityManagerObject = mInstance.get(defaultValue);</div><div class="line"></div><div class="line"></div><div class="line">            //开始动态代理，用代理对象替换掉真实的ActivityManager，瞒天过海</div><div class="line">            Class&lt;?&gt; IActivityManagerIntercept = Class.forName(&quot;android.app.IActivityManager&quot;);</div><div class="line"></div><div class="line">            AmsInvocationHandler handler = new AmsInvocationHandler(iActivityManagerObject);</div><div class="line"></div><div class="line">            Object proxy = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class&lt;?&gt;[]&#123;IActivityManagerIntercept&#125;, handler);</div><div class="line"></div><div class="line">            //现在替换掉这个对象</div><div class="line">            mInstance.set(defaultValue, proxy);</div><div class="line"></div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    private class AmsInvocationHandler implements InvocationHandler &#123;</div><div class="line"></div><div class="line">        private Object iActivityManagerObject;</div><div class="line"></div><div class="line">        private AmsInvocationHandler(Object iActivityManagerObject) &#123;</div><div class="line">            this.iActivityManagerObject = iActivityManagerObject;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line"></div><div class="line">            Log.i(&quot;HookUtil&quot;, method.getName());</div><div class="line">            //我要在这里搞点事情</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;Activity已经开始启动&quot;);</div><div class="line">                Log.e(&quot;HookUtil&quot;,&quot;小弟到此一游！！！&quot;);</div><div class="line">            &#125;</div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>结合注释应该很容易看懂，在Application中配置一下
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        HookUtil hookUtil=new HookUtil(SecondActivity.class, this);</div><div class="line">        hookUtil.hookAms()；</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="3、Hook掉startActivity，输出日志"><a href="#3、Hook掉startActivity，输出日志" class="headerlink" title="3、Hook掉startActivity，输出日志"></a>3、Hook掉startActivity，输出日志</h4><p>我们先实现一个小需求，启动Activity的时候打印一条日志，写一个工具类HookUtil。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">public class HookUtil &#123;</span><br><span class="line"></span><br><span class="line">    private Class&lt;?&gt; proxyActivity;</span><br><span class="line"></span><br><span class="line">    private Context context;</span><br><span class="line"></span><br><span class="line">    public HookUtil(Class&lt;?&gt; proxyActivity, Context context) &#123;</span><br><span class="line">        this.proxyActivity = proxyActivity;</span><br><span class="line">        this.context = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void hookAms() &#123;</span><br><span class="line"></span><br><span class="line">        //一路反射，直到拿到IActivityManager的对象</span><br><span class="line">        try &#123;</span><br><span class="line">            Class&lt;?&gt; ActivityManagerNativeClss = Class.forName(&quot;android.app.ActivityManagerNative&quot;);</span><br><span class="line">            Field defaultFiled = ActivityManagerNativeClss.getDeclaredField(&quot;gDefault&quot;);</span><br><span class="line">            defaultFiled.setAccessible(true);</span><br><span class="line">            Object defaultValue = defaultFiled.get(null);</span><br><span class="line">            //反射SingleTon</span><br><span class="line">            Class&lt;?&gt; SingletonClass = Class.forName(&quot;android.util.Singleton&quot;);</span><br><span class="line">            Field mInstance = SingletonClass.getDeclaredField(&quot;mInstance&quot;);</span><br><span class="line">            mInstance.setAccessible(true);</span><br><span class="line">            //到这里已经拿到ActivityManager对象</span><br><span class="line">            Object iActivityManagerObject = mInstance.get(defaultValue);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //开始动态代理，用代理对象替换掉真实的ActivityManager，瞒天过海</span><br><span class="line">            Class&lt;?&gt; IActivityManagerIntercept = Class.forName(&quot;android.app.IActivityManager&quot;);</span><br><span class="line"></span><br><span class="line">            AmsInvocationHandler handler = new AmsInvocationHandler(iActivityManagerObject);</span><br><span class="line"></span><br><span class="line">            Object proxy = Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class&lt;?&gt;[]&#123;IActivityManagerIntercept&#125;, handler);</span><br><span class="line"></span><br><span class="line">            //现在替换掉这个对象</span><br><span class="line">            mInstance.set(defaultValue, proxy);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private class AmsInvocationHandler implements InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">        private Object iActivityManagerObject;</span><br><span class="line"></span><br><span class="line">        private AmsInvocationHandler(Object iActivityManagerObject) &#123;</span><br><span class="line">            this.iActivityManagerObject = iActivityManagerObject;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line"></span><br><span class="line">            Log.i(&quot;HookUtil&quot;, method.getName());</span><br><span class="line">            //我要在这里搞点事情</span><br><span class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</span><br><span class="line">                Log.e(&quot;HookUtil&quot;,&quot;Activity已经开始启动&quot;);</span><br><span class="line">                Log.e(&quot;HookUtil&quot;,&quot;小弟到此一游！！！&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            return method.invoke(iActivityManagerObject, args);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结合注释应该很容易看懂，在Application中配置一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class MyApplication extends Application &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate() &#123;</span><br><span class="line">        super.onCreate();</span><br><span class="line">        HookUtil hookUtil=new HookUtil(SecondActivity.class, this);</span><br><span class="line">        hookUtil.hookAms()；</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>可以看到，我们成功的Hook掉了startActivity，输出了一条日志。有了上面的基础，现在我们开始来点有用的东西，Activity不用在清单文件中注册，就可以启动起来，这个怎么搞呢？</p>
-<h4 id="4、无需注册，启动Activity"><a href="#4、无需注册，启动Activity" class="headerlink" title="4、无需注册，启动Activity"></a>4、无需注册，启动Activity</h4><p>如下，TargetActivity没有在清单文件中注册，怎么去启动TargetActivity？
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public void start(View view) &#123;</div><div class="line">        Intent intent = new Intent(this, TargetActivity.class);</div><div class="line">        startActivity(intent);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="4、无需注册，启动Activity"><a href="#4、无需注册，启动Activity" class="headerlink" title="4、无需注册，启动Activity"></a>4、无需注册，启动Activity</h4><p>如下，TargetActivity没有在清单文件中注册，怎么去启动TargetActivity？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public void start(View view) &#123;</span><br><span class="line">        Intent intent = new Intent(this, TargetActivity.class);</span><br><span class="line">        startActivity(intent);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
 <p>这个思路可以是这样，上面已经拦截了启动Activity流程，在invoke中我们可以得到启动参数intent信息，那么就在这里，我们可以自己构造一个假的Activity信息的intent，这个Intent启动的Activity是在清单文件中注册的，当真正启动的时候（ActivityManagerService校验清单文件之后），用真实的Intent把代理的Intent在调换过来，然后启动即可。</p>
-<p>首先获取真实启动参数intent信息
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</div><div class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</div><div class="line">                //换掉</div><div class="line">                Intent intent = null;</div><div class="line">                int index = 0;</div><div class="line">                for (int i = 0; i &lt; args.length; i++) &#123;</div><div class="line">                    Object arg = args[i];</div><div class="line">                    if (arg instanceof Intent) &#123;</div><div class="line">                        //说明找到了startActivity的Intent参数</div><div class="line">                        intent = (Intent) args[i];</div><div class="line">                        //这个意图是不能被启动的，因为Acitivity没有在清单文件中注册</div><div class="line">                        index = i;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">               //伪造一个代理的Intent，代理Intent启动的是proxyActivity</div><div class="line">                Intent proxyIntent = new Intent();</div><div class="line">                ComponentName componentName = new ComponentName(context, proxyActivity);</div><div class="line">                proxyIntent.setComponent(componentName);</div><div class="line">                proxyIntent.putExtra(&quot;oldIntent&quot;, intent);</div><div class="line">                args[index] = proxyIntent;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            return method.invoke(iActivityManagerObject, args);</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>有了上面的两个步骤,这个代理的Intent是可以通过ActivityManagerService检验的，因为我在清单文件中注册过
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;.ProxyActivity&quot; /&gt;</div></pre></td></tr></table></figure></p>
-<p>为了不启动ProxyActivity，现在我们需要找一个合适的时机，把真实的Intent换过了来，启动我们真正想启动的Activity。看过Activity的启动流程的朋友，我们都知道这个过程是由Handler发送消息来实现的，可是通过Handler处理消息的代码来看，消息的分发处理是有顺序的，下面是Handler处理消息的代码:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public void dispatchMessage(Message msg) &#123;</div><div class="line">        if (msg.callback != null) &#123;</div><div class="line">            handleCallback(msg);</div><div class="line">        &#125; else &#123;</div><div class="line">            if (mCallback != null) &#123;</div><div class="line">                if (mCallback.handleMessage(msg)) &#123;</div><div class="line">                    return;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            handleMessage(msg);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>handler处理消息的时候，首先去检查是否实现了callback接口，如果有实现的话，那么会直接执行接口方法，然后才是handleMessage方法，最后才是执行重写的handleMessage方法，我们一般大部分时候都是重写了handleMessage方法,而ActivityThread主线程用的正是重写的方法，这种方法的优先级是最低的，我们完全可以实现接口来替换掉系统Handler的处理过程。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void hookSystemHandler() &#123;</div><div class="line">        try &#123;</div><div class="line">            Class&lt;?&gt; activityThreadClass = Class.forName(&quot;android.app.ActivityThread&quot;);</div><div class="line">            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod(&quot;currentActivityThread&quot;);</div><div class="line">            currentActivityThreadMethod.setAccessible(true);</div><div class="line">            //获取主线程对象</div><div class="line">            Object activityThread = currentActivityThreadMethod.invoke(null);</div><div class="line">            //获取mH字段</div><div class="line">            Field mH = activityThreadClass.getDeclaredField(&quot;mH&quot;);</div><div class="line">            mH.setAccessible(true);</div><div class="line">            //获取Handler</div><div class="line">            Handler handler = (Handler) mH.get(activityThread);</div><div class="line">            //获取原始的mCallBack字段</div><div class="line">            Field mCallBack = Handler.class.getDeclaredField(&quot;mCallback&quot;);</div><div class="line">            mCallBack.setAccessible(true);</div><div class="line">            //这里设置了我们自己实现了接口的CallBack对象</div><div class="line">            mCallBack.set(handler, new ActivityThreadHandlerCallback(handler)) ;</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>自定义Callback类
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">private class ActivityThreadHandlerCallback implements Handler.Callback &#123;</div><div class="line"></div><div class="line">        private Handler handler;</div><div class="line"></div><div class="line">        private ActivityThreadHandlerCallback(Handler handler) &#123;</div><div class="line">            this.handler = handler;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public boolean handleMessage(Message msg) &#123;</div><div class="line">            Log.i(&quot;HookAmsUtil&quot;, &quot;handleMessage&quot;);</div><div class="line">            //替换之前的Intent</div><div class="line">            if (msg.what ==100) &#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity&quot;);</div><div class="line">                handleLauchActivity(msg);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            handler.handleMessage(msg);</div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        private void handleLauchActivity(Message msg) &#123;</div><div class="line">            Object obj = msg.obj;//ActivityClientRecord</div><div class="line">            try&#123;</div><div class="line">                Field intentField = obj.getClass().getDeclaredField(&quot;intent&quot;);</div><div class="line">                intentField.setAccessible(true);</div><div class="line">                Intent proxyInent = (Intent) intentField.get(obj);</div><div class="line">                Intent realIntent = proxyInent.getParcelableExtra(&quot;oldIntent&quot;);</div><div class="line">                if (realIntent != null) &#123;</div><div class="line">                    proxyInent.setComponent(realIntent.getComponent());</div><div class="line">                &#125;</div><div class="line">            &#125;catch (Exception e)&#123;</div><div class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity falied&quot;);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>最后在application中注入
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class MyApplication extends Application &#123;</div><div class="line">    @Override</div><div class="line">    public void onCreate() &#123;</div><div class="line">        super.onCreate();</div><div class="line">        //这个ProxyActivity在清单文件中注册过，以后所有的Activitiy都可以用ProxyActivity无需声明，绕过监测</div><div class="line">        HookAmsUtil hookAmsUtil = new HookAmsUtil(ProxyActivity.class, this);</div><div class="line">        hookAmsUtil.hookSystemHandler();</div><div class="line">        hookAmsUtil.hookAms();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>首先获取真实启动参数intent信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">            if (&quot;startActivity&quot;.contains(method.getName())) &#123;</span><br><span class="line">                //换掉</span><br><span class="line">                Intent intent = null;</span><br><span class="line">                int index = 0;</span><br><span class="line">                for (int i = 0; i &lt; args.length; i++) &#123;</span><br><span class="line">                    Object arg = args[i];</span><br><span class="line">                    if (arg instanceof Intent) &#123;</span><br><span class="line">                        //说明找到了startActivity的Intent参数</span><br><span class="line">                        intent = (Intent) args[i];</span><br><span class="line">                        //这个意图是不能被启动的，因为Acitivity没有在清单文件中注册</span><br><span class="line">                        index = i;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">               //伪造一个代理的Intent，代理Intent启动的是proxyActivity</span><br><span class="line">                Intent proxyIntent = new Intent();</span><br><span class="line">                ComponentName componentName = new ComponentName(context, proxyActivity);</span><br><span class="line">                proxyIntent.setComponent(componentName);</span><br><span class="line">                proxyIntent.putExtra(&quot;oldIntent&quot;, intent);</span><br><span class="line">                args[index] = proxyIntent;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            return method.invoke(iActivityManagerObject, args);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了上面的两个步骤,这个代理的Intent是可以通过ActivityManagerService检验的，因为我在清单文件中注册过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=&quot;.ProxyActivity&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>为了不启动ProxyActivity，现在我们需要找一个合适的时机，把真实的Intent换过了来，启动我们真正想启动的Activity。看过Activity的启动流程的朋友，我们都知道这个过程是由Handler发送消息来实现的，可是通过Handler处理消息的代码来看，消息的分发处理是有顺序的，下面是Handler处理消息的代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void dispatchMessage(Message msg) &#123;</span><br><span class="line">        if (msg.callback != null) &#123;</span><br><span class="line">            handleCallback(msg);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (mCallback != null) &#123;</span><br><span class="line">                if (mCallback.handleMessage(msg)) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            handleMessage(msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>handler处理消息的时候，首先去检查是否实现了callback接口，如果有实现的话，那么会直接执行接口方法，然后才是handleMessage方法，最后才是执行重写的handleMessage方法，我们一般大部分时候都是重写了handleMessage方法,而ActivityThread主线程用的正是重写的方法，这种方法的优先级是最低的，我们完全可以实现接口来替换掉系统Handler的处理过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public void hookSystemHandler() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            Class&lt;?&gt; activityThreadClass = Class.forName(&quot;android.app.ActivityThread&quot;);</span><br><span class="line">            Method currentActivityThreadMethod = activityThreadClass.getDeclaredMethod(&quot;currentActivityThread&quot;);</span><br><span class="line">            currentActivityThreadMethod.setAccessible(true);</span><br><span class="line">            //获取主线程对象</span><br><span class="line">            Object activityThread = currentActivityThreadMethod.invoke(null);</span><br><span class="line">            //获取mH字段</span><br><span class="line">            Field mH = activityThreadClass.getDeclaredField(&quot;mH&quot;);</span><br><span class="line">            mH.setAccessible(true);</span><br><span class="line">            //获取Handler</span><br><span class="line">            Handler handler = (Handler) mH.get(activityThread);</span><br><span class="line">            //获取原始的mCallBack字段</span><br><span class="line">            Field mCallBack = Handler.class.getDeclaredField(&quot;mCallback&quot;);</span><br><span class="line">            mCallBack.setAccessible(true);</span><br><span class="line">            //这里设置了我们自己实现了接口的CallBack对象</span><br><span class="line">            mCallBack.set(handler, new ActivityThreadHandlerCallback(handler)) ;</span><br><span class="line"></span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义Callback类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private class ActivityThreadHandlerCallback implements Handler.Callback &#123;</span><br><span class="line"></span><br><span class="line">        private Handler handler;</span><br><span class="line"></span><br><span class="line">        private ActivityThreadHandlerCallback(Handler handler) &#123;</span><br><span class="line">            this.handler = handler;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public boolean handleMessage(Message msg) &#123;</span><br><span class="line">            Log.i(&quot;HookAmsUtil&quot;, &quot;handleMessage&quot;);</span><br><span class="line">            //替换之前的Intent</span><br><span class="line">            if (msg.what ==100) &#123;</span><br><span class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity&quot;);</span><br><span class="line">                handleLauchActivity(msg);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            handler.handleMessage(msg);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void handleLauchActivity(Message msg) &#123;</span><br><span class="line">            Object obj = msg.obj;//ActivityClientRecord</span><br><span class="line">            try&#123;</span><br><span class="line">                Field intentField = obj.getClass().getDeclaredField(&quot;intent&quot;);</span><br><span class="line">                intentField.setAccessible(true);</span><br><span class="line">                Intent proxyInent = (Intent) intentField.get(obj);</span><br><span class="line">                Intent realIntent = proxyInent.getParcelableExtra(&quot;oldIntent&quot;);</span><br><span class="line">                if (realIntent != null) &#123;</span><br><span class="line">                    proxyInent.setComponent(realIntent.getComponent());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;catch (Exception e)&#123;</span><br><span class="line">                Log.i(&quot;HookAmsUtil&quot;,&quot;lauchActivity falied&quot;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后在application中注入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class MyApplication extends Application &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate() &#123;</span><br><span class="line">        super.onCreate();</span><br><span class="line">        //这个ProxyActivity在清单文件中注册过，以后所有的Activitiy都可以用ProxyActivity无需声明，绕过监测</span><br><span class="line">        HookAmsUtil hookAmsUtil = new HookAmsUtil(ProxyActivity.class, this);</span><br><span class="line">        hookAmsUtil.hookSystemHandler();</span><br><span class="line">        hookAmsUtil.hookAms();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -489,13 +502,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -602,7 +615,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -613,9 +626,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -626,7 +637,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -648,7 +659,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -762,7 +773,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -799,7 +810,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

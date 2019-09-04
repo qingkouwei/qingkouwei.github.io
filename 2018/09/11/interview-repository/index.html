@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,40 +66,41 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="interview,tips," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+  <meta name="keywords" content="interview,tips,">
 
 
 
 
 
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
 
-<meta name="description" content="跨进程的远程方法的是执行在哪个进程的哪个线程? SharedPreference实现原理,跨进程使用问题,为什么引起这个问题 Parcelable和Serializable区别,以及他们实现的原理 Binder相较于Socket实现进程通信的有点(拷贝少,安全) A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Ac">
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="1. 跨进程的远程方法的是执行在哪个进程的哪个线程?(都是binder线程池) 2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题3. Parcelable和Serializable区别,以及他们实现的原理4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)5. A Activity的onCreate中启动一个新的activiy, A Activi">
 <meta name="keywords" content="interview,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试题库">
 <meta property="og:url" content="http://wodekouwei.com/2018/09/11/interview-repository/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="跨进程的远程方法的是执行在哪个进程的哪个线程? SharedPreference实现原理,跨进程使用问题,为什么引起这个问题 Parcelable和Serializable区别,以及他们实现的原理 Binder相较于Socket实现进程通信的有点(拷贝少,安全) A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Ac">
-<meta property="og:updated_time" content="2019-03-09T14:48:45.046Z">
+<meta property="og:description" content="1. 跨进程的远程方法的是执行在哪个进程的哪个线程?(都是binder线程池) 2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题3. Parcelable和Serializable区别,以及他们实现的原理4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)5. A Activity的onCreate中启动一个新的activiy, A Activi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-05T04:01:08.245Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题库">
-<meta name="twitter:description" content="跨进程的远程方法的是执行在哪个进程的哪个线程? SharedPreference实现原理,跨进程使用问题,为什么引起这个问题 Parcelable和Serializable区别,以及他们实现的原理 Binder相较于Socket实现进程通信的有点(拷贝少,安全) A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Ac">
+<meta name="twitter:description" content="1. 跨进程的远程方法的是执行在哪个进程的哪个线程?(都是binder线程池) 2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题3. Parcelable和Serializable区别,以及他们实现的原理4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)5. A Activity的onCreate中启动一个新的activiy, A Activi">
 
 
 
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2018/09/11/interview-repository/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2018/09/11/interview-repository/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -435,15 +434,24 @@
       
 
       
-        <ol>
-<li>跨进程的远程方法的是执行在哪个进程的哪个线程?</li>
-<li>SharedPreference实现原理,跨进程使用问题,为什么引起这个问题</li>
-<li>Parcelable和Serializable区别,以及他们实现的原理</li>
-<li>Binder相较于Socket实现进程通信的有点(拷贝少,安全)</li>
-<li>A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Activity生命周期方法的执行顺序</li>
-<li>同一台主机,udp和tcp可否使用同一个端口</li>
-</ol>
+        <h6 id="1-跨进程的远程方法的是执行在哪个进程的哪个线程"><a href="#1-跨进程的远程方法的是执行在哪个进程的哪个线程" class="headerlink" title="1. 跨进程的远程方法的是执行在哪个进程的哪个线程?"></a>1. 跨进程的远程方法的是执行在哪个进程的哪个线程?</h6><p>(都是binder线程池)</p>
+<h6 id="2-SharedPreference实现原理-跨进程使用问题-为什么引起这个问题"><a href="#2-SharedPreference实现原理-跨进程使用问题-为什么引起这个问题" class="headerlink" title="2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题"></a>2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题</h6><h6 id="3-Parcelable和Serializable区别-以及他们实现的原理"><a href="#3-Parcelable和Serializable区别-以及他们实现的原理" class="headerlink" title="3. Parcelable和Serializable区别,以及他们实现的原理"></a>3. Parcelable和Serializable区别,以及他们实现的原理</h6><h6 id="4-Binder相较于Socket实现进程通信的有点-拷贝少-安全"><a href="#4-Binder相较于Socket实现进程通信的有点-拷贝少-安全" class="headerlink" title="4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)"></a>4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)</h6><h6 id="5-A-Activity的onCreate中启动一个新的activiy-A-Activity的OnResume-onPause与新Activity生命周期方法的执行顺序"><a href="#5-A-Activity的onCreate中启动一个新的activiy-A-Activity的OnResume-onPause与新Activity生命周期方法的执行顺序" class="headerlink" title="5. A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Activity生命周期方法的执行顺序"></a>5. A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Activity生命周期方法的执行顺序</h6><p>A onCreate, onStart onResume ,onPause .. - &gt; B onCreate, onStart, onResume</p>
+<p>MainActivity中点击按钮启动两个Activity:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">startActivity(new Intent(MainActivity.this, ActivityA.class));</span><br><span class="line">startActivity(new Intent(MainActivity.this, ActivityB.class));</span><br></pre></td></tr></table></figure>
 
+<p>生命周期执行情况为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2019-08-05 11:48:41.132 3557-3557/com.osn.demo I/MainActivityDDDD: onStart....</span><br><span class="line">2019-08-05 11:48:41.133 3557-3557/com.osn.demo I/MainActivityDDDD: onResume....</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2019-08-05 11:48:46.257 3557-3557/com.osn.demo I/MainActivityDDDD: onPause....</span><br><span class="line">2019-08-05 11:48:46.271 3557-3557/com.osn.demo I/ActivityBBBB: onCreate...</span><br><span class="line">2019-08-05 11:48:46.280 3557-3557/com.osn.demo I/ActivityBBBB: onStart....</span><br><span class="line">2019-08-05 11:48:46.282 3557-3557/com.osn.demo I/ActivityBBBB: onResume....</span><br><span class="line">2019-08-05 11:48:46.703 3557-3557/com.osn.demo I/MainActivityDDDD: onStop....</span><br></pre></td></tr></table></figure>
+
+<p>返回键关闭ActivityB,执行的生命周期方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-08-05 11:48:49.760 3557-3557/com.osn.demo I/ActivityBBBB: onPause....</span><br><span class="line">2019-08-05 11:48:49.808 3557-3557/com.osn.demo I/ActivityAAAA: onCreate...</span><br><span class="line">2019-08-05 11:48:49.841 3557-3557/com.osn.demo I/ActivityAAAA: onStart....</span><br><span class="line">2019-08-05 11:48:49.845 3557-3557/com.osn.demo I/ActivityAAAA: onResume....</span><br><span class="line">2019-08-05 11:48:50.227 3557-3557/com.osn.demo I/ActivityBBBB: onStop....</span><br><span class="line">2019-08-05 11:48:50.228 3557-3557/com.osn.demo I/ActivityBBBB: onDestroy....</span><br></pre></td></tr></table></figure>
+
+<p>返回键关闭ActivityA:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2019-08-05 11:48:54.615 3557-3557/com.osn.demo I/ActivityAAAA: onPause....</span><br><span class="line">2019-08-05 11:48:54.655 3557-3557/com.osn.demo I/MainActivityDDDD: onRestart....</span><br><span class="line">2019-08-05 11:48:54.657 3557-3557/com.osn.demo I/MainActivityDDDD: onStart....</span><br><span class="line">2019-08-05 11:48:54.658 3557-3557/com.osn.demo I/MainActivityDDDD: onResume....</span><br><span class="line">2019-08-05 11:48:54.990 3557-3557/com.osn.demo I/ActivityAAAA: onStop....</span><br><span class="line">2019-08-05 11:48:54.990 3557-3557/com.osn.demo I/ActivityAAAA: onDestroy....</span><br></pre></td></tr></table></figure>
+
+<p>结论:
+顺序依次start两个Activity,那么会优先最后一个调用的先创建.</p>
+<h6 id="6-同一台主机-udp和tcp可否使用同一个端口"><a href="#6-同一台主机-udp和tcp可否使用同一个端口" class="headerlink" title="6. 同一台主机,udp和tcp可否使用同一个端口"></a>6. 同一台主机,udp和tcp可否使用同一个端口</h6><p>(可以)</p>
+<h6 id="7-Android一个最简单的demo程序启动后包含哪些线程"><a href="#7-Android一个最简单的demo程序启动后包含哪些线程" class="headerlink" title="7. Android一个最简单的demo程序启动后包含哪些线程"></a>7. Android一个最简单的demo程序启动后包含哪些线程</h6>
       
     </div>
 
@@ -465,13 +473,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -575,12 +583,19 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -591,7 +606,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -613,7 +628,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -698,6 +713,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-跨进程的远程方法的是执行在哪个进程的哪个线程"><span class="nav-number">1.</span> <span class="nav-text">1. 跨进程的远程方法的是执行在哪个进程的哪个线程?</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-SharedPreference实现原理-跨进程使用问题-为什么引起这个问题"><span class="nav-number">2.</span> <span class="nav-text">2. SharedPreference实现原理,跨进程使用问题,为什么引起这个问题</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-Parcelable和Serializable区别-以及他们实现的原理"><span class="nav-number">3.</span> <span class="nav-text">3. Parcelable和Serializable区别,以及他们实现的原理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-Binder相较于Socket实现进程通信的有点-拷贝少-安全"><span class="nav-number">4.</span> <span class="nav-text">4. Binder相较于Socket实现进程通信的有点(拷贝少,安全)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-A-Activity的onCreate中启动一个新的activiy-A-Activity的OnResume-onPause与新Activity生命周期方法的执行顺序"><span class="nav-number">5.</span> <span class="nav-text">5. A Activity的onCreate中启动一个新的activiy, A Activity的OnResume ,onPause与新Activity生命周期方法的执行顺序</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-同一台主机-udp和tcp可否使用同一个端口"><span class="nav-number">6.</span> <span class="nav-text">6. 同一台主机,udp和tcp可否使用同一个端口</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-Android一个最简单的demo程序启动后包含哪些线程"><span class="nav-number">7.</span> <span class="nav-text">7. Android一个最简单的demo程序启动后包含哪些线程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -711,7 +742,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -748,7 +779,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

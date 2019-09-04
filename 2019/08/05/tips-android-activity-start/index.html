@@ -1,0 +1,1139 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="这篇文章主要记录一下遇到的android启动过程中的一个有意思的探索过程，可能文章会比较长，相信我只要读下去一定会有所收获。这里说明一下，这篇文章肯定会涉及到activity的启动流程，很多文章都已经介绍了，这里不会带着大家看具体函数，因为太枯燥了，包括我本人也看不下去，力图简单明了。 一、问题的出现最早这个问题是测试发现的一个怪异的现象。在登录失效的情况下，在我们的应用的个人页面进行手动刷新，会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你可能不知道的Activity启动的诡异现象探索">
+<meta property="og:url" content="http://wodekouwei.com/2019/08/05/tips-android-activity-start/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="这篇文章主要记录一下遇到的android启动过程中的一个有意思的探索过程，可能文章会比较长，相信我只要读下去一定会有所收获。这里说明一下，这篇文章肯定会涉及到activity的启动流程，很多文章都已经介绍了，这里不会带着大家看具体函数，因为太枯燥了，包括我本人也看不下去，力图简单明了。 一、问题的出现最早这个问题是测试发现的一个怪异的现象。在登录失效的情况下，在我们的应用的个人页面进行手动刷新，会">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986115628.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986144632.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986144658.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986145153.png">
+<meta property="og:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986145227.png">
+<meta property="og:updated_time" content="2019-08-06T06:53:55.292Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="你可能不知道的Activity启动的诡异现象探索">
+<meta name="twitter:description" content="这篇文章主要记录一下遇到的android启动过程中的一个有意思的探索过程，可能文章会比较长，相信我只要读下去一定会有所收获。这里说明一下，这篇文章肯定会涉及到activity的启动流程，很多文章都已经介绍了，这里不会带着大家看具体函数，因为太枯燥了，包括我本人也看不下去，力图简单明了。 一、问题的出现最早这个问题是测试发现的一个怪异的现象。在登录失效的情况下，在我们的应用的个人页面进行手动刷新，会">
+<meta name="twitter:image" content="http://images.wodekouwei.com/tips-android-activity-start-201986115628.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/08/05/tips-android-activity-start/">
+
+
+
+
+
+  <title> 你可能不知道的Activity启动的诡异现象探索 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/08/05/tips-android-activity-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                你可能不知道的Activity启动的诡异现象探索
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-05T20:56:54+08:00">
+                2019-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/08/05/tips-android-activity-start/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章主要记录一下遇到的android启动过程中的一个有意思的探索过程，可能文章会比较长，相信我只要读下去一定会有所收获。这里说明一下，这篇文章肯定会涉及到activity的启动流程，很多文章都已经介绍了，这里不会带着大家看具体函数，因为太枯燥了，包括我本人也看不下去，力图简单明了。</p>
+<h3 id="一、问题的出现"><a href="#一、问题的出现" class="headerlink" title="一、问题的出现"></a>一、问题的出现</h3><p>最早这个问题是测试发现的一个怪异的现象。在登录失效的情况下，在我们的应用的个人页面进行手动刷新，会有很多接口在请求回来后，发登录失效的广播，而我们的广播处理比较简单，去启动一个设置为singleTop启动模式的LoginActivity。注意这时可能有多个广播出现。为了方便说明，这里假定只有两个，调试发现，调起LoginActivity后，点击back键，必须点两次才能回退成功，第一次貌似没反应，因为我们的应用是建立在插件框架的基础上的，第一次看到这个现象的时候，怀疑是插件框架导致singleTop失效，当把Activity的生命周期打印出来后，发现了一个诡异的现象：调用了两次startActivity，发现LoginActivity的onCreate方法只执行了一次，但是当我点击back键后，LoginActivity的onCreate又执行了一次。    什么，点击back键新建了一个Activity，你相信吗？
+上面的问题可以简化成以下情景来表述。新建两个Activity：MainActivity和SecondActivity。代码非常简单，MainActivity只放置个Button，点击一次，启动两次Activity，SecondActivity就更简单了，只打印生命周期即可，代码如下：
+MainActivity.java:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view)&#123;</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    startSecondActivity();</span><br><span class="line">  &#125;</span><br><span class="line">  private void startSecondActivity()&#123;</span><br><span class="line">    Intent intent=new Intent(MainActivity.this,SecondActivity.class);</span><br><span class="line">    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);</span><br><span class="line">    startActivity(intent);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>SecondActivity.java:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class SecondActivity extends Activity &#123;</span><br><span class="line">  public static final String TAG=&quot;lan&quot;;</span><br><span class="line">  @Override</span><br><span class="line">  protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">    super.onCreate(savedInstanceState);</span><br><span class="line">    Log.i(TAG, &quot;SecondActivity-&gt;onCreate: &quot;+hashCode());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  protected void onResume() &#123;</span><br><span class="line">    super.onResume();</span><br><span class="line">    Log.i(TAG, &quot;SecondActivity-&gt;onResume: &quot;+hashCode());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  protected void onNewIntent(Intent intent) &#123;</span><br><span class="line">    super.onNewIntent(intent);</span><br><span class="line">    Log.i(TAG, &quot;SecondActivity-&gt;onNewIntent: &quot;+hashCode());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  protected void onPause() &#123;</span><br><span class="line">    super.onPause();</span><br><span class="line">    Log.i(TAG, &quot;SecondActivity-&gt;onPause: &quot;+hashCode());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我单击一下按钮，你可以猜一下生命周期的回调顺序，这里就不卖关子了，直接打印出来的是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">05-18 22:57:38.870 25377-25377/com.example.ljj.test2 I/lan: MainActivity-&gt;onPause </span><br><span class="line">05-18 22:57:38.890 25377-25377/com.example.ljj.test2 I/lan: SecondActivity-&gt;onCreate: 29211210</span><br><span class="line">05-18 22:57:38.892 25377-25377/com.example.ljj.test2 I/lan: SecondActivity-&gt;onResume: 29211210</span><br></pre></td></tr></table></figure>
+
+<p>是不是有点吃惊，明明启动两次，却只执行了一次onCreate，按道理如果是singleTop生效的话，起码也得是一次onCreate和一次onNewIntent吧。此时点击back键，打印生命周期会发现已经启动的SecondActivity执行了onPause，然后又新建了一个SecondActivity。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">05-18 22:57:49.924 25377-25377/com.example.ljj.test2 I/lan: SecondActivity-&gt;onPause: 29211210</span><br><span class="line">05-18 22:57:49.926 25377-25377/com.example.ljj.test2 I/lan: SecondActivity-&gt;onCreate: 706348141</span><br><span class="line">05-18 22:57:49.928 25377-25377/com.example.ljj.test2 I/lan: SecondActivity-&gt;onResume: 706348141</span><br></pre></td></tr></table></figure>
+
+<p>为了方便研究，我们可以尝试着把singleTop启动模式去掉(不要怀疑手动设置Flag和manifest下写死的区别，singleTop模式下是等效的)，执行同样的操作，你会发现standard启动模式下，现象也是一样的。
+相信现象我已经阐述的很清楚了，现在总结一下，大概有两个问题：
+第一，为什么标准启动模式下启动两次activity，只执行了一次onCreate方法，另一次是在onPause后才执行。
+第二，为什么singleTop模式在这种情景下会失效。</p>
+<h3 id="二、针对问题的思考与初步探索"><a href="#二、针对问题的思考与初步探索" class="headerlink" title="二、针对问题的思考与初步探索"></a>二、针对问题的思考与初步探索</h3><p>首先，我们把第二个问题先放一放，根源应该是在第一个问题上，先看一下针对打印出来的log的思考。SecondActivity确实是启动了两次，那到底先启动的是第一个，还是点击一次回退键后启动的是第一个？这里我们假设一下：
+假设一：最先启动的是我们第一次执行startActivity启动的那个目标Activity，那么说明第二次执行的startActivity的目标Activity被暂存了，但是暂存在了哪里呢？好像AMS没有这样的功能
+假设二：最先启动的是我们第二次执行startActivity启动的那个目标，可能因为启动太快，导致第一次启动的Activity被压到栈里，但不是栈顶，当SecondActivity执行到onPause时，它才有机会重见天日。
+怎么验证呢，这时候不要忘了adb shell dumpsys的功能。当我们点击click按钮后，执行adb shell dumpsys activity activities &gt;log.txt来查看系统中所有的activity信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)</span><br><span class="line">Display #0 (activities from top to bottom):</span><br><span class="line">  Stack #1:</span><br><span class="line">    Task id #1322</span><br><span class="line">    * TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">      userId=0 effectiveUid=u0a220 mCallingUid=u0a39 mCallingPackage=com.android.launcher3</span><br><span class="line">      affinity=com.example.ljj.test2</span><br><span class="line">      intent=&#123;act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.example.ljj.test2/.MainActivity&#125;</span><br><span class="line">      realActivity=com.example.ljj.test2/.MainActivity</span><br><span class="line">      autoRemoveRecents=false isPersistable=true numFullscreen=3 taskType=0 mTaskToReturnTo=1</span><br><span class="line">      rootWasReset=true mNeverRelinquishIdentity=true mReuseTask=false</span><br><span class="line">      Activities=[ActivityRecord&#123;177c5b58 u0 com.example.ljj.test2/.MainActivity t1322&#125;, ActivityRecord&#123;3419ba07 u0 com.example.ljj.test2/.SecondActivity t1322&#125;, ActivityRecord&#123;373cd2d2 u0 com.example.ljj.test2/.SecondActivity t1322&#125;]</span><br><span class="line">      askedCompatMode=false inRecents=true isAvailable=true</span><br><span class="line">      lastThumbnail=null lastThumbnailFile=/data/system/recent_images/1322_task_thumbnail.png</span><br><span class="line">      hasBeenVisible=true firstActiveTime=1526700478326 lastActiveTime=1526700478326 (inactive for 63s)</span><br><span class="line">      * Hist #2: ActivityRecord&#123;373cd2d2 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">          packageName=com.example.ljj.test2 processName=com.example.ljj.test2</span><br><span class="line">          launchedFromUid=10220 launchedFromPackage=com.example.ljj.test2 userId=0</span><br><span class="line">          app=ProcessRecord&#123;2a18f91 25377:com.example.ljj.test2/u0a220&#125;</span><br><span class="line">          Intent &#123; flg=0x20000000 cmp=com.example.ljj.test2/.SecondActivity &#125;</span><br><span class="line">          frontOfTask=false task=TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">          taskAffinity=com.example.ljj.test2</span><br><span class="line">          realActivity=com.example.ljj.test2/.SecondActivity</span><br><span class="line">          baseDir=/data/app/com.example.ljj.test2-2/base.apk</span><br><span class="line">          dataDir=/data/data/com.example.ljj.test2</span><br><span class="line">          stateNotNeeded=false componentSpecified=true mActivityType=0</span><br><span class="line">          compat=&#123;320dpi always-compat&#125; labelRes=0x7f060021 icon=0x7f03000a theme=0x7f0800a3</span><br><span class="line">          config=&#123;1.0 310mcc270mnc en_US ?layoutDir sw768dp w768dp h951dp 320dpi xlrg port finger qwerty/v/v dpad/v s.6&#125;</span><br><span class="line">          taskDescription: iconFilename=null label=&quot;null&quot; color=ff3f51b5</span><br><span class="line">          launchFailed=false launchCount=1 lastLaunchTime=-1m3s430ms</span><br><span class="line">          haveState=false icicle=null</span><br><span class="line">          state=RESUMED stopped=false delayedResume=false finishing=false</span><br><span class="line">          keysPaused=false inHistory=true visible=true sleeping=false idle=true</span><br><span class="line">          fullscreen=true noDisplay=false immersive=false launchMode=1</span><br><span class="line">          frozenBeforeDestroy=false forceNewConfig=false</span><br><span class="line">          mActivityType=APPLICATION_ACTIVITY_TYPE</span><br><span class="line">          waitingVisible=false nowVisible=true lastVisibleTime=-1m2s804ms</span><br><span class="line">      * Hist #1: ActivityRecord&#123;3419ba07 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">          packageName=com.example.ljj.test2 processName=com.example.ljj.test2</span><br><span class="line">          launchedFromUid=10220 launchedFromPackage=com.example.ljj.test2 userId=0</span><br><span class="line">          app=null</span><br><span class="line">          Intent &#123; flg=0x20000000 cmp=com.example.ljj.test2/.SecondActivity &#125;</span><br><span class="line">          frontOfTask=false task=TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">          taskAffinity=com.example.ljj.test2</span><br><span class="line">          realActivity=com.example.ljj.test2/.SecondActivity</span><br><span class="line">          baseDir=/data/app/com.example.ljj.test2-2/base.apk</span><br><span class="line">          dataDir=/data/data/com.example.ljj.test2</span><br><span class="line">          stateNotNeeded=false componentSpecified=true mActivityType=0</span><br><span class="line">          compat=null labelRes=0x7f060021 icon=0x7f03000a theme=0x7f0800a3</span><br><span class="line">          config=&#123;1.0 310mcc270mnc en_US ?layoutDir sw768dp w768dp h951dp 320dpi xlrg port finger qwerty/v/v dpad/v s.6&#125;</span><br><span class="line">          launchFailed=false launchCount=0 lastLaunchTime=0</span><br><span class="line">          haveState=true icicle=null</span><br><span class="line">          state=INITIALIZING stopped=false delayedResume=false finishing=false</span><br><span class="line">          keysPaused=false inHistory=true visible=false sleeping=false idle=false</span><br><span class="line">          fullscreen=true noDisplay=false immersive=false launchMode=1</span><br><span class="line">          frozenBeforeDestroy=false forceNewConfig=false</span><br><span class="line">          mActivityType=APPLICATION_ACTIVITY_TYPE</span><br><span class="line">      * Hist #0: ActivityRecord&#123;177c5b58 u0 com.example.ljj.test2/.MainActivity t1322&#125;</span><br><span class="line">          packageName=com.example.ljj.test2 processName=com.example.ljj.test2</span><br><span class="line">          launchedFromUid=10039 launchedFromPackage=com.android.launcher3 userId=0</span><br><span class="line">          app=ProcessRecord&#123;2a18f91 25377:com.example.ljj.test2/u0a220&#125;</span><br><span class="line">          Intent &#123; act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.example.ljj.test2/.MainActivity (has extras) &#125;</span><br><span class="line">          frontOfTask=true task=TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">          taskAffinity=com.example.ljj.test2</span><br><span class="line">          realActivity=com.example.ljj.test2/.MainActivity</span><br><span class="line">          baseDir=/data/app/com.example.ljj.test2-2/base.apk</span><br><span class="line">          dataDir=/data/data/com.example.ljj.test2</span><br><span class="line">          stateNotNeeded=false componentSpecified=true mActivityType=0</span><br><span class="line">          compat=&#123;320dpi always-compat&#125; labelRes=0x7f060021 icon=0x7f03000a theme=0x7f0800a3</span><br><span class="line">          config=&#123;1.0 310mcc270mnc en_US ?layoutDir sw768dp w768dp h951dp 320dpi xlrg port finger qwerty/v/v dpad/v s.6&#125;</span><br><span class="line">          taskDescription: iconFilename=null label=&quot;null&quot; color=ff3f51b5</span><br><span class="line">          launchFailed=false launchCount=0 lastLaunchTime=-1m4s921ms</span><br><span class="line">          haveState=true icicle=Bundle[mParcelledData.dataSize=272]</span><br><span class="line">          state=STOPPED stopped=true delayedResume=false finishing=false</span><br><span class="line">          keysPaused=false inHistory=true visible=false sleeping=false idle=true</span><br><span class="line">          fullscreen=true noDisplay=false immersive=false launchMode=0</span><br><span class="line">          frozenBeforeDestroy=false forceNewConfig=false</span><br><span class="line">          mActivityType=APPLICATION_ACTIVITY_TYPE</span><br><span class="line">          waitingVisible=false nowVisible=false lastVisibleTime=-1m4s305ms</span><br><span class="line"></span><br><span class="line">    Running activities (most recent first):</span><br><span class="line">      TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">        Run #1: ActivityRecord&#123;373cd2d2 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">        Run #0: ActivityRecord&#123;177c5b58 u0 com.example.ljj.test2/.MainActivity t1322&#125;</span><br><span class="line"></span><br><span class="line">    mResumedActivity: ActivityRecord&#123;373cd2d2 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">  Stack #0:</span><br><span class="line">    Task id #1295</span><br><span class="line">    * TaskRecord&#123;33ae7ef6 #1295 A=com.android.launcher3 U=0 sz=1&#125;</span><br><span class="line">      userId=0 effectiveUid=u0a39 mCallingUid=1000 mCallingPackage=android</span><br><span class="line">      affinity=com.android.launcher3</span><br><span class="line">       .......</span><br><span class="line">       .......</span><br></pre></td></tr></table></figure>
+
+<p>这里为什么要贴这么长的信息，因为这段信息非常重要，而且想说一下activity是如何管理的，或者说这段信息怎么看？
+<img src="http://images.wodekouwei.com/tips-android-activity-start-201986115628.png" alt="activity任务栈">
+上图中显示了AMS中对Activity的管理结构。注意这些数据结构都是运行在系统进程中的。这里介绍下这些数据结构，让大家有个比较清晰的认识，不然在看Activity启动流程时很容易被这些栈搞晕。
+ActivityRecord:Activity管理的最小单位，我们在应用进程创建一个activity，在AMS进程中就会生成一个ActivityRecord与之对应，类似于
+packageName，launchedFromUid等都是ActivityRecord类的成员变量。
+<a href="http://androidxref.com/5.0.0_r2/xref/frameworks/base/services/core/java/com/android/server/am/ActivityRecord.java#145%EF%BC%9A" target="_blank" rel="noopener">ActivityRecord源码链接</a>（基于android5.0）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* Hist #0: ActivityRecord&#123;177c5b58 u0 com.example.ljj.test2/.MainActivity t1322&#125;</span><br><span class="line">          packageName=com.example.ljj.test2 processName=com.example.ljj.test2</span><br><span class="line">          launchedFromUid=10039 launchedFromPackage=com.android.launcher3 userId=0</span><br><span class="line">          app=ProcessRecord&#123;2a18f91 25377:com.example.ljj.test2/u0a220&#125;</span><br><span class="line">          Intent &#123; act=android.intent.action.MAIN cat=</span><br></pre></td></tr></table></figure>
+
+<p>TaskRecord:是一个栈式管理结构，每一个TaskRecord都可能存在一个或多个ActivityRecord，栈顶的ActivityRecord表示当前可见的界面，这里需要注意的是 我们平时讨论的Activity任务栈实际上指的就是TaskRecord对象，而不是ActivityStack对象，包括我们如果同时启动多个应用，只是会在同一个ActivityStack中生成多个TaskRecord而已。简单理解就是TaskRecord就是我们经常说的任务栈。同理，userId，affinity等也是TaskRecord类的成员变量，可自行查看源码了解。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">      userId=0 effectiveUid=u0a220 mCallingUid=u0a39 mCallingPackage=com.android.launcher3</span><br><span class="line">      affinity=com.example.ljj.test2</span><br></pre></td></tr></table></figure>
+
+<p>ActivityStack:也是一个栈式管理结构，每一个ActivityStack都可能存在一个或多个TaskRecord，栈顶的TaskRecord表示当前可见的任务;一般情况下，会存在两个ActivityStack，一个是应用的Stack，还有一个HomeStack。当我们启动应用或者从后台切换应用到前台时，应用Stack会被切换到栈顶，反之HomeStack会被切换到栈顶。对应于log信息为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stack #1:</span><br><span class="line">    Task id #1322</span><br><span class="line">Stack #0:</span><br><span class="line">    Task id #1295</span><br></pre></td></tr></table></figure>
+
+<p>ActivityDisplay: 是ActivityStackSupervisor的一个内部类，它对应于一个显示设备，不考虑多屏显示的情况下，就是指的手机屏幕，所以一般情况下，维护的ActivityDisplay数组的长度为1.
+ProcessRecord:每个进程会生成一个ProcessRecord对象，所有的ProcessRecord对象都保存在AMS的一个SparseArray类型的mPidsSelfLocked变量里。运行在不同TaskRecord中的ActivityRecord可能是属于同一个 ProcessRecord。ProcessRecord非常重要，假设我们创建了一个ActivityRecord，默认情况下，是没有和进程关联的，通过ProcessRecord的addPackage方法我们可以添加ActivityRecord到ProcessRecord中，还需要将ProcessRecord绑定到ActivityRecord上，这个ActivityRecord才是一个有“生命”，有“交互能力”的Activity。</p>
+<p>通过上面的介绍，相信再看上面的信息会非常容易了。我们仔细观察dumpsys出来的信息，会发现两个地方值得注意。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Running activities (most recent first):</span><br><span class="line">      TaskRecord&#123;22c865b8 #1322 A=com.example.ljj.test2 U=0 sz=3&#125;</span><br><span class="line">        Run #1: ActivityRecord&#123;373cd2d2 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">        Run #0: ActivityRecord&#123;177c5b58 u0 com.example.ljj.test2/.MainActivity t1322&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当前TaskRecord中乍一看只有两个ActivityRecord，但是不要被蒙蔽了，此时的sz=3，笔者最早看的时候时候就被蒙蔽了，所以要仔细看详细信息。
+第二个异常点在Hist #1的activity的state是NITIALIZING。从字面上理解就是在初始化状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hist #1: ActivityRecord&#123;3419ba07 u0 com.example.ljj.test2/.SecondActivity t1322&#125;</span><br><span class="line">.......</span><br><span class="line">.......</span><br><span class="line">state=INITIALIZING stopped=false delayedResume=false finishing=false</span><br></pre></td></tr></table></figure>
+
+<p>至此，我们大致能得出初步结论了，启动两次Activity，确实有两个Activity被放入了TaskRecord中了。栈顶的Activity能正常启动，被栈顶压住的Activity为INITIALIZING状态。那么问题又来了，INITIALIZING状态是个什么鬼？从源码角度如何解释这种生命周期的回调顺序？</p>
+<h3 id="三、源码维度探索"><a href="#三、源码维度探索" class="headerlink" title="三、源码维度探索"></a>三、源码维度探索</h3><p>接下来会从源码的角度进行分析，里面会涉及到一些Activity启动流程相关的东西，不清楚的同学可以找其他文章学习下，直接看也没关系，因为不会涉及到很多代码细节。我们都知道activity的启动是和当前resume状态Activity的onPause事件相关，所以我们集中精力在onPause事件回调前的启动流程上，忽略后面的流程。
+<img src="http://images.wodekouwei.com/tips-android-activity-start-201986144632.png" alt="activity启动流程图">
+上面这张图简单的展示了当我们发起startActivity到前一个actiivty执行onPause的流程，讲解之前大致说一下Activity启动过程中应用进程和AMS进程通信的过程。
+<img src="http://images.wodekouwei.com/tips-android-activity-start-201986144658.png" alt="Binder"></p>
+<p>上面这种图清晰的展示了应用进程和AMS交互的方式。
+大家可以简单的这样理解，两个进程通信就是通过两个顶层的Binder接口实现的：
+IApplicationThread：是系统进程请求应用进程的接口。Binder的服务端是运行在应用进程的，具体来讲就是ApplicationThread。AMS需要应用进程做的事情都是通过IApplicationThread接口中定义的方法来实现的。比如说schedulePauseActivity(告诉应用进程可以执行Activity的onPause了)，scheduleLauchActivity(告诉应用进程现在可以执行启动Activity的操作了)等等。
+IActivityManager：是应用进程请求系统进程的接口。Binder的服务端是运行在系统进程的，具体来讲就是ActivityManagerService。比如启动Activity的操作，实际上是向系统发出的申请，就是通过该接口的startActivity方法执行的。
+了解到这里就足够啦，我们回过头来看我们的问题。我们先来看Activity启动图上面标红的部分，需要注意的是我们在应用进程发起的startActivity是带int返回值的，换句话说，就是返回值回来之前，主线程都是被挂起的，简单理解为是startActivity这个函数在获取返回值之前都是同步的。
+Activity的启动源码确实非常复杂，上面标红的很多函数代码都有几百上千行。这里我可能有的地方直接给大家部分结论，感兴趣的同学自行去翻看源码。
+我们先来看我们在onClick事件中第一次启动Activiy的过程。我们可以视作为这次启动是一次正常的启动。
+在ActivityStackSuperVisor类可以看作是所有ActivityStack的管理者。从命名中也可以看出来，比如将哪个栈放到栈顶，管理当前前台的任务栈等都是ActivityStackSuperVisor完成的。在ActivityStackSuperVisor的startActivityLocked方法中会创建ActivityRecord对象，作为待启动Activity在系统进程的描述。那么是在哪个方法中将ActivityRecord放入栈中的呢？答案就是在ActivityStack的startActivityLocked方法，在该方法中会调用addActivityToTop方法将ActivityRecord放入到对应的TaskRecord的栈顶。
+也就是说我们第一次启动Activity是肯定放入了栈中的。并且会顺利的执行到ActivityStack的startPausingLocked方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">final int startActivityUncheckedLocked(ActivityRecord r, ActivityRecord sourceRecord,</span><br><span class="line">        IVoiceInteractionSession voiceSession, IVoiceInteractor voiceInteractor, int startFlags,</span><br><span class="line">        boolean doResume, Bundle options, TaskRecord inTask) &#123;</span><br><span class="line">  ...........</span><br><span class="line">    targetStack.mLastPausedActivity = null;</span><br><span class="line">    targetStack.startActivityLocked(r, newTask, doResume, keepCurTransition, options);</span><br><span class="line">    if (!launchTaskBehind) &#123;</span><br><span class="line">        // Don&apos;t set focus on an activity that&apos;s going to the back.</span><br><span class="line">        mService.setFocusedActivityLocked(r);</span><br><span class="line">    &#125;</span><br><span class="line">    return ActivityManager.START_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来我们通过调用startActivity最终的返回值是由startActivityUncheckedLocked方法返回的。并且在返回前，会调用targetStack.startActivityLocked方法，最终会执行到startPausingLocked函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">final boolean startPausingLocked(boolean userLeaving, boolean uiSleeping, boolean resuming,</span><br><span class="line">           boolean dontWait) &#123;</span><br><span class="line">       if (mPausingActivity != null) &#123;</span><br><span class="line">           Slog.wtf(TAG, &quot;Going to pause when pause is already pending for &quot; + mPausingActivity);</span><br><span class="line">           completePauseLocked(false);</span><br><span class="line">       &#125;</span><br><span class="line">       ActivityRecord prev = mResumedActivity;</span><br><span class="line">       if (prev == null) &#123;</span><br><span class="line">           if (!resuming) &#123;</span><br><span class="line">               Slog.wtf(TAG, &quot;Trying to pause when nothing is resumed&quot;);</span><br><span class="line">               mStackSupervisor.resumeTopActivitiesLocked();</span><br><span class="line">           &#125;</span><br><span class="line">           return false;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       if (mActivityContainer.mParentActivity == null) &#123;</span><br><span class="line">           // Top level stack, not a child. Look for child stacks.</span><br><span class="line">           mStackSupervisor.pauseChildStacks(prev, userLeaving, uiSleeping, resuming, dontWait);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       if (DEBUG_STATES) Slog.v(TAG, &quot;Moving to PAUSING: &quot; + prev);</span><br><span class="line">       else if (DEBUG_PAUSE) Slog.v(TAG, &quot;Start pausing: &quot; + prev);</span><br><span class="line">       mResumedActivity = null;</span><br><span class="line">       mPausingActivity = prev;</span><br><span class="line">       mLastPausedActivity = prev;</span><br><span class="line">       mLastNoHistoryActivity = (prev.intent.getFlags() &amp; Intent.FLAG_ACTIVITY_NO_HISTORY) != 0</span><br><span class="line">               || (prev.info.flags &amp; ActivityInfo.FLAG_NO_HISTORY) != 0 ? prev : null;</span><br><span class="line">       prev.state = ActivityState.PAUSING;</span><br><span class="line">       prev.task.touchActiveTime();</span><br><span class="line">       clearLaunchTime(prev);</span><br><span class="line">       final ActivityRecord next = mStackSupervisor.topRunningActivityLocked();</span><br><span class="line">       if (mService.mHasRecents &amp;&amp; (next == null || next.noDisplay || next.task != prev.task)) &#123;</span><br><span class="line">           prev.updateThumbnail(screenshotActivities(prev), null);</span><br><span class="line">       &#125;</span><br><span class="line">       stopFullyDrawnTraceIfNeeded();</span><br><span class="line"></span><br><span class="line">       mService.updateCpuStats();</span><br><span class="line"></span><br><span class="line">       if (prev.app != null &amp;&amp; prev.app.thread != null) &#123;</span><br><span class="line">           if (DEBUG_PAUSE) Slog.v(TAG, &quot;Enqueueing pending pause: &quot; + prev);</span><br><span class="line">           try &#123;</span><br><span class="line">               EventLog.writeEvent(EventLogTags.AM_PAUSE_ACTIVITY,</span><br><span class="line">                       prev.userId, System.identityHashCode(prev),</span><br><span class="line">                       prev.shortComponentName);</span><br><span class="line">               mService.updateUsageStats(prev, false);</span><br><span class="line">               prev.app.thread.schedulePauseActivity(prev.appToken, prev.finishing,</span><br><span class="line">                       userLeaving, prev.configChangeFlags, dontWait);</span><br><span class="line">           &#125; catch (Exception e) &#123;</span><br><span class="line">               // Ignore exception, if process died other code will cleanup.</span><br><span class="line">               Slog.w(TAG, &quot;Exception thrown during pause&quot;, e);</span><br><span class="line">               mPausingActivity = null;</span><br><span class="line">               mLastPausedActivity = null;</span><br><span class="line">               mLastNoHistoryActivity = null;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           mPausingActivity = null;</span><br><span class="line">           mLastPausedActivity = null;</span><br><span class="line">           mLastNoHistoryActivity = null;</span><br><span class="line">       &#125;</span><br><span class="line"> .....</span><br><span class="line"> ......</span><br></pre></td></tr></table></figure>
+
+<p>注意我们是在分析第一次启动Activity的情形，mResumedActivity此时肯定是我们的MainActivity，通过上面代码执行后，prev，mPausingActivity，mLastPausedActivity指向了MainActivity，并且MainActivity的状态被更新为pausing状态，然后执行prev.app.thread.schedulePauseActivity方法，去通知应用进程MainActivity需要执行pause事件了。这里我们可以看到，pause事件是通过ActivityThread中的名为H的handler来处理的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public final void schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges,</span><br><span class="line">      boolean dontReport) &#123;</span><br><span class="line">    sendMessage(finished ? H.PAUSE_ACTIVITY_FINISHING : H.PAUSE_ACTIVITY, token,</span><br><span class="line">        (userLeaving ? 1 : 0) | (dontReport ? 2 : 0), configChanges);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>看到这，我们在回过头来看我们的demo。你可以猜一下输出的log顺序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view) &#123;</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;clickToStart:-&gt;once complete&quot;);</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;clickToStart:-&gt;twice complete&quot;);</span><br><span class="line">  &#125;</span><br><span class="line"> @Override</span><br><span class="line">  protected void onPause() &#123;</span><br><span class="line">    super.onPause();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;MainActivity-&gt;onPause &quot;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">05-21 01:37:04.027 2084-2084/com.example.ljj.test2 I/lan: clickToStart:-&gt;once complete</span><br><span class="line">05-21 01:37:04.029 2084-2084/com.example.ljj.test2 I/lan: clickToStart:-&gt;twice complete</span><br><span class="line">05-21 01:37:04.030 2084-2084/com.example.ljj.test2 I/lan: MainActivity-&gt;onPause</span><br></pre></td></tr></table></figure>
+
+<p>结果和我们上面分析的是一致的，因为onClick内的内容是在同一个Message中的。当我们第一次执行startActivity时，会抛出一个H.PAUSE_ACTIVITY的Message到主线程的消息队列里，但是这个消息的执行肯定是要等到onClick事件完全执行完才能处理的，这是消息队列的特点，必须等上一个消息执行完，才会轮到下一个消息的执行。
+这里还差一点没有解释到位，就是在这种情境下，执行第二次startActivity时，在系统进程中走的流程和第一次启动一样吗？这里好像缺少了一些解释。上面我们分析到第一次startActivity，在startPausingLocked函数中，执行了Binder的schedulePauseActivity方法，该方法内发送了一个名为H.PAUSE_ACTIVITY的消息，按照正常逻辑，当应用内处理完H.PAUSE_ACTIVITY消息后，会向AMS发送通知，AMS接收到pause的通知后，会重新执行resumeTopActivityLocked函数，进而执行startSpecificActivityLocked函数来完成Activity真正的启动。但是在本文的情景中，这个H.PAUSE_ACTIVITY在被处理前，我们又执行了一次startActivity的操作，那么第二次启动会不会也执行到startPausingLocked时，再一次抛出去一个H.PAUSE_ACTIVITY呢，答案是不会的，分析如下：前面创建ActivityRecord和加入栈中操作都是一样的，同样会执行到startPausingLocked函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">final boolean startPausingLocked(boolean userLeaving, boolean uiSleeping, boolean resuming,</span><br><span class="line">           boolean dontWait) &#123;</span><br><span class="line">       if (mPausingActivity != null) &#123;</span><br><span class="line">           Slog.wtf(TAG, &quot;Going to pause when pause is already pending for &quot; + mPausingActivity);</span><br><span class="line">           completePauseLocked(false);</span><br><span class="line">       &#125;</span><br><span class="line">       ActivityRecord prev = mResumedActivity;</span><br><span class="line">       if (prev == null) &#123;</span><br><span class="line">           if (!resuming) &#123;</span><br><span class="line">               Slog.wtf(TAG, &quot;Trying to pause when nothing is resumed&quot;);</span><br><span class="line">               mStackSupervisor.resumeTopActivitiesLocked();</span><br><span class="line">           &#125;</span><br><span class="line">           return false;</span><br><span class="line">       &#125;</span><br><span class="line">       mResumedActivity = null;</span><br><span class="line">       mPausingActivity = prev;</span><br><span class="line">       mLastPausedActivity = prev;</span><br><span class="line">       mLastNoHistoryActivity = (prev.intent.getFlags() &amp; Intent.FLAG_ACTIVITY_NO_HISTORY) != 0</span><br><span class="line">               || (prev.info.flags &amp; ActivityInfo.FLAG_NO_HISTORY) != 0 ? prev : null;</span><br><span class="line">       prev.state = ActivityState.PAUSING;</span><br><span class="line">       prev.task.touchActiveTime();</span><br><span class="line">       clearLaunchTime(prev);</span><br><span class="line">       final ActivityRecord next = mStackSupervisor.topRunningActivityLocked();</span><br><span class="line">       if (mService.mHasRecents &amp;&amp; (next == null || next.noDisplay || next.task != prev.task)) &#123;</span><br><span class="line">           prev.updateThumbnail(screenshotActivities(prev), null);</span><br><span class="line">       &#125;</span><br><span class="line">       stopFullyDrawnTraceIfNeeded();</span><br><span class="line"></span><br><span class="line">       mService.updateCpuStats();</span><br><span class="line"></span><br><span class="line">       if (prev.app != null &amp;&amp; prev.app.thread != null) &#123;</span><br><span class="line">           if (DEBUG_PAUSE) Slog.v(TAG, &quot;Enqueueing pending pause: &quot; + prev);</span><br><span class="line">           try &#123;</span><br><span class="line">               EventLog.writeEvent(EventLogTags.AM_PAUSE_ACTIVITY,</span><br><span class="line">                       prev.userId, System.identityHashCode(prev),</span><br><span class="line">                       prev.shortComponentName);</span><br><span class="line">               mService.updateUsageStats(prev, false);</span><br><span class="line">               prev.app.thread.schedulePauseActivity(prev.appToken, prev.finishing,</span><br><span class="line">                       userLeaving, prev.configChangeFlags, dontWait);</span><br><span class="line">           &#125; catch (Exception e) &#123;</span><br><span class="line">               // Ignore exception, if process died other code will cleanup.</span><br><span class="line">               Slog.w(TAG, &quot;Exception thrown during pause&quot;, e);</span><br><span class="line">               mPausingActivity = null;</span><br><span class="line">               mLastPausedActivity = null;</span><br><span class="line">               mLastNoHistoryActivity = null;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           mPausingActivity = null;</span><br><span class="line">           mLastPausedActivity = null;</span><br><span class="line">           mLastNoHistoryActivity = null;</span><br><span class="line">       &#125;</span><br><span class="line"> .....</span><br><span class="line"> ......</span><br></pre></td></tr></table></figure>
+
+<p>注意，我们第一次启动时执行过一次startPausingLocked时，mResumedActivity已经被置为null，所以此时 执行ActivityRecord prev = mResumedActivity;相当于prev也为null了，这时候就会走if(prev==null)分支
+了，返回了false。所以第二次启动是不会在抛出HH.PAUSE_ACTIVITY消息的。mStackSupervisor.resumeTopActivitiesLocked();会根据mResumedActivity和mPausingActivity状态进行各种判断，最后会在allPausedActivitiesComplete()方法判断中发现有activity执行pausing未完成，直接返回了false，受篇幅原因，具体的就不带着大家细看了，感兴趣的同学可以自行查阅。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (prev == null) &#123;</span><br><span class="line">           if (!resuming) &#123;</span><br><span class="line">               Slog.wtf(TAG, &quot;Trying to pause when nothing is resumed&quot;);</span><br><span class="line">               mStackSupervisor.resumeTopActivitiesLocked();</span><br><span class="line">           &#125;</span><br><span class="line">           return false;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析到这里，我们先来总结下在向下进行：到目前为止，我们得出的结论是：
+假设我在同一个方法里面连续启动两次Activity,两个actiivty都会入栈，第一次启动的activity抛出了pause的Message，第二次没有抛出，而抛出的pause消息要等到第二次启动完成才能得到执行。当onPause执行完后，通知AMS要启动Activity了,此时AMS从栈顶取Activity，自然拿到的是第二个Activity，执行第二个Activity的onCreate事件。这样就完全解释清楚了上面现象的缘由。</p>
+<h3 id="四、-进一步验证"><a href="#四、-进一步验证" class="headerlink" title="四、 进一步验证"></a>四、 进一步验证</h3><p>下面我们通过查看消息队列中的内容的方式来验证，查看源码发现，MessageQueue中提供了dump方法，可以获取到queue中的内容，接下来就简单了，反射拿到它，封装了个简单的MessageDump类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MessageDump &#123;</span><br><span class="line">  public static void dump() &#123;</span><br><span class="line">    Looper looper = Looper.getMainLooper();</span><br><span class="line">    ClassUtils classUtils = new ClassUtils(Looper.getMainLooper().getClass().getName(), &quot;mQueue&quot;);</span><br><span class="line">    LogPrinter printer = new LogPrinter(Log.ERROR, SecondActivity.TAG);</span><br><span class="line">    MessageQueue queue = (MessageQueue) classUtils.get(looper);</span><br><span class="line">    try &#123;</span><br><span class="line">      Method method = queue.getClass().getDeclaredMethod(&quot;dump&quot;, Printer.class, String.class);</span><br><span class="line">      method.setAccessible(true);</span><br><span class="line">      method.invoke(queue, printer, &quot;&quot;);</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">      // e.printStackTrace();</span><br><span class="line">      throw new RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们加入到代码中,分别在第一次启动前，第一次执行后，第二次执行后取dump消息队列：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view) &#123;</span><br><span class="line"></span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;clickToStart:-&gt;before-&gt;first&quot;);</span><br><span class="line">    MessageDump.dump();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;--------------------------------------------&quot;);</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;clickToStart:-&gt;after-&gt;first&quot;);</span><br><span class="line">    MessageDump.dump();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;--------------------------------------------&quot;);</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    MessageDump.dump();</span><br><span class="line">    Log.i(SecondActivity.TAG, &quot;clickToStart:-&gt;after-&gt;second&quot;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">05-21 02:42:28.989 32626-32626/com.example.ljj.test2 I/lan: clickToStart:-&gt;before-&gt;first</span><br><span class="line">05-21 02:42:28.990 32626-32626/com.example.ljj.test2 I/lan: Message 0: &#123; when=-8ms callback=android.view.View$UnsetPressedState target=android.view.ViewRootImpl$ViewRootHandler &#125;</span><br><span class="line">05-21 02:42:28.990 32626-32626/com.example.ljj.test2 I/lan: (Total messages: 1, idling=false, quitting=false)</span><br><span class="line">05-21 02:42:28.990 32626-32626/com.example.ljj.test2 I/lan: --------------------------------------------</span><br><span class="line">05-21 02:42:28.993 32626-32626/com.example.ljj.test2 I/lan: clickToStart:-&gt;after-&gt;first</span><br><span class="line">05-21 02:42:28.994 32626-32626/com.example.ljj.test2 I/lan: Message 0: &#123; when=-11ms callback=android.view.View$UnsetPressedState target=android.view.ViewRootImpl$ViewRootHandler &#125;</span><br><span class="line">05-21 02:42:28.994 32626-32626/com.example.ljj.test2 I/lan: Message 1: &#123; when=-1ms what=101 arg1=1 obj=android.os.BinderProxy@3e564eb2 target=android.app.ActivityThread$H &#125;</span><br><span class="line">05-21 02:42:28.994 32626-32626/com.example.ljj.test2 I/lan: Message 2: &#123; when=0 what=6 arg2=1 target=android.view.ViewRootImpl$ViewRootHandler &#125;</span><br><span class="line">05-21 02:42:28.994 32626-32626/com.example.ljj.test2 I/lan: (Total messages: 3, idling=false, quitting=false)</span><br><span class="line">05-21 02:42:28.994 32626-32626/com.example.ljj.test2 I/lan: --------------------------------------------</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: Message 0: &#123; when=-13ms callback=android.view.View$UnsetPressedState target=android.view.ViewRootImpl$ViewRootHandler &#125;</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: Message 1: &#123; when=-3ms what=101 arg1=1 obj=android.os.BinderProxy@3e564eb2 target=android.app.ActivityThread$H &#125;</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: Message 2: &#123; when=-2ms what=6 arg2=1 target=android.view.ViewRootImpl$ViewRootHandler &#125;</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: (Total messages: 3, idling=false, quitting=false)</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: clickToStart:-&gt;after-&gt;second</span><br><span class="line">05-21 02:42:28.996 32626-32626/com.example.ljj.test2 I/lan: MainActivity-&gt;onPause</span><br></pre></td></tr></table></figure>
+
+<p>通过log我们清晰的看到确实在执行第一次启动后，消息队列中多了一条消息，并且在第二次启动完毕后，该消息依然存在，与我们之前的结论是相符的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; when=-1ms what=101 arg1=1 obj=android.os.BinderProxy@3e564eb2 target=android.app.ActivityThread$H &#125;</span><br></pre></td></tr></table></figure>
+
+<p>既然这样，那我第二次启动时通过Handler异步起动是不是就好了呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view) &#123;</span><br><span class="line">    startSecondActivity();</span><br><span class="line">    new  Handler().post(new Runnable() &#123;</span><br><span class="line">      @Override</span><br><span class="line">      public void run() &#123;</span><br><span class="line">        startSecondActivity();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果我就不贴了，如果你理解了上文中讲的内容，应该可以猜到这种情形下，启动就正常了，因为我们第二次启动的消息是放在了pause消息之后了。</p>
+<h3 id="五、-singleTop失效的秘密"><a href="#五、-singleTop失效的秘密" class="headerlink" title="五、 singleTop失效的秘密"></a>五、 singleTop失效的秘密</h3><p>还有一个小问题，就是如果启动模式设置为singleTop的时候为什么会失效呢？
+按道理来说，即使是第一次启动时被压入了栈中，没有正常启动，那intent信息总是在的啊，按道理不应该会影响启动模式才对。我们可以先看下IActivityManager的startActivity的返回值是什么？在执行startActivity时是会得到一个返回值的，这个返回值是反映Activity的启动状态的，和启动模式关系很大。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public ActivityResult execStartActivity(</span><br><span class="line">            Context who, IBinder contextThread, IBinder token, Activity target,</span><br><span class="line">            Intent intent, int requestCode, Bundle options) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            intent.migrateExtraStreamToClipData();</span><br><span class="line">            intent.prepareToLeaveProcess();</span><br><span class="line">            int result = ActivityManagerNative.getDefault()</span><br><span class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</span><br><span class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</span><br><span class="line">                        token, target != null ? target.mEmbeddedID : null,</span><br><span class="line">                        requestCode, 0, null, null, options);</span><br><span class="line">            checkStartActivityResult(result, intent);</span><br><span class="line">        &#125; catch (RemoteException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们通过动态代理来hook掉IActivityManager，可以拿到该返回值。这个返回值类型定义在了ActivityManager.java中，和启动模式相关的是下面这几个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static final int START_SUCCESS = 0;//正常启动</span><br><span class="line">  public static final int START_TASK_TO_FRONT = 2;//singleTask</span><br><span class="line">  public static final int START_DELIVERED_TO_TOP = 3;//singleTop</span><br></pre></td></tr></table></figure>
+
+<p>通过hook拿到返回值会发现，连续两次启动时，返回值均为0，而加入handler异步起动后，得到的返回值是0，3。那就说明两次启动都是正常启动，但是第二次启动也是按照普通模式启动了，所以返回的是0。这下我们就可以有目的的去看源码了，只需要看到关于intent的处理部分即可。源码在ActivityStackSupervisor类的startActivityUncheckedLocked方法中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">if (r.packageName != null) &#123;</span><br><span class="line">          // If the activity being launched is the same as the one currently</span><br><span class="line">          // at the top, then we need to check if it should only be launched</span><br><span class="line">          // once.</span><br><span class="line">          ActivityStack topStack = getFocusedStack();</span><br><span class="line">          ActivityRecord top = topStack.topRunningNonDelayedActivityLocked(notTop);</span><br><span class="line">          if (top != null &amp;&amp; r.resultTo == null) &#123;</span><br><span class="line">              if (top.realActivity.equals(r.realActivity) &amp;&amp; top.userId == r.userId) &#123;</span><br><span class="line">                  if (top.app != null &amp;&amp; top.app.thread != null) &#123;</span><br><span class="line">                      if ((launchFlags &amp; Intent.FLAG_ACTIVITY_SINGLE_TOP) != 0</span><br><span class="line">                          || launchSingleTop || launchSingleTask) &#123;</span><br><span class="line">                          ActivityStack.logStartActivity(EventLogTags.AM_NEW_INTENT, top,</span><br><span class="line">                                  top.task);</span><br><span class="line">                          // For paranoia, make sure we have correctly</span><br><span class="line">                          // resumed the top activity.</span><br><span class="line">                          topStack.mLastPausedActivity = null;</span><br><span class="line">                          if (doResume) &#123;</span><br><span class="line">                              resumeTopActivitiesLocked();</span><br><span class="line">                          &#125;</span><br><span class="line">                          ActivityOptions.abort(options);</span><br><span class="line">                          if ((startFlags&amp;ActivityManager.START_FLAG_ONLY_IF_NEEDED) != 0) &#123;</span><br><span class="line">                              // We don&apos;t need to start a new activity, and</span><br><span class="line">                              // the client said not to do anything if that</span><br><span class="line">                              // is the case, so this is it!</span><br><span class="line">                              return ActivityManager.START_RETURN_INTENT_TO_CALLER;</span><br><span class="line">                          &#125;</span><br><span class="line">                          top.deliverNewIntentLocked(callingUid, r.intent);</span><br><span class="line">                          return ActivityManager.START_DELIVERED_TO_TOP;</span><br><span class="line">                      &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们重点来看判定条件，top是拿的栈顶的activity，此时是第一次启动放进去的SecondActiivty，说明一下，topRunningNonDelayedActivityLocked函数是拿取除了notTop指定的activity外，位于栈顶的activity。一般notTop为null。很显然第一层，第二层的if语句都是true。最里层的if语句呢？其实我一开始看的时候没有注意最里层的if，理所当然的认为不为null，导致这里找了半天都觉得说不通。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ActivityStack topStack = getFocusedStack();</span><br><span class="line">          ActivityRecord top = topStack.topRunningNonDelayedActivityLocked(notTop);</span><br><span class="line">          if (top != null &amp;&amp; r.resultTo == null) &#123;</span><br><span class="line">              if (top.realActivity.equals(r.realActivity) &amp;&amp; top.userId == r.userId) &#123;</span><br><span class="line">                  if (top.app != null &amp;&amp; top.app.thread != null) &#123;</span><br></pre></td></tr></table></figure>
+
+<p>无奈之下，想从最早dump出来的信息里面找一下这个activity和正常启动的activity的差别。
+<img src="http://images.wodekouwei.com/tips-android-activity-start-201986145153.png" alt="tips-android-activity-start-201986145153"></p>
+<p>原来在这，正常启动的activity都是绑定了ProcessRecord的，而INITIALIZING状态的Activity是没有进程相关信息的，也就是它不属于任何一个进程，还不具备和应用进程交互的能力。
+<img src="http://images.wodekouwei.com/tips-android-activity-start-201986145227.png" alt="tips-android-activity-start-201986145227">
+真正绑定的地方在realStartActivityLocked方法中，也就是真正启动的过程中会进行绑定。现在就解释清楚了为什么singleTop在这种情境下失效了吧。</p>
+<h3 id="六-实际应用场景的思考及解决办法"><a href="#六-实际应用场景的思考及解决办法" class="headerlink" title="六. 实际应用场景的思考及解决办法"></a>六. 实际应用场景的思考及解决办法</h3><p>有人可能会说，实际场景中哪里有人会在一个函数中或者一个message中去启动两次activity？确实这种场景几乎没有，但是我们来看一下以下的情景。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view) &#123;</span><br><span class="line">    new Handler().post(new Runnable() &#123;//消息1</span><br><span class="line">      @Override</span><br><span class="line">      public void run() &#123;</span><br><span class="line">        Intent intent=new Intent();/／消息3</span><br><span class="line">        intent.setAction(START);</span><br><span class="line">        sendBroadcast(intent);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    new Handler().post(new Runnable() &#123;/／消息2</span><br><span class="line">      @Override</span><br><span class="line">      public void run() &#123;</span><br><span class="line">        Intent intent=new Intent();//消息4</span><br><span class="line">        intent.setAction(START);</span><br><span class="line">        sendBroadcast(intent);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private class MyReceiver extends BroadcastReceiver &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">      if (intent.getAction().equals(START)) &#123;</span><br><span class="line">        startActivity(new Intent(MainActivity.this, SecondActivity.class));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们用上述代码模拟了一下可能在实际代码中出现的场景，比如我们不同的网络接口请求，返回来后需要发送一个广播。我们应该都是post一个消息到主线程处理的，对应于消息1和消息2，如果恰好消息1和消息2被放入消息队列的时间比较接近，或者说是相邻。此时就会出现本文出现的现象。广播肯定也是进程间通信后，发送消息到主线程执行的，对应于消息3，消息4，所以当clickToStart执行完后，消息队列从头到尾：消息1-&gt;消息2,当消息1（发送广播）执行完后，变成：消息2-&gt;消息3；当消息2（发送广播）执行完后，变成：消息3-&gt;消息4。消息3和消息4挨着，两个消息的任务都是startActivity，那么很明显，这就是咱们的demo啊，肯定会有问题。不信可以自行尝试。怎么解决呢，有人说在onReceive里异步启动啊，其实是解决不了问题的，全部异步启动和不加异步是一样的，消息在队列里的顺序是不会改变的。
+这种问题吧，首先要看下需不需要解决，说的直白点，也不能算是个bug，至于解决的方法，要和具体业务而定。具体解决的办法可以封装一个handler，该handler的任务保证唯一，或者指定what类型，在startActivity的函数中，remove同类型的信息，也就是上文中消息3-&gt;消息4，保证消息3-&gt;消息4的消息类型一致，然后在执行消息3后，remove掉消息4即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void clickToStart(View view) &#123;</span><br><span class="line">    handler.sendEmptyMessage(101);</span><br><span class="line">    handler.sendEmptyMessage(101);</span><br><span class="line">  &#125;</span><br><span class="line">private Handler handler = new Handler() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void handleMessage(Message msg) &#123;</span><br><span class="line">      Intent intent3 = new Intent(MainActivity.this, SecondActivity.class);</span><br><span class="line">      startActivity(intent3);</span><br><span class="line">      handler.removeMessages(101);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式也不太优雅，解决的办法肯定有很多，这里只是举个例子而已。知道了问题的缘由后，根据业务自行处理即可。</p>
+<h3 id="七-总结"><a href="#七-总结" class="headerlink" title="七. 总结"></a>七. 总结</h3><p>这篇文章主要是为了阐述一下activity连续启动的异常问题的跟踪过程。总结如下：</p>
+<ol>
+<li>如果在同一个message连续启动同一个activity或者相邻message中分别启动同一个activity，就会出现生命周期诡异的问题，当然现在已经不诡异了。从探索方法和源码的角度给出了解释。</li>
+<li>解释了为什么singleTop在这种模式下会失效的问题</li>
+<li>给出了解决的思路，就是破坏消息顺序。</li>
+<li>此外，阐述了Activity栈和启动activity流程相关的知识</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/16/env-centos-supervisor/" rel="next" title="env-centos-supervisor">
+                <i class="fa fa-chevron-left"></i> env-centos-supervisor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/04/gl-egl-api/" rel="prev" title="gl-egl-api">
+                gl-egl-api <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、问题的出现"><span class="nav-number">1.</span> <span class="nav-text">一、问题的出现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、针对问题的思考与初步探索"><span class="nav-number">2.</span> <span class="nav-text">二、针对问题的思考与初步探索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、源码维度探索"><span class="nav-number">3.</span> <span class="nav-text">三、源码维度探索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-进一步验证"><span class="nav-number">4.</span> <span class="nav-text">四、 进一步验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、-singleTop失效的秘密"><span class="nav-number">5.</span> <span class="nav-text">五、 singleTop失效的秘密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六-实际应用场景的思考及解决办法"><span class="nav-number">6.</span> <span class="nav-text">六. 实际应用场景的思考及解决办法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七-总结"><span class="nav-number">7.</span> <span class="nav-text">七. 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1476 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="Mongo之安装参考 Centos1.下载安装包远程安装mongodb压缩包 1wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz  2.解压缩安装包在/opt下创建modules文件夹 1mkdir modules  然后解压到这里: 12cd ~tar -xzvf mongodb-linux-x86_64-3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="db-mongo">
+<meta property="og:url" content="http://wodekouwei.com/2019/06/16/db-mongo/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="Mongo之安装参考 Centos1.下载安装包远程安装mongodb压缩包 1wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz  2.解压缩安装包在/opt下创建modules文件夹 1mkdir modules  然后解压到这里: 12cd ~tar -xzvf mongodb-linux-x86_64-3">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-22T06:11:22.819Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="db-mongo">
+<meta name="twitter:description" content="Mongo之安装参考 Centos1.下载安装包远程安装mongodb压缩包 1wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz  2.解压缩安装包在/opt下创建modules文件夹 1mkdir modules  然后解压到这里: 12cd ~tar -xzvf mongodb-linux-x86_64-3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/06/16/db-mongo/">
+
+
+
+
+
+  <title> db-mongo | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/06/16/db-mongo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                db-mongo
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-16T18:02:48+08:00">
+                2019-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/06/16/db-mongo/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Mongo之安装"><a href="#Mongo之安装" class="headerlink" title="Mongo之安装"></a>Mongo之安装</h3><p><a href="https://docs.mongodb.com/master/tutorial/install-mongodb-on-os-x/?_ga=1.77041618.692823854.1464012466" target="_blank" rel="noopener">参考</a></p>
+<h4 id="Centos"><a href="#Centos" class="headerlink" title="Centos"></a>Centos</h4><h5 id="1-下载安装包"><a href="#1-下载安装包" class="headerlink" title="1.下载安装包"></a>1.下载安装包</h5><p>远程安装mongodb压缩包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.9.tgz</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-解压缩安装包"><a href="#2-解压缩安装包" class="headerlink" title="2.解压缩安装包"></a>2.解压缩安装包</h5><p>在/opt下创建modules文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir modules</span><br></pre></td></tr></table></figure>
+
+<p>然后解压到这里:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">tar -xzvf mongodb-linux-x86_64-3.4.9.tgz -C /opt/modules/</span><br></pre></td></tr></table></figure>
+
+<p>进入modules文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/modules/</span><br></pre></td></tr></table></figure>
+
+<p>重命名为mongodb</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv mongodb-linux-x86_64-3.4.9 mongodb </span><br><span class="line">cd mongodb/</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-创建数据库存放目录和日志存放目录"><a href="#3-创建数据库存放目录和日志存放目录" class="headerlink" title="3.创建数据库存放目录和日志存放目录"></a>3.创建数据库存放目录和日志存放目录</h5><p>将服务的数据存放在/opt/data目录下,需要创建db目录用于存放数据库文件,logs目录存放日志文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/data/mongodb/data </span><br><span class="line">mkdir -p /opt/data/mongodb/data/db </span><br><span class="line">mkdir -p /opt/data/mongodb/data/logs </span><br><span class="line">touch /opt/data/mongodb/data/logs/mogodb.log</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-创建MongoDB配置文件mongodb-conf"><a href="#4-创建MongoDB配置文件mongodb-conf" class="headerlink" title="4.创建MongoDB配置文件mongodb.conf"></a>4.创建MongoDB配置文件mongodb.conf</h5><p>mongodb.conf主要配置MongoDB的监听端口,数据库目录,日志存放位置,日志输出方式以及是否开启后台运行等:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/data/mongodb/data/ </span><br><span class="line">vim mongodb.conf</span><br></pre></td></tr></table></figure>
+
+<p>mongodb.conf 具体配置信息如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 端口号 </span><br><span class="line">port=27017</span><br><span class="line"># 数据库路径 </span><br><span class="line">dbpath=/opt/data/mongodb/data/db </span><br><span class="line"># 日志输出文件路径 </span><br><span class="line">logpath=/opt/data/mongodb/data/logs/mongodb.log </span><br><span class="line">pidfilepath=/opt/data/mongodb/data/mongo.pid </span><br><span class="line"># 设置后台运行 </span><br><span class="line">fork=true </span><br><span class="line"># 日志输出方式 </span><br><span class="line">logappend=true</span><br><span class="line"># 启动http界面,端口号为28017 </span><br><span class="line">httpinterface=true</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-启动MongoDB服务"><a href="#5-启动MongoDB服务" class="headerlink" title="5.启动MongoDB服务"></a>5.启动MongoDB服务</h5><p>执行以下命令启动MongoDB服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/modules/mongodb/ </span><br><span class="line">bin/mongod --config /opt/data/mongodb/data/mongodb.conf</span><br></pre></td></tr></table></figure>
+
+<p>会打印下面信息：about to fork child process, waiting until server is ready for connections.
+forked process: 20913
+child process started successfully, parent exiting</p>
+<h5 id="6-验证MongoDB服务是否启动成功"><a href="#6-验证MongoDB服务是否启动成功" class="headerlink" title="6.验证MongoDB服务是否启动成功"></a>6.验证MongoDB服务是否启动成功</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsof -i:27017</span><br></pre></td></tr></table></figure>
+
+<p>成功打印COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+mongod  20913 root    7u  IPv4 376964      0t0  TCP *:27017 (LISTEN)
+可以通过ip访问,http://你的公网ip:28017/, 显示数据库一些信息,说明启动成功了
+It looks like you are trying to access MongoDB over HTTP on the native driver port.</p>
+<h4 id="ubuntu环境"><a href="#ubuntu环境" class="headerlink" title="ubuntu环境"></a>ubuntu环境</h4><p><a href="https://docs.mongodb.com/master/tutorial/install-mongodb-on-ubuntu/" target="_blank" rel="noopener">ubunut下安装</a></p>
+<h6 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h6><ol>
+<li><p>Update Homebrew’s package database.
+ In a system shell ,issue the following command:</p>
+<blockquote>
+<p>brew update</p>
+</blockquote>
+</li>
+<li><p>Install MongoDB.
+ You can install MongoDB via brew with several different options.Use one of the following operations:</p>
+<ul>
+<li><p>Install the MongoDB binaries
+  To install the MongoDB binaries ,issue the following command in system shell:</p>
+<blockquote>
+<p>brew install mongodb</p>
+</blockquote>
+</li>
+<li><p>Install the MongoDB Binaries with TLS/SSL Support
+  To install the MongoDB binaries that have TLS/SSL suport ,issue the following from a system shell:</p>
+<blockquote>
+<p>brew install mongodb –with-openssl</p>
+</blockquote>
+</li>
+<li><p>Install the Lastest Development Release of MongoDB
+  To install the lastest development release for use in testing and development,issue the following command in a system shell:</p>
+<blockquote>
+<p>brew install mongodb –devel</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Install MongoDB Community Edition Manually.
+Only install MongoDB Community Edition using this procedure if you cannot use homebrew.</p>
+<ul>
+<li>Download the binary files for the desired release of MongoDB<pre><code>Download the binaries from https://www.mongodb.org/downloads.
+For example, to download the latest release through the shell, issue the following:</code></pre><blockquote>
+<p>curl -O <a href="https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.2.6.tgz" target="_blank" rel="noopener">https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.2.6.tgz</a></p>
+</blockquote>
+</li>
+<li>Extract the files from the downloaded archive.<pre><code>For example, from a system shell, you can extract through the tar command:</code></pre><blockquote>
+<p>tar -zxvf mongodb-osx-x86_64-3.2.6.tgz</p>
+</blockquote>
+</li>
+<li>Copy the extracted archive to the target directo<pre><code>Copy the extracted folder to the location from which MongoDB will run.</code></pre><blockquote>
+<p>mkdir -p mongodb</p>
+<pre><code>cp -R -n mongodb-osx-x86_64-3.2.6/ mongodb</code></pre></blockquote>
+</li>
+<li>Ensure the location of the binaries is in the PATH variable.<pre><code>The MongoDB binaries are in the bin/ directory of the archive. To ensure that the binaries are in your PATH, you can modify your PATH.
+For example, you can add the following line to your shell’s rc file (e.g. ~/.bashrc):</code></pre><blockquote>
+<p>export PATH=<mongodb-install-directory>/bin:$PATH</mongodb-install-directory></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<p>Replace <mongodb-install-directory> with the path to the extracted MongoDB archive.</mongodb-install-directory></p>
+<h6 id="brew-安装结果"><a href="#brew-安装结果" class="headerlink" title="brew 安装结果"></a>brew 安装结果</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">brew install mongodb</span><br><span class="line">==&gt; Installing dependencies for mongodb: openssl</span><br><span class="line">==&gt; Installing mongodb dependency: openssl</span><br><span class="line">==&gt; Downloading https://homebrew.bintray.com/bottles/openssl-1.0.2h_1.el_capitan</span><br><span class="line">######################################################################## 100.0%</span><br><span class="line">==&gt; Pouring openssl-1.0.2h_1.el_capitan.bottle.tar.gz</span><br><span class="line">==&gt; Caveats</span><br><span class="line">A CA file has been bootstrapped using certificates from the system</span><br><span class="line">keychain. To add additional certificates, place .pem files in</span><br><span class="line">  /usr/local/etc/openssl/certs</span><br><span class="line"></span><br><span class="line">and run</span><br><span class="line">  /usr/local/opt/openssl/bin/c_rehash</span><br><span class="line"></span><br><span class="line">This formula is keg-only, which means it was not symlinked into /usr/local.</span><br><span class="line"></span><br><span class="line">Apple has deprecated use of OpenSSL in favor of its own TLS and crypto libraries</span><br><span class="line"></span><br><span class="line">Generally there are no consequences of this for you. If you build your</span><br><span class="line">own software and it requires this formula, you&apos;ll need to add to your</span><br><span class="line">build variables:</span><br><span class="line"></span><br><span class="line">    LDFLAGS:  -L/usr/local/opt/openssl/lib</span><br><span class="line">    CPPFLAGS: -I/usr/local/opt/openssl/include</span><br><span class="line"></span><br><span class="line">==&gt; Summary</span><br><span class="line">🍺  /usr/local/Cellar/openssl/1.0.2h_1: 1,691 files, 12M</span><br><span class="line">==&gt; Installing mongodb</span><br><span class="line">==&gt; Downloading https://homebrew.bintray.com/bottles/mongodb-3.2.6.el_capitan.bo</span><br><span class="line">######################################################################## 100.0%</span><br><span class="line">==&gt; Pouring mongodb-3.2.6.el_capitan.bottle.tar.gz</span><br><span class="line">==&gt; Caveats</span><br><span class="line">To have launchd start mongodb now and restart at login:</span><br><span class="line">  brew services start mongodb</span><br><span class="line">Or, if you don&apos;t want/need a background service you can just run:</span><br><span class="line">  mongod --config /usr/local/etc/mongod.conf</span><br><span class="line">==&gt; Summary</span><br><span class="line">🍺  /usr/local/Cellar/mongodb/3.2.6: 17 files, 263.8M</span><br></pre></td></tr></table></figure>
+
+<h6 id="Run-MongoDB"><a href="#Run-MongoDB" class="headerlink" title="Run MongoDB"></a>Run MongoDB</h6><p>1.Create the data directory
+Before you start MongoDB for the first time ,create the directory to which the mongod process will write data.By default ,the mongod process uses the /data/db/directory.If you create a directory other than this one ,you must specify that directory in the dbpath option when starting the mongod proecss later in this peocedure.
+The following example command creates the default /data/db directory:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/db</span><br></pre></td></tr></table></figure>
+
+<p>2.Set permissions for the data direcory.
+Before running mongod for the first time,ensure that the user account running mongod has read and write permissions for the directory.
+3.Run MongoDB.
+To run MongoDB,run the mongod process at the system prompt.If necessary,specify the path the mongod or the data directory.See the following examples.</p>
+<ul>
+<li><p>Run without specifying paths
+If your system Path variable includes the location of the mongod binary and if you use the default data directory(i.e.,/data/db),simply enter mongod at the system prompt:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongod</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Specify the path of the mongod
+If your PATH does not include the location of the mongod binary,enter the full path to the mongod binary at the system prompt:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;path to binary&gt;/mongod</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Specify the path of the data directory
+If you do not use the defautl data directory (i.i.,/data/db),specify the path to the data directory using the –dbpath option:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongod --dbpath &lt;path to data directory&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Begin using MongoDB.
+mongod 默认数据保存路径:/data/db/    默认端口:27017
+修改默认路径:–dbpath
+修改默认端口:–port
+启动后台服务:–fork(必须使用–logpath自动创建日志输出目录)</p>
+</li>
+</ul>
+<h6 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h6><p>1.启动</p>
+<ul>
+<li>mongod 启动mongo服务</li>
+<li>mongo 启动客户端</li>
+</ul>
+<p>2.停止服务</p>
+<ul>
+<li><p>方法一
+ps -ef | grep mongodb 找到你要查找的进程号
+kill - 2 pid  杀掉</p>
+</li>
+<li><p>方法二
+进入mongo数据库里面进行操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mongo</span><br><span class="line">use admin</span><br><span class="line">db.shutdownServer();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>错误
+在linux下大家停止很多服务喜欢直接kill -9 PID,但是对于MongoDB如果执行了kill - 9 PID,在下次启动时可能提示错误,导致服务无法启动,这个时候可以通过执行:rm -f path/db/mongod.lock,也即删除指定数据目录下的mongod.lock问价即可.</p>
+</li>
+</ul>
+<h4 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h4><p>I’ve just installed MOngoDB via homebrew und want to start it via command line mongod.</p>
+<p>When I do that, i’ll get this message:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">2016-03-05T19:23:55.763+0100 I CONTROL  [initandlisten] MongoDB starting : pid=52426 port=27017 dbpath=/data/db 64-bit host=Matthias-MBP</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] db version v3.2.3</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] git version: b326ba837cf6f49d65c2f85e1b70f6f31ece7937</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] allocator: system</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] modules: none</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] build environment:</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten]     distarch: x86_64</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten]     target_arch: x86_64</span><br><span class="line">2016-03-05T19:23:55.764+0100 I CONTROL  [initandlisten] options: &#123;&#125;</span><br><span class="line">2016-03-05T19:23:55.765+0100 I -        [initandlisten] Detected data files in /data/db created by the &apos;wiredTiger&apos; storage engine, so setting the active storage engine to &apos;wiredTiger&apos;.</span><br><span class="line">2016-03-05T19:23:55.765+0100 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=4G,session_max=20000,eviction=(threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),checkpoint=(wait=60,log_size=2GB),statistics_log=(wait=0),</span><br><span class="line">2016-03-05T19:23:56.483+0100 I CONTROL  [initandlisten]</span><br><span class="line">2016-03-05T19:23:56.483+0100 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. Number of files is 256, should be at least 1000</span><br><span class="line">2016-03-05T19:23:56.486+0100 I NETWORK  [HostnameCanonicalizationWorker] Starting hostname canonicalization worker</span><br><span class="line">2016-03-05T19:23:56.486+0100 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory &apos;/data/db/diagnostic.data&apos;</span><br><span class="line">2016-03-05T19:23:56.488+0100 I NETWORK  [initandlisten] waiting for connections on port 27017</span><br><span class="line">2016-03-05T19:23:56.513+0100 W NETWORK  [HostnameCanonicalizationWorker] Failed to obtain address information for hostname Matthias-MBP: nodename nor servname provided, or not known</span><br></pre></td></tr></table></figure>
+
+<p>The last line doesn’t sound correct. What is the problem?
+The first line of logs says</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MongoDB starting : pid=52426 port=27017 dbpath=/data/db 64-bit host=Matthias-MBP&quot;.</span><br></pre></td></tr></table></figure>
+
+<p>Notice that host name is Matthias-MBP, so you can add 127.0.0.1 Matthias-MBP in /etc/hosts file. After Ctrl-C and re-run mongod, the error message will disappear.</p>
+<h2 id="操作相关"><a href="#操作相关" class="headerlink" title="操作相关"></a>操作相关</h2><h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><ol>
+<li><p>Help查看命令提示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">help</span><br><span class="line">db.help();</span><br><span class="line">db.yourColl.help();</span><br><span class="line">db.youColl.find().help();</span><br><span class="line">rs.help();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换/创建数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;use yourDB;</span><br><span class="line">当创建一个集合(table)的时候会自动创建当前数据库</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询所有数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show dbs;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除当前使用数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.dropDatabase();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从指定主机上克隆数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.cloneDatabase(“127.0.0.1”);</span><br><span class="line">将指定机器上的数据库的数据克隆到当前数据库</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从指定的机器上复制指定数据库数据到某个数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.copyDatabase(&quot;mydb&quot;, &quot;temp&quot;, &quot;127.0.0.1&quot;);</span><br><span class="line">将本机的mydb的数据复制到temp数据库中</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修复当前数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.repairDatabase();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看当前使用的数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.getName();</span><br><span class="line">db;</span><br><span class="line">db和getName方法是一样的效果，都可以查询当前使用的数据库</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示当前db状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.stats();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当前db版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.version();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看当前db的链接机器地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.getMongo();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="Collection聚集集合"><a href="#Collection聚集集合" class="headerlink" title="Collection聚集集合"></a>Collection聚集集合</h3><ol>
+<li><p>创建一个聚集集合（table）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.createCollection(“collName”, &#123;size: 20, capped: 5, max: 100&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到指定名称的聚集集合（table）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.getCollection(&quot;account&quot;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到当前db的所有聚集集合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.getCollectionNames();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示当前db所有聚集索引的状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.printCollectionStats();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="用户相关"><a href="#用户相关" class="headerlink" title="用户相关"></a>用户相关</h3><ol>
+<li>添加一个用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.addUser(&quot;name&quot;);</span><br><span class="line">db.addUser(&quot;userName&quot;, &quot;pwd123&quot;, true);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>添加用户、设置密码、是否只读</p>
+<ol start="2">
+<li><p>数据库认证、安全模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.auth(&quot;userName&quot;, &quot;123123&quot;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示当前所有用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show users;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.removeUser(&quot;userName&quot;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><p>查询之前的错误信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.getPrevError();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清除错误记录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.resetError();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Collection聚合集合操作"><a href="#Collection聚合集合操作" class="headerlink" title="Collection聚合集合操作"></a>Collection聚合集合操作</h2><p>###查看聚集集合基本信息</p>
+<ol>
+<li><p>查看帮助</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.yourColl.help();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询当前集合的数据条数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.yourColl.count();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看数据空间大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.dataSize();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到当前聚集集合所在的db</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.getDB();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到当前聚集的状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.stats();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到聚集集合总大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.totalSize();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚集集合储存空间大小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.storageSize();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Shard版本信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.getShardVersion()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚集集合重命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.renameCollection(&quot;users&quot;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>将userInfo重命名为users</p>
+<ol start="10">
+<li>删除当前聚集集合<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.drop();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="聚集集合查询"><a href="#聚集集合查询" class="headerlink" title="聚集集合查询"></a>聚集集合查询</h3><ol>
+<li>查询所有记录<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.find();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>相当于：<code>select * from userInfo;</code>
+默认每页显示20条记录，当显示不下的情况下，可以用it迭代命令查询下一页数据。注意：键入it命令不能带“；”
+但是你可以设置每页显示数据的大小，用DBQuery.shellBatchSize = 50;这样每页就显示50条记录了。</p>
+<ol start="2">
+<li>查询去掉后的当前聚集集合中的某列的重复数据<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.distinct(&quot;name&quot;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>会过滤掉name中的相同数据
+相当于：<code>select distict name from userInfo;</code></p>
+<ol start="3">
+<li><p>查询age = 22的记录
+<code>db.userInfo.find({&quot;age&quot;: 22});</code>
+相当于： <code>select * from userInfo where age = 22;</code></p>
+</li>
+<li><p>查询age &gt; 22的记录
+<code>db.userInfo.find({age: {$gt: 22}});</code>
+相当于：<code>select * from userInfo where age &gt; 22;</code></p>
+</li>
+<li><p>查询age &lt; 22的记录
+<code>db.userInfo.find({age: {$lt: 22}});</code>
+相当于：<code>select * from userInfo where age &lt; 22;</code></p>
+</li>
+<li><p>查询age &gt;= 25的记录
+<code>db.userInfo.find({age: {$gte: 25}});</code>
+相当于：<code>select * from userInfo where age &gt;= 25;</code></p>
+</li>
+<li><p>查询age &lt;= 25的记录
+<code>db.userInfo.find({age: {$lte: 25}});</code></p>
+</li>
+<li><p>查询age &gt;= 23 并且 age &lt;= 26
+<code>db.userInfo.find({age: {$gte: 23, $lte: 26}});</code></p>
+</li>
+<li><p>查询name中包含 mongo的数据
+<code>db.userInfo.find({name: /mongo/});</code>
+//相当于%%
+<code>select * from userInfo where name like ‘%mongo%’;</code></p>
+</li>
+<li><p>查询name中以mongo开头的
+<code>db.userInfo.find({name: /^mongo/});</code>
+<code>select * from userInfo where name like ‘mongo%’;</code></p>
+</li>
+<li><p>查询指定列name、age数据
+<code>db.userInfo.find({}, {name: 1, age: 1});</code>
+相当于：<code>select name, age from userInfo;</code>
+当然name也可以用true或false,当用ture的情况下河name:1效果一样，如果用false就是排除name，显示name以外的列信息。</p>
+</li>
+</ol>
+<p>12、查询指定列name、age数据, age &gt; 25
+<code>db.userInfo.find({age: {$gt: 25}}, {name: 1, age: 1});</code>
+相当于：<code>select name, age from userInfo where age &gt; 25;</code></p>
+<ol start="13">
+<li><p>按照年龄排序
+升序：<code>db.userInfo.find().sort({age: 1});</code>
+降序：<code>db.userInfo.find().sort({age: -1});</code></p>
+</li>
+<li><p>查询name = zhangsan, age = 22的数据
+<code>db.userInfo.find({name: &#39;zhangsan&#39;, age: 22});</code>
+相当于：<code>select * from userInfo where name = ‘zhangsan’ and age = ‘22’;</code></p>
+</li>
+<li><p>查询前5条数据
+<code>db.userInfo.find().limit(5);</code>
+相当于：<code>select top 5 * from userInfo;</code></p>
+</li>
+<li><p>查询10条以后的数据
+<code>db.userInfo.find().skip(10);</code>
+相当于：<code>select * from userInfo where id not in (
+select top 10 * from userInfo
+);</code></p>
+</li>
+<li><p>查询在5-10之间的数据
+<code>db.userInfo.find().limit(10).skip(5);</code>
+可用于分页，limit是pageSize，skip是第几页*pageSize</p>
+</li>
+<li><p>or与 查询
+<code>db.userInfo.find({$or: [{age: 22}, {age: 25}]});</code>
+相当于：<code>select * from userInfo where age = 22 or age = 25;</code></p>
+</li>
+<li><p>查询第一条数据
+<code>db.userInfo.findOne();</code>
+相当于：<code>select top 1 * from userInfo;
+db.userInfo.find().limit(1);</code></p>
+</li>
+<li><p>查询某个结果集的记录条数
+<code>db.userInfo.find({age: {$gte: 25}}).count();</code>
+相当于：<code>select count(*) from userInfo where age &gt;= 20;</code></p>
+</li>
+<li><p>按照某列进行排序
+<code>db.userInfo.find({sex: {$exists: true}}).count();</code>
+相当于：<code>select count(sex) from userInfo;</code></p>
+</li>
+</ol>
+<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><ol>
+<li><p>创建索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.userInfo.ensureIndex(&#123;name: 1&#125;);</span><br><span class="line">db.userInfo.ensureIndex(&#123;name: 1, ts: -1&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询当前聚集集合所有索引
+<code>db.userInfo.getIndexes();</code></p>
+</li>
+<li><p>查看总索引记录大小
+<code>db.userInfo.totalIndexSize();</code></p>
+</li>
+<li><p>读取当前集合的所有index信息
+<code>db.users.reIndex();</code></p>
+</li>
+<li><p>删除指定索引
+<code>db.users.dropIndex(&quot;name_1&quot;);</code></p>
+</li>
+<li><p>删除所有索引索引
+<code>db.users.dropIndexes();</code></p>
+</li>
+</ol>
+<h3 id="修改、添加、删除集合数据"><a href="#修改、添加、删除集合数据" class="headerlink" title="修改、添加、删除集合数据"></a>修改、添加、删除集合数据</h3><ol>
+<li><p>添加
+<code>db.users.save({name: ‘zhangsan’, age: 25, sex: true});</code>
+添加的数据的数据列，没有固定，根据添加的数据为准</p>
+</li>
+<li><p>修改
+<code>db.users.update({age: 25}, {$set: {name: &#39;changeName&#39;}}, false, true);</code>
+相当于：<code>update users set name = ‘changeName’ where age = 25;</code></p>
+</li>
+</ol>
+<p><code>db.users.update({name: &#39;Lisi&#39;}, {$inc: {age: 50}}, false, true);</code>
+相当于：<code>update users set age = age + 50 where name = ‘Lisi’;</code></p>
+<p><code>db.users.update({name: &#39;Lisi&#39;}, {$inc: {age: 50}, $set: {name: &#39;hoho&#39;}}, false, true);</code>
+相当于：<code>update users set age = age + 50, name = ‘hoho’ where name = ‘Lisi’;</code></p>
+<ol start="3">
+<li><p>删除
+<code>db.users.remove({age: 132});</code></p>
+</li>
+<li><p>查询修改删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">db.users.findAndModify(&#123;</span><br><span class="line">    query: &#123;age: &#123;$gte: 25&#125;&#125;,</span><br><span class="line">    sort: &#123;age: -1&#125;,</span><br><span class="line">    update: &#123;$set: &#123;name: &apos;a2&apos;&#125;, $inc: &#123;age: 2&#125;&#125;,</span><br><span class="line">    remove: true</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">db.runCommand(&#123; findandmodify : &quot;users&quot;,</span><br><span class="line">    query: &#123;age: &#123;$gte: 25&#125;&#125;,</span><br><span class="line">    sort: &#123;age: -1&#125;,</span><br><span class="line">    update: &#123;$set: &#123;name: &apos;a2&apos;&#125;, $inc: &#123;age: 2&#125;&#125;,</span><br><span class="line">    remove: true</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>update 或 remove 其中一个是必须的参数; 其他参数可选。
+|参数|详解|默认值|
+|—|—|—|
+|query|查询过滤条件|{}|
+|sort|如果多个文档符合查询过滤条件，将以该参数指定的排列方式选择出排在首位的对象，该对象将被操作|{}|
+|remove|若为true，被选中对象将在返回前被删除|N/A|
+|update|一个 修改器对象|N/A|
+|new|若为true，将返回修改后的对象而不是原始对象。在删除操作中，该参数被忽略。|false|
+|fields|参见Retrieving a Subset of Fields (1.5.0+)|All fields|
+|upsert|创建新对象若查询结果为空。 示例 (1.5.4+)|false|</p>
+<h3 id="语句块操作"><a href="#语句块操作" class="headerlink" title="语句块操作"></a>语句块操作</h3><ol>
+<li><p>简单Hello World
+<code>print(&quot;Hello World!&quot;);</code>
+这种写法调用了print函数，和直接写入”Hello World!”的效果是一样的；</p>
+</li>
+<li><p>将一个对象转换成json</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tojson(new Object());</span><br><span class="line">tojson(new Object(&apos;a&apos;));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环添加数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; for (var i = 0; i &lt; 30; i++) &#123;</span><br><span class="line">... db.users.save(&#123;name: &quot;u_&quot; + i, age: 22 + i, sex: i % 2&#125;);</span><br><span class="line">... &#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>这样就循环添加了30条数据，同样也可以省略括号的写法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; for (var i = 0; i &lt; 30; i++) db.users.save(&#123;name: &quot;u_&quot; + i, age: 22 + i, sex: i % 2&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>也是可以的，当你用db.users.find()查询的时候，显示多条数据而无法一页显示的情况下，可以用it查看下一页的信息；</p>
+<ol start="4">
+<li>find 游标查询<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;var cursor = db.users.find();</span><br><span class="line">&gt; while (cursor.hasNext()) &#123;</span><br><span class="line">    printjson(cursor.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>这样就查询所有的users信息，同样可以这样写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var cursor = db.users.find();</span><br><span class="line">while (cursor.hasNext()) &#123; printjson(cursor.next); &#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样可以省略{}号</p>
+<ol start="5">
+<li><p>forEach迭代循环</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find().forEach(printjson);</span><br><span class="line">forEach中必须传递一个函数来处理每条迭代的数据信息</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将find游标当数组处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var cursor = db.users.find();</span><br><span class="line">cursor[4];</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>取得下标索引为4的那条数据
+既然可以当做数组处理，那么就可以获得它的长度：cursor.length();或者cursor.count();
+那样我们也可以用循环显示数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for (var i = 0, len = c.length(); i &lt; len; i++) printjson(c[i]);</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>将find游标转换成数组<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; var arr = db.users.find().toArray();</span><br><span class="line">&gt; printjson(arr[2]);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>用toArray方法将其转换为数组</p>
+<ol start="8">
+<li>定制我们自己的查询结果
+只显示age &lt;= 28的并且只显示age这列数据<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;age: &#123;$lte: 28&#125;&#125;, &#123;age: 1&#125;).forEach(printjson);</span><br><span class="line">db.users.find(&#123;age: &#123;$lte: 28&#125;&#125;, &#123;age: true&#125;).forEach(printjson);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>排除age的列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;age: &#123;$lte: 28&#125;&#125;, &#123;age: false&#125;).forEach(printjson);</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>forEach传递函数显示信息<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.things.find(&#123;x:4&#125;).forEach(function(x) &#123;print(tojson(x));&#125;);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>上面介绍过forEach需要传递一个函数，函数会接受一个参数，就是当前循环的对象，然后在函数体重处理传入的参数</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/26/env-centos-gitlab/" rel="next" title="env-centos-gitlab">
+                <i class="fa fa-chevron-left"></i> env-centos-gitlab
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/16/db-redis/" rel="prev" title="db-redis">
+                db-redis <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mongo之安装"><span class="nav-number">1.</span> <span class="nav-text">Mongo之安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Centos"><span class="nav-number">1.1.</span> <span class="nav-text">Centos</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-下载安装包"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.下载安装包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-解压缩安装包"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.解压缩安装包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-创建数据库存放目录和日志存放目录"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.创建数据库存放目录和日志存放目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-创建MongoDB配置文件mongodb-conf"><span class="nav-number">1.1.4.</span> <span class="nav-text">4.创建MongoDB配置文件mongodb.conf</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-启动MongoDB服务"><span class="nav-number">1.1.5.</span> <span class="nav-text">5.启动MongoDB服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-验证MongoDB服务是否启动成功"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.验证MongoDB服务是否启动成功</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ubuntu环境"><span class="nav-number">1.2.</span> <span class="nav-text">ubuntu环境</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#步骤"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#brew-安装结果"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">brew 安装结果</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Run-MongoDB"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">Run MongoDB</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#注意事项"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#错误"><span class="nav-number">1.3.</span> <span class="nav-text">错误</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#操作相关"><span class="nav-number"></span> <span class="nav-text">操作相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库"><span class="nav-number">1.</span> <span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Collection聚集集合"><span class="nav-number">2.</span> <span class="nav-text">Collection聚集集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户相关"><span class="nav-number">3.</span> <span class="nav-text">用户相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collection聚合集合操作"><span class="nav-number"></span> <span class="nav-text">Collection聚合集合操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#聚集集合查询"><span class="nav-number">1.</span> <span class="nav-text">聚集集合查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引"><span class="nav-number">2.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改、添加、删除集合数据"><span class="nav-number">3.</span> <span class="nav-text">修改、添加、删除集合数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语句块操作"><span class="nav-number">4.</span> <span class="nav-text">语句块操作</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

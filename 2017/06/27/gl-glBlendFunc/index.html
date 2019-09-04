@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="OpenGL," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="OpenGL,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,6 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="混合就是把两种颜色混在一起。具体一点，就是把某一像素位置原来的颜色和将要画上去的颜色，通过某种方式混在一起，从而实现特殊的效果。 假设我们需要绘制这样一个场景：透过红色的玻璃去看绿色的物体，那么可以先绘制绿色的物体，再绘制红色玻璃。在绘制红色玻璃的时候，利用“混合”功能，把将要绘制上去的红色和原来的绿色进行混合，于是得到一种新的颜色，看上去就好像玻璃是半透明的。 要使用OpenGL的混合功能，只需">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-06-27T08:03:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OpenGL混色">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/06/27/gl-glBlendFunc/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -466,20 +465,24 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 注意：
 所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。</li>
 </ul>
-<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
-<p>模式二:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GLES20.glEnable(GLES20.GL_BLEND);  </div><div class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</div></pre></td></tr></table></figure></p>
+<h3 id="3-对两种示例模式的具体解释"><a href="#3-对两种示例模式的具体解释" class="headerlink" title="3.对两种示例模式的具体解释:"></a>3.对两种示例模式的具体解释:</h3><p>模式一:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLES20.glEnable(GLES20.GL_BLEND);  </span><br><span class="line">GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);</span><br></pre></td></tr></table></figure>
+
+<p>模式二:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLES20.glEnable(GLES20.GL_BLEND);  </span><br><span class="line">GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);</span><br></pre></td></tr></table></figure>
+
 <p>模式一是传统的alpha通道混合，这种模式下颜色和alpha值是分立的，rgb决定颜色，alpha决定..（英文是决定how solid it is 水平有限找不到准确的中文来表达）
 在数学上表达式是：<code>blend(source, dest) = (source.rgb * source.a) + (dest.rgb * (1 – source.a)).</code>要注意的是这种模式下，透明只跟alpha有关，跟rgb值无关，一个透明的颜色，不透明的颜色有相同的rgb值，只要alpha=0即可。</p>
 <p>模式二是alpha预乘的混合（Premultiplied Alpha Blending），这种模式下rgb与alpha是联系在一起的，数学上的表达式是
 <code>blend(source, dest) = source.rgb + (dest.rgb * (1 – source.a))</code>,在这种模式下，透明的表示是rgb值都为0.</p>
 <h3 id="4-EGLSurface背景透明设置"><a href="#4-EGLSurface背景透明设置" class="headerlink" title="4.EGLSurface背景透明设置"></a>4.EGLSurface背景透明设置</h3><p>在OpenGL绘制中,除了设置混色外,还要设置EGLSurface配置支持Alpha,如果不设置EGL相关的EGLSurface支持透明,就算OpenGL函数中开启混色,绘制完成后仍是有黑色背景.</p>
 <h4 id="4-1GLSurfaceView"><a href="#4-1GLSurfaceView" class="headerlink" title="4.1GLSurfaceView"></a>4.1GLSurfaceView</h4><p>在onSurfaceCreated里，调用GLES20.glClearColor(0f, 0f, 0f, 0f);alpha为0，即透明。</p>
-<p>然后，对surfaceview要作一定处理：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</div><div class="line">TestRenderer renderer = new TestRenderer();</div><div class="line">mGLSurfaceView.setRender(renderer);</div><div class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</div><div class="line">mGLSurfaceView.setZOrderOnTop(true);</div></pre></td></tr></table></figure></p>
-<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">int[] CONFIG_RGBA = &#123;</div><div class="line">          EGL10.EGL_RED_SIZE, 8,</div><div class="line">          EGL10.EGL_GREEN_SIZE, 8,</div><div class="line">          EGL10.EGL_BLUE_SIZE, 8,</div><div class="line">          EGL10.EGL_ALPHA_SIZE, 8,</div><div class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</div><div class="line">          EGL10.EGL_NONE</div><div class="line">  &#125;;</div></pre></td></tr></table></figure></p>
+<p>然后，对surfaceview要作一定处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);</span><br><span class="line">TestRenderer renderer = new TestRenderer();</span><br><span class="line">mGLSurfaceView.setRender(renderer);</span><br><span class="line">mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);</span><br><span class="line">mGLSurfaceView.setZOrderOnTop(true);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2SurfaceTexture或Surface构造的Surface"><a href="#4-2SurfaceTexture或Surface构造的Surface" class="headerlink" title="4.2SurfaceTexture或Surface构造的Surface"></a>4.2SurfaceTexture或Surface构造的Surface</h4><p>EGL14.eglChooseConfig中config数组增加EGL10.EGL_ALPHA_SIZE配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int[] CONFIG_RGBA = &#123;</span><br><span class="line">          EGL10.EGL_RED_SIZE, 8,</span><br><span class="line">          EGL10.EGL_GREEN_SIZE, 8,</span><br><span class="line">          EGL10.EGL_BLUE_SIZE, 8,</span><br><span class="line">          EGL10.EGL_ALPHA_SIZE, 8,</span><br><span class="line">          EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,</span><br><span class="line">          EGL10.EGL_NONE</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+
 <h3 id="5-实现三维混合"><a href="#5-实现三维混合" class="headerlink" title="5.实现三维混合"></a>5.实现三维混合</h3><p>在进行三维场景的混合时必须注意的是深度缓冲。</p>
 <p>深度缓冲是这样一段数据，它记录了每一个像素距离观察者有多近。在启用深度缓冲测试的情况下，如果将要绘制的像素比原来的像素更近，则像素将被绘制。否则,像素就会被忽略掉，不进行绘制。这在绘制不透明的物体时非常有用——不管是先绘制近的物体再绘制远的物体，还是先绘制远的物体再绘制近的物体，或者干脆以 混乱的顺序进行绘制，最后的显示结果总是近的物体遮住远的物体。
 然而在你需要实现半透明效果时，发现一切都不是那么美好了。如果你绘制了一个近距离的半透明物体，则它在深度缓冲区内保留了一些信息，使得远处的物体将无法再被绘制出来。虽然半透明的物体仍然半透明，但透过它看到的却不是正确的内容了。
@@ -488,7 +491,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
 调用glDepthMask(GL_FALSE);可将深度缓冲区设置为只读形式。调用glDepthMask(GL_TRUE);可将深度缓冲区设置为可读可写形式。</p>
 <blockquote>
-<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="external">glBlendFunc函数官网文档</a></p>
+<p><a href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glBlendFunc.xml" target="_blank" rel="noopener">glBlendFunc函数官网文档</a></p>
 </blockquote>
 
       
@@ -512,13 +515,13 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -621,7 +624,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -632,9 +635,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -645,7 +646,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -667,7 +668,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -781,7 +782,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -818,7 +819,7 @@ GL_SRC_COLOR与GL_ONE_MINUS_SRC_COLOR在OpenGL旧版本中只能用于设置目�
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,40 +66,41 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android,tips," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+  <meta name="keywords" content="Android,tips,">
 
 
 
 
 
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
 
-<meta name="description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作  是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的">
 <meta name="keywords" content="Android,tips">
 <meta property="og:type" content="article">
 <meta property="og:title" content="(转)总结Android开发中必备的代码Review清单">
 <meta property="og:url" content="http://wodekouwei.com/2017/12/05/tips-android-review/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
-<meta property="og:updated_time" content="2017-12-05T06:50:12.694Z">
+<meta property="og:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作  是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-05T06:50:12.695Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="(转)总结Android开发中必备的代码Review清单">
-<meta name="twitter:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作 是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消">
+<meta name="twitter:description" content="前言本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。 此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～ 清理操作 页面退出时，是否完成必要的清理操作  是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的">
 
 
 
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/12/05/tips-android-review/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/12/05/tips-android-review/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -438,7 +437,8 @@
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文收集了我自己工作以来提交代码前的所有检查点。事实证明，这样能有效提高自己的代码质量和功能的稳定性。所以推荐大家以后每次提交代码前，都可以看下这份Review清单哈。</p>
 <p>此外，可能还有些检查点我并没有发现，欢迎大家踊跃在评论区补充哈～</p>
 <h3 id="清理操作"><a href="#清理操作" class="headerlink" title="清理操作"></a>清理操作</h3><ol>
-<li>页面退出时，是否完成必要的清理操作<ol>
+<li><p>页面退出时，是否完成必要的清理操作</p>
+<ol>
 <li>是否调用Handler的removeCallbacksAndMessages(null)来清空Handler里的消息；</li>
 <li>是否取消了还没完成的请求；</li>
 <li>在页面里注册的监听，是否反注册；</li>
@@ -449,7 +449,7 @@
 <li><p>数据库的游标是否已经关闭
 这个点一般人都知道，出问题一般在于，没有考虑到多线程并发时的情况下，Cursor没有被释放。
 所以数据库的操作需要加上同步代码块
-详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="external">http://www.2cto.com/kf/201408/329574.html</a></p>
+详细可参考：<a href="http://www.2cto.com/kf/201408/329574.html" target="_blank" rel="noopener">http://www.2cto.com/kf/201408/329574.html</a></p>
 </li>
 <li><p>打开过的文件流是否关闭</p>
 </li>
@@ -483,7 +483,8 @@
 若漏掉加上第三方包的混淆规则，会导致第三方包不该混淆的代码被混淆。在Debug版本没有发现问题，但是Release版本就会出现问题</p>
 </li>
 <li><p>系统应用添加so时，是否在固件对应的Android.mk文件上加入新增的so，否则系统可能编译不过</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@lib/armeabi/libcommon.so \</div><div class="line">@lib/armeabi/libabcdefg.so \</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@lib/armeabi/libcommon.so \</span><br><span class="line">@lib/armeabi/libabcdefg.so \</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <h3 id="注意要成对出现的地方"><a href="#注意要成对出现的地方" class="headerlink" title="注意要成对出现的地方"></a>注意要成对出现的地方</h3><ol>
@@ -498,9 +499,10 @@ onStart()、onStop();
 onCreate()、onDestory();
 onResume()、onPause();
 onCreateView()、onDestoryView()</p>
-<ol>
+<ol start="3">
 <li>若ListView的item复用了，对Item里View的操作是否成对出现
-比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">switch (type) &#123;</div><div class="line">    case ArticleListItem.TYPE_AD:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(tencentAdBean.title);</div><div class="line">        mGreenLabelView.setVisibility(VISIBLE);</div><div class="line">        mRedLabelView.setText(&quot;&quot;);</div><div class="line">        mRedLabelView.setVisibility(GONE);</div><div class="line">        break;</div><div class="line">    case ArticleListItem.TYPE_ARTICLE:</div><div class="line">        ......</div><div class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</div><div class="line">        mGreenLabelView.setVisibility(GONE);</div><div class="line">        mRedLabelView.setText(&quot;ABC&quot;);</div><div class="line">        mRedLabelView.setVisibility(VISIBLE);</div><div class="line">        break;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">switch (type) &#123;</span><br><span class="line">    case ArticleListItem.TYPE_AD:</span><br><span class="line">        ......</span><br><span class="line">        mTitleView.setText(tencentAdBean.title);</span><br><span class="line">        mGreenLabelView.setVisibility(VISIBLE);</span><br><span class="line">        mRedLabelView.setText(&quot;&quot;);</span><br><span class="line">        mRedLabelView.setVisibility(GONE);</span><br><span class="line">        break;</span><br><span class="line">    case ArticleListItem.TYPE_ARTICLE:</span><br><span class="line">        ......</span><br><span class="line">        mTitleView.setText(mzAdBean.adData.getTitle());</span><br><span class="line">        mGreenLabelView.setVisibility(GONE);</span><br><span class="line">        mRedLabelView.setText(&quot;ABC&quot;);</span><br><span class="line">        mRedLabelView.setVisibility(VISIBLE);</span><br><span class="line">        break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>比如以上对mTitleView、mGreenLabelView和mRedLabelView的操作，都是成对出现。否则ListView可能会由于Item复用，导致Item显示错乱问题</p>
@@ -519,9 +521,10 @@ onCreateView()、onDestoryView()</p>
 因为在View处于detached状态期间，post()里面的Runnable是不会被执行的。只有在此View处于attached状态时才会被执行。</li>
 </ol>
 <p>如果想改Runnable每次肯定会被执行，那么应该是用Handler.post来替代</p>
-<ol>
+<ol start="2">
 <li>假如程序可能多次在同一个Handler里post同一个Runnable，每次post之前都应该先清空这个Handler中还没执行的该Runnable
-如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">if (mCloudRun != null) &#123;</div><div class="line">    mHandler.removeCallbacks(mCloudRun);</div><div class="line">    mCloudRun = null;</div><div class="line">&#125;</div><div class="line">mCloudRun = new Runnable() &#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</div><div class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</div><div class="line">        RequestQueue.getInstance().addRequest(request);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">mHandler.post(mCloudRun);</div></pre></td></tr></table></figure>
+如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">if (mCloudRun != null) &#123;</span><br><span class="line">    mHandler.removeCallbacks(mCloudRun);</span><br><span class="line">    mCloudRun = null;</span><br><span class="line">&#125;</span><br><span class="line">mCloudRun = new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        CloudAccelerateSwitchRequest request = new CloudAccelerateSwitchRequest();</span><br><span class="line">        request.setPriority(RequestTask.PRIORITY_LOW);</span><br><span class="line">        RequestQueue.getInstance().addRequest(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">mHandler.post(mCloudRun);</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
@@ -535,12 +538,14 @@ onCreateView()、onDestoryView()</p>
 <li><p>修改数据库后，是否把数据库的版本号+1</p>
 </li>
 <li><p>启动第三方的Activity时，是否判断了该Intent能否被解析</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Intent sendIntent = new Intent(mContext, Demo.class);</div><div class="line">// 这种方式判断是否存在</div><div class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</div><div class="line">    startActivity(sendIntent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Intent sendIntent = new Intent(mContext, Demo.class);</span><br><span class="line">// 这种方式判断是否存在</span><br><span class="line">if (sendIntent.resolveActivity(getPackageManager()) != null) &#123;</span><br><span class="line">    startActivity(sendIntent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>若Activity不存在，会出现ActivityNotFoundException的异常</p>
-<ol>
-<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</div><div class="line">            android:exported=&quot;true&quot;/&gt;</div></pre></td></tr></table></figure>
+<ol start="5">
+<li>新注册的Activity、Service或Provider，若AndroidManifest.xml中exported属性为true，要考虑是否会引发安全性问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=&quot;com.inkenka.DemoActivity&quot;</span><br><span class="line">            android:exported=&quot;true&quot;/&gt;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>因为exported属性为true时，外部应用就可以直接调用起该Activity。
@@ -549,7 +554,7 @@ onCreateView()、onDestoryView()</p>
 <li>若外部应用直接启动详情页，从而让某些验证页面直接被绕过</li>
 <li>若外部应用给该Activity传递乱七八糟的Intent，可能让该应用崩溃。也就是Android中的拒绝服务漏洞</li>
 </ul>
-<ol>
+<ol start="5">
 <li><p>除数是否做了非0判断</p>
 </li>
 <li><p>不要在Activity的onCreate里调用PopupWindow的showAsLoaction方法，由于Activity还没被加载完，会报错</p>
@@ -571,9 +576,9 @@ onCreateView()、onDestoryView()</p>
 </ol>
 <blockquote>
 <p>转自:
-<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="external">良心推荐：总结Android开发中必备的代码Review清单</a></p>
+<a href="http://www.jianshu.com/p/4b65967fe4a0" target="_blank" rel="noopener">良心推荐：总结Android开发中必备的代码Review清单</a></p>
 </blockquote>
-<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="external">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
+<h2 id="补充-总结工作中的Android内存泄漏问题"><a href="#补充-总结工作中的Android内存泄漏问题" class="headerlink" title="补充:总结工作中的Android内存泄漏问题"></a>补充:<a href="http://www.jianshu.com/p/973ab884c397" target="_blank" rel="noopener">总结工作中的Android内存泄漏问题</a></h2><h3 id="简单判断是否有内存泄漏"><a href="#简单判断是否有内存泄漏" class="headerlink" title="简单判断是否有内存泄漏"></a>简单判断是否有内存泄漏</h3><p>判断内存泄漏的定位的大单位是Activity。</p>
 <p>可以通过反复进入退出一个Activity，然后用adb shell dumpsys meminfo + 包名 查看虚拟机的堆是否有不断地增长</p>
 <h3 id="定位内存泄漏"><a href="#定位内存泄漏" class="headerlink" title="定位内存泄漏"></a>定位内存泄漏</h3><h4 id="1-使用Leak-Canary"><a href="#1-使用Leak-Canary" class="headerlink" title="1.使用Leak Canary"></a>1.使用Leak Canary</h4><p>在代码上加入Leak Canary，然后不断跑Monkey或者手动反复进出不同页面。若出现内存泄漏问题，会自动导出来，生成以下页面。</p>
 <h4 id="2-使用DDMS导出hprof，并用MAT工具进行分析"><a href="#2-使用DDMS导出hprof，并用MAT工具进行分析" class="headerlink" title="2.使用DDMS导出hprof，并用MAT工具进行分析"></a>2.使用DDMS导出hprof，并用MAT工具进行分析</h4><ul>
@@ -592,13 +597,15 @@ onCreateView()、onDestoryView()</p>
 <p>静态变量的类里引用到Activity</p>
 <h4 id="注册与反注册、打开与关闭没成对出现的原因"><a href="#注册与反注册、打开与关闭没成对出现的原因" class="headerlink" title="注册与反注册、打开与关闭没成对出现的原因"></a>注册与反注册、打开与关闭没成对出现的原因</h4><p>比如：注册广播接收器、注册观察者（典型的譬如数据库的监听）等。或者自己写的跟Activity引用有关的clear()函数没有成对出现</p>
 <h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="解决内部类的问题（以Handler作为例子）"><a href="#解决内部类的问题（以Handler作为例子）" class="headerlink" title="解决内部类的问题（以Handler作为例子）"></a>解决内部类的问题（以Handler作为例子）</h4><ol>
-<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mHandler.removeCallbacksAndMessages(null);</div></pre></td></tr></table></figure>
+<li>onDestroy时候remove所有msgActivity finish后未处理的msg是问题根源，所以清空所有未被执行的msg<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mHandler.removeCallbacksAndMessages(null);</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>PS：比如Listener、Callback等其他内部类的问题，页面退出的时候，应该完成必要的清理操作，比如Cancel 请求</p>
-<ol>
+<ol start="2">
 <li>使用静态内部类 + weakReference
-静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">static class MyHandler extends Handler &#123;</div><div class="line">        WeakReference&lt;Activity &gt; mActivityReference;</div><div class="line">        MyHandler(Activity activity) &#123;</div><div class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void handleMessage(Message msg) &#123;</div><div class="line">            final Activity activity = mActivityReference.get();</div><div class="line">            if (activity != null) &#123;</div><div class="line">                mImageView.setImageBitmap(mBitmap);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+静态内部类不会保留对外部类的引用，如果一定要引用外部类，使用weakReference<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">static class MyHandler extends Handler &#123;</span><br><span class="line">        WeakReference&lt;Activity &gt; mActivityReference;</span><br><span class="line">        MyHandler(Activity activity) &#123;</span><br><span class="line">            mActivityReference= new WeakReference&lt;Activity&gt;(activity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">            final Activity activity = mActivityReference.get();</span><br><span class="line">            if (activity != null) &#123;</span><br><span class="line">                mImageView.setImageBitmap(mBitmap);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>PS:比如Listener、Callback等其他内部类的问题，也可以通过这个方法来解决</p>
@@ -624,13 +631,13 @@ onCreateView()、onDestoryView()</p>
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -735,7 +742,7 @@ onCreateView()、onDestoryView()</p>
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -746,9 +753,7 @@ onCreateView()、onDestoryView()</p>
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -759,7 +764,7 @@ onCreateView()、onDestoryView()</p>
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -781,7 +786,7 @@ onCreateView()、onDestoryView()</p>
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -875,7 +880,7 @@ onCreateView()、onDestoryView()</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理操作"><span class="nav-number">2.</span> <span class="nav-text">清理操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是否能进一步优化自己的代码"><span class="nav-number">3.</span> <span class="nav-text">是否能进一步优化自己的代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要小心第三方包"><span class="nav-number">4.</span> <span class="nav-text">要小心第三方包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意要成对出现的地方"><span class="nav-number">5.</span> <span class="nav-text">注意要成对出现的地方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防内存泄漏"><span class="nav-number">6.</span> <span class="nav-text">防内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler相关"><span class="nav-number">7.</span> <span class="nav-text">Handler相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">8.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能完成后，自测时的检查点"><span class="nav-number">9.</span> <span class="nav-text">功能完成后，自测时的检查点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充-总结工作中的Android内存泄漏问题"><span class="nav-number"></span> <span class="nav-text">补充:总结工作中的Android内存泄漏问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单判断是否有内存泄漏"><span class="nav-number">1.</span> <span class="nav-text">简单判断是否有内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位内存泄漏"><span class="nav-number">2.</span> <span class="nav-text">定位内存泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用Leak-Canary"><span class="nav-number">2.1.</span> <span class="nav-text">1.使用Leak Canary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用DDMS导出hprof，并用MAT工具进行分析"><span class="nav-number">2.2.</span> <span class="nav-text">2.使用DDMS导出hprof，并用MAT工具进行分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见导致内存泄漏的几个点"><span class="nav-number">3.</span> <span class="nav-text">常见导致内存泄漏的几个点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生命周期的原因"><span class="nav-number">3.1.</span> <span class="nav-text">生命周期的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部类的原因"><span class="nav-number">3.2.</span> <span class="nav-text">内部类的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#静态变量的原因"><span class="nav-number">3.3.</span> <span class="nav-text">静态变量的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注册与反注册、打开与关闭没成对出现的原因"><span class="nav-number">3.4.</span> <span class="nav-text">注册与反注册、打开与关闭没成对出现的原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法"><span class="nav-number">4.</span> <span class="nav-text">解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决内部类的问题（以Handler作为例子）"><span class="nav-number">4.1.</span> <span class="nav-text">解决内部类的问题（以Handler作为例子）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><span class="nav-number">4.2.</span> <span class="nav-text">单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的注册与反注册要成对出现"><span class="nav-number">4.3.</span> <span class="nav-text">对象的注册与反注册要成对出现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><span class="nav-number">4.4.</span> <span class="nav-text">不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><span class="nav-number">4.5.</span> <span class="nav-text">因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理操作"><span class="nav-number">2.</span> <span class="nav-text">清理操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是否能进一步优化自己的代码"><span class="nav-number">3.</span> <span class="nav-text">是否能进一步优化自己的代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要小心第三方包"><span class="nav-number">4.</span> <span class="nav-text">要小心第三方包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意要成对出现的地方"><span class="nav-number">5.</span> <span class="nav-text">注意要成对出现的地方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防内存泄漏"><span class="nav-number">6.</span> <span class="nav-text">防内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler相关"><span class="nav-number">7.</span> <span class="nav-text">Handler相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">8.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能完成后，自测时的检查点"><span class="nav-number">9.</span> <span class="nav-text">功能完成后，自测时的检查点</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#补充-总结工作中的Android内存泄漏问题"><span class="nav-number"></span> <span class="nav-text">补充:总结工作中的Android内存泄漏问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单判断是否有内存泄漏"><span class="nav-number">1.</span> <span class="nav-text">简单判断是否有内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位内存泄漏"><span class="nav-number">2.</span> <span class="nav-text">定位内存泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用Leak-Canary"><span class="nav-number">2.1.</span> <span class="nav-text">1.使用Leak Canary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用DDMS导出hprof，并用MAT工具进行分析"><span class="nav-number">2.2.</span> <span class="nav-text">2.使用DDMS导出hprof，并用MAT工具进行分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见导致内存泄漏的几个点"><span class="nav-number">3.</span> <span class="nav-text">常见导致内存泄漏的几个点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生命周期的原因"><span class="nav-number">3.1.</span> <span class="nav-text">生命周期的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部类的原因"><span class="nav-number">3.2.</span> <span class="nav-text">内部类的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#静态变量的原因"><span class="nav-number">3.3.</span> <span class="nav-text">静态变量的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注册与反注册、打开与关闭没成对出现的原因"><span class="nav-number">3.4.</span> <span class="nav-text">注册与反注册、打开与关闭没成对出现的原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法"><span class="nav-number">4.</span> <span class="nav-text">解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决内部类的问题（以Handler作为例子）"><span class="nav-number">4.1.</span> <span class="nav-text">解决内部类的问题（以Handler作为例子）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期"><span class="nav-number">4.2.</span> <span class="nav-text">单例类里面尽量不要传入Activity，最好穿入ApplicationContext。假如传入了Activity，持有的时长也不能大于Activity的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象的注册与反注册要成对出现"><span class="nav-number">4.3.</span> <span class="nav-text">对象的注册与反注册要成对出现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不使用WebView对象时，应该调用它的destory-函数来销毁它，并释放其占用的内存"><span class="nav-number">4.4.</span> <span class="nav-text">不使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View"><span class="nav-number">4.5.</span> <span class="nav-text">因为View会持有Context，所以注意不要异步引用View，不要让静态对象持有View，不要在集合框架中存储View</span></a></li></ol></li></ol></li></div>
             
 
           </div>
@@ -895,7 +900,7 @@ onCreateView()、onDestoryView()</p>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -932,7 +937,7 @@ onCreateView()、onDestoryView()</p>
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

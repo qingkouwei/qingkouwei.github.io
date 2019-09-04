@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="language,C," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="language,C,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,7 +96,8 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/10/31/l-c-dllist/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。 一、所用的链表类型的选择我们知道，链表也有非常多的类型">
-<meta property="og:updated_time" content="2017-12-05T06:49:51.509Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-05T06:49:51.510Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="(转)转使用C语言实现&quot;泛型&quot;链表">
 <meta name="twitter:description" content="看到这个标题，你可能非常惊讶，C语言也能实现泛型链表？我们知道链表是我们非常常用的数据结构，但是在C中却没有像C++中的STL那样有一个list的模板类，那么我们是否可以用C语言实现一个像STL中的list那样的泛型链表呢？答案是肯定的。下面就以本人的一个用C语言设计的链表为例子，来分析说明一下本人的设计和实现要点，希望能给你一点有用的帮助。 一、所用的链表类型的选择我们知道，链表也有非常多的类型">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/10/31/l-c-dllist/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/10/31/l-c-dllist/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -442,9 +441,11 @@
 3）接口的使用与C++中stl中list和泛型算法的使用大致相同。</p>
 <h3 id="二、list类型的定义"><a href="#二、list类型的定义" class="headerlink" title="二、list类型的定义"></a>二、list类型的定义</h3><p>为了让大家一睹为快，下面就给出这个用C语言实现的“泛型”的定义，再来说明，我这样设计的原因及要点，其定义如下：
 其定义在文件list_v2.c中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    void* data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;  </div><div class="line"></div><div class="line">struct list  </div><div class="line">&#123;  </div><div class="line">    struct node *head;//头指针，指向头结点  </div><div class="line">    int data_size;//链表对应的数据所占内存的大小  </div><div class="line">    int length;//链表list的长度  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>其声明在文件list_v2.h中
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </div><div class="line"></div><div class="line"></div><div class="line">//定义结点指针Node*为List类型的迭代器  </div><div class="line">typedef struct node* Iterator;  </div><div class="line"></div><div class="line"></div><div class="line">//List类型的定义  </div><div class="line">typedef struct list* List;  </div><div class="line"></div><div class="line"></div><div class="line">//初始化链表,数据域所占内存的大小由data_size给出  </div><div class="line">int InitList(List *list, int data_size);  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表list的末尾  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Append(List list, void *data,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把data的内容插入到链表的迭代器it_before的前面  </div><div class="line">//assign指定数据data间的赋值方法  </div><div class="line">Iterator Insert(List list, void *data, Iterator it_before,  </div><div class="line">                void (*assign)(void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </div><div class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </div><div class="line">                      List B, Iterator it_b_before);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list中迭代器it指向的结点  </div><div class="line">int Remove(List list, Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的第0个结点，下标从0开始  </div><div class="line">int RemoveFirst(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//删除链表list的最后一个结点  </div><div class="line">int RemoveLast(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//返回list中第index个数据的指针  </div><div class="line">void* At(List list, int index);  </div><div class="line"></div><div class="line"></div><div class="line">//在begin和end之间查找符合condition的第一个元素，  </div><div class="line">//比较函数由condition指向,比较的值由data指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </div><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </div><div class="line">                       int (*condition)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找list中第一个与data相等的元素的下标，  </div><div class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </div><div class="line">int IndexOf(List list, void *data,  </div><div class="line">            int (*equal)(const void*,const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最小值，比较函数由less指向  </div><div class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMin(Iterator begin, Iterator end,  </div><div class="line">                int (*less)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//查找在begin和end之间的最大值，比较函数由large指向  </div><div class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </div><div class="line">Iterator GetMax(Iterator begin, Iterator end,  </div><div class="line">                int (*large)(const void*, const void*));  </div><div class="line"></div><div class="line"></div><div class="line">//获取list的长度  </div><div class="line">int GetLength(List list);  </div><div class="line">//若list为空链表，则返回1，否则返回0  </div><div class="line">int IsEmpty(List list);  </div><div class="line">//销毁list  </div><div class="line">void DestroyList(List *list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的首迭代器  </div><div class="line">Iterator Begin(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </div><div class="line">Iterator End(List list);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </div><div class="line">Iterator Next(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </div><div class="line">Iterator Last(Iterator *it);  </div><div class="line"></div><div class="line"></div><div class="line">//通过迭代器it获得数据，相当于*p  </div><div class="line">void* GetData(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetNext(Iterator it);  </div><div class="line"></div><div class="line"></div><div class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </div><div class="line">Iterator GetLast(Iterator it);</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">typedef struct node  </span><br><span class="line">&#123;  </span><br><span class="line">    //循环双链表的结点结构  </span><br><span class="line">    void* data;//数据域指针  </span><br><span class="line">    struct node *next;//指向当前结点的下一结点  </span><br><span class="line">    struct node *last;//指向当前结点的上一结点  </span><br><span class="line">&#125;Node;  </span><br><span class="line"></span><br><span class="line">struct list  </span><br><span class="line">&#123;  </span><br><span class="line">    struct node *head;//头指针，指向头结点  </span><br><span class="line">    int data_size;//链表对应的数据所占内存的大小  </span><br><span class="line">    int length;//链表list的长度  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其声明在文件list_v2.h中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">//泛型循环双链表，带头结点，结点下标从0开始，头结点不计入下标值  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//定义结点指针Node*为List类型的迭代器  </span><br><span class="line">typedef struct node* Iterator;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//List类型的定义  </span><br><span class="line">typedef struct list* List;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//初始化链表,数据域所占内存的大小由data_size给出  </span><br><span class="line">int InitList(List *list, int data_size);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//把data的内容插入到链表list的末尾  </span><br><span class="line">//assign指定数据data间的赋值方法  </span><br><span class="line">Iterator Append(List list, void *data,  </span><br><span class="line">                void (*assign)(void*, const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//把data的内容插入到链表的迭代器it_before的前面  </span><br><span class="line">//assign指定数据data间的赋值方法  </span><br><span class="line">Iterator Insert(List list, void *data, Iterator it_before,  </span><br><span class="line">                void (*assign)(void*, const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//把链表A中迭代器it_a指向的结点移动到链表B中迭代器it_b_befroe的前面  </span><br><span class="line">Iterator MoveFromAtoB(List A, Iterator it_a,  </span><br><span class="line">                      List B, Iterator it_b_before);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//删除链表list中迭代器it指向的结点  </span><br><span class="line">int Remove(List list, Iterator it);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//删除链表list的第0个结点，下标从0开始  </span><br><span class="line">int RemoveFirst(List list);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//删除链表list的最后一个结点  </span><br><span class="line">int RemoveLast(List list);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//返回list中第index个数据的指针  </span><br><span class="line">void* At(List list, int index);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//在begin和end之间查找符合condition的第一个元素，  </span><br><span class="line">//比较函数由condition指向,比较的值由data指向  </span><br><span class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </span><br><span class="line">//根据condition函数的不同，可以查找第一个相等、大于或小于data的值  </span><br><span class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,  </span><br><span class="line">                       int (*condition)(const void*, const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//查找list中第一个与data相等的元素的下标，  </span><br><span class="line">//equal函数，当第一个参数与第二个参数的值相等时，返回1，否则返回0  </span><br><span class="line">int IndexOf(List list, void *data,  </span><br><span class="line">            int (*equal)(const void*,const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//查找在begin和end之间的最小值，比较函数由less指向  </span><br><span class="line">//当第一个参数的值小于第二个参数的值时，返回1，否则返回0  </span><br><span class="line">Iterator GetMin(Iterator begin, Iterator end,  </span><br><span class="line">                int (*less)(const void*, const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//查找在begin和end之间的最大值，比较函数由large指向  </span><br><span class="line">//当第一个参数的值大于第二个参数的值时，返回1，否则返回0  </span><br><span class="line">Iterator GetMax(Iterator begin, Iterator end,  </span><br><span class="line">                int (*large)(const void*, const void*));  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取list的长度  </span><br><span class="line">int GetLength(List list);  </span><br><span class="line">//若list为空链表，则返回1，否则返回0  </span><br><span class="line">int IsEmpty(List list);  </span><br><span class="line">//销毁list  </span><br><span class="line">void DestroyList(List *list);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获得list的首迭代器  </span><br><span class="line">Iterator Begin(List list);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获得list的尾迭代器，指向最后一个元素的下一个位置  </span><br><span class="line">Iterator End(List list);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//使it指向下一个位置，并返回指向下一个位置后的迭代器  </span><br><span class="line">Iterator Next(Iterator *it);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//使it指向上一个位置，并返回指向上一个位置后的迭代器  </span><br><span class="line">Iterator Last(Iterator *it);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//通过迭代器it获得数据，相当于*p  </span><br><span class="line">void* GetData(Iterator it);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取当前迭代器的下一个迭代器，注意，并不改变当前迭代器  </span><br><span class="line">Iterator GetNext(Iterator it);  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//获取当前迭代器的上一个迭代器，注意，并不改变当前迭代器  </span><br><span class="line">Iterator GetLast(Iterator it);</span><br></pre></td></tr></table></figure>
+
 <h3 id="三、如何实现隐藏链表的成员变量（即封装）"><a href="#三、如何实现隐藏链表的成员变量（即封装）" class="headerlink" title="三、如何实现隐藏链表的成员变量（即封装）"></a>三、如何实现隐藏链表的成员变量（即封装）</h3><p>首先，我们为什么需要封装呢？我觉得封装主要有三大好处。</p>
 <ol>
 <li>隔离变化，在程序中需要封装的通常是程序中最容易发生变化的地方，例如成员变量等，我们可以把它们封装起来，从而让它们的变化不会影响到系统的其他部分，也就是说，封装的是变化。</li>
@@ -457,26 +458,31 @@
 泛型，第一时间想起的可能是模板，但是在C语言中却没有这个东西。但是C语言中却有一个可以指向任何类型，在使用时，再根据具体的指针类型进行类型转换的指针类型，它就是<code>void*</code>。</p>
 <p>为什么void<em>可以指向任何类型的数据？这还得从C语言对于数据类型的处理方式来说明。在C语言中，我们使用<code>malloc</code>等函数来申请内存，而从内存的角度来看，数据是没有类型的，它们都是一串的0或1，而程序则根据不同的类型来解释这个内存单元中的数据的意义，例如对于内存中的数据，<code>FFFFFFFF</code>，如果它是一个有符号整型数据，它代表的是<code>-1</code>，而如果它是一个无符号整型数据，它代表的则是<code>2^32-1</code>。进一步说，如果你用一个<code>int</code>的指针变量p指向该内存，则</em>p就是-1，如果你用<code>unsigned int</code>的指针<code>p</code>指向该内存，则<code>*p = 2^32-1</code>。</p>
 <p>而我们使用<code>malloc</code>等函数时，也只需要说明申请的内存的大小即可，也不用说明申请的内存空间所存放的数据的类型，例如，我们申请一块内存空间来存放一个整型数据，则只需要<code>malloc(sizeof(int))</code>，即可，当然你完全可以把它当作一个具有4个单位的char数组来使用。所以我们可以使用void指针来指向我们申请的内存，申请内存的大小由链表中的成员data_size定义，它也是真正的data所占的内存大小。</p>
-<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Iterator Insert(List list, void *data, Iterator it_before,</div><div class="line">                void (*assign)(void*, const void*));</div></pre></td></tr></table></figure></p>
+<h3 id="五、为什么需要赋值函数指针assign"><a href="#五、为什么需要赋值函数指针assign" class="headerlink" title="五、为什么需要赋值函数指针assign"></a>五、为什么需要赋值函数指针assign</h3><p>这里来说明一下，该链表的数据的插入方式，我们的插入方式是，新建一个结点，把data指向的数据复制到结点中，并把该结点插入到链表中。插入的函数定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Iterator Insert(List list, void *data, Iterator it_before,</span><br><span class="line">                void (*assign)(void*, const void*));</span><br></pre></td></tr></table></figure>
+
 <p>从上面的解说中，我们可以看到链表中的成员data_size指示了链表中的数据所占的内存大小，那我们们就可以使用函数memcpy把data指向的数据复制到新建的结点的data所指向的内存即可。为什么还需要一个函数指针assign，来指向一个定义数据之间如何赋值的函数呢？其实这和面向对象语言中常说到的深复制和浅复制有关。</p>
 <p>注：memcpy函数的原型为：<code>void * memcpy ( void * destination, const void * source, size_t num );</code></p>
-<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">struct student  </div><div class="line">&#123;  </div><div class="line">    char *name;  </div><div class="line">    char *no;  </div><div class="line">    int age;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>试想一下，假如你的链表的数据类型不是int型等基本类型，也不是不含有指针的结构体，而是一个这样的结构体，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct student  </span><br><span class="line">&#123;  </span><br><span class="line">    char *name;  </span><br><span class="line">    char *no;  </span><br><span class="line">    int age;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
 <p>学生的姓名和学号都是能过动态分配内存而来的，并由student结构体中的name和no指针指向，那么当我们使用memcpy时，只能复制其指针，而不能复制其指向的数据，这样在很多情况下都会带来一定的问题。这个跟在C++中什么时候需要自己定义复制构造函数的情况类似。因为这种情况下，默认的复制构造函数并不能满足我们的需要，只能自己定义复制构造函数。</p>
 <p>所以在插入一个结点时，需要assign函数指针的原理与C++中自己定义复制构造函数的原理一样。它用于定义如何根据一个已有的对象生成一个该对象的拷贝对象。当然，可能在大多数的情况下，我们需要用到的数据类型都没有包含指针，所以在Insert函数的实现中，其实我也是有用到memcpy函数的，就是当assign为NULL时，就使用memcpy函数进行数据对象间的赋值，它其实就相当于C++中的默认复制构造函数或默认赋值操作函数。assign为NULL表示使用默认的逐位复制方式，即浅复制。</p>
-<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">typedef struct node  </div><div class="line">&#123;  </div><div class="line">    //循环双链表的结点结构  </div><div class="line">    DataType data;//数据域指针  </div><div class="line">    struct node *next;//指向当前结点的下一结点  </div><div class="line">    struct node *last;//指向当前结点的上一结点  </div><div class="line">&#125;Node;</div></pre></td></tr></table></figure></p>
+<h3 id="六、为什么不用typedef"><a href="#六、为什么不用typedef" class="headerlink" title="六、为什么不用typedef"></a>六、为什么不用typedef</h3><p>对于这个问题，其实很好回答。很多人实现一个通用链表是这样实现的，它们把node结构的实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct node  </span><br><span class="line">&#123;  </span><br><span class="line">    //循环双链表的结点结构  </span><br><span class="line">    DataType data;//数据域指针  </span><br><span class="line">    struct node *next;//指向当前结点的下一结点  </span><br><span class="line">    struct node *last;//指向当前结点的上一结点  </span><br><span class="line">&#125;Node;</span><br></pre></td></tr></table></figure>
+
 <p>然后，当需要使用整型的链表时，就把DataType用typedef为int。其实这样做的一个最大的缺陷就是一个程序中只能存在着一个数据类型的链表，例如，如果我需要一个int型的链表和一个float型的链表，那么该把DataType定义为int呢还是float呢？所以这种看似可行的方式，其实只是虚有其表，在现象中是行不能的，虽然不少的数据结构的书都是这样实现的，但是它却没有什么实用价值。</p>
 <p>而其本质的原因是把结点的数据域的数据类型与某一种特定的数据类型DataType绑定在一起，从而让链表不能独立地变化。</p>
 <h3 id="七、为什么只把结点的指针定义为Iterator"><a href="#七、为什么只把结点的指针定义为Iterator" class="headerlink" title="七、为什么只把结点的指针定义为Iterator"></a>七、为什么只把结点的指针定义为Iterator</h3><p>在C++中iterator是一个类，为什么在这里，我只把结点的指针声明为一个Iterator呢？其实受STL的影响，我在一开始时，也是把Iterator实现为一个结构体，它只有一个数据成员，就是一个指向Node的指针。但在后来的实践中，发现其实并没有必要。在C++中为什么把iterator定义为一个类，是为了重载*，-&gt;等运行符，让iterator使用起来跟普通的指针一样。但是在C语言中，并没有重载运行符的做法，所以直接把Ierator声明为一个Node的指针最为方便、直接和好用，所有的比较运算都可以直接进行，而无需要借助函数。而把它声明为一个结构体反而麻烦、累赘。</p>
-<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
-<p>而是
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</div></pre></td></tr></table></figure></p>
+<h3 id="八、为什么查找需要两个Iterator"><a href="#八、为什么查找需要两个Iterator" class="headerlink" title="八、为什么查找需要两个Iterator"></a>八、为什么查找需要两个Iterator</h3><p>其实这是参考了STL中的泛型算法的思想。而且本人觉得这是一种比较好的实现。为什么FindFirst的函数原型不是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Iterator FindFirst(List list,  int (*condition)(const void*, const void*));</span><br></pre></td></tr></table></figure>
+
+<p>而是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Iterator FindFirst(Iterator begin, Iterator end, void *data,int (*condition)(const void*, const void*));</span><br></pre></td></tr></table></figure>
+
 <p>们可以试想一下，这个链表的为char链表，链表的元素为ABCBCBC，我们要在链表中找出所有的B，如果查找算法是使用第一种定义的话，它只能找出第一个B，而后面的两个B就无能为力了，而第二种定义，则可以通过循环改变其始末迭代器来在不同的序列段间查找目标字符B的位置。</p>
 <blockquote>
-<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="external">使用C语言实现“泛型”链表</a></p>
+<p>转自<a href="http://blog.csdn.net/ljianhui/article/details/18748657" target="_blank" rel="noopener">使用C语言实现“泛型”链表</a></p>
 </blockquote>
 
       
@@ -500,13 +506,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -611,7 +617,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -622,9 +628,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -635,7 +639,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -657,7 +661,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -771,7 +775,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -808,7 +812,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

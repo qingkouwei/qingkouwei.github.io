@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android,tips,多线程," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="Android,tips,多线程,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,8 +96,9 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/04/10/tips-android-thread/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="1. Threading Performance在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。 众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://images.wodekouwei.com/tips-android-thread-201938105046.png">
-<meta property="og:updated_time" content="2019-03-08T03:05:12.999Z">
+<meta property="og:updated_time" content="2019-04-29T11:35:15.531Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android线程使用总结">
 <meta name="twitter:description" content="1. Threading Performance在程序开发的实践当中，为了让程序表现得更加流畅，我们肯定会需要使用到多线程来提升程序的并发执行性能。但是编写多线程并发的代码一直以来都是一个相对棘手的问题，所以想要获得更佳的程序性能，我们非常有必要掌握多线程并发编程的基础技能。 众所周知，Android 程序的大多数代码操作都必须执行在主线程，例如系统事件(例如设备屏幕发生旋转)，输入事件(例如用户">
@@ -129,7 +130,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/04/10/tips-android-thread/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/04/10/tips-android-thread/">
 
 
 
@@ -179,7 +180,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -209,7 +210,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -219,7 +220,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -229,7 +230,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -239,7 +240,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -249,7 +250,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -259,7 +260,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -272,7 +273,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -293,9 +294,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -332,7 +331,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -375,7 +374,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -418,7 +417,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -497,6 +496,7 @@
 <li>首先，因为 IntentService 内置的是 HandlerThread 作为异步线程，所以每一个交给 IntentService 的任务都将以队列的方式逐个被执行到，一旦队列中有某个任务执行时间过长，那么就会导致后续的任务都会被延迟处理。</li>
 <li>其次，通常使用到 IntentService 的时候，我们会结合使用 BroadcastReceiver 把工作线程的任务执行结果返回给主 UI 线程。使用广播容易引起性能问题，我们可以使用 LocalBroadcastManager 来发送只在程序内部传递的广播，从而提升广播的性能。我们也可以使用 runOnUiThread() 快速回调到主 UI 线程。</li>
 <li>最后，包含正在运行的 IntentService 的程序相比起纯粹的后台程序更不容易被系统杀死，该程序的优先级是介于前台程序与纯后台程序之间的。</li>
+<li>IntentService所有任务执行完后会执行自杀操作,此时再startService的时候会创建新的IntentService</li>
 </ul>
 <h3 id="8-Threading-and-Loaders"><a href="#8-Threading-and-Loaders" class="headerlink" title="8. Threading and Loaders"></a>8. Threading and Loaders</h3><p>当启动工作线程的 Activity 被销毁的时候，我们应该做点什么呢？为了方便的控制工作线程的启动与结束，Android 为我们引入了 Loader 来解决这个问题。我们知道 Activity 有可能因为用户的主动切换而频繁的被创建与销毁，也有可能是因为类似屏幕发生旋转等被动原因而销毁再重建。在 Activity 不停的创建与销毁的过程当中，很有可能因为工作线程持有 Activity 的 View 而导致内存泄漏(因为工作线程很可能持有 View 的强引用，另外工作线程的生命周期还无法保证和 Activity 的生命周期一致，这样就容易发生内存泄漏了)。除了可能引起内存泄漏之外，在 Activity 被销毁之后，工作线程还继续更新视图是没有意义的，因为此时视图已经不在界面上显示了。</p>
 <p>Loader 的出现就是为了确保工作线程能够和 Activity 的生命周期保持一致，同时避免出现前面提到的问题。</p>
@@ -521,7 +521,7 @@
 </ul>
 <p>上面八种不同的颜色区分了不同的操作所耗费的时间，为了便于我们迅速找出那些有问题的步骤，GPU Profiling 工具会显示 16ms 的阈值线，这样就很容易找出那些不合理的性能问题，再仔细看对应具体哪个步骤相对来说耗费时间比例更大，结合上面介绍的细化步骤，从而快速定位问题，修复问题。</p>
 <blockquote>
-<p><a href="http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022" target="_blank" rel="external">http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022</a></p>
+<p><a href="http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022" target="_blank" rel="noopener">http://bugly.qq.com/bbs/forum.php?mod=viewthread&amp;tid=1022</a></p>
 </blockquote>
 <h3 id="线程生命周期"><a href="#线程生命周期" class="headerlink" title="线程生命周期"></a>线程生命周期</h3><p><img src="http://images.wodekouwei.com/tips-android-thread-201938105046.png" alt="tips-android-thread-201938105046"></p>
 <p>Android系统基于精简过后的linux内核，Linux系统的调度器在分配time slice的时候，采用的CFS（Completely fair scheduler）策略，不仅会参考单个线程的优先级，还会追踪每个线程已经获取到的time slice数量。优先级高的线程不一定能在争取timeslice上有绝对的优势。</p>
@@ -530,8 +530,9 @@
 <li>default group:能获得绝大部分的timeslice（UI线程就属于此列）</li>
 <li>background group:工作线程，最多被分配10%的timeslice</li>
 </ul>
-<p>其中background group需要开发者显示的归位（官方建议）
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">new Thread(new Runnable()&#123;</div><div class="line">    @Override</div><div class="line">    public void run()&#123;</div><div class="line">        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</div><div class="line">        // do sth</div><div class="line">    &#125;</div><div class="line">&#125;).start();</div></pre></td></tr></table></figure></p>
+<p>其中background group需要开发者显示的归位（官方建议）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">new Thread(new Runnable()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run()&#123;</span><br><span class="line">        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</span><br><span class="line">        // do sth</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+
 <h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><ul>
 <li>共享内存</li>
 <li>文件、数据库</li>
@@ -559,21 +560,45 @@
 <li>没有线程切换的接口，要传递处理结果到UI线程，需要些额外的线程切换代码</li>
 <li>如果从UI线程启动，该线程优先级默认为Default</li>
 </ul>
-<h4 id="AsyncTask"><a href="#AsyncTask" class="headerlink" title="AsyncTask"></a>AsyncTask<params,progress,result></params,progress,result></h4><p>必须遵守的规则:</p>
+<h4 id="AsyncTask-lt-Params-Progress-Result-gt"><a href="#AsyncTask-lt-Params-Progress-Result-gt" class="headerlink" title="AsyncTask&lt;Params,Progress,Result&gt;"></a>AsyncTask&lt;Params,Progress,Result&gt;</h4><p>必须遵守的规则:</p>
 <ul>
 <li>Task实例必须在UI线程中创建</li>
 <li>execute方法必须在UI线程中调用</li>
 <li>该Task只能被执行一次,多次调用时会出现异常</li>
 <li>不要手动调用onPreExecute….等生命周期方法，使用publishProgress()更新进度</li>
 </ul>
-<h4 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h4><p>Thread、AsyncTask适合处理单个任务的场景，HandlerThread适合串行处理多任务的场景。当需要并行的处理多任务时，ThreadPoolExecutor是更好的选择。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public static Executor THREAD_POOL_EXECUTOR</div><div class="line">        = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,</div><div class="line">        TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);</div><div class="line"></div><div class="line">//execute</div><div class="line">THREAD_POOL_EXECUTOR.execute(Runnable XX);</div></pre></td></tr></table></figure></p>
+<h4 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h4><p>Thread、AsyncTask适合处理单个任务的场景，HandlerThread适合串行处理多任务的场景。当需要并行的处理多任务时，ThreadPoolExecutor是更好的选择。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static Executor THREAD_POOL_EXECUTOR</span><br><span class="line">        = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,</span><br><span class="line">        TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);</span><br><span class="line"></span><br><span class="line">//execute</span><br><span class="line">THREAD_POOL_EXECUTOR.execute(Runnable XX);</span><br></pre></td></tr></table></figure>
+
 <p>代价</p>
 <ul>
 <li>每一个新线程至少消耗64kb内存</li>
 <li>线程的切换回带来额外开销（switch context）</li>
 <li>尽量复用已有的工作线程</li>
 </ul>
+<h3 id="Android进程中线程"><a href="#Android进程中线程" class="headerlink" title="Android进程中线程"></a>Android进程中线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">ps | grep &apos;joyodream&apos;  找到 app 的pid； joyodream为包名的一部分</span><br><span class="line">ps -t pid 查找指定pid的线程信息 例如：</span><br><span class="line"></span><br><span class="line"> ps -t 14500</span><br><span class="line">手机</span><br><span class="line">USER PID PPID VSIZE RSS WCHAN PC NAME</span><br><span class="line">u0_a118   14500 375   2521896 137196 SyS_epoll_ 0000000000 S com.joyodream.bindtest</span><br><span class="line">u0_a118   14506 14500 2521896 137196 do_sigtime 0000000000 S Signal Catcher</span><br><span class="line">u0_a118   14507 14500 2521896 137196 poll_sched 0000000000 S JDWP</span><br><span class="line">u0_a118   14508 14500 2521896 137196 futex_wait 0000000000 S ReferenceQueueD</span><br><span class="line">u0_a118   14509 14500 2521896 137196 futex_wait 0000000000 S FinalizerDaemon</span><br><span class="line">u0_a118   14510 14500 2521896 137196 futex_wait 0000000000 S FinalizerWatchd</span><br><span class="line">u0_a118   14511 14500 2521896 137196 futex_wait 0000000000 S HeapTaskDaemon</span><br><span class="line">u0_a118   14512 14500 2521896 137196 binder_thr 0000000000 S Binder_1</span><br><span class="line">u0_a118   14513 14500 2521896 137196 binder_thr 0000000000 S Binder_2</span><br><span class="line">u0_a118   14515 14500 2521896 137196 SyS_epoll_ 0000000000 S RenderThread</span><br><span class="line">u0_a118   14517 14500 2521896 137196 futex_wait 0000000000 S mali-mem-purge</span><br><span class="line">u0_a118   14518 14500 2521896 137196 kbase_read 0000000000 S mali-event-hnd</span><br><span class="line">u0_a118   14519 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14520 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14521 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14522 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14523 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14524 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14525 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14526 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14527 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14528 14500 2521896 137196 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a118   14529 14500 2521896 137196 futex_wait 0000000000 S mali-renderer</span><br><span class="line">u0_a118   14530 14500 2521896 137196 futex_wait 0000000000 S mali-hist-dump</span><br><span class="line">u0_a118   14531 14500 2521896 137196 futex_wait 0000000000 S ged-swd</span><br><span class="line">u0_a118   14533 14500 2521896 137196 futex_wait 0000000000 S hwuiTask1</span><br><span class="line"> </span><br><span class="line">1+ 手机</span><br><span class="line">u0_a100 19418 284 1609932 43208 ffffffff 00000000 S com.joyodream.bindtest</span><br><span class="line">u0_a100   19424 19418 1609932 43208 ffffffff 00000000 S Heap thread poo</span><br><span class="line">u0_a100   19425 19418 1609932 43208 ffffffff 00000000 S Heap thread poo</span><br><span class="line">u0_a100   19426 19418 1609932 43208 ffffffff 00000000 S Heap thread poo</span><br><span class="line">u0_a100   19427 19418 1609932 43208 ffffffff 00000000 S Signal Catcher</span><br><span class="line">u0_a100   19428 19418 1609932 43208 ffffffff 00000000 S JDWP</span><br><span class="line">u0_a100   19429 19418 1609932 43208 ffffffff 00000000 S ReferenceQueueD</span><br><span class="line">u0_a100   19430 19418 1609932 43208 ffffffff 00000000 S FinalizerDaemon</span><br><span class="line">u0_a100   19431 19418 1609932 43208 ffffffff 00000000 S FinalizerWatchd</span><br><span class="line">u0_a100   19432 19418 1609932 43208 ffffffff 00000000 S HeapTrimmerDaem</span><br><span class="line">u0_a100   19433 19418 1609932 43208 ffffffff 00000000 S GCDaemon</span><br><span class="line">u0_a100   19434 19418 1609932 43208 ffffffff 00000000 S Binder_1</span><br><span class="line">u0_a100   19435 19418 1609932 43208 ffffffff 00000000 S Binder_2</span><br><span class="line">u0_a100   19438 19418 1609932 43208 ffffffff 00000000 S android.bg</span><br><span class="line">u0_a100   19464 19418 1609932 43208 ffffffff 00000000 S RenderThread</span><br><span class="line">u0_a100   19465 19418 1609932 43208 ffffffff 00000000 S AsyncQueryWorke</span><br><span class="line">u0_a100   19470 19418 1609932 43208 ffffffff 00000000 S GL updater</span><br><span class="line">u0_a100   19474 19418 1609932 43208 ffffffff 00000000 S hwuiTask1</span><br><span class="line">一个Hellow world App，包含至少2个Binder线程（偶尔出现3个），FinalizerDaemon线程、FinalizerWatchd线程、RenderThread、主线程、ReferenceQueued、HeapTaskDaemon、SignalCatcher、GCDaemon、hwuiTask</span><br><span class="line"></span><br><span class="line">三星SM N9200 7.0</span><br><span class="line">USER      PID   PPID  VSIZE  RSS   WCHAN              PC  NAME</span><br><span class="line">u0_a370   19657 3183  1916084 87592 SyS_epoll_ 0000000000 S com.lianjia.demo</span><br><span class="line">u0_a370   19662 19657 1916084 87592 futex_wait 0000000000 S Jit thread pool</span><br><span class="line">u0_a370   19663 19657 1916084 87592 do_sigtime 0000000000 S Signal Catcher</span><br><span class="line">u0_a370   19664 19657 1916084 87592 poll_sched 0000000000 S JDWP</span><br><span class="line">u0_a370   19666 19657 1916084 87592 futex_wait 0000000000 S ReferenceQueueD</span><br><span class="line">u0_a370   19667 19657 1916084 87592 futex_wait 0000000000 S FinalizerDaemon</span><br><span class="line">u0_a370   19668 19657 1916084 87592 futex_wait 0000000000 S FinalizerWatchd</span><br><span class="line">u0_a370   19669 19657 1916084 87592 futex_wait 0000000000 S HeapTaskDaemon</span><br><span class="line">u0_a370   19670 19657 1916084 87592 binder_thr 0000000000 S Binder:19657_1</span><br><span class="line">u0_a370   19671 19657 1916084 87592 binder_thr 0000000000 S Binder:19657_2</span><br><span class="line">u0_a370   19672 19657 1916084 87592 futex_wait 0000000000 S Profile Saver</span><br><span class="line">u0_a370   19676 19657 1916084 87592 SyS_epoll_ 0000000000 S RenderThread</span><br><span class="line">u0_a370   19678 19657 1916084 87592 futex_wait 0000000000 S mali-mem-purge</span><br><span class="line">u0_a370   19679 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19680 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19681 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19682 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19683 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19684 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19685 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19686 19657 1916084 87592 futex_wait 0000000000 S mali-utility-wo</span><br><span class="line">u0_a370   19687 19657 1916084 87592 poll_sched 0000000000 S mali-cmar-backe</span><br><span class="line">u0_a370   19688 19657 1916084 87592 futex_wait 0000000000 S mali-hist-dump</span><br><span class="line">u0_a370   19689 19657 1916084 87592 futex_wait 0000000000 S hwuiTask1</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>“Binder_1”@4,098 in group “main”: RUNNING 就是我们的ApplicationThread，这个类实现了IBinder接口，用于进程间通信。具体来说，是我们的应用程序和Ams通信的工具。</li>
+<li>“Binder_2”@4,099 in group “main”: RUNNING 就是我们的ViewRoot.W对象，它也是实现了IBinder接口，是用于我们的应用程序和Wms通信的工具。</li>
+<li>“FinalizerDaemon”@4,095: WAIT</li>
+<li>“FinalizerWatchdogDaemon”@4,096: WAIT</li>
+<li>“HeapTaskDaemon”@4,097: MONITOR</li>
+<li>“main”@4,092 in group “main”: SLEEPING //UI线程</li>
+<li>“ReferenceQueueDaemon”@4,094: WAIT</li>
+<li>“Signal Catcher”@4,093: WAIT</li>
+</ol>
+<h4 id="多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？"><a href="#多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？" class="headerlink" title="多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？"></a>多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？</h4><p>一个content provider可以接受来自另外一个进程的数据请求。尽管ContentResolver与ContentProvider类隐藏了实现细节，但是ContentProvider所提供的query()，insert()，delete()，update()都是在ContentProvider进程的线程池中被调用执行的，而不是进程的主线程中。这个线程池是有Binder创建和维护的，其实使用的就是每个应用进程中的Binder线程池。
+你觉得Android设计ContentProvider的目的是什么呢？</p>
+<ol>
+<li>隐藏数据的实现方式，对外提供统一的数据访问接口；</li>
+<li>更好的数据访问权限管理。ContentProvider可以对开发的数据进行权限设置，不同的URI可以对应不同的权限，只有符合权限要求的组件才能访问到ContentProvider的具体操作。</li>
+<li>ContentProvider封装了跨进程共享的逻辑，我们只需要Uri即可访问数据。由系统来管理ContentProvider的创建、生命周期及访问的线程分配，简化我们在应用间共享数据（进程间通信）的方式。我们只管通过ContentResolver访问ContentProvider所提示的数据接口，而不需要担心它所在进程是启动还是未启动。</li>
+</ol>
+<p>运行在主线程的ContentProvider为什么不会影响主线程的UI操作?
+标准答案：
+ContentProvider的onCreate()是运行在UI线程的，而query()，insert()，delete()，update()是运行在线程池中的工作线程的，所以调用这向个方法并不会阻塞ContentProvider所在进程的主线程，但可能会阻塞调用者所在的进程的UI线程！</p>
+<p>所以，调用ContentProvider的操作仍然要放在子线程中去做。虽然直接的CRUD的操作是在工作线程的，但系统会让你的调用线程等待这个异步的操作完成，你才可以继续线程之前的工作</p>
 
       
     </div>
@@ -596,13 +621,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -709,7 +734,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -720,9 +745,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -733,7 +756,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -755,7 +778,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -849,7 +872,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Threading-Performance"><span class="nav-number">1.</span> <span class="nav-text">1. Threading Performance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Understanding-Android-Threading"><span class="nav-number">2.</span> <span class="nav-text">2. Understanding Android Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Memory-amp-Threading"><span class="nav-number">3.</span> <span class="nav-text">3. Memory & Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Good-AsyncTask-Hunting"><span class="nav-number">4.</span> <span class="nav-text">4. Good AsyncTask Hunting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Getting-a-HandlerThread"><span class="nav-number">5.</span> <span class="nav-text">5. Getting a HandlerThread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Swimming-in-Threadpools"><span class="nav-number">6.</span> <span class="nav-text">6. Swimming in Threadpools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-The-Zen-of-IntentService"><span class="nav-number">7.</span> <span class="nav-text">7. The Zen of IntentService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Threading-and-Loaders"><span class="nav-number">8.</span> <span class="nav-text">8. Threading and Loaders</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-The-Importance-of-Thread-Priority"><span class="nav-number">9.</span> <span class="nav-text">9. The Importance of Thread Priority</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-Profile-GPU-Rendering-M-Update"><span class="nav-number">10.</span> <span class="nav-text">10. Profile GPU Rendering : M Update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程生命周期"><span class="nav-number">11.</span> <span class="nav-text">线程生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程间通信"><span class="nav-number">12.</span> <span class="nav-text">线程间通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UI-Main-thread"><span class="nav-number">13.</span> <span class="nav-text">UI / Main thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在非UI线程中更新UI"><span class="nav-number">14.</span> <span class="nav-text">在非UI线程中更新UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程使用方式"><span class="nav-number">15.</span> <span class="nav-text">线程使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Handler"><span class="nav-number">15.1.</span> <span class="nav-text">Handler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HandlerThread"><span class="nav-number">15.2.</span> <span class="nav-text">HandlerThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thread类"><span class="nav-number">15.3.</span> <span class="nav-text">Thread类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AsyncTask"><span class="nav-number">15.4.</span> <span class="nav-text">AsyncTask</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">15.5.</span> <span class="nav-text">ThreadPoolExecutor</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Threading-Performance"><span class="nav-number">1.</span> <span class="nav-text">1. Threading Performance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Understanding-Android-Threading"><span class="nav-number">2.</span> <span class="nav-text">2. Understanding Android Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Memory-amp-Threading"><span class="nav-number">3.</span> <span class="nav-text">3. Memory &amp; Threading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Good-AsyncTask-Hunting"><span class="nav-number">4.</span> <span class="nav-text">4. Good AsyncTask Hunting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Getting-a-HandlerThread"><span class="nav-number">5.</span> <span class="nav-text">5. Getting a HandlerThread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Swimming-in-Threadpools"><span class="nav-number">6.</span> <span class="nav-text">6. Swimming in Threadpools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-The-Zen-of-IntentService"><span class="nav-number">7.</span> <span class="nav-text">7. The Zen of IntentService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Threading-and-Loaders"><span class="nav-number">8.</span> <span class="nav-text">8. Threading and Loaders</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-The-Importance-of-Thread-Priority"><span class="nav-number">9.</span> <span class="nav-text">9. The Importance of Thread Priority</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-Profile-GPU-Rendering-M-Update"><span class="nav-number">10.</span> <span class="nav-text">10. Profile GPU Rendering : M Update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程生命周期"><span class="nav-number">11.</span> <span class="nav-text">线程生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程间通信"><span class="nav-number">12.</span> <span class="nav-text">线程间通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UI-Main-thread"><span class="nav-number">13.</span> <span class="nav-text">UI / Main thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在非UI线程中更新UI"><span class="nav-number">14.</span> <span class="nav-text">在非UI线程中更新UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程使用方式"><span class="nav-number">15.</span> <span class="nav-text">线程使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Handler"><span class="nav-number">15.1.</span> <span class="nav-text">Handler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HandlerThread"><span class="nav-number">15.2.</span> <span class="nav-text">HandlerThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thread类"><span class="nav-number">15.3.</span> <span class="nav-text">Thread类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AsyncTask-lt-Params-Progress-Result-gt"><span class="nav-number">15.4.</span> <span class="nav-text">AsyncTask&lt;Params,Progress,Result&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">15.5.</span> <span class="nav-text">ThreadPoolExecutor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android进程中线程"><span class="nav-number">16.</span> <span class="nav-text">Android进程中线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？"><span class="nav-number">16.1.</span> <span class="nav-text">多个进程同时调用一个ContentProvider的query获取数据，ContentPrvoider是如何反应的呢？</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -869,7 +892,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -906,7 +929,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

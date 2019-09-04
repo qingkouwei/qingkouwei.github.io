@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,40 +66,41 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="多媒体," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+  <meta name="keywords" content="多媒体,">
 
 
 
 
 
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
 
-<meta name="description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="概述 数字视频编码概述(熵编码/Huffman编码)  1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720*576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720 * 576 + 360 * 576 + 360 * 576) * 25帧/s * 8bit = 165.888Mbit/s。 如果视频信号数字化后直接">
 <meta name="keywords" content="多媒体">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多媒体技术(五)之数字音频视频信号的压缩">
 <meta property="og:url" content="http://wodekouwei.com/2017/06/20/media-compress/index.html">
 <meta property="og:site_name" content="老司机种菜">
-<meta property="og:description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
+<meta property="og:description" content="概述 数字视频编码概述(熵编码/Huffman编码)  1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720*576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720 * 576 + 360 * 576 + 360 * 576) * 25帧/s * 8bit = 165.888Mbit/s。 如果视频信号数字化后直接">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-03-04T15:02:51.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多媒体技术(五)之数字音频视频信号的压缩">
-<meta name="twitter:description" content="概述 数字视频编码概述(熵编码/Huffman编码) 1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720  576 + 360  576 + 360  576)  25帧/s  8bit = 165.888Mbit/s。 如果视频信号数字化后直接存放在650M">
+<meta name="twitter:description" content="概述 数字视频编码概述(熵编码/Huffman编码)  1. 数字视频压缩的必要性和可能性按ITU-R BT. 601建议，数字化后的输入图像格式为720*576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit， 则数码率：(720 * 576 + 360 * 576 + 360 * 576) * 25帧/s * 8bit = 165.888Mbit/s。 如果视频信号数字化后直接">
 
 
 
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/06/20/media-compress/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/06/20/media-compress/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -436,12 +435,12 @@
 
       
         <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><blockquote>
-<p><a href="http://blog.csdn.net/u013354805/article/details/50112353" target="_blank" rel="external">数字视频编码概述(熵编码/Huffman编码)</a></p>
-<h4 id="1-数字视频压缩的必要性和可能性"><a href="#1-数字视频压缩的必要性和可能性" class="headerlink" title="1. 数字视频压缩的必要性和可能性"></a>1. 数字视频压缩的必要性和可能性</h4><p>按ITU-R BT. 601建议，数字化后的输入图像格式为720<em>576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit，
-则数码率：(720 </em> 576 + 360 <em> 576 + 360 </em> 576) <em> 25帧/s </em> 8bit = 165.888Mbit/s。
+<p><a href="http://blog.csdn.net/u013354805/article/details/50112353" target="_blank" rel="noopener">数字视频编码概述(熵编码/Huffman编码)</a></p>
+</blockquote>
+<h4 id="1-数字视频压缩的必要性和可能性"><a href="#1-数字视频压缩的必要性和可能性" class="headerlink" title="1. 数字视频压缩的必要性和可能性"></a>1. 数字视频压缩的必要性和可能性</h4><p>按ITU-R BT. 601建议，数字化后的输入图像格式为720*576像素，帧频为25帧/s，采样格式为4:2:2，量化精度为8bit，
+则数码率：(720 * 576 + 360 * 576 + 360 * 576) * 25帧/s * 8bit = 165.888Mbit/s。
 如果视频信号数字化后直接存放在650MB的光盘中，在不考虑音频信号的情况下，每张光盘只能存储31s的视频信号。
 数据压缩的理论基础是信息论。从信息论的角度来看，压缩就是去掉数据中的冗余，即保留不确定的信息，去掉确定的信息（可推知的），也就是用一种更接近信息本质的描述来代替原有冗余的描述。数据图像和视频数据中存在着大量的数据冗余和主观视觉冗余，因此图像和视频数据压缩不仅是必要的，而且也是可能的。</p>
-</blockquote>
 <h5 id="1-1-空间冗余"><a href="#1-1-空间冗余" class="headerlink" title="1.1 空间冗余"></a>1.1 空间冗余</h5><p>空间冗余也称空域冗余，是一种与像素间相关性直接联系的数据冗余。例如：数字图像的亮度信号和色度信号在空间域（X，Y坐标系）虽然属于一个随机场分布，但是他们可以看成为一个平稳的马尔可夫场。通俗讲，图像像素点在空间域中的亮度值和色度信号值，除了边界轮毂外，都是缓慢变化。因此，图像的帧内编码，即以减少空间冗余进行数据压缩。</p>
 <h5 id="1-2-时间冗余"><a href="#1-2-时间冗余" class="headerlink" title="1.2 时间冗余"></a>1.2 时间冗余</h5><p>时间冗余也称为时域冗余，它是针对视频序列图像而言的。视频序列每秒有25 ~ 30帧图像，相邻帧之间的时间间隔很小（例如，帧频为25Hz的电视信号，期帧间间隔只有 0.04s）,使得图像有很强的相关性。因此，对于视频压缩而言，通常采用运动估值和运动补偿预测技术来消除时间冗余。</p>
 <h5 id="1-3-统计冗余"><a href="#1-3-统计冗余" class="headerlink" title="1.3 统计冗余"></a>1.3 统计冗余</h5><p>统计冗余也称编码表示冗余或符合冗余。由信息论的有关原来可知，为了表示图像数据的一个像素点，只要按其信息熵的大小分配相应的比特数即可。若用相同码长表示不同出现概率的符号，则会造成比特数的浪费。如果采用可变长编码技术，对出现概率大的符号用短码字表示，对出现概率小的符号用长码字表示，则可去除符号冗余，从而节约码字，这就是熵编码的思想。</p>
@@ -490,13 +489,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -599,7 +598,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -610,9 +609,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -623,7 +620,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -645,7 +642,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -759,7 +756,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -796,7 +793,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

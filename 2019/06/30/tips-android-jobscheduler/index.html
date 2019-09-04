@@ -1,0 +1,1110 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="介绍JobScheduler是在Android 5.0添加的，它可以检测网络状态、设备是否充电中、低电量、低存储等状态，当所有条件都满足时就会触发执行对应的JobService来完成任务。同时具备了重试、定时执行、持久化任务(设备重启后可恢复任务)等功能。可谓是十分强大 JobScheduler的使用大致分为三步:  创建JobService类 创建一个JobInfo 获取JobScheduler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tips-android-jobscheduler">
+<meta property="og:url" content="http://wodekouwei.com/2019/06/30/tips-android-jobscheduler/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="介绍JobScheduler是在Android 5.0添加的，它可以检测网络状态、设备是否充电中、低电量、低存储等状态，当所有条件都满足时就会触发执行对应的JobService来完成任务。同时具备了重试、定时执行、持久化任务(设备重启后可恢复任务)等功能。可谓是十分强大 JobScheduler的使用大致分为三步:  创建JobService类 创建一个JobInfo 获取JobScheduler">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-30T10:07:14.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tips-android-jobscheduler">
+<meta name="twitter:description" content="介绍JobScheduler是在Android 5.0添加的，它可以检测网络状态、设备是否充电中、低电量、低存储等状态，当所有条件都满足时就会触发执行对应的JobService来完成任务。同时具备了重试、定时执行、持久化任务(设备重启后可恢复任务)等功能。可谓是十分强大 JobScheduler的使用大致分为三步:  创建JobService类 创建一个JobInfo 获取JobScheduler">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/06/30/tips-android-jobscheduler/">
+
+
+
+
+
+  <title> tips-android-jobscheduler | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/06/30/tips-android-jobscheduler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                tips-android-jobscheduler
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-30T17:12:33+08:00">
+                2019-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/06/30/tips-android-jobscheduler/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>JobScheduler是在Android 5.0添加的，它可以检测网络状态、设备是否充电中、低电量、低存储等状态，当所有条件都满足时就会触发执行对应的JobService来完成任务。同时具备了重试、定时执行、持久化任务(设备重启后可恢复任务)等功能。可谓是十分强大
+JobScheduler的使用大致分为三步:</p>
+<ol>
+<li>创建JobService类</li>
+<li>创建一个JobInfo</li>
+<li>获取JobScheduler系统服务执行任务</li>
+</ol>
+<h4 id="1-创建JobService"><a href="#1-创建JobService" class="headerlink" title="1 创建JobService"></a>1 创建JobService</h4><p>JobScheduler的原理大致是是通过监听手机状态，当条件满足时启动Service执行任务。
+因此在使用JobScheduler之前，我们需要定义一个Service，当然并不是随随便便定义，而是需要派生自JobService。
+只需要重写onStopJob和onStartJob即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class DemoJobService: JobService() &#123;</span><br><span class="line">    </span><br><span class="line">    override fun onStartJob(params: JobParameters?): Boolean &#123;</span><br><span class="line">        //do sth...</span><br><span class="line">        </span><br><span class="line">        //这个返回值是有讲究的</span><br><span class="line">        //true表示Service的工作在一个独立线程中执行，工作完成之后需要调用jobFinish方法通知JobScheduler工作完成</span><br><span class="line">        //false表示Service的工作已经完成，JobScheduler收到通知之后会释放资源</span><br><span class="line">        return false</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //该方法会在一些极端场景下触发</span><br><span class="line">    //比如当前的Job需要有Wifi连接的场景下才可执行，但是在执行期间</span><br><span class="line">    //用户关闭Wifi，那么就会触发该方法</span><br><span class="line">    override fun onStopJob(params: JobParameters?): Boolean &#123;</span><br><span class="line">        //do sth...</span><br><span class="line">        //true表示需要进行重试</span><br><span class="line">        //false表示不再进行重试，Job将会被丢弃</span><br><span class="line">        return true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时，在manifest中注册时，还需要设置一个权限(否则会报错)，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;application</span><br><span class="line">        android:allowBackup=&quot;true&quot;</span><br><span class="line">        android:icon=&quot;@mipmap/ic_launcher&quot;</span><br><span class="line">        android:label=&quot;@string/app_name&quot;</span><br><span class="line">        android:supportsRtl=&quot;true&quot;</span><br><span class="line">        android:theme=&quot;@style/AppTheme&quot;&gt;</span><br><span class="line">    //...</span><br><span class="line">    &lt;service android:name=&quot;.DemoJobService&quot; </span><br><span class="line">             android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot;/&gt;</span><br><span class="line">&lt;/application&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-创建JobInfo"><a href="#2-创建JobInfo" class="headerlink" title="2 创建JobInfo"></a>2 创建JobInfo</h4><p>JobInfo是对任务的描述，比如说需要监听哪些状态、重试策略、任务执行时间、是否持久化等等。
+JobInfo.Builder的构造函数需要传入一个jobId，是Job的唯一标志，后续通过该jobId来取消Job。
+通过Builder模式构造JobInfo。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">val jobInfo = JobInfo.Builder(1, ComponentName(packageName, DemoJobService::class.java.name))</span><br><span class="line">    .setBackoffCriteria(1000,JobInfo.BACKOFF_POLICY_LINEAR) //重试机制</span><br><span class="line">    .setMinimumLatency(1000)//设置延迟时间</span><br><span class="line">    .setOverrideDeadline(10000)//设置最后期限，如果达到该时间点，Job还没被执行，那么会强制执行一次</span><br><span class="line">//                .setPeriodic(2000)//每隔2s执行一次，跟上面两个会冲突</span><br><span class="line">    .setPersisted(true)//持久化，就算手机关机，启动之后也可以恢复Job，需要RECEIVE_BOOT_COMPLETED权限</span><br><span class="line">    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)//设置Job依赖的网络类型</span><br><span class="line">    .setRequiresCharging(false)//是否要求设备处于充电状态</span><br><span class="line">    .setRequiresDeviceIdle(false)//是否要求设备处于空闲状态</span><br><span class="line">    .build()</span><br></pre></td></tr></table></figure>
+
+<p>JobInfo其他的设置方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">.setMinimumLatency(5000)//5秒 最小延时、</span><br><span class="line">.setOverrideDeadline(60000)//maximum最多执行时间  </span><br><span class="line"> .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)//免费的网络---wifi 蓝牙 USB</span><br><span class="line">.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)//任意网络---</span><br><span class="line">  /**</span><br><span class="line">   设置重试/退避策略，当一个任务调度失败的时候执行什么样的测量采取重试。</span><br><span class="line">    initialBackoffMillis:第一次尝试重试的等待时间间隔ms</span><br><span class="line">    *backoffPolicy:对应的退避策略。比如等待的间隔呈指数增长。</span><br><span class="line">    */</span><br><span class="line">  .setBackoffCriteria(long initialBackoffMillis, int backoffPolicy)</span><br><span class="line">.setBackoffCriteria(JobInfo.MAX_BACKOFF_DELAY_MILLIS, JobInfo.BACKOFF_POLICY_LINEAR)</span><br><span class="line">  //.setPeriodic (long intervalMillis)//设置执行周期，每隔一段时间间隔任务最多可以执行一次。</span><br><span class="line">//.setPeriodic(long intervalMillis,long flexMillis)//在周期执行的末端有一个flexMiliis长度的窗口期，任务就可以在这个窗口期执行。</span><br><span class="line"> //设置设备重启后，这个任务是否还要保留。需要权限：  RECEIVE_BOOT_COMPLETED //ctrl+shift+y/u x</span><br><span class="line">//.setPersisted(boolean isPersisted);</span><br><span class="line">// .setRequiresCharging(boolean )//是否需要充电</span><br><span class="line">// .setRequiresDeviceIdle(boolean)//是否需要等设备出于空闲状态的时候</span><br><span class="line">// .addTriggerContentUri(uri)//监听uri对应的数据发生改变，就会触发任务的执行。</span><br><span class="line">// .setTriggerContentMaxDelay(long duration)//设置Content发生变化一直到任务被执行中间的最大延迟时间</span><br><span class="line"> //设置Content发生变化一直到任务被执行中间的延迟。如果在这个延迟时间内content发生了改变，延迟时间会重写计算。</span><br><span class="line">  // .setTriggerContentUpdateDelay(long durationMilimms)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-执行任务"><a href="#3-执行任务" class="headerlink" title="3 执行任务"></a>3 执行任务</h4><p>最后通过getSystemService获取JobScheduler服务执行任务就可以了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//执行任务</span><br><span class="line">val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler</span><br><span class="line">jobScheduler.schedule(jobInfo)</span><br><span class="line"></span><br><span class="line">//取消任务</span><br><span class="line">jobScheduler.cancel(1)</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-最后"><a href="#4-最后" class="headerlink" title="4 最后"></a>4 最后</h4><p>JobScheduler上手还是比较简单的，由于本文是基于api23的源码，因此还有很多新功能没有在源码中展示出来，如setRequiresBatteryNotLow(设置Job对电量的要求)、setRequiresStorageNotLow(设置Job对存储空间的要求)等.</p>
+<h3 id="特性-amp-适用"><a href="#特性-amp-适用" class="headerlink" title="特性&amp;适用"></a>特性&amp;适用</h3><h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ol>
+<li>支持在一个任务上组合多个条件</li>
+<li>内置条件：设备待机、设备充电和连接网络</li>
+<li>支持持续的job，这意味着设备重启后，之前被中断的job可以继续执行</li>
+<li>支持设置job的最后执行期限</li>
+<li>根据你的配置，可以设置job在后台运行还是在主线程中运行</li>
+</ol>
+<h4 id="适用"><a href="#适用" class="headerlink" title="适用"></a>适用</h4><p>需要在Android设备满足某种场合才需要去执行处理数据：</p>
+<ol>
+<li>应用具有可以推迟的非面向用户的工作（定期数据库数据更新）</li>
+<li>应用具有当插入设备时希望优先执行的工作（充电时才希望执行的工作备份数据)</li>
+<li>需要访问网络或 Wi-Fi 连接时需要进行的任务(如向服务器拉取内置数据)</li>
+<li>希望作为一个批次定期运行的许多任务（s）</li>
+</ol>
+<h4 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h4><ol>
+<li>Job Scheduler只有在Api21或以上的系统支持。</li>
+<li>Job Scheduler是将多个任务打包在一个场景下执行。</li>
+<li>在系统重启以后，任务会依然保留在Job Scheduler当中，因此不需要监听系统启动状态重复设定。</li>
+<li>如果在一定期限内还没有满足特定执行所需情况，Job Scheduler会将这些任务加入队列，并且随后会进行执行。</li>
+</ol>
+<p>使用Job Scheduler，应用需要做的事情就是判断哪些任务是不紧急的，可以交给Job Scheduler来处理，Job Scheduler集中处理收到的任务，选择合适的时间，合适的网络，再一起进行执行。把时效性不强的工作丢给它做。</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>JobScheduler是系统服务JobSchedulerService，JobScheduler是一个抽象类；以下是JobScheduler的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public abstract class JobScheduler &#123;</span><br><span class="line">public static final int RESULT_FAILURE = 0;</span><br><span class="line">public static final int RESULT_SUCCESS = 1;</span><br><span class="line">//这个是提交一个工作任务JobInfo</span><br><span class="line">public abstract int schedule(JobInfo job);</span><br><span class="line">public abstract int scheduleAsPackage(JobInfo job, String packageName, int userId, String tag);</span><br><span class="line"> //这个是取消一个工作任务</span><br><span class="line">public abstract void cancel(int jobId);</span><br><span class="line">//这个是取消所有的工作任务</span><br><span class="line">public abstract void cancelAll();</span><br><span class="line">  //得到所有将来要执行的工作任务</span><br><span class="line">public abstract @NonNull List&lt;JobInfo&gt; getAllPendingJobs();</span><br><span class="line">//根据Jobid获得将来要执行的工作任务</span><br><span class="line">public abstract @Nullable JobInfo getPendingJob(int jobId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JobScheduler的实现类是JobSchedulerImpl:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public class JobSchedulerImpl extends JobScheduler &#123;</span><br><span class="line">IJobScheduler mBinder;</span><br><span class="line"></span><br><span class="line">/* package */ JobSchedulerImpl(IJobScheduler binder) &#123;</span><br><span class="line">    mBinder = binder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public int schedule(JobInfo job) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        //这个mBinder是JobSchedulerService中的IJobScheduler.Stub，</span><br><span class="line">        return mBinder.schedule(job);</span><br><span class="line">    &#125; catch (RemoteException e) &#123;</span><br><span class="line">        return JobScheduler.RESULT_FAILURE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void cancel(int jobId) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        mBinder.cancel(jobId);</span><br><span class="line">    &#125; catch (RemoteException e) &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void cancelAll() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        mBinder.cancelAll();</span><br><span class="line">    &#125; catch (RemoteException e) &#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public List&lt;JobInfo&gt; getAllPendingJobs() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return mBinder.getAllPendingJobs();</span><br><span class="line">    &#125; catch (RemoteException e) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中 调用mJobScheduler.schedule(job);其实是调了JobScheduler的实现类JobSchedulerImpl中的schedule方法；然后再调了mBinder.schedule(job);这个mBinder就是JobSchedulerService，调用了JobSchedulerService类里面IJobScheduler.Stub内部类的schedule方法； JobSchedulerService是在哪里启动的呢？先看一下的源码，从源码分析JobSchedulerService是一个系统服务；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class JobSchedulerService extends com.android.server.SystemService</span><br><span class="line">    implements StateChangedListener, JobCompletedListener &#123;</span><br><span class="line">static final boolean DEBUG = false;</span><br><span class="line">/** The number of concurrent jobs we run at one time. */</span><br><span class="line">private static final int MAX_JOB_CONTEXTS_COUNT</span><br><span class="line">        = ActivityManager.isLowRamDeviceStatic() ? 1 : 3;</span><br><span class="line">static final String TAG = &quot;JobSchedulerService&quot;;</span><br><span class="line">/** Master list of jobs. */</span><br><span class="line">final JobStore mJobs;</span><br><span class="line"></span><br><span class="line">static final int MSG_JOB_EXPIRED = 0;</span><br><span class="line">static final int MSG_CHECK_JOB = 1;</span><br><span class="line">//....省略了n多代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是系统服务那应该就是在 SystemServer启动的，先看一下SystemServer的源码；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public final class SystemServer &#123;</span><br><span class="line">private static final String TAG = &quot;SystemServer&quot;;</span><br><span class="line">//手机开机启动后会走这个main方法，然后调用run方法</span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    new SystemServer().run();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>手机开机启动会走SystemServer中的主函数main方法，main方法调用了run方法，下面是run方法中的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">private void run() &#123;</span><br><span class="line">     //....省略了n多代码</span><br><span class="line">    // Start services.</span><br><span class="line">    //这里启动一些系统服务</span><br><span class="line">    try &#123;</span><br><span class="line">        startBootstrapServices();</span><br><span class="line">        startCoreServices();</span><br><span class="line">      //会走这个</span><br><span class="line">        startOtherServices();</span><br><span class="line">    &#125; catch (Throwable ex) &#123;</span><br><span class="line">        Slog.e(&quot;System&quot;, &quot;******************************************&quot;);</span><br><span class="line">        Slog.e(&quot;System&quot;, &quot;************ Failure starting system services&quot;, ex);</span><br><span class="line">        throw ex;</span><br><span class="line">    &#125;</span><br><span class="line"> //....省略了n多代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从run方法可以看出，这里启动了一系列的系统服务，里面调用了startOtherServices()方法，那接下看一下startOtherServices方法，向下看:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private void startOtherServices() &#123;</span><br><span class="line">      //....省略了n多代码</span><br><span class="line">         mSystemServiceManager.startService(TwilightService.class);</span><br><span class="line"></span><br><span class="line">        //这里就是启动JobSchedulerService</span><br><span class="line">      mSystemServiceManager.startService(JobSchedulerService.class);</span><br><span class="line"></span><br><span class="line">        if (!disableNonCoreServices) &#123;</span><br><span class="line">            if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_BACKUP)) &#123;</span><br><span class="line">                mSystemServiceManager.startService(BACKUP_MANAGER_SERVICE_CLASS);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_APP_WIDGETS)) &#123;</span><br><span class="line">                mSystemServiceManager.startService(APPWIDGET_SERVICE_CLASS);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_VOICE_RECOGNIZERS)) &#123;</span><br><span class="line">                mSystemServiceManager.startService(VOICE_RECOGNITION_MANAGER_SERVICE_CLASS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> //....省略了n多代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在startOtherServices方法方法中调用了mSystemServiceManager.startService(JobSchedulerService.class);这里就启动了JobSchedulerService服务；接下来我们分析JobSchedulerService的源码； 先看一下JobSchedulerService的构造方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public JobSchedulerService(Context context) &#123;</span><br><span class="line">    super(context);</span><br><span class="line">    // Create the controllers.</span><br><span class="line">    mControllers = new ArrayList&lt;StateController&gt;();</span><br><span class="line">    //以下控制类都是继承了StateController类</span><br><span class="line">    //网络联接控制类</span><br><span class="line">    mControllers.add(ConnectivityController.get(this));</span><br><span class="line">  //时间控制类</span><br><span class="line">    mControllers.add(TimeController.get(this));</span><br><span class="line">  //延时控制类</span><br><span class="line">    mControllers.add(IdleController.get(this));</span><br><span class="line">    //电量控制类</span><br><span class="line">    mControllers.add(BatteryController.get(this));</span><br><span class="line">    mControllers.add(AppIdleController.get(this));</span><br><span class="line"></span><br><span class="line">    mHandler = new JobHandler(context.getMainLooper());</span><br><span class="line">  //new了IJobScheduler.Stub，这个其实就是前面JobSchedulerImpl类中mBinder，这里用到了进程间通信binder机制，不明白的可能先学习一下进程间通信机制；</span><br><span class="line">    mJobSchedulerStub = new JobSchedulerStub();</span><br><span class="line">    mJobs = JobStore.initAndGet(this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建了5个不同的StateController，分别添加到mControllers。
+|类型|说明|
+|—|—|
+|ConnectivityController|    注册监听网络连接状态的广播|
+|TimeController|    注册监听job时间到期的广播|
+|IdleController|    注册监听屏幕亮/灭,dream进入/退出,状态改变的广播|
+|BatteryController|    注册监听电池是否充电,电量状态的广播|
+|AppIdleController|    监听app是否空闲|</p>
+<p>前面提到调用mBinder.schedule(job);其实是调用了JobSchedulerService类里面IJobScheduler.Stub内部类的schedule方法；接下看一下这个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">final class JobSchedulerStub extends IJobScheduler.Stub &#123;</span><br><span class="line">   //....省略了n多代码</span><br><span class="line">    @Override</span><br><span class="line">    public int schedule(JobInfo job) throws RemoteException &#123;</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, &quot;Scheduling job: &quot; + job.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        //这里做了一个检验，非关键代码</span><br><span class="line">        final int pid = Binder.getCallingPid();</span><br><span class="line">        final int uid = Binder.getCallingUid();</span><br><span class="line">     //....省略了n多代码</span><br><span class="line">        long ident = Binder.clearCallingIdentity();</span><br><span class="line">        try &#123;</span><br><span class="line">        //这个是关键代码，调用JobSchedulerService中的schedule</span><br><span class="line">            return JobSchedulerService.this.schedule(job, uid);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            Binder.restoreCallingIdentity(ident);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面代码看出，是调用了调用JobSchedulerService中的schedule方法，好了，看一下JobSchedulerService中的schedule方法；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public int schedule(JobInfo job, int uId) &#123;</span><br><span class="line">    JobStatus jobStatus = new JobStatus(job, uId);</span><br><span class="line">    cancelJob(uId, job.getId());</span><br><span class="line">    startTrackingJob(jobStatus);</span><br><span class="line">  //通过handler发消息</span><br><span class="line">    mHandler.obtainMessage(MSG_CHECK_JOB).sendToTarget();</span><br><span class="line">    return JobScheduler.RESULT_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面代码可以看出是通过Handler发消息，MSG_CHECK_JOB是目标源，看一下JobHandler 中的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private class JobHandler extends Handler &#123;</span><br><span class="line">    public JobHandler(Looper looper) &#123;</span><br><span class="line">        super(looper);</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void handleMessage(Message message) &#123;</span><br><span class="line">        synchronized (mJobs) &#123;</span><br><span class="line">            if (!mReadyToRock) &#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        switch (message.what) &#123;</span><br><span class="line">            case MSG_JOB_EXPIRED:</span><br><span class="line">                synchronized (mJobs) &#123;</span><br><span class="line">                    JobStatus runNow = (JobStatus) message.obj;</span><br><span class="line">                    if (runNow != null &amp;&amp; !mPendingJobs.contains(runNow)</span><br><span class="line">                            &amp;&amp; mJobs.containsJob(runNow)) &#123;</span><br><span class="line">                        mPendingJobs.add(runNow);</span><br><span class="line">                    &#125;</span><br><span class="line">                    queueReadyJobsForExecutionLockedH();</span><br><span class="line">                &#125;</span><br><span class="line">                break;</span><br><span class="line">            case MSG_CHECK_JOB:</span><br><span class="line">                synchronized (mJobs) &#123;</span><br><span class="line">                    maybeQueueReadyJobsForExecutionLockedH();</span><br><span class="line">                &#125;</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        maybeRunPendingJobsH();</span><br><span class="line">      </span><br><span class="line">        removeMessages(MSG_CHECK_JOB);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过Handler发消息,然后调用 maybeQueueReadyJobsForExecutionLockedH()方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private void queueReadyJobsForExecutionLockedH() &#123;</span><br><span class="line">        ArraySet&lt;JobStatus&gt; jobs = mJobs.getJobs();</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, &quot;queuing all ready jobs for execution:&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">      //遍历要处理的目标任务，把目标任务加到集合PendingJobs中</span><br><span class="line">        for (int i=0; i&lt;jobs.size(); i++) &#123;</span><br><span class="line">            JobStatus job = jobs.valueAt(i);</span><br><span class="line">            if (isReadyToBeExecutedLocked(job)) &#123;</span><br><span class="line">                if (DEBUG) &#123;</span><br><span class="line">                    Slog.d(TAG, &quot;    queued &quot; + job.toShortString());</span><br><span class="line">                &#125;</span><br><span class="line">                //把目标任务加到待处理目标任务集合中</span><br><span class="line">                mPendingJobs.add(job);</span><br><span class="line">            &#125; else if (isReadyToBeCancelledLocked(job)) &#123;</span><br><span class="line">                stopJobOnServiceContextLocked(job);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            final int queuedJobs = mPendingJobs.size();</span><br><span class="line">            if (queuedJobs == 0) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;No jobs pending.&quot;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                Slog.d(TAG, queuedJobs + &quot; jobs queued.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法主要是遍历将来要处理的工作任务然后一个个加到待处理工作任务集合中去；这个方法执行完后就会执行JobHandler中的maybeRunPendingJobsH()方法；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">private void maybeRunPendingJobsH() &#123;</span><br><span class="line">        synchronized (mJobs) &#123;</span><br><span class="line">            if (mDeviceIdleMode) &#123;</span><br><span class="line">                // If device is idle, we will not schedule jobs to run.</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            Iterator&lt;JobStatus&gt; it = mPendingJobs.iterator();</span><br><span class="line">            if (DEBUG) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;pending queue: &quot; + mPendingJobs.size() + &quot; jobs.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            //通过遍历待处理任务集合，一个个处理待处理任务</span><br><span class="line">            while (it.hasNext()) &#123;</span><br><span class="line">                JobStatus nextPending = it.next();</span><br><span class="line">                JobServiceContext availableContext = null;</span><br><span class="line">                for (int i=0; i&lt;mActiveServices.size(); i++) &#123;</span><br><span class="line">                    JobServiceContext jsc = mActiveServices.get(i);</span><br><span class="line">                    final JobStatus running = jsc.getRunningJob();</span><br><span class="line">                    if (running != null &amp;&amp; running.matches(nextPending.getUid(),</span><br><span class="line">                            nextPending.getJobId())) &#123;</span><br><span class="line">                        // Already running this job for this uId, skip.</span><br><span class="line">                        availableContext = null;</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (jsc.isAvailable()) &#123;</span><br><span class="line">                        availableContext = jsc;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                if (availableContext != null) &#123;</span><br><span class="line">                    if (DEBUG) &#123;</span><br><span class="line">                        Slog.d(TAG, &quot;About to run job &quot;</span><br><span class="line">                                + nextPending.getJob().getService().toString());</span><br><span class="line">                    &#125;</span><br><span class="line">    //这个方法就是处理待处理任务的方法</span><br><span class="line">                    if (!availableContext.executeRunnableJob(nextPending)) &#123;</span><br><span class="line">                        if (DEBUG) &#123;</span><br><span class="line">                            Slog.d(TAG, &quot;Error executing &quot; + nextPending);</span><br><span class="line">                        &#125;</span><br><span class="line">                        mJobs.remove(nextPending);</span><br><span class="line">                    &#125;</span><br><span class="line">                    it.remove();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面源码分析可以得出，这个方法通过遍历待处理任务集合，处理任务，这里调用了availableContext.executeRunnableJob(nextPending)方法，这个就是处理待处理任务的方法，接下来我们一起看看这个方法的源码，分析下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class JobServiceContext extends IJobCallback.Stub   implements ServiceConnection &#123;</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">public void onServiceConnected(ComponentName name, IBinder service) &#123;</span><br><span class="line">    if (!name.equals(mRunningJob.getServiceComponent())) &#123;</span><br><span class="line">        mCallbackHandler.obtainMessage(MSG_SHUTDOWN_EXECUTION).sendToTarget();</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    this.service = IJobService.Stub.asInterface(service);</span><br><span class="line">    final PowerManager pm =</span><br><span class="line">            (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);</span><br><span class="line">    mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, mRunningJob.getTag());</span><br><span class="line">//这里也用WakeLock锁，防止手机休眠</span><br><span class="line">    mWakeLock.setWorkSource(new WorkSource(mRunningJob.getUid()));</span><br><span class="line">    mWakeLock.setReferenceCounted(false);</span><br><span class="line">    mWakeLock.acquire();</span><br><span class="line">    mCallbackHandler.obtainMessage(MSG_SERVICE_BOUND).sendToTarget();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JobServiceContext是ServiceConnection，这个是进程间通讯ServiceConnection，通过调用availableContext.executeRunnableJob(nextPending)方法，会触发调用onServiceConnected，看到这里应该明白了，onServiceConnected方法中的service就是jobservice,里面还用了WakeLock锁，防止手机休眠，然后通过Handler发消息 调用了handleServiceBoundH()方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/** Start the job on the service. */</span><br><span class="line">    private void handleServiceBoundH() &#123;</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, &quot;MSG_SERVICE_BOUND for &quot; + mRunningJob.toShortString());</span><br><span class="line">        &#125;</span><br><span class="line">        if (mVerb != VERB_BINDING) &#123;</span><br><span class="line">            Slog.e(TAG, &quot;Sending onStartJob for a job that isn&apos;t pending. &quot;</span><br><span class="line">                    + VERB_STRINGS[mVerb]);</span><br><span class="line">            closeAndCleanupJobH(false /* reschedule */);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if (mCancelled.get()) &#123;</span><br><span class="line">            if (DEBUG) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;Job cancelled while waiting for bind to complete. &quot;</span><br><span class="line">                        + mRunningJob);</span><br><span class="line">            &#125;</span><br><span class="line">            closeAndCleanupJobH(true /* reschedule */);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        try &#123;</span><br><span class="line">            mVerb = VERB_STARTING;</span><br><span class="line">            scheduleOpTimeOut();</span><br><span class="line">      //我们就是要找这个方法, 看到这里明白了吧，这个就是调用了jobService中的startjob</span><br><span class="line">            service.startJob(mParams);</span><br><span class="line">        &#125; catch (RemoteException e) &#123;</span><br><span class="line">            Slog.e(TAG, &quot;Error sending onStart message to &apos;&quot; +</span><br><span class="line">                    mRunningJob.getServiceComponent().getShortClassName() + &quot;&apos; &quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面源码可以看出，最终是调用了jobService中的startjob方法，　这样就明白了，是如何触发调用jobService中的startjob方法的；</p>
+<p>前面在JobSchedulerService中提到了控件类StateController类，这个是一个抽象类，有很多实现类，这个我只分析一个ConnectivityController实现类，其他都差不多，接下来分析一下ConnectivityController源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">public class ConnectivityController extends StateController implements</span><br><span class="line">    ConnectivityManager.OnNetworkActiveListener &#123;</span><br><span class="line">private static final String TAG = &quot;JobScheduler.Conn&quot;;</span><br><span class="line">//工作任务状态集合</span><br><span class="line">private final List&lt;JobStatus&gt; mTrackedJobs = new LinkedList&lt;JobStatus&gt;();</span><br><span class="line">  //这个是手机网络连接改变广播，网络发生改变，会触发这个广播</span><br><span class="line">private final BroadcastReceiver mConnectivityChangedReceiver =</span><br><span class="line">        new ConnectivityChangedReceiver();</span><br><span class="line">/** Singleton. */</span><br><span class="line">private static ConnectivityController mSingleton;</span><br><span class="line">private static Object sCreationLock = new Object();</span><br><span class="line">/** Track whether the latest active network is metered. */</span><br><span class="line">private boolean mNetworkUnmetered;</span><br><span class="line">/** Track whether the latest active network is connected. */</span><br><span class="line">private boolean mNetworkConnected;</span><br><span class="line"></span><br><span class="line">public static ConnectivityController get(JobSchedulerService jms) &#123;</span><br><span class="line">    synchronized (sCreationLock) &#123;</span><br><span class="line">        if (mSingleton == null) &#123;</span><br><span class="line">            mSingleton = new ConnectivityController(jms, jms.getContext());</span><br><span class="line">        &#125;</span><br><span class="line">        return mSingleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private ConnectivityController(StateChangedListener stateChangedListener, Context context) &#123;</span><br><span class="line">    super(stateChangedListener, context);</span><br><span class="line">    // Register connectivity changed BR.</span><br><span class="line">    IntentFilter intentFilter = new IntentFilter();</span><br><span class="line">    intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);</span><br><span class="line">    mContext.registerReceiverAsUser(</span><br><span class="line">            mConnectivityChangedReceiver, UserHandle.ALL, intentFilter, null, null);</span><br><span class="line">    ConnectivityService cs =</span><br><span class="line">            (ConnectivityService)ServiceManager.getService(Context.CONNECTIVITY_SERVICE);</span><br><span class="line">    if (cs != null) &#123;</span><br><span class="line">        if (cs.getActiveNetworkInfo() != null) &#123;</span><br><span class="line">            mNetworkConnected = cs.getActiveNetworkInfo().isConnected();</span><br><span class="line">        &#125;</span><br><span class="line">        mNetworkUnmetered = mNetworkConnected &amp;&amp; !cs.isActiveNetworkMetered();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void maybeStartTrackingJob(JobStatus jobStatus) &#123;</span><br><span class="line">    if (jobStatus.hasConnectivityConstraint() || jobStatus.hasUnmeteredConstraint()) &#123;</span><br><span class="line">        synchronized (mTrackedJobs) &#123;</span><br><span class="line">            jobStatus.connectivityConstraintSatisfied.set(mNetworkConnected);</span><br><span class="line">            jobStatus.unmeteredConstraintSatisfied.set(mNetworkUnmetered);</span><br><span class="line">            mTrackedJobs.add(jobStatus);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void maybeStopTrackingJob(JobStatus jobStatus) &#123;</span><br><span class="line">    if (jobStatus.hasConnectivityConstraint() || jobStatus.hasUnmeteredConstraint()) &#123;</span><br><span class="line">        synchronized (mTrackedJobs) &#123;</span><br><span class="line">            mTrackedJobs.remove(jobStatus);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @param userId Id of the user for whom we are updating the connectivity state.</span><br><span class="line"> */</span><br><span class="line">private void updateTrackedJobs(int userId) &#123;</span><br><span class="line">    synchronized (mTrackedJobs) &#123;</span><br><span class="line">        boolean changed = false;</span><br><span class="line">        for (JobStatus js : mTrackedJobs) &#123;</span><br><span class="line">            if (js.getUserId() != userId) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            boolean prevIsConnected =</span><br><span class="line">                    js.connectivityConstraintSatisfied.getAndSet(mNetworkConnected);</span><br><span class="line">            boolean prevIsMetered = js.unmeteredConstraintSatisfied.getAndSet(mNetworkUnmetered);</span><br><span class="line">            if (prevIsConnected != mNetworkConnected || prevIsMetered != mNetworkUnmetered) &#123;</span><br><span class="line">                changed = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (changed) &#123;</span><br><span class="line">            mStateChangedListener.onControllerStateChanged();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * We know the network has just come up. We want to run any jobs that are ready.</span><br><span class="line"> */</span><br><span class="line">public synchronized void onNetworkActive() &#123;</span><br><span class="line">    synchronized (mTrackedJobs) &#123;</span><br><span class="line">        for (JobStatus js : mTrackedJobs) &#123;</span><br><span class="line">            if (js.isReady()) &#123;</span><br><span class="line">                if (DEBUG) &#123;</span><br><span class="line">                    Slog.d(TAG, &quot;Running &quot; + js + &quot; due to network activity.&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                mStateChangedListener.onRunJobNow(js);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ConnectivityChangedReceiver extends BroadcastReceiver &#123;</span><br><span class="line">    /**</span><br><span class="line">     * We&apos;ll receive connectivity changes for each user here, which we process independently.</span><br><span class="line">     * We are only interested in the active network here. We&apos;re only interested in the active</span><br><span class="line">     * network, b/c the end result of this will be for apps to try to hit the network.</span><br><span class="line">     * @param context The Context in which the receiver is running.</span><br><span class="line">     * @param intent The Intent being received.</span><br><span class="line">     */</span><br><span class="line">    // TODO: Test whether this will be called twice for each user.</span><br><span class="line">    @Override</span><br><span class="line">    public void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, &quot;Received connectivity event: &quot; + intent.getAction() + &quot; u&quot;</span><br><span class="line">                    + context.getUserId());</span><br><span class="line">        &#125;</span><br><span class="line">        final String action = intent.getAction();</span><br><span class="line">        if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) &#123;</span><br><span class="line">            final int networkType =</span><br><span class="line">                    intent.getIntExtra(ConnectivityManager.EXTRA_NETWORK_TYPE,</span><br><span class="line">                            ConnectivityManager.TYPE_NONE);</span><br><span class="line">            // Connectivity manager for THIS context - important!</span><br><span class="line">            final ConnectivityManager connManager = (ConnectivityManager)</span><br><span class="line">                    context.getSystemService(Context.CONNECTIVITY_SERVICE);</span><br><span class="line">            final NetworkInfo activeNetwork = connManager.getActiveNetworkInfo();</span><br><span class="line">            final int userid = context.getUserId();</span><br><span class="line">            // This broadcast gets sent a lot, only update if the active network has changed.</span><br><span class="line">            if (activeNetwork == null) &#123;</span><br><span class="line">            //网络未联接</span><br><span class="line">                mNetworkUnmetered = false;</span><br><span class="line">                mNetworkConnected = false;</span><br><span class="line">                updateTrackedJobs(userid);</span><br><span class="line">            &#125; else if (activeNetwork.getType() == networkType) &#123;</span><br><span class="line">                mNetworkUnmetered = false;</span><br><span class="line">                mNetworkConnected = !intent.getBooleanExtra(</span><br><span class="line">                        ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);</span><br><span class="line">                if (mNetworkConnected) &#123;  // No point making the call if we know there&apos;s no conn.</span><br><span class="line">                    mNetworkUnmetered = !connManager.isActiveNetworkMetered();</span><br><span class="line">                &#125;</span><br><span class="line">            //更新工作任务</span><br><span class="line">                updateTrackedJobs(userid);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (DEBUG) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;Unrecognised action in intent: &quot; + action);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void dumpControllerState(PrintWriter pw) &#123;</span><br><span class="line">    pw.println(&quot;Conn.&quot;);</span><br><span class="line">    pw.println(&quot;connected: &quot; + mNetworkConnected + &quot; unmetered: &quot; + mNetworkUnmetered);</span><br><span class="line">    for (JobStatus js: mTrackedJobs) &#123;</span><br><span class="line">        pw.println(String.valueOf(js.hashCode()).substring(0, 3) + &quot;..&quot;</span><br><span class="line">                + &quot;: C=&quot; + js.hasConnectivityConstraint()</span><br><span class="line">                + &quot;, UM=&quot; + js.hasUnmeteredConstraint());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">　&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是网络联接控制类ConnectivityController，当网络发生改变时，会触发网络连接改变广播，然后调用updateTrackedJobs(userid)方法，在updateTrackedJobs方法中，会判断网络是否有改变，有改变的会调 mStateChangedListener.onControllerStateChanged()方法;这样又调用了JobSchedulerService类中onControllerStateChanged方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onControllerStateChanged() &#123;</span><br><span class="line">    mHandler.obtainMessage(MSG_CHECK_JOB).sendToTarget();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在onControllerStateChanged方法中通过handler发消息，然后调用了maybeQueueReadyJobsForExecutionLockedH();</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">private void maybeQueueReadyJobsForExecutionLockedH() &#123;</span><br><span class="line">        int chargingCount = 0;</span><br><span class="line">        int idleCount =  0;</span><br><span class="line">        int backoffCount = 0;</span><br><span class="line">        int connectivityCount = 0;</span><br><span class="line">        List&lt;JobStatus&gt; runnableJobs = new ArrayList&lt;JobStatus&gt;();</span><br><span class="line">        ArraySet&lt;JobStatus&gt; jobs = mJobs.getJobs();</span><br><span class="line">        for (int i=0; i&lt;jobs.size(); i++) &#123;</span><br><span class="line">            JobStatus job = jobs.valueAt(i);</span><br><span class="line">            if (isReadyToBeExecutedLocked(job)) &#123;</span><br><span class="line">                if (job.getNumFailures() &gt; 0) &#123;</span><br><span class="line">                    backoffCount++;</span><br><span class="line">                &#125;</span><br><span class="line">                if (job.hasIdleConstraint()) &#123;</span><br><span class="line">                    idleCount++;</span><br><span class="line">                &#125;</span><br><span class="line">                if (job.hasConnectivityConstraint() || job.hasUnmeteredConstraint()) &#123;</span><br><span class="line">                    connectivityCount++;</span><br><span class="line">                &#125;</span><br><span class="line">                if (job.hasChargingConstraint()) &#123;</span><br><span class="line">                    chargingCount++;</span><br><span class="line">                &#125;</span><br><span class="line">                runnableJobs.add(job);</span><br><span class="line">            &#125; else if (isReadyToBeCancelledLocked(job)) &#123;</span><br><span class="line">                stopJobOnServiceContextLocked(job);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (backoffCount &gt; 0 ||</span><br><span class="line">                idleCount &gt;= MIN_IDLE_COUNT ||</span><br><span class="line">                connectivityCount &gt;= MIN_CONNECTIVITY_COUNT ||</span><br><span class="line">                chargingCount &gt;= MIN_CHARGING_COUNT ||</span><br><span class="line">                runnableJobs.size() &gt;= MIN_READY_JOBS_COUNT) &#123;</span><br><span class="line">            if (DEBUG) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;maybeQueueReadyJobsForExecutionLockedH: Running jobs.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            for (int i=0; i&lt;runnableJobs.size(); i++) &#123;</span><br><span class="line">          //把待处理的工作任务加到集合中去</span><br><span class="line">                mPendingJobs.add(runnableJobs.get(i));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (DEBUG) &#123;</span><br><span class="line">                Slog.d(TAG, &quot;maybeQueueReadyJobsForExecutionLockedH: Not running anything.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, &quot;idle=&quot; + idleCount + &quot; connectivity=&quot; +</span><br><span class="line">            connectivityCount + &quot; charging=&quot; + chargingCount + &quot; tot=&quot; +</span><br><span class="line">                    runnableJobs.size());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面方法，把待处理的工作任务加到集合中，然后再调 maybeRunPendingJobsH();这个前面已提到过，就不再说了，一样的；</p>
+<p><a href="http://gityuan.com/2017/03/10/job_scheduler_service/" target="_blank" rel="noopener">理解JobScheduler机制</a></p>
+<p><a href="https://www.youtube.com/watch?v=QdINLG5QrJc&t=129s" target="_blank" rel="noopener">视频</a>
+<a href="https://developer.android.com/guide/background" target="_blank" rel="noopener">文章</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/28/tips-net-multiplexing/" rel="next" title="I/O多路复用">
+                <i class="fa fa-chevron-left"></i> I/O多路复用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/30/tips-android-battery/" rel="prev" title="Android电源管理基础知识整理">
+                Android电源管理基础知识整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建JobService"><span class="nav-number">1.1.</span> <span class="nav-text">1 创建JobService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-创建JobInfo"><span class="nav-number">1.2.</span> <span class="nav-text">2 创建JobInfo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-执行任务"><span class="nav-number">1.3.</span> <span class="nav-text">3 执行任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-最后"><span class="nav-number">1.4.</span> <span class="nav-text">4 最后</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特性-amp-适用"><span class="nav-number">2.</span> <span class="nav-text">特性&amp;适用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特性"><span class="nav-number">2.1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#适用"><span class="nav-number">2.2.</span> <span class="nav-text">适用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征"><span class="nav-number">2.3.</span> <span class="nav-text">特征</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">3.</span> <span class="nav-text">源码分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

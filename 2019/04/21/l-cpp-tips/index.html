@@ -1,0 +1,1247 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="language,C,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="内置宏标准C语言预处理要求定义某些对象宏，每个预定义宏的名称一两个下划线字符开头和结尾，这些预定义宏不能被取消定义（#undef）或由编程人员重新定义。下面预定义宏:  __LINE__ 当前程序行的行号，表示为十进制整型常量 __FILE__  当前源文件名，表示字符串型常量 __DATE__ 转换的日历日期，表示为Mmm dd yyyy 形式的字符串常量，Mmm是由asctime产生的。 __">
+<meta name="keywords" content="language,C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CPP小技巧">
+<meta property="og:url" content="http://wodekouwei.com/2019/04/21/l-cpp-tips/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="内置宏标准C语言预处理要求定义某些对象宏，每个预定义宏的名称一两个下划线字符开头和结尾，这些预定义宏不能被取消定义（#undef）或由编程人员重新定义。下面预定义宏:  __LINE__ 当前程序行的行号，表示为十进制整型常量 __FILE__  当前源文件名，表示字符串型常量 __DATE__ 转换的日历日期，表示为Mmm dd yyyy 形式的字符串常量，Mmm是由asctime产生的。 __">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-01T02:49:37.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CPP小技巧">
+<meta name="twitter:description" content="内置宏标准C语言预处理要求定义某些对象宏，每个预定义宏的名称一两个下划线字符开头和结尾，这些预定义宏不能被取消定义（#undef）或由编程人员重新定义。下面预定义宏:  __LINE__ 当前程序行的行号，表示为十进制整型常量 __FILE__  当前源文件名，表示字符串型常量 __DATE__ 转换的日历日期，表示为Mmm dd yyyy 形式的字符串常量，Mmm是由asctime产生的。 __">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/04/21/l-cpp-tips/">
+
+
+
+
+
+  <title> CPP小技巧 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/04/21/l-cpp-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CPP小技巧
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-21T14:35:55+08:00">
+                2019-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/language/" itemprop="url" rel="index">
+                    <span itemprop="name">language</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/04/21/l-cpp-tips/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="内置宏"><a href="#内置宏" class="headerlink" title="内置宏"></a>内置宏</h3><p>标准C语言预处理要求定义某些对象宏，每个预定义宏的名称一两个下划线字符开头和结尾，这些预定义宏不能被取消定义（#undef）或由编程人员重新定义。下面预定义宏:</p>
+<ul>
+<li><code>__LINE__</code> 当前程序行的行号，表示为十进制整型常量</li>
+<li><code>__FILE__</code>  当前源文件名，表示字符串型常量</li>
+<li><code>__DATE__</code> 转换的日历日期，表示为Mmm dd yyyy 形式的字符串常量，Mmm是由asctime产生的。</li>
+<li><code>__TIME__</code> 转换的时间，表示”hh:mm:ss”形式的字符串型常量，是有asctime产生的。（asctime貌似是指的一个函数）</li>
+<li><code>__STDC__</code> 编辑器为ISO兼容实现时位十进制整型常量</li>
+<li><code>__STDC_VERSION__</code> 如何实现复合C89整部1，则这个宏的值为19940SL；如果实现符合C99，则这个宏的值为199901L；否则数值是未定义</li>
+<li><code>__STDC_EOBTED__</code> (C99)实现为宿主实现时为1,实现为独立实现为0</li>
+<li><code>__STDC_IEC_559__</code> (C99)浮点数实现复合IBC 60559标准时定义为1，否者数值是未定义</li>
+<li><code>__STDC_IEC_559_COMPLEX__</code> (C99)复数运算实现复合IBC 60559标准时定义为1，否者数值是未定义</li>
+<li><code>__STDC_ISO_10646__</code> (C99)定义为长整型常量，yyyymmL表示wchar_t值复合ISO 10646标准及其指定年月的修订补充，否则数值未定义</li>
+</ul>
+<p>C++中还定义了 <code>__cplusplus</code>, C语言中的<code>__FILE__</code>、<code>__LINE__</code>和<code>__DATE__</code>等都在头文件#include<code>&lt;stdio.h&gt;</code>中</p>
+<h3 id="attribute-机制"><a href="#attribute-机制" class="headerlink" title="__attribute__机制"></a><code>__attribute__</code>机制</h3><p>GNU C的一大特色就是<code>__attribute__</code>机制.<code>__attribute__</code>可以设置函数属性(Function Attribute),变量属性(Variable Attribute)和类型属性(Type Attribute)</p>
+<p>其位置约束为: 放与生命的尾部”;”之前
+<code>__attribute__</code>书写特征为:<code>__attribute__</code>前后都有两个下划线,并且后面会紧跟一对圆括号,括号里面是相应的<code>__attribute__</code>参数.
+<code>__attribute__</code>语法格式为:`<strong>attribute</strong>((attribute-list))</p>
+<h4 id="一-函数属性（Function-Attribute"><a href="#一-函数属性（Function-Attribute" class="headerlink" title="一, 函数属性（Function Attribute)"></a>一, 函数属性（Function Attribute)</h4><p>函数属性可以帮助开发者把一些特性添加到函数声明中，从而可以使编译器在错误检查方面的功能更强大。<strong>attribute</strong>机制也很容易同非GNU应用程序做到兼容之功效。GNU CC需要使用 –Wall编译器来击活该功能，这是控制警告信息的一个很好的方式。</p>
+<p>下面介绍几个常见的属性参数:</p>
+<p><code>__attribute__ format</code>  该属性可以给被声明的函数加上类似printf或者scanf的特征，它可以使编译器检查函数声明和函数实际调用参数之间的格式化字符串是否匹配。该功能十分有用，尤其是处理一些很难发现的bug。</p>
+<p>format的语法格式为：<code>format (archetype, string-index, first-to-check)</code></p>
+<p>format属性告诉编译器，按照 printf, scanf, strftime或strfmon的参数表格式规则对该函数的参数进行检查。“archetype”指定是哪种风格；“string-index”指定传 入函数的第几个参数是格式化字符串；“first-to-check”指定从函数的第几个参数开始按上述规则进行检查。
+具体使用格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">__attribute__((format(printf,m,n)))</span><br><span class="line">__attribute__((format(scanf,m,n)))</span><br></pre></td></tr></table></figure>
+
+<p>其中参数m与n的含义为：</p>
+<ul>
+<li>m：第几个参数为格式化字符串（format string）；</li>
+<li>n：参数集合中的第一个，即参数“…”里的第一个参数在函数参数总数排在第几.这里需要注意，有时函数参数里还有“隐身”的，如C++的类成员函数的第一个参数实际上是”隐身”的”this”指针；
+在使用上，<code>__attribute__((format(printf,m,n)))</code>是常用的，而另一种却很少见到。</li>
+</ul>
+<p>下面举例说明，其中myprint为自己定义的一个带有可变参数的函数，其功能类似于printf：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// m = 1, n = 2...如果在这里myprint()为类成员函数,则gcc编译后会提示&quot;format argument is not a pointer&quot;的警告</span><br><span class="line">extern void myprint(const char *format,...) __attribute__((format(printf,1,2)));</span><br><span class="line"></span><br><span class="line">// m = 2, n = 3</span><br><span class="line">extern void myprint(short num，const char *format,...) __attribute__((format(printf,2,3)));</span><br></pre></td></tr></table></figure>
+
+<p>最经典的应用可以去看linux源码里的函数device_create(…)和class_device_create(…), 做linux驱动开发的小伙伴应该对这两个函数不陌生.</p>
+<p><code>__attribute__ noreturn</code>  该属性通知编译器函数从不返回值。当遇到函数需要返回值却还没运行到返回值处就已退出来的情况，该属性可以避免出现错误信息。</p>
+<p>C库函数中的abort()和exit()的声明格式就采用了这种格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">extern void exit(int)  __attribute__((noreturn));</span><br><span class="line">extern void abort(void)  __attribute__((noreturn));</span><br></pre></td></tr></table></figure>
+
+<p>例如下面这段代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">extern void myexit(int);</span><br><span class="line"></span><br><span class="line">int testFunc(void)</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;-- Enter %s --&quot;, __func__);</span><br><span class="line"></span><br><span class="line">    myexit(0);</span><br><span class="line"></span><br><span class="line">    // 其实函数运行不到这里</span><br><span class="line">    printf(&quot;-- Exit %s --&quot;, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myexit(int i)</span><br><span class="line">&#123;</span><br><span class="line">    exit(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译时会报”control reaches end of non-void function”的警告, 但若将”extern void myexit(int);”改为”extern void myexit(int) <strong>attribute</strong>((noreturn));” 就不会再报警告了.
+<strong>attribute</strong> constructor/destructor  若函数被设定为constructor属性，则该函数会在 main（）函数执行之前被自动的执行。类似的，若函数被设定为destructor属性，则该函数会在main（）函数执行之后或者exit（）被调用后被自动的执行。拥有此类属性的函数经常隐式的用在程序的初始化数据方面。</p>
+<p>这两个属性还没有在面向对象C中实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">__attribute__((constructor)) void before_main() &#123;</span><br><span class="line">   printf(&quot;--- %s\n&quot;, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((destructor)) void after_main() &#123;</span><br><span class="line">   printf(&quot;--- %s\n&quot;, __func__);</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">int main(int argc, char **argv) &#123;</span><br><span class="line">   printf(&quot;--- %s\n&quot;, __func__);</span><br><span class="line">   </span><br><span class="line">   exit(0);</span><br><span class="line">   </span><br><span class="line">   printf(&quot;--- %s, exit ?\n&quot;, __func__);</span><br><span class="line"></span><br><span class="line">   return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其执行结果为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--- before_main</span><br><span class="line">--- main</span><br><span class="line">--- after_main</span><br></pre></td></tr></table></figure>
+
+<h4 id="弱引用符号-attribute-weak"><a href="#弱引用符号-attribute-weak" class="headerlink" title="弱引用符号__attribute__((weak))"></a>弱引用符号<code>__attribute__((weak))</code></h4><p>情况是这样的，碰到一个棘手的问题：我们不确定外部模块是否提供一个函数func，但是我们不得不用这个函数，即自己模块的代码必须用到func函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">extern int func(void);</span><br><span class="line">...................</span><br><span class="line">int a = func();</span><br><span class="line">if( a &gt; .....)</span><br><span class="line">&#123;</span><br><span class="line">..........</span><br><span class="line">&#125;</span><br><span class="line">............</span><br></pre></td></tr></table></figure>
+
+<p>我们不知道func函数是否被定义了,这会导致2个结果：</p>
+<ol>
+<li>外部存在这个函数func，并且EXPORT_SYMBOL(func)，那么在我自己的模块使用这个函数func，正确。</li>
+<li>外部其实不存在这个函数，那么我们使用func，程序直接崩溃。</li>
+</ol>
+<p>所以这个时候，<code>__attribute__((weak))</code> 派上了用场。
+在自己的模块中定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int  __attribute__((weak))  func(......)</span><br><span class="line">&#123;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将本模块的func转成弱符号类型，如果遇到强符号类型（即外部模块定义了func），那么我们在本模块执行的func将会是外部模块定义的func。如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的func，直接返回了一个1（返回值视具体情况而定）,相当于增加了一个默认函数。</p>
+<p>原理：连接器发现同时存在弱符号和强符号，有限选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。 </p>
+<p><strong>TIPS</strong>
+weak属性只会在静态库(.o .a )中生效，动态库(.so .ko(内核模块))中不会生效。</p>
+<p>举个例子：
+strong.c  //生成libstrong.so</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"> </span><br><span class="line">void real_func()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;int real func\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>weak.c //生成libweak.so</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">void real_func() __attribute__((weak));</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">void real_func()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;fake func\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main.c //</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">extern void real_func();</span><br><span class="line"> </span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">        real_func();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c -lstrong -lweak</span><br></pre></td></tr></table></figure>
+
+<p>那么输出结果”real func”。</p>
+<p>如果 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c -lweak -lstrong</span><br></pre></td></tr></table></figure>
+
+<p>那么输出结果为”fake func”。</p>
+<p>可见，对于动态库，weak属性毫无作用，且main中调用哪个real_func()，取决于链接的顺序。
+如果将strong.c 和 weak.c编译成.a或者.o</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c strong.o weak.o</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c strong.o weak.o</span><br></pre></td></tr></table></figure>
+
+<p>那么输出结果都是”real func”。</p>
+<p>所以，如果在so中使用weak属性，那么任何不符合预期的情况，都是可能出现的。</p>
+<blockquote>
+<p>官方解释：<a href="https://sourceware.org/bugzilla/show_bug.cgi?id=3946" target="_blank" rel="noopener">https://sourceware.org/bugzilla/show_bug.cgi?id=3946</a></p>
+</blockquote>
+<p>alias属性可以给函数名取一个外号。使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">void func(void);</span><br><span class="line">void alias_func(void) __attribute__((alias(&quot;func&quot;)))；  需要注意c++的符号修饰机制！</span><br></pre></td></tr></table></figure>
+
+<p>这样的意思就是函数func的别名或外号是alias_func，那么就是调用alias_func()和func()的效果是一样的，有兴趣的话可以自己写代码验证。这时需要主意func函数必须是要有定义的，否则会编译报错的。</p>
+<p><code>__attribute__((weakref))</code>为弱引用，请注意引用与定义的区别。weakref就是申明某个引用为弱引用，弱引用时如果需引用符号不存在也不会链接出错，而是将需要引用的符号定义为WEAK属性及0地址(跟前面的WEAK属性很相似吧)。
+weakref的用法有点特别，必须要配合alias使用及必须是static定义。<strong>attribute</strong>((weak(“target”)))相当于<strong>attribute</strong>((weakref,alias(“target”)))，以下看个实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">** weakref_test.c</span><br><span class="line">*/</span><br><span class="line"> </span><br><span class="line">/* 申明func_alias函数func的带弱引用的别名 */</span><br><span class="line">void func(void)</span><br><span class="line">&#123;</span><br><span class="line">　　printf(&quot;func:%s in\n&quot;, __FUNC__);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">static void func_alias(void) __attribute__((weakref,alias(&quot;func&quot;)));</span><br><span class="line"> </span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">　　func_alias(); /* 相当于调用func */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，会发现实际运行的就是func函数。func_alias相当于是func的一个带有weakref属性的另一份申明，可以这样理解：void *func = func;void *func_alias = func(“weakref”)。
+注意到前面alias属性如果func不存在时申明alias会出错，通过weakref方法，可以让func未定义就可以编译通过，使用<code>static void alias_func(void) __attribute__((weakref,alias(&quot;func&quot;)))</code>时即使func未定义也能链接通过，只不过func或alias_func的地址为0，可以去掉func的实现，验证一下即可。</p>
+<h3 id="宏参数的字符串化和宏参数的连接"><a href="#宏参数的字符串化和宏参数的连接" class="headerlink" title="宏参数的字符串化和宏参数的连接"></a>宏参数的字符串化和宏参数的连接</h3><p>在宏定义中，有时还会用到#和##两个符号，它们能够对宏参数进行操作。</p>
+<h4 id="的用法"><a href="#的用法" class="headerlink" title="# 的用法"></a><code>#</code> 的用法</h4><p><code>#</code>用来将宏参数转换为字符串，也就是在宏参数的开头和末尾添加引号。例如有如下宏定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define STR(s) #s</span><br></pre></td></tr></table></figure>
+
+<p>那么：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%s&quot;, STR(c.biancheng.net));</span><br><span class="line">printf(&quot;%s&quot;, STR(&quot;c.biancheng.net&quot;));</span><br></pre></td></tr></table></figure>
+
+<p>分别被展开为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%s&quot;, &quot;c.biancheng.net&quot;);</span><br><span class="line">printf(&quot;%s&quot;, &quot;\&quot;c.biancheng.net\&quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>以发现，即使给宏参数“传递”的数据中包含引号，使用#仍然会在两头添加新的引号，而原来的引号会被转义。</p>
+<h3 id="的用法-1"><a href="#的用法-1" class="headerlink" title="##的用法"></a><code>##</code>的用法</h3><p><code>##</code>称为连接符，用来将宏参数或其他的串连接起来。例如有如下的宏定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define CON1(a, b) a##e##b</span><br><span class="line">#define CON2(a, b) a##b##00</span><br></pre></td></tr></table></figure>
+
+<p>那么：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%f\n&quot;, CON1(8.5, 2));</span><br><span class="line">printf(&quot;%d\n&quot;, CON2(12, 34));</span><br></pre></td></tr></table></figure>
+
+<p>将被展开为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%f\n&quot;, 8.5e2);</span><br><span class="line">printf(&quot;%d\n&quot;, 123400);</span><br></pre></td></tr></table></figure>
+
+<h3 id="extern-“C”的作用"><a href="#extern-“C”的作用" class="headerlink" title="`extern “C”的作用"></a>`extern “C”的作用</h3><p>extern “C”的主要作用就是为了能够正确实现C++代码调用其他C语言代码。加上extern “C”后，会指示编译器这部分代码按C语言（而不是C++）的方式进行编译。由于C++支持函数重载，因此编译器编译函数的过程中会将函数的参数类型也加到编译后的代码中，而不仅仅是函数名；而C语言并不支持函数重载，因此编译C语言代码的函数时不会带上函数的参数类型，一般只包括函数名。</p>
+<p>这个功能十分有用处，因为在C++出现以前，很多代码都是C语言写的，而且很底层的库也是C语言写的，为了更好的支持原来的C代码和已经写好的C语言库，需要在C++中尽可能的支持C，而extern “C”就是其中的一个策略。</p>
+<p>这个功能主要用在下面的情况：</p>
+<ul>
+<li>C++代码调用C语言代码</li>
+<li>在C++的头文件中使用</li>
+<li>在多个人协同开发时，可能有的人比较擅长C语言，而有的人擅长C++，这样的情况下也会有用到</li>
+</ul>
+<p>看一个简单的例子：
+有moduleA、moduleB两个模块，B调用A中的代码，其中A是用C语言实现的，而B是利用C++实现的，下面给出一种实现方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">//moduleA头文件</span><br><span class="line">#ifndef __MODULE_A_H //对于模块A来说，这个宏是为了防止头文件的重复引用</span><br><span class="line">#define __MODULE_A_H</span><br><span class="line">int fun(int, int);</span><br><span class="line">#endif</span><br><span class="line"> </span><br><span class="line">//moduleA实现文件moduleA.C //模块A的实现部分并没有改变</span><br><span class="line">#include&quot;moduleA&quot;</span><br><span class="line">int fun(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">return a+b;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">//moduleB头文件</span><br><span class="line">#idndef __MODULE_B_H //很明显这一部分也是为了防止重复引用</span><br><span class="line">#define __MODULE_B_H</span><br><span class="line">#ifdef __cplusplus //而这一部分就是告诉编译器，如果定义了__cplusplus(即如果是cpp文件，因为cpp文件默认定义了该宏),则采用C语言方式进行编译</span><br><span class="line">extern &quot;C&quot;&#123;</span><br><span class="line">#include&quot;moduleA.h&quot;</span><br><span class="line">#endif</span><br><span class="line">… //其他代码</span><br><span class="line"> </span><br><span class="line">#ifdef __cplusplus</span><br><span class="line">&#125;</span><br><span class="line">#endif</span><br><span class="line">#endif</span><br><span class="line"> </span><br><span class="line">//moduleB实现文件 moduleB.cpp //B模块的实现也没有改变，只是头文件的设计变化了</span><br><span class="line">#include&quot;moduleB.h&quot;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">　　cout&lt;&lt;fun(2,3)&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>补充介绍：
+由于C、C++编译器对函数的编译处理是不完全相同的，尤其对于C++来说，支持函数的重载，编译后的函数一般是以函数名和形参类型来命名的。例如函数void fun(int, int)，编译后的可能是_fun_int_int(不同编译器可能不同，但都采用了类似的机制，用函数名和参数类型来命名编译后的函数名)；而C语言没有类似的重载机制，一般是利用函数名来指明编译后的函数名的，对应上面的函数可能会是_fun这样的名字。</p>
+<p>看下面的一个面试题：为什么标准头文件都有类似的结构？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#ifndef __INCvxWorksh /*防止该头文件被重复引用*/</span><br><span class="line">#define __INCvxWorksh</span><br><span class="line">#ifdef __cplusplus//告诉编译器，这部分代码按C语言的格式进行编译，而不是C++的</span><br><span class="line">extern &quot;C&quot;&#123;</span><br><span class="line">#endif</span><br><span class="line"> </span><br><span class="line">/*…*/</span><br><span class="line"> </span><br><span class="line">#ifdef __cplusplus</span><br><span class="line">&#125;</span><br><span class="line">#endif</span><br><span class="line">#endif /*end of __INCvxWorksh*/</span><br></pre></td></tr></table></figure>
+
+<p>分析：</p>
+<ul>
+<li>显然，头文件中编译宏”#ifndef __INCvxWorksh 、#define __INCvxWorksh、#endif”的作用是为了防止该头文件被重复引用</li>
+<li>那么以下代码的作用是什么呢？<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#ifdef __cplusplus (其中__cplusplus是cpp中自定义的一个宏！！！)</span><br><span class="line">extern &quot;C&quot;&#123;</span><br><span class="line">#endif</span><br><span class="line">#ifdef __cplusplus</span><br><span class="line">&#125;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>extern “C”包含双重含义，从字面上可以知道，首先，被它修饰的目标是”extern”的；其次，被它修饰的目标代码是”C”的。</p>
+<ul>
+<li>被extern “C”限定的函数或变量是extern类型的. extern是C/C++语言中表明函数和全局变量的作用范围的关键字，该关键字告诉编译器，其申明的函数和变量可以在本模块或其他模块中使用。记住，语句：extern int a; 仅仅是一个变量的声明，其并不是在定义变量a，也并未为a分配空间。变量a在所有模块中作为一种全局变量只能被定义一次，否则会出错。
+通常来说，在模块的头文件中对本模块提供给其他模块引用的函数和全局变量以关键字extern生命。例如，如果模块B要引用模块A中定义的全局变量和函数时只需包含模块A的头文件即可。这样模块B中调用模块A中的函数时，在编译阶段，模块B虽然找不到该函数，但并不会报错；它会在链接阶段从模块A编译生成的目标代码中找到该函数。
+extern对应的关键字是static，static表明变量或者函数只能在本模块中使用，因此，被static修饰的变量或者函数不可能被extern C修饰。</li>
+<li>被extern “C”修饰的变量和函数是按照C语言方式进行编译和链接的：这点很重要！！！！
+上面也提到过，由于C++支持函数重载，而C语言不支持，因此函数被C++编译后在符号库中的名字是与C语言不同的；C++编译后的函数需要加上参数的类型才能唯一标定重载后的函数，而加上extern “C”后，是为了向编译器指明这段代码按照C语言的方式进行编译</li>
+</ul>
+<p>未加extern “C”声明时的链接方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//模块A头文件 moduleA.h</span><br><span class="line">#idndef _MODULE_A_H</span><br><span class="line">#define _MODULE_A_H</span><br><span class="line"> </span><br><span class="line">int foo(int x, int y);</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>在模块B中调用该函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//模块B实现文件 moduleB.cpp</span><br><span class="line">#include&quot;moduleA.h&quot;</span><br><span class="line">foo(2,3);</span><br></pre></td></tr></table></figure>
+
+<p>实际上，在链接阶段，链接器会从模块A生成的目标文件moduleA.obj中找_foo_int_int这样的符号，显然这是不可能找到的，因为foo()函数被编译成了_foo的符号，因此会出现链接错误。</p>
+<h4 id="extern-“C”的使用要点总结"><a href="#extern-“C”的使用要点总结" class="headerlink" title="extern “C”的使用要点总结"></a>extern “C”的使用要点总结</h4><ol>
+<li><p>可以是如下的单一语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extern &quot;C&quot; double sqrt(double);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以是复合语句, 相当于复合语句中的声明都加了extern “C”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">extern &quot;C&quot;</span><br><span class="line">&#123;</span><br><span class="line">      double sqrt(double);</span><br><span class="line">      int min(int, int);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以包含头文件，相当于头文件中的声明都加了extern “C”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">extern &quot;C&quot;</span><br><span class="line">&#123;</span><br><span class="line">    ＃include &lt;cmath&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不可以将extern “C” 添加在函数内部
+如果函数有多个声明，可以都加extern “C”, 也可以只出现在第一次声明中，后面的声明会接受第一个链接指示符的规则。
+除extern “C”, 还有extern “FORTRAN” 等。</p>
+</li>
+</ol>
+<h4 id="C-11对匿名函数的支持"><a href="#C-11对匿名函数的支持" class="headerlink" title="C++11对匿名函数的支持"></a>C++11对匿名函数的支持</h4><p>C++11提供了对匿名函数的支持,称为Lambda函数(也叫Lambda表达式). Lambda表达式具体形式如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[capture](parameters)-&gt;return-type&#123;body&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　　如果没有参数,空的圆括号()可以省略.返回值也可以省略,如果函数体只由一条return语句组成或返回类型为void的话.形如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[capture](parameters)&#123;body&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面举了几个Lambda函数的例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125; // 隐式返回类型</span><br><span class="line">[](int&amp; x) &#123; ++x; &#125;   // 没有return语句 -&gt; lambda 函数的返回类型是&apos;void&apos;</span><br><span class="line">[]() &#123; ++global_x; &#125;  // 没有参数,仅访问某个全局变量</span><br><span class="line">[]&#123; ++global_x; &#125;     // 与上一个相同,省略了()</span><br><span class="line">```　　　　</span><br><span class="line">可以像下面这样显示指定返回类型:</span><br></pre></td></tr></table></figure>
+
+<p>[](int x, int y) -&gt; int { int z = x + y; return z; }</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这个例子中创建了一个临时变量z来存储中间值. 和普通函数一样,这个中间值不会保存到下次调用. 什么也不返回的Lambda函数可以省略返回类型, 而不需要使用 -&gt; void 形式.Lambda函数可以引用在它之外声明的变量. 这些变量的集合叫做一个闭包. 闭包被定义在Lambda表达式声明中的方括号[]内. 这个机制允许这些变量被按值或按引用捕获.下面这些例子就是:</span><br></pre></td></tr></table></figure>
+
+<p>[]        //未定义变量.试图在Lambda内使用任何外部变量都是错误的.
+[x, &amp;y]   //x 按值捕获, y 按引用捕获.
+[&amp;]       //用到的任何外部变量都隐式按引用捕获
+[=]       //用到的任何外部变量都隐式按值捕获
+[&amp;, x]    //x显式地按值捕获. 其它变量按引用捕获
+[=, &amp;z]   //z按引用捕获. 其它变量按值捕获</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">接下来的两个例子演示了Lambda表达式的用法.</span><br></pre></td></tr></table></figure>
+
+<p>std::vector<int> some_list;
+int total = 0;
+for (int i=0;i&lt;5;++i) some_list.push_back(i);
+std::for_each(begin(some_list), end(some_list), [&amp;total](int x) 
+{
+    total += x;
+});</int></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">此例计算list中所有元素的总和. 变量total被存为lambda函数闭包的一部分. 因为它是栈变量(局部变量)total的引用,所以可以改变它的值.</span><br></pre></td></tr></table></figure>
+
+<p>std::vector<int> some_list;
+  int total = 0;
+  int value = 5;
+  std::for_each(begin(some_list), end(some_list), [&amp;, value, this](int x) 
+  {
+    total += x * value * this-&gt;some_func();
+  });
+```</int></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/language/" rel="tag"># language</a>
+          
+            <a href="/tags/C/" rel="tag"># C</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/21/l-cmake-syntax/" rel="next" title="cmake语法入门">
+                <i class="fa fa-chevron-left"></i> cmake语法入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/23/tips-android-reverse/" rel="prev" title="Android逆向相关">
+                Android逆向相关 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内置宏"><span class="nav-number">1.</span> <span class="nav-text">内置宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#attribute-机制"><span class="nav-number">2.</span> <span class="nav-text">__attribute__机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一-函数属性（Function-Attribute"><span class="nav-number">2.1.</span> <span class="nav-text">一, 函数属性（Function Attribute)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#弱引用符号-attribute-weak"><span class="nav-number">2.2.</span> <span class="nav-text">弱引用符号__attribute__((weak))</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏参数的字符串化和宏参数的连接"><span class="nav-number">3.</span> <span class="nav-text">宏参数的字符串化和宏参数的连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#的用法"><span class="nav-number">3.1.</span> <span class="nav-text"># 的用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#的用法-1"><span class="nav-number">4.</span> <span class="nav-text">##的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#extern-“C”的作用"><span class="nav-number">5.</span> <span class="nav-text">`extern “C”的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#extern-“C”的使用要点总结"><span class="nav-number">5.1.</span> <span class="nav-text">extern “C”的使用要点总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-11对匿名函数的支持"><span class="nav-number">5.2.</span> <span class="nav-text">C++11对匿名函数的支持</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

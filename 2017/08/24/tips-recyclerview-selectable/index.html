@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android,tips," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="Android,tips,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,6 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/08/24/tips-recyclerview-selectable/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="常规方法： 在Javabean里增加一个boolean isSelected字段， 并在Adapter里根据这个字段的值设置“CheckBox”的选中状态。 在每次选中一个新优惠券时，改变数据源里的isSelected字段， 并notifyDataSetChanged()刷新整个列表。 这样实现起来很简单，代码量也很少，唯一不足的地方就是性能有损耗，不是最优雅。 So作为一个有追求 今天比较闲 的">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-08-23T16:55:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RecyclerView实现单选列表">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/08/24/tips-recyclerview-selectable/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/08/24/tips-recyclerview-selectable/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -444,13 +443,16 @@
 So作为一个有追求 今天比较闲 的程序员，我决心分享一波优雅方案。</p>
 <p>本文会列举分析一下在ListView和RecyclerView中, 列表实现单选的几种方案，并推荐采用定向刷新 部分绑定的方案，因为更高效and优雅</p>
 <h3 id="1常规方案"><a href="#1常规方案" class="headerlink" title="1常规方案:"></a>1常规方案:</h3><p>常规方案 请光速阅读，直接上码：
-Bean结构：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class TestBean extends SelectedBean &#123;</div><div class="line">    private String name;</div><div class="line">    public TestBean(String name,boolean isSelected) &#123;</div><div class="line">        this.name = name;</div><div class="line">        setSelected(isSelected);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>我项目里有好多单选需求，懒得写isSelected字段，所以弄了个父类供子类继承。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class SelectedBean &#123;</div><div class="line">    private boolean isSelected;</div><div class="line">    public boolean isSelected() &#123;</div><div class="line">        return isSelected;</div><div class="line">    &#125;</div><div class="line">    public void setSelected(boolean selected) &#123;</div><div class="line">        isSelected = selected;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+Bean结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class TestBean extends SelectedBean &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    public TestBean(String name,boolean isSelected) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        setSelected(isSelected);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我项目里有好多单选需求，懒得写isSelected字段，所以弄了个父类供子类继承。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class SelectedBean &#123;</span><br><span class="line">    private boolean isSelected;</span><br><span class="line">    public boolean isSelected() &#123;</span><br><span class="line">        return isSelected;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setSelected(boolean selected) &#123;</span><br><span class="line">        isSelected = selected;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>Acitivity 和Adapter其他方法都是最普通的不再赘述。
-Adapter的onBindViewHolder()如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">Log.d(&quot;TAG&quot;, &quot;onBindViewHolder() called with: holder = [&quot; + holder + &quot;], position = [&quot; + position + &quot;]&quot;);</div><div class="line">        holder.ivSelect.setSelected(mDatas.get(position).isSelected());//“CheckBox”</div><div class="line">        holder.tvCoupon.setText(mDatas.get(position).getName());//TextView</div><div class="line">        holder.ivSelect.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View view) &#123;</div><div class="line">                //实现单选，第一种方法，十分简单， Lv Rv通用,因为它们都有notifyDataSetChanged()方法</div><div class="line">                // 每次点击时，先将所有的selected设为false，并且将当前点击的item 设为true， 刷新整个视图</div><div class="line">                for (TestBean data : mDatas) &#123;</div><div class="line">                    data.setSelected(false);</div><div class="line">                &#125;</div><div class="line">                mDatas.get(position).setSelected(true);</div><div class="line">                notifyDataSetChanged();</div><div class="line"></div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">ViewHolder：</div><div class="line"></div><div class="line">    public static class CouponVH extends RecyclerView.ViewHolder &#123;</div><div class="line">        private ImageView ivSelect;</div><div class="line">        private TextView tvCoupon;</div><div class="line"></div><div class="line">        public CouponVH(View itemView) &#123;</div><div class="line">            super(itemView);</div><div class="line">            ivSelect = (ImageView) itemView.findViewById(R.id.ivSelect);</div><div class="line">            tvCoupon = (TextView) itemView.findViewById(R.id.tvCoupon);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+Adapter的onBindViewHolder()如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Log.d(&quot;TAG&quot;, &quot;onBindViewHolder() called with: holder = [&quot; + holder + &quot;], position = [&quot; + position + &quot;]&quot;);</span><br><span class="line">        holder.ivSelect.setSelected(mDatas.get(position).isSelected());//“CheckBox”</span><br><span class="line">        holder.tvCoupon.setText(mDatas.get(position).getName());//TextView</span><br><span class="line">        holder.ivSelect.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                //实现单选，第一种方法，十分简单， Lv Rv通用,因为它们都有notifyDataSetChanged()方法</span><br><span class="line">                // 每次点击时，先将所有的selected设为false，并且将当前点击的item 设为true， 刷新整个视图</span><br><span class="line">                for (TestBean data : mDatas) &#123;</span><br><span class="line">                    data.setSelected(false);</span><br><span class="line">                &#125;</span><br><span class="line">                mDatas.get(position).setSelected(true);</span><br><span class="line">                notifyDataSetChanged();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">ViewHolder：</span><br><span class="line"></span><br><span class="line">    public static class CouponVH extends RecyclerView.ViewHolder &#123;</span><br><span class="line">        private ImageView ivSelect;</span><br><span class="line">        private TextView tvCoupon;</span><br><span class="line"></span><br><span class="line">        public CouponVH(View itemView) &#123;</span><br><span class="line">            super(itemView);</span><br><span class="line">            ivSelect = (ImageView) itemView.findViewById(R.id.ivSelect);</span><br><span class="line">            tvCoupon = (TextView) itemView.findViewById(R.id.tvCoupon);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>方案优点：简单粗暴</li>
 <li>方案缺点：
@@ -464,13 +466,14 @@ Adapter的onBindViewHolder()如下：
 <h3 id="2-利用Rv的notifyItemChanged-定向刷新"><a href="#2-利用Rv的notifyItemChanged-定向刷新" class="headerlink" title="2 利用Rv的notifyItemChanged()定向刷新:"></a>2 利用Rv的notifyItemChanged()定向刷新:</h3><p>本方案可以中速阅读</p>
 <ol>
 <li><p>本方案需要在Adapter里新增一个字段：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private int mSelectedPos = -1;//实现单选  方法二，变量保存当前选中的position</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private int mSelectedPos = -1;//实现单选  方法二，变量保存当前选中的position</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>在设置数据集时(构造函数，setData()方法等：)，初始化 mSelectedPos 的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//实现单选方法二： 设置数据集时，找到默认选中的pos</div><div class="line">for (int i = 0; i &lt; mDatas.size(); i++) &#123;</div><div class="line">    if (mDatas.get(i).isSelected()) &#123;</div><div class="line">        mSelectedPos = i;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//实现单选方法二： 设置数据集时，找到默认选中的pos</span><br><span class="line">for (int i = 0; i &lt; mDatas.size(); i++) &#123;</span><br><span class="line">    if (mDatas.get(i).isSelected()) &#123;</span><br><span class="line">        mSelectedPos = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>onClick里代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//实现单选方法二： notifyItemChanged() 定向刷新两个视图</div><div class="line">//如果勾选的不是已经勾选状态的Item</div><div class="line">if (mSelectedPos!=position)&#123;</div><div class="line">    //先取消上个item的勾选状态</div><div class="line">    mDatas.get(mSelectedPos).setSelected(false);</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">    //设置新Item的勾选状态</div><div class="line">    mSelectedPos = position;</div><div class="line">    mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//实现单选方法二： notifyItemChanged() 定向刷新两个视图</span><br><span class="line">//如果勾选的不是已经勾选状态的Item</span><br><span class="line">if (mSelectedPos!=position)&#123;</span><br><span class="line">    //先取消上个item的勾选状态</span><br><span class="line">    mDatas.get(mSelectedPos).setSelected(false);</span><br><span class="line">    notifyItemChanged(mSelectedPos);</span><br><span class="line">    //设置新Item的勾选状态</span><br><span class="line">    mSelectedPos = position;</span><br><span class="line">    mDatas.get(mSelectedPos).setSelected(true);</span><br><span class="line">    notifyItemChanged(mSelectedPos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <p>本方案由于调用了notifyItemChanged()，所以还会伴有“白光一闪”的动画。</p>
@@ -493,8 +496,9 @@ Adapter的onBindViewHolder()如下：
 但是再次切换其他Item时， 会符合预期：只走需要修改的两个Item的getView()/onBindViewHolder()方法。
 原因未知，有朋友知道烦请告知，多谢。</p>
 <h3 id="3-Rv-实现部分绑定（推荐）"><a href="#3-Rv-实现部分绑定（推荐）" class="headerlink" title="3 Rv 实现部分绑定（推荐）:"></a>3 Rv 实现部分绑定（推荐）:</h3><p>利用RecyclerView的 findViewHolderForLayoutPosition()方法，获取某个postion的ViewHolder，按照源码里这个方法的注释，它可能返回null。所以我们需要注意判空，（空即在屏幕不可见）。
-与方法2只有onClick里的代码不一样，核心还是利用mSelectedPos 字段搞事情。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//实现单选方法三： RecyclerView另一种定向刷新方法：不会有白光一闪动画 也不会重复onBindVIewHolder</div><div class="line">CouponVH couponVH = (CouponVH) mRv.findViewHolderForLayoutPosition(mSelectedPos);</div><div class="line">if (couponVH != null) &#123;//还在屏幕里</div><div class="line">    couponVH.ivSelect.setSelected(false);</div><div class="line">&#125;else &#123;</div><div class="line">    //add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，</div><div class="line">    //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理</div><div class="line">    notifyItemChanged(mSelectedPos);</div><div class="line">&#125;</div><div class="line">mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据</div><div class="line">//设置新Item的勾选状态</div><div class="line">mSelectedPos = position;</div><div class="line">mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">holder.ivSelect.setSelected(true);</div></pre></td></tr></table></figure></p>
+与方法2只有onClick里的代码不一样，核心还是利用mSelectedPos 字段搞事情。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//实现单选方法三： RecyclerView另一种定向刷新方法：不会有白光一闪动画 也不会重复onBindVIewHolder</span><br><span class="line">CouponVH couponVH = (CouponVH) mRv.findViewHolderForLayoutPosition(mSelectedPos);</span><br><span class="line">if (couponVH != null) &#123;//还在屏幕里</span><br><span class="line">    couponVH.ivSelect.setSelected(false);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    //add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，</span><br><span class="line">    //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理</span><br><span class="line">    notifyItemChanged(mSelectedPos);</span><br><span class="line">&#125;</span><br><span class="line">mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据</span><br><span class="line">//设置新Item的勾选状态</span><br><span class="line">mSelectedPos = position;</span><br><span class="line">mDatas.get(mSelectedPos).setSelected(true);</span><br><span class="line">holder.ivSelect.setSelected(true);</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>方案优点：
 定向刷新两个Item，只修改必要的部分，不会重走onBindViewHolder()，属于手动部分绑定。代码量也适中，不多。</li>
@@ -503,10 +507,12 @@ Adapter的onBindViewHolder()如下：
 </ul>
 <h3 id="4-Rv-利用payloads实现部分绑定-不推荐"><a href="#4-Rv-利用payloads实现部分绑定-不推荐" class="headerlink" title="4 Rv 利用payloads实现部分绑定(不推荐):"></a>4 Rv 利用payloads实现部分绑定(不推荐):</h3><p>本方案属于开拓思维，是在方案2的基础上，利用payloads和notifyItemChanged(int position, Object payload)搞事情。
 不知道payloads是什么的，看不懂此方案的，我又要安利：（戳-&gt;：【Android】详解7.0带来的新工具类：DiffUtil）
-onClick代码如下：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//实现单选方法四：</div><div class="line">if (mSelectedPos != position) &#123;</div><div class="line">    //先取消上个item的勾选状态</div><div class="line">    mDatas.get(mSelectedPos).setSelected(false);</div><div class="line">    //传递一个payload</div><div class="line">    Bundle payloadOld = new Bundle();</div><div class="line">    payloadOld.putBoolean(&quot;KEY_BOOLEAN&quot;, false);</div><div class="line">    notifyItemChanged(mSelectedPos, payloadOld);</div><div class="line">    //设置新Item的勾选状态</div><div class="line">    mSelectedPos = position;</div><div class="line">    mDatas.get(mSelectedPos).setSelected(true);</div><div class="line">    Bundle payloadNew = new Bundle();</div><div class="line">    payloadNew.putBoolean(&quot;KEY_BOOLEAN&quot;, true);</div><div class="line">    notifyItemChanged(mSelectedPos, payloadNew);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>需要重写三参数的onBindViewHolder() 方法：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onBindViewHolder(CouponVH holder, int position, List&lt;Object&gt; payloads) &#123;</div><div class="line">    if (payloads.isEmpty()) &#123;</div><div class="line">        onBindViewHolder(holder, position);</div><div class="line">    &#125; else &#123;</div><div class="line">        Bundle payload = (Bundle) payloads.get(0);</div><div class="line">        if (payload.containsKey(&quot;KEY_BOOLEAN&quot;)) &#123;</div><div class="line">            boolean aBoolean = payload.getBoolean(&quot;KEY_BOOLEAN&quot;);</div><div class="line">            holder.ivSelect.setSelected(aBoolean);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+onClick代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//实现单选方法四：</span><br><span class="line">if (mSelectedPos != position) &#123;</span><br><span class="line">    //先取消上个item的勾选状态</span><br><span class="line">    mDatas.get(mSelectedPos).setSelected(false);</span><br><span class="line">    //传递一个payload</span><br><span class="line">    Bundle payloadOld = new Bundle();</span><br><span class="line">    payloadOld.putBoolean(&quot;KEY_BOOLEAN&quot;, false);</span><br><span class="line">    notifyItemChanged(mSelectedPos, payloadOld);</span><br><span class="line">    //设置新Item的勾选状态</span><br><span class="line">    mSelectedPos = position;</span><br><span class="line">    mDatas.get(mSelectedPos).setSelected(true);</span><br><span class="line">    Bundle payloadNew = new Bundle();</span><br><span class="line">    payloadNew.putBoolean(&quot;KEY_BOOLEAN&quot;, true);</span><br><span class="line">    notifyItemChanged(mSelectedPos, payloadNew);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要重写三参数的onBindViewHolder() 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onBindViewHolder(CouponVH holder, int position, List&lt;Object&gt; payloads) &#123;</span><br><span class="line">    if (payloads.isEmpty()) &#123;</span><br><span class="line">        onBindViewHolder(holder, position);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        Bundle payload = (Bundle) payloads.get(0);</span><br><span class="line">        if (payload.containsKey(&quot;KEY_BOOLEAN&quot;)) &#123;</span><br><span class="line">            boolean aBoolean = payload.getBoolean(&quot;KEY_BOOLEAN&quot;);</span><br><span class="line">            holder.ivSelect.setSelected(aBoolean);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li><p>方案优点：
 同方法3</p>
@@ -516,7 +522,7 @@ onClick代码如下：
 </li>
 </ul>
 <p>作者：张旭童
-链接：<a href="http://www.jianshu.com/p/1ac13f74da63" target="_blank" rel="external">http://www.jianshu.com/p/1ac13f74da63</a>
+链接：<a href="http://www.jianshu.com/p/1ac13f74da63" target="_blank" rel="noopener">http://www.jianshu.com/p/1ac13f74da63</a>
 來源：简书</p>
 
       
@@ -540,13 +546,13 @@ onClick代码如下：
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -651,7 +657,7 @@ onClick代码如下：
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -662,9 +668,7 @@ onClick代码如下：
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -675,7 +679,7 @@ onClick代码如下：
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -697,7 +701,7 @@ onClick代码如下：
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -811,7 +815,7 @@ onClick代码如下：
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -848,7 +852,7 @@ onClick代码如下：
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">

@@ -1,0 +1,1232 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="DozeMode模式由于Android的开放特性，加上国内app开发者的觉悟普遍不高的情况下，越来越多的app开始利用安卓的系统特性甚至可以称为漏洞，故意让app退出后仍然占用大量的硬件资源。   越来越多的应用会在后台运行时“假死”，即不进入真正的Sleep，而是不断在后台轮询搜集用户行为或者保持某些长链接来保障数据的实时性。而Android系统自身并未出台对应的策略来约束或者限制这类应用行为，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android电源管理基础知识整理">
+<meta property="og:url" content="http://wodekouwei.com/2019/06/30/tips-android-battery/index.html">
+<meta property="og:site_name" content="老司机种菜">
+<meta property="og:description" content="DozeMode模式由于Android的开放特性，加上国内app开发者的觉悟普遍不高的情况下，越来越多的app开始利用安卓的系统特性甚至可以称为漏洞，故意让app退出后仍然占用大量的硬件资源。   越来越多的应用会在后台运行时“假死”，即不进入真正的Sleep，而是不断在后台轮询搜集用户行为或者保持某些长链接来保障数据的实时性。而Android系统自身并未出台对应的策略来约束或者限制这类应用行为，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://images.wodekouwei.com/5673075-1305db4afb8c5e2a.jpg">
+<meta property="og:updated_time" content="2019-07-01T02:37:21.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android电源管理基础知识整理">
+<meta name="twitter:description" content="DozeMode模式由于Android的开放特性，加上国内app开发者的觉悟普遍不高的情况下，越来越多的app开始利用安卓的系统特性甚至可以称为漏洞，故意让app退出后仍然占用大量的硬件资源。   越来越多的应用会在后台运行时“假死”，即不进入真正的Sleep，而是不断在后台轮询搜集用户行为或者保持某些长链接来保障数据的实时性。而Android系统自身并未出台对应的策略来约束或者限制这类应用行为，">
+<meta name="twitter:image" content="http://images.wodekouwei.com/5673075-1305db4afb8c5e2a.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wodekouwei.com/2019/06/30/tips-android-battery/">
+
+
+
+
+
+  <title> Android电源管理基础知识整理 | 老司机种菜 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2021aa5f03a4203621d42ef374e0d5f7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">老司机种菜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wodekouwei.com/2019/06/30/tips-android-battery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="轻口味">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="老司机种菜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android电源管理基础知识整理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-30T18:55:44+08:00">
+                2019-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2019/06/30/tips-android-battery/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="DozeMode模式"><a href="#DozeMode模式" class="headerlink" title="DozeMode模式"></a>DozeMode模式</h3><p>由于Android的开放特性，加上国内app开发者的觉悟普遍不高的情况下，越来越多的app开始利用安卓的系统特性甚至可以称为漏洞，故意让app退出后仍然占用大量的硬件资源。   越来越多的应用会在后台运行时“假死”，即不进入真正的Sleep，而是不断在后台轮询搜集用户行为或者保持某些长链接来保障数据的实时性。而Android系统自身并未出台对应的策略来约束或者限制这类应用行为，当这类应用越来越多，就会导致用户的Android设备电量消耗越来越高、手机越来越烫、流量偷跑、话费超标等情况。 </p>
+<p>google也已经意识到这个问题，并且从Android M(即6.0)开始引入 Doze Mode，中文翻译为“打旽模式”，但专业术语的翻译为“低电耗模式”和“应用待机模式”，android系统的这两个模式都是采用  Doze Mode 来实现的。</p>
+<p>doze 这个单词的中文翻译为“打瞌睡”，“打瞌睡”的意思就是稍微休息一下，例如我们长时间工作时，可能会觉得疲倦，这时我们会趴在桌子上眯几分钟，但是我们的思想状态是可以随时进入工作状态的，比如领导随时可能给你安排一项紧急的工作，这时你可以立即进入工作状态。
+那么对于 安卓系统而言，系统在锁屏后也会选择一个合适的时机休息片刻，一旦用户再次解锁屏，系统又能立即进入工作状态。</p>
+<p>从 Android 6.0（API 级别 23）开始，Android 引入了两个省电功能，可通过管理应用在设备未连接至电源时的行为方式为用户延长电池寿命。低电耗模式通过在设备长时间处于闲置状态时推迟应用的后台 CPU 和网络 Activity 来减少电池消耗。应用待机模式可推迟用户近期未与之交互的应用的后台网络 Activity。</p>
+<p>低电耗模式和应用待机模式管理在 Android 6.0 或更高版本上运行的所有应用的行为，无论它们是否特别针对 API 级别 23。 为确保用户获得最佳体验，请在低电耗模式和应用待机模式下测试您的应用并对代码进行必要的调整。 </p>
+<p>需要注意的几点：</p>
+<ol>
+<li>Doze Mode会限制后台应用的cpu、网络。在安卓早期，当内存不够用时，安卓系统会回收后台应用的进程，这仅仅是从 内存占用 层面来限制后台应用。那么现在 系统会进一步限制后台应用的 cpu、网络</li>
+<li>不论app的targetApi是否23(即安卓6.0)，只要用户的手机是基于android 6.0，那么你的应用也将受到Doze Mode的限制。在早期的安卓版本适配时，可能由于时间关系，我们并不会立即适配6.0的权限系统，但为了让应用在6.0上也能正常运行，我们会将app的targetApi 设置5.0，这样app在6.0上运行的效果和在5.0上完全一致。 但这套方式对于Doze Mode不再适用了，可能是google为了回快android新版本的更新速度吧。 毕竟国内开发者的大环境就这样，总要有个鞭子放在脑壳驱动你，你才会去更新。</li>
+</ol>
+<h4 id="Doze-Mode的两个具体应用：低电耗模式、应用待机模式"><a href="#Doze-Mode的两个具体应用：低电耗模式、应用待机模式" class="headerlink" title="Doze Mode的两个具体应用：低电耗模式、应用待机模式"></a>Doze Mode的两个具体应用：低电耗模式、应用待机模式</h4><p>这两个模式都是通过 Doze Mode 来实现，那么至些我们可以认为 Doze Mode 只是一种技术手段的名词。    </p>
+<ol>
+<li>低电耗模式:如果用户设备未插接电源、处于静止状态一段时间且屏幕关闭，设备会进入低电耗模式。 在低电耗模式下，系统会尝试通过限制应用对网络和 CPU 密集型服务的访问来节省电量。 这还可以阻止应用访问网络并推迟其作业、同步和标准闹铃。
+系统会定期退出低电耗模式一会儿，好让应用完成其已推迟的 Activity。在此维护时段内，系统会运行所有待定同步、作业和闹铃并允许应用访问网络。</li>
+<li>应用待机模式:系统判定应用在用户未主动使用的进程，都认为此进程处于空闲状态。当用户将设备插入电源时，系统将从待机状态释放应用，也就不会使用Doze Mode来限制后台进程的硬件资源。
+Doze和App Standby的区别：
+Doze模式需要屏幕关闭（通常晚上睡觉或长时间屏幕关闭才会进入），而App Standby不需要屏幕关闭，App进入后台一段时间也会受到连接网络等限制。</li>
+</ol>
+<p>在安卓6.0及以后系统上，可以防止 doze mode 让应用进程 进程阻塞挂起状态 的保活方法：</p>
+<ol>
+<li>启动前台Service</li>
+<li>自定义锁屏</li>
+<li>在应用内播放一段无声的音乐这个方法，实测很有效，系统认为如果你的应用进程在锁屏时存在能被用户感知到的行为，那么系统不会阻塞这个进程，播放音乐就是一个能被用户感觉的行为，只不过我们巧妙的循环播放一个无声音乐来欺骗 系统。缺点：可能会多消耗一定的电量，但实测并没有多消耗很多， 半个小时也就消耗了2%电量， 实际就算不播放无声音乐半小时系统也会存在一定的消耗。 所以暂时不需要考虑这方面。</li>
+<li>保持屏幕长亮(只在某些特殊功能场景下适用，如导航软件)。系统不锁屏，就不会进入doze mode</li>
+</ol>
+<h3 id="电池相关"><a href="#电池相关" class="headerlink" title="电池相关"></a>电池相关</h3><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>本文主要围绕如下问题进行知识收集整理：</p>
+<p>待机、睡眠与休眠的区别？
+Android开发者官网当中提到“idle states”，该如何理解，这个状态会对设备及我们的程序造成何种影响？
+进入Doze模式中的idle状态，我们的程序还能运行吗？
+手机睡眠之后，为何我们写Alarm程序、来电显示程序依旧会生效？</p>
+<p>如果你也有以上疑问，那么本文会对你解开疑惑有一定的帮助</p>
+<h4 id="ACPI简介"><a href="#ACPI简介" class="headerlink" title="ACPI简介"></a>ACPI简介</h4><p>要理解第一个问题，得先从ACPI（高级配置与电源接口）说起，ACPI是一种规范（包含软件与硬件），用来供操作系统应用程序管理所有电源接口。
+ACPI将计算机系统的状态划分为四个全局状态（G0-G3），共7个状态，其中G0对应S0;G1将低功耗状态细分为四个状态，对应S1-S4;G2、G3代表关机状态分别对应S5、S6。
+|ACPI| State Description|
+|—|—|
+|S0|正常工作状态|
+|S1|CPU与RAM供电正常，但CPU不执行指令|
+|S2|比S1更深的一个睡眠层次，这种模式通常不采用|
+|S3|挂起到内存|
+|S4|挂起到硬盘|
+|S5|Soft Off，CPU、外设等断电，但电源依旧会为部分极低耗设备供电|
+|S6|Mechanical Off，全部断电|</p>
+<p>这里只需要对ACPI的七个状态有个大致了解即可，下一节会有具体的例子来说明各个状态。</p>
+<h4 id="Linux系统电源状态"><a href="#Linux系统电源状态" class="headerlink" title="Linux系统电源状态"></a>Linux系统电源状态</h4><p>在Linux操作系统中，将电源划分为如下几个状态：
+|ACPI State| Linux State|Description|
+|—|—|—|
+|S0|On(on)|Working|
+|S1|Standby(standby)|CPU and RAM are powered but not executed|
+|S2|——|——|
+|S3|Suspend to RAM（mem)|CPU is Off,RAM is powered and the running content is saved to RAM|
+|S4|Suspend to Disk(disk)|All content is saved to Disk and power down|
+|S5|Shutdown|Shutdown the system|</p>
+<h5 id="On：正常工作状态"><a href="#On：正常工作状态" class="headerlink" title="On：正常工作状态"></a>On：正常工作状态</h5><h5 id="STR-Suspend-to-RAM"><a href="#STR-Suspend-to-RAM" class="headerlink" title="STR(Suspend to RAM)"></a>STR(Suspend to RAM)</h5><p>挂起到内存，俗称待机、睡眠（Sleep），进入该状态，系统的主要工作如下：</p>
+<ol>
+<li>将系统当前的运行状态等数据保存在内存中，此时仍需要向RAM供电，以保证后续快速恢复至工作状态</li>
+<li>冻结用户态的进程和内核态的任务（进入内核态的进程或内核自己的task）</li>
+<li>关闭外围设备，如显示屏、鼠标等,中断唤醒外设不会关闭，如电源键</li>
+<li>CPU停止工作
+Standby也属于睡眠的一种方式，属于浅睡眠。该模式下CPU并未断电，依旧可以接收处理某些特定事件，视具体设备而定，恢复至正常工作状态的速度也比STR更快，但也更为耗电。举个例子来说，以该方式进入睡眠时，后续通过点击键盘也能将系统唤醒。而以mem进入的睡眠为深度睡眠，只能通过中断唤醒设备唤醒系统，如电源键(此时按电源键，不会经过正常的开机流程的BIOS、BOOTLOAD等)，此时按键盘是无法唤醒系统的。</li>
+</ol>
+<h5 id="STD-Suspend-to-Disk"><a href="#STD-Suspend-to-Disk" class="headerlink" title="STD(Suspend to Disk):"></a>STD(Suspend to Disk):</h5><p>挂起到硬盘，俗称休眠（Hibernation）将系统当前的运行状态等数据保存到硬盘上，并自动关机。下次开机时便从硬盘上读取之前保存的数据，恢复到休眠关机之前的状态。
+譬如在休眠关机时，桌面打开了一个应用，那么下一次开机启动时，该应用也处于打开状态。而正常的关机-开机流程，该应用是不会打开的。
+Linux内核代码声明如下,位于kernel/power/suspend.c</p>
+<p>在新版内核中，进程freeze的功能被单独抽离出来作为一个电源状态，该状态仅仅是冻结进程，并不会使系统进入低功耗状态（如切断CPU时钟源、关闭外设供电等）。
+相关宏定义位于：linux/include/linux/suspend.h</p>
+<p>其中状态4就是STD，所谓的休眠状态（Hibernation）</p>
+<p>小结：
+至此，我们可以知道，睡眠与休眠是2个不同的概念，睡眠属于STR，而休眠属于STD，切勿混为一谈。
+网上也有很多关于“Android休眠”的文章，事实上，Android手机压根儿就不支持休眠模式。</p>
+<h4 id="查看Linux支持的电源模式"><a href="#查看Linux支持的电源模式" class="headerlink" title="查看Linux支持的电源模式"></a>查看Linux支持的电源模式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#查看系统支持的电源模式</span><br><span class="line">$ cat /sys/power/state</span><br><span class="line">#休眠系统命令</span><br><span class="line">$ sudo pm-hibernate</span><br></pre></td></tr></table></figure>
+
+<p>看来Ubuntu-17.0.4版本是不支持休眠功能了，state当中并没有disk，执行休眠命令也提示找不到。
+在公司测试Ubuntu-16.0.4是支持休眠的，休眠时会将当前RAM中的数据保持至swap分区，以供后续恢复。</p>
+<h4 id="查看Android支持的电源模式"><a href="#查看Android支持的电源模式" class="headerlink" title="查看Android支持的电源模式"></a>查看Android支持的电源模式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb shell</span><br><span class="line">su</span><br><span class="line">cat /sys/power/state</span><br><span class="line">freeze men</span><br></pre></td></tr></table></figure>
+
+<p>这里我使用的是模拟器查看的，真机也一样，Android手机是不支持休眠模式的，休眠模式需要一块与RAM大小一致存储空间，这在移动设备上可是个不小的开销。</p>
+<h4 id="Idle-State"><a href="#Idle-State" class="headerlink" title="Idle State"></a>Idle State</h4><p>Android上的Idle状态分为二类：Cpu Idle和Device Idle</p>
+<h5 id="Cpu-Idle"><a href="#Cpu-Idle" class="headerlink" title="Cpu Idle"></a>Cpu Idle</h5><p>Linux系统运行的基础是基于进程调度，实际上内核调度的线程（task），内核并不会区分线程与进程，都将他们当做一个线程（task）来处理；当所有的进程都没事儿干的时候，系统就会启用idle进程，使系统进入低功耗状态（如关闭一些服务、模块功能，降低CPU工作频率等），即idle状态，以达到省电的目的。
+idle状态又可以划分为不同的层级，以MTK的芯片为例，通常划分为以下几个状态:
+|状态|描述|
+|soidle（screen on idle）|亮屏 Idle 模式，该模式下与正常工作状态差别不大，唯一的区别就cpu处于空闲状态|
+|rgidle|浅度 Idle 模式，cpu处于 WFI（wait for interrupt），屏幕熄灭，同时关闭一些不需要的服务及模块，注意此状态cpu的时钟源与RTC模块是工作正常的，此时是可以通过TimerTask的定时触发激活系统的，TimerTask依赖于CPU的RTC模块，而Alarm则依赖于PMIC的RTC模块|
+|dpidle(deep idle)|深度idle模式，该模式下cpu的时钟源和hrtimer（高精度定时器模块（RTC））被关闭，所有进程（包括系统进程）被冻结，即进入上文所述的睡眠状态|</p>
+<p>idle进程是由原始进程（pid=0）在初始化init进程（pid=1）之后演变而来，可以说是init进程的祖先，关于其详细介绍可参考如下链接：
+<a href="http://www.voidcn.com/article/p-ekxiwxus-bom.html" target="_blank" rel="noopener">Linux Idle基础</a>
+<a href="http://kernel.meizu.com/cpuidle.html" target="_blank" rel="noopener">魅族内核团队：CPUIDLE 之低功耗定时器</a></p>
+<h5 id="Device-Idle"><a href="#Device-Idle" class="headerlink" title="Device Idle"></a>Device Idle</h5><p>Device Idle属于Doze模式中概念，即指当手机屏幕熄屏、不充电、静置不动,有网友分析了源码，指出6.0手机需要静置1时4分30秒才能进入Doze模式。
+Doze模式的限制</p>
+<ul>
+<li>网络接入被暂停</li>
+<li>系统忽略wake locks</li>
+<li>标准的AlarmManager alarms（包括setExact()和setWindow()）被延缓到下一个maintenance window</li>
+<li>如果你需要在Doze状态下启动设置的alarms，使用setAndAllowWhileIdle()或者setExactAndAllowWhileIdle()。当有setAlarmClock()的alarms启动时，系统会短暂退出Doze模式</li>
+<li>系统不会扫描Wi-Fi</li>
+<li>系统不允许sync adapters运行</li>
+<li>系统不允许JobScheduler运行
+结合上文分析的cpu idle不难发现Doze模式中的idle状态在概念属于浅idle状态，只是关闭了一些特定服务和模块，并非立即进入睡眠，当然这个过程当中依旧有可能满足睡眠条件而进入睡眠状态，至于如何进入请参考下文【睡眠触发入口】一节。</li>
+</ul>
+<p><a href="https://www.cnblogs.com/l2rf/p/6373794.html" target="_blank" rel="noopener">Android Doze模式源码分析</a></p>
+<h4 id="Android电源管理框架"><a href="#Android电源管理框架" class="headerlink" title="Android电源管理框架"></a>Android电源管理框架</h4><p>Android采用linux内核，所以电源状态整体上是与linux操作系统相同，下图是Android的电源管理框架：
+<img src="http://images.wodekouwei.com/5673075-1305db4afb8c5e2a.jpg" alt="image"></p>
+<h4 id="WakeLock"><a href="#WakeLock" class="headerlink" title="WakeLock"></a>WakeLock</h4><p>唤醒锁，一种锁机制，用于阻止系统进入睡眠状态，只要有应用获取到改锁，那么系统就无法进入睡眠状态。
+该机制起初是早期Android为Linux内核打得一个补丁，并想合入到linux内核，但被Linux社区拒绝，后续Linux内核引入自己的Wakelock机制,Android系统也使用的是linux的Wakelock机制，所以该机制并非Android特有的机制。
+Android系统提供了两种类型的锁，每一个类型又可分为超时锁与普通锁，超时锁，超时会自动释放，而普通锁则必需要手动释放：
+|类型|描述|
+|—|—|
+|WAKE_LOCK_SUSPEND|阻止系统进入睡眠状态（STR）|
+|WAKE_LOCK_IDLE|阻止系统从idle进程进入那些具有较大中断时延、禁用了较多中断源的低功耗状态（睡眠除外），持有该类型的锁，不影响系统进入睡眠状态。自Android API-17（对应android linux内核版本3.4）移除了该类型的唤醒锁。|
+中断时延：计算机接收到中断信号到操作系统作出响应，并完成转入中断服务程序(ISR)的时间。
+内核当中关于WakeLock的主要源码位于：
+<a href="https://github.com/aosp-mirror/kernel_common/blob/deprecated/android-3.4/kernel/power/wakelock.c" target="_blank" rel="noopener">kernel_common/include/linux/wakelock.h</a>
+<a href="https://github.com/aosp-mirror/kernel_common/blob/deprecated/android-3.4/include/linux/wakelock.h" target="_blank" rel="noopener">kernel_common/kernel/power/wakelock.c</a></p>
+<p>应用层提供的锁类型如下，这些锁都需要手动释放：</p>
+<table>
+<thead>
+<tr>
+<th>FLAG</th>
+<th>CPU</th>
+<th>屏幕</th>
+<th>键盘</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PARTIAL_WAKE_LOCK</td>
+<td>开启</td>
+<td>关闭</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>SCREEN_DIM_WAKE_LOCK</td>
+<td>开启</td>
+<td>变暗</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>SCREEN_BRIGHT_WAKE_LOCK</td>
+<td>开启</td>
+<td>变亮</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>FULL_WAKE_LOCK</td>
+<td>开启</td>
+<td>变亮</td>
+<td>变亮</td>
+</tr>
+<tr>
+<td>锁的释放</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Linux3.4内核中摒弃了之前的wakelock机制，引入wakeup source机制来进行睡眠管理，为了保证上层接口不变，Android的Linux内核便将wakeup source包装成wakelock，WakeLock的数据结构如下：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>当我们应用层释放锁之后，它并不会马上消失。wakelock分为激活和非激活状态，非激活状态300S之内，无人在申请wakelock，那么它将从红黑二叉树，LRU链表当中删除，如此便可复用锁，节省系统开销。</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>睡眠触发入口</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>在wakelock中，有3个地方可以让系统从early_suspend进入suspend状态。</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1. wake_unlock，系统每释放一个锁，就会检查是否还存其他激活的wakelock，若不存在则执行Linux的标准suspend流程进入睡眠状态</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>在超时锁的超时回调函数，判断是否存在其他激活的wakelock，若不存在，则进入睡眠状态</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1. autosleep机制，android 4.1引入该机制，亮屏时会向autosleep节点写入off，熄屏则会写入mem。Android一灭屏，就会尝试进入睡眠，失败之后系统处于idle进程超过一定时间，则又尝试进入睡眠，判断标准同上，若存在wakelock则进入失败</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>关于autosleep机制的内核源码分析，可以参考如下文章：
+<a href="https://blog.csdn.net/wlwl0071986/article/details/9746135" target="_blank" rel="noopener">Android autosleep机制</a></p>
+<h5 id="Early-Suspend"><a href="#Early-Suspend" class="headerlink" title="Early Suspend"></a>Early Suspend</h5><p>预挂起机制是Android特有的挂起机制， 这个机制作用是关闭一些与显示相关的外设，比如LCD背光、重力感应器、 触摸屏，但是其他外设如WIFI、蓝牙等模块等并未关闭。
+此时，系统依旧可以处理事件，如音乐播放软件，息屏后依旧能播放音乐。
+需要注意的是Early Suspend机制与WakeLock机制相互独立，就算有应用持有wakelock锁，系统依旧可以通过Early Suspend机制关闭与显示相关的外设。
+注意：
+Android 4.4起，也就是引入ART的版本，摒弃了early suspend机制，改用了fb event通知机制，即后续版本只有suspend、resume以及runtime suspend、runtime resume。</p>
+<h5 id="Late-Resume"><a href="#Late-Resume" class="headerlink" title="Late Resume"></a>Late Resume</h5><p>迟唤醒机制，用于唤醒预挂起的设备</p>
+<h5 id="睡眠状态转换"><a href="#睡眠状态转换" class="headerlink" title="睡眠状态转换"></a>睡眠状态转换</h5><p>一般情况下，当我们息屏后，系统将先通过Early Suspend机制进入Idle状态，如果满足进入睡眠的条件（没有进程持有唤醒锁）则会通过Linux的Suspend机制进入Sleep(睡眠)状态。</p>
+<p>内核源码流程分析可参考如下文章：
+源码位于<a href="https://github.com/aosp-mirror/kernel_common/blob/deprecated/android-3.4/kernel/power/main.c" target="_blank" rel="noopener">kernel_common/kernel/power/main.c</a>：
+Android中休眠与唤醒之<a href="https://blog.csdn.net/wh_19910525/article/details/17286521" target="_blank" rel="noopener">wake_lock, early_suspend, late_resume</a></p>
+<p>看到这儿，不知你是否疑问，既然系统睡眠了，CPU断电不执行指令了，为何我们定的Alarm会生效以及能接收到来电？</p>
+<h4 id="手机来电与Alarm为何能唤醒系统"><a href="#手机来电与Alarm为何能唤醒系统" class="headerlink" title="手机来电与Alarm为何能唤醒系统"></a>手机来电与Alarm为何能唤醒系统</h4><p>原来Android在硬件架构上将处理器分为二类：Application Processor（AP）和Baseband Processor（BP），AP是ARM架构的处理器，用于运行Linux+Android系统，耗电量高；BP用于运行实时操作系统（RTOS），用于处理手机通信，耗电量低。
+当AP进入睡眠，有来电时，Modem（调制解调器）将唤醒AP；而我们平时所用的Alarm在硬件上则是依赖PMIC（电源管理芯片）中的RTC模块，所以即使AP断电进入睡眠，我们定的闹钟依旧会生效。
+若想更深入的了解，则可参考Android RIL机制相关的文章。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ol>
+<li>待机、睡眠与休眠的区别
+实际上待机（standby）与睡眠（mem）属于不同模式，但现在大多操作系统都不支持待机模式了，我们也习惯将待机等同于睡眠，睡眠属于STR，休眠属于STD，Android手机不支持休眠！！！</li>
+<li>Android开发者官网当中提到“idle state”，该如何理解，这个状态会对设备及我们的程序造成何种影响
+所谓的idle状态，就是指系统进入某个低功耗状态，以MTK为例，常见的状态有soidle、rgidle以及dpidle。rgidle只是限制我们程序使用某些模块，如Doze模式中不能访问网络；而dpidle则会冻结所有进程，系统进入睡眠。</li>
+<li>进入Doze模式中的idle状态，我们的程序还能运行吗？
+Doze模式中的idle概念上属于rgidle状态，此时我们的程序是能运行的，只是不能访问网络等，但是在这个过程中，系统可能会满足进入睡眠条件，冻结所有进程，这样我们的程序就不会得到执行。
+可以自己写个死循环的线程(普通线程，非looper线程)，强制手机进入Doze的idle模式，你会发现你的程序依旧在执行，但是静置在哪儿一段时间后，你会发现你的线程被冻结，不会执行，当你点亮屏幕，你的线程又会继续工作。</li>
+<li>手机睡眠之后，为何我们写Alarm程序、来电显示程序依旧会生效？
+Android在硬件架构上将处理器分为AP与BP，应用程序运行与AP之中，睡眠只是将AP断电，BP（Modem）不会断电，当有来电时，BP将会唤醒AP。
+Alarm在硬件上依赖的是Modem中的PMIC的RTC模块，而不是AP中的RTC模块，当定时器触发时，可以唤醒AP，使我们的Alarm程序依旧会得到执行</li>
+</ol>
+<p><a href="https://www.jianshu.com/p/cc553c9c75b0" target="_blank" rel="noopener">转自</a>
+<a href="https://developer.android.com/topic/performance/background-optimization?hl=zh-cn" target="_blank" rel="noopener">Background optimizations</a>
+<a href="https://developer.android.com/training/monitoring-device-state/doze-standby.html?hl=zh-cn" target="_blank" rel="noopener">对低电耗模式和应用待机模式进行针对性优化</a>
+<a href="https://issuetracker.google.com/issues/37070074" target="_blank" rel="noopener"> Doze mode not affected by a running foreground service associated with a notification while holding a partial wake lock</a></p>
+<p><a href="https://medium.com/spreaker-developers/fighting-with-doze-app-standby-and-audio-streaming-234249197241" target="_blank" rel="noopener">Fighting with Doze, App Standby and Audio Streaming</a></p>
+<p><a href="https://stackoverflow.com/questions/35438786/doze-mode-app-standby-during-audio-playback" target="_blank" rel="noopener">Doze Mode/App Standby During Audio Playback</a>
+<a href="https://developer.android.com/topic/performance/power/power-details?hl=zh-cn" target="_blank" rel="noopener">Power management restrictions</a></p>
+<p><a href="https://developer.android.com/training/monitoring-device-state/doze-standby.html?hl=zh-cn" target="_blank" rel="noopener">对低电耗模式和应用待机模式进行针对性优化</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/30/tips-android-jobscheduler/" rel="next" title="tips-android-jobscheduler">
+                <i class="fa fa-chevron-left"></i> tips-android-jobscheduler
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/30/tips-android-version-addaptive/" rel="prev" title="tips-android-version-addaptive">
+                tips-android-version-addaptive <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
+          <p class="site-author-name" itemprop="name">轻口味</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">190</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/qingkouwei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/LightTaste" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/turnpp/" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/shen-jun-wei-9/" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/ossrs/srs" title="SRS" target="_blank">SRS</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DozeMode模式"><span class="nav-number">1.</span> <span class="nav-text">DozeMode模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Doze-Mode的两个具体应用：低电耗模式、应用待机模式"><span class="nav-number">1.1.</span> <span class="nav-text">Doze Mode的两个具体应用：低电耗模式、应用待机模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#电池相关"><span class="nav-number">2.</span> <span class="nav-text">电池相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">2.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ACPI简介"><span class="nav-number">2.2.</span> <span class="nav-text">ACPI简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux系统电源状态"><span class="nav-number">2.3.</span> <span class="nav-text">Linux系统电源状态</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#On：正常工作状态"><span class="nav-number">2.3.1.</span> <span class="nav-text">On：正常工作状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STR-Suspend-to-RAM"><span class="nav-number">2.3.2.</span> <span class="nav-text">STR(Suspend to RAM)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STD-Suspend-to-Disk"><span class="nav-number">2.3.3.</span> <span class="nav-text">STD(Suspend to Disk):</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看Linux支持的电源模式"><span class="nav-number">2.4.</span> <span class="nav-text">查看Linux支持的电源模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看Android支持的电源模式"><span class="nav-number">2.5.</span> <span class="nav-text">查看Android支持的电源模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Idle-State"><span class="nav-number">2.6.</span> <span class="nav-text">Idle State</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Cpu-Idle"><span class="nav-number">2.6.1.</span> <span class="nav-text">Cpu Idle</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Device-Idle"><span class="nav-number">2.6.2.</span> <span class="nav-text">Device Idle</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android电源管理框架"><span class="nav-number">2.7.</span> <span class="nav-text">Android电源管理框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WakeLock"><span class="nav-number">2.8.</span> <span class="nav-text">WakeLock</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Early-Suspend"><span class="nav-number">2.8.1.</span> <span class="nav-text">Early Suspend</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Late-Resume"><span class="nav-number">2.8.2.</span> <span class="nav-text">Late Resume</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#睡眠状态转换"><span class="nav-number">2.8.3.</span> <span class="nav-text">睡眠状态转换</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手机来电与Alarm为何能唤醒系统"><span class="nav-number">2.9.</span> <span class="nav-text">手机来电与Alarm为何能唤醒系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">2.10.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">轻口味</span>
+</div>
+
+<div>
+<a href="http://www.miitbeian.gov.cn/">京ICP备17018543号</a>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </div></footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "bb46b146831e4e34808d09cd94c85f50",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+</body>
+</html>

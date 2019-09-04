@@ -6,15 +6,15 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,23 +66,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="源码,webrtc," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml" />
+  <meta name="keywords" content="源码,webrtc,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="老司机种菜" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -96,6 +96,7 @@
 <meta property="og:url" content="http://wodekouwei.com/2017/05/02/webrtc-source-base/index.html">
 <meta property="og:site_name" content="老司机种菜">
 <meta property="og:description" content="src/webrtc/base是webrtc基础平台库，包括线程、锁、socket,智能指针等. 智能指针refcount.h定义了rtc::RefCountInterface: 123456789101112131415#include &amp;quot;webrtc/base/refcountedobject.h&amp;quot;namespace rtc &amp;#123;// Reference count">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-05-02T08:23:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webrtc源码走读之base">
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://wodekouwei.com/2017/05/02/webrtc-source-base/"/>
+  <link rel="canonical" href="http://wodekouwei.com/2017/05/02/webrtc-source-base/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">老司机种菜</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -247,7 +248,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -257,7 +258,7 @@
         <li class="menu-item menu-item-commonweal">
           <a href="/404.html" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
             
             公益404
           </a>
@@ -270,7 +271,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,9 +292,7 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -330,7 +329,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="轻口味">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg">
     </span>
 
@@ -373,7 +372,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -416,7 +415,7 @@
           
             <span class="post-meta-divider">|</span>
             <span class="page-pv">本文总阅读量
-            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
             </span>
           
 
@@ -436,10 +435,12 @@
 
       
         <p><code>src/webrtc/base</code>是webrtc基础平台库，包括线程、锁、socket,智能指针等.</p>
-<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p><code>refcount.h</code>定义了rtc::RefCountInterface:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#include &quot;webrtc/base/refcountedobject.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">// Reference count interface.</div><div class="line">class RefCountInterface &#123;</div><div class="line"> public:</div><div class="line">  virtual int AddRef() const = 0;</div><div class="line">  virtual int Release() const = 0;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountInterface() &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
-<p><code>refcountedobject.h</code>下定义了RefCountedObject:
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">#include &lt;utility&gt;</div><div class="line"></div><div class="line">#include &quot;webrtc/base/atomicops.h&quot;</div><div class="line"></div><div class="line">namespace rtc &#123;</div><div class="line"></div><div class="line">template &lt;class T&gt;</div><div class="line">class RefCountedObject : public T &#123;</div><div class="line"> public:</div><div class="line">  RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0&gt;</div><div class="line">  explicit RefCountedObject(P0&amp;&amp; p0) : T(std::forward&lt;P0&gt;(p0)) &#123;&#125;</div><div class="line"></div><div class="line">  template &lt;class P0, class P1, class... Args&gt;</div><div class="line">  RefCountedObject(P0&amp;&amp; p0, P1&amp;&amp; p1, Args&amp;&amp;... args)</div><div class="line">      : T(std::forward&lt;P0&gt;(p0),</div><div class="line">          std::forward&lt;P1&gt;(p1),</div><div class="line">          std::forward&lt;Args&gt;(args)...) &#123;&#125;</div><div class="line"></div><div class="line">  virtual int AddRef() const &#123; return AtomicOps::Increment(&amp;ref_count_); &#125;</div><div class="line"></div><div class="line">  virtual int Release() const &#123;</div><div class="line">    int count = AtomicOps::Decrement(&amp;ref_count_);</div><div class="line">    if (!count) &#123;</div><div class="line">      delete this;</div><div class="line">    &#125;</div><div class="line">    return count;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  // Return whether the reference count is one. If the reference count is used</div><div class="line">  // in the conventional way, a reference count of 1 implies that the current</div><div class="line">  // thread owns the reference and no other thread shares it. This call</div><div class="line">  // performs the test for a reference count of one, and performs the memory</div><div class="line">  // barrier needed for the owning thread to act on the object, knowing that it</div><div class="line">  // has exclusive access to the object.</div><div class="line">  virtual bool HasOneRef() const &#123;</div><div class="line">    return AtomicOps::AcquireLoad(&amp;ref_count_) == 1;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> protected:</div><div class="line">  virtual ~RefCountedObject() &#123;&#125;</div><div class="line"></div><div class="line">  mutable volatile int ref_count_ = 0;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;  // namespace rtc</div></pre></td></tr></table></figure></p>
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p><code>refcount.h</code>定义了rtc::RefCountInterface:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;webrtc/base/refcountedobject.h&quot;</span><br><span class="line"></span><br><span class="line">namespace rtc &#123;</span><br><span class="line"></span><br><span class="line">// Reference count interface.</span><br><span class="line">class RefCountInterface &#123;</span><br><span class="line"> public:</span><br><span class="line">  virtual int AddRef() const = 0;</span><br><span class="line">  virtual int Release() const = 0;</span><br><span class="line"></span><br><span class="line"> protected:</span><br><span class="line">  virtual ~RefCountInterface() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace rtc</span><br></pre></td></tr></table></figure>
+
+<p><code>refcountedobject.h</code>下定义了RefCountedObject:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;utility&gt;</span><br><span class="line"></span><br><span class="line">#include &quot;webrtc/base/atomicops.h&quot;</span><br><span class="line"></span><br><span class="line">namespace rtc &#123;</span><br><span class="line"></span><br><span class="line">template &lt;class T&gt;</span><br><span class="line">class RefCountedObject : public T &#123;</span><br><span class="line"> public:</span><br><span class="line">  RefCountedObject() &#123;&#125;</span><br><span class="line"></span><br><span class="line">  template &lt;class P0&gt;</span><br><span class="line">  explicit RefCountedObject(P0&amp;&amp; p0) : T(std::forward&lt;P0&gt;(p0)) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  template &lt;class P0, class P1, class... Args&gt;</span><br><span class="line">  RefCountedObject(P0&amp;&amp; p0, P1&amp;&amp; p1, Args&amp;&amp;... args)</span><br><span class="line">      : T(std::forward&lt;P0&gt;(p0),</span><br><span class="line">          std::forward&lt;P1&gt;(p1),</span><br><span class="line">          std::forward&lt;Args&gt;(args)...) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  virtual int AddRef() const &#123; return AtomicOps::Increment(&amp;ref_count_); &#125;</span><br><span class="line"></span><br><span class="line">  virtual int Release() const &#123;</span><br><span class="line">    int count = AtomicOps::Decrement(&amp;ref_count_);</span><br><span class="line">    if (!count) &#123;</span><br><span class="line">      delete this;</span><br><span class="line">    &#125;</span><br><span class="line">    return count;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Return whether the reference count is one. If the reference count is used</span><br><span class="line">  // in the conventional way, a reference count of 1 implies that the current</span><br><span class="line">  // thread owns the reference and no other thread shares it. This call</span><br><span class="line">  // performs the test for a reference count of one, and performs the memory</span><br><span class="line">  // barrier needed for the owning thread to act on the object, knowing that it</span><br><span class="line">  // has exclusive access to the object.</span><br><span class="line">  virtual bool HasOneRef() const &#123;</span><br><span class="line">    return AtomicOps::AcquireLoad(&amp;ref_count_) == 1;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> protected:</span><br><span class="line">  virtual ~RefCountedObject() &#123;&#125;</span><br><span class="line"></span><br><span class="line">  mutable volatile int ref_count_ = 0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace rtc</span><br></pre></td></tr></table></figure>
+
 <h3 id="线程Thread"><a href="#线程Thread" class="headerlink" title="线程Thread"></a>线程Thread</h3><h3 id="网络Socket"><a href="#网络Socket" class="headerlink" title="网络Socket"></a>网络Socket</h3>
       
     </div>
@@ -462,13 +463,13 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay"/>
+          <img id="wechat_qr" src="http://images.wodekouwei.com/Pay/weixin_qingkouwei.png" alt="轻口味 WeChat Pay">
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay"/>
+          <img id="alipay_qr" src="http://images.wodekouwei.com/Pay/zhifubao_qingkouwei.jpg" alt="轻口味 Alipay">
           <p>支付宝打赏</p>
         </div>
       
@@ -573,7 +574,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -584,9 +585,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg"
-               alt="轻口味" />
+          <img class="site-author-image" itemprop="image" src="http://images.wodekouwei.com/avatar/winnle_the_pooh.jpg" alt="轻口味">
           <p class="site-author-name" itemprop="name">轻口味</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -597,7 +596,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">167</span>
+                <span class="site-state-item-count">190</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -619,7 +618,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -733,7 +732,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2015 - 
   <span itemprop="copyrightYear">2019</span>
@@ -770,7 +769,7 @@
 
         
       </div>
-    </footer>
+    </div></footer>
 
     
       <div class="back-to-top">
